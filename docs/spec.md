@@ -402,7 +402,7 @@ Side actions:
 
 - The SF headers are swapped against their set rows (rows `H155`/`H162`). Assign by the set-row codes (`BK1-*`, `BK2-*`) and map them to `SF1`/`SF2`.
 - The final's date reads `29.03.2025`; use `2026-05-23`.
-- Normalize name casing, e.g. `VInh Huỳnh` → `Vinh Huỳnh`, and match against `Xếp Rank`.
+- Normalize name casing (one name in the results sheet has a stray capital letter) and match against `Xếp Rank`.
 - 2026 relay legs carry **per-leg** handicaps (up to 20). Store `imported = true`, keep the per-leg values for display, and skip relay-handicap recomputation.
 
 **Verification:** after import, the script prints the computed standings and team totals and diffs them against the sheet's summary columns (`Tổng hợp kết quả` S:AE, `TKV_Doi`). Any difference fails the run.
