@@ -1,0 +1,23 @@
+# Dependencies & build output
+node_modules/
+.next/
+out/
+dist/
+coverage/
+
+# Env & secrets
+.env
+.env*.local
+
+# Tournament source files with personal data (names, skill ratings): never commit
+*.xlsx
+*.xls
+*.csv
+docs/*.pdf
+data/private/
+
+# Tooling
+.playwright-mcp/
+.claude/settings.local.json
+.claude/worktrees/
+.DS_Store
