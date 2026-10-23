@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>ABT Mockups</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800&family=Be+Vietnam+Pro:wght@400;500;600;700&display=swap">
+<script src="https://cdn.tailwindcss.com/3.4.17"></script>
+<script src="assets/tw-config.js"></script>
+<link rel="stylesheet" href="assets/app.css">
+</head>
+<body>
+<main class="gutter max-w-5xl mx-auto py-10">
+  <div class="wordmark text-5xl">ABT<i>·</i>27</div>
+  <div class="courtline mt-4 mb-6 max-w-sm"></div>
+  <h1 class="display text-4xl font-extrabold uppercase">Screen mockups</h1>
+  <p class="text-muted mt-2 max-w-prose">Static HTML with fake data, matching <a class="text-accent underline" href="../spec.md">docs/spec.md</a> §5–§6. Every page has a VI/EN toggle, a light/dark/system theme toggle and a season-state switch (group stage or knock-out) in the yellow ribbon. Open any file directly in a browser; no build step.</p>
+
+  <section class="mt-10">
+    <h2 class="eyebrow mb-3">Public dashboard · no login</h2>
+    <div class="panel divide-y divide-line">
+      <a class="flex flex-wrap gap-x-4 p-3 hover:bg-surface2" href="public/home.html"><b class="display w-10">P1</b><span class="font-semibold">Home</span><span class="text-muted text-sm">Now / next / latest, standings snapshot, finals</span></a>
+      <a class="flex flex-wrap gap-x-4 p-3 hover:bg-surface2" href="public/standings.html"><b class="display w-10">P2</b><span class="font-semibold">Standings</span><span class="text-muted text-sm">Full table, top-4 cut, tie-break hint per row</span></a>
+      <a class="flex flex-wrap gap-x-4 p-3 hover:bg-surface2" href="public/matches.html"><b class="display w-10">P3</b><span class="font-semibold">Schedule &amp; results</span><span class="text-muted text-sm">Filters: day, team, court, stage</span></a>
+      <a class="flex flex-wrap gap-x-4 p-3 hover:bg-surface2" href="public/match.html?code=V05"><b class="display w-10">P4</b><span class="font-semibold">Match: group</span><span class="text-muted text-sm">5 sets, set types, handicap starts</span></a>
+      <a class="flex flex-wrap gap-x-4 p-3 hover:bg-surface2" href="public/match.html?code=SF2"><b class="display w-10">P4</b><span class="font-semibold">Match: relay</span><span class="text-muted text-sm">Cumulative legs to 125, progress bars, a substitution</span></a>
+      <a class="flex flex-wrap gap-x-4 p-3 hover:bg-surface2" href="public/match.html?code=F"><b class="display w-10">P4</b><span class="font-semibold">Match: lineups locked, no score yet</span><span class="text-muted text-sm">The final, waiting for its result</span></a>
+      <a class="flex flex-wrap gap-x-4 p-3 hover:bg-surface2" href="public/match.html?code=V12"><b class="display w-10">P4</b><span class="font-semibold">Match: forfeit</span><span class="text-muted text-sm">5–0 with reason</span></a>
+      <a class="flex flex-wrap gap-x-4 p-3 hover:bg-surface2" href="public/match.html?code=V20&amp;state=group"><b class="display w-10">P4</b><span class="font-semibold">Match: lineup hidden</span><span class="text-muted text-sm">Scheduled match before lock (A6)</span></a>
+      <a class="flex flex-wrap gap-x-4 p-3 hover:bg-surface2" href="public/bracket.html"><b class="display w-10">P5</b><span class="font-semibold">Knock-out bracket</span><span class="text-muted text-sm">Also try <span class="underline">state=group</span> for the TBD bracket</span></a>
+      <a class="flex flex-wrap gap-x-4 p-3 hover:bg-surface2" href="public/bracket.html?state=group"><b class="display w-10">P5</b><span class="font-semibold">Bracket: TBD</span><span class="text-muted text-sm">Before the group closes</span></a>
+      <a class="flex flex-wrap gap-x-4 p-3 hover:bg-surface2" href="public/teams.html"><b class="display w-10">P6</b><span class="font-semibold">Teams · team detail</span><span class="text-muted text-sm">Cards, roster by rank, results</span></a>
+      <a class="flex flex-wrap gap-x-4 p-3 hover:bg-surface2" href="public/players.html"><b class="display w-10">P7</b><span class="font-semibold">Players · player profile</span><span class="text-muted text-sm">Filters, stats, every set played, season history</span></a>
+      <a class="flex flex-wrap gap-x-4 p-3 hover:bg-surface2" href="public/awards.html"><b class="display w-10">P8</b><span class="font-semibold">Side awards</span><span class="text-muted text-sm">Player, pair and team winners; one not awarded yet</span></a>
+      <a class="flex flex-wrap gap-x-4 p-3 hover:bg-surface2" href="public/rules.html"><b class="display w-10">P9</b><span class="font-semibold">Rules</span><span class="text-muted text-sm">Numbers come from the season settings</span></a>
+    </div>
+  </section>
+
+  <section class="mt-10">
+    <h2 class="eyebrow mb-3">Admin · use “View as” in the sidebar to preview the Referee role</h2>
+    <div class="panel divide-y divide-line">
+      <a class="flex flex-wrap gap-x-4 p-3 hover:bg-surface2" href="admin/login.html"><b class="display w-10">—</b><span class="font-semibold">Sign in</span><span class="text-muted text-sm">Email + password, no sign-up</span></a>
+      <a class="flex flex-wrap gap-x-4 p-3 hover:bg-surface2" href="admin/season.html"><b class="display w-10">A1</b><span class="font-semibold">Season</span><span class="text-muted text-sm">Details, courts, rule parameters (handicap caps per stage), fees</span></a>
+      <a class="flex flex-wrap gap-x-4 p-3 hover:bg-surface2" href="admin/players.html"><b class="display w-10">A2</b><span class="font-semibold">Players &amp; fees</span><span class="text-muted text-sm">Fee checklist and totals</span></a>
+      <a class="flex flex-wrap gap-x-4 p-3 hover:bg-surface2" href="admin/teams.html"><b class="display w-10">A3</b><span class="font-semibold">Teams</span><span class="text-muted text-sm">Draw import, captain, drag players</span></a>
+      <a class="flex flex-wrap gap-x-4 p-3 hover:bg-surface2" href="admin/schedule.html"><b class="display w-10">A4</b><span class="font-semibold">Schedule</span><span class="text-muted text-sm">Day × court grid, referee assignment</span></a>
+      <a class="flex flex-wrap gap-x-4 p-3 hover:bg-surface2" href="admin/matches.html?role=referee"><b class="display w-10">A5</b><span class="font-semibold">Matches (as referee)</span><span class="text-muted text-sm">“My matches” first; BTC-only screens locked</span></a>
+      <a class="flex flex-wrap gap-x-4 p-3 hover:bg-surface2" href="admin/match.html?code=V21&amp;demo=violations"><b class="display w-10">A5</b><span class="font-semibold">Match: lineup with violations</span><span class="text-muted text-sm">Live validation, override reason (BTC)</span></a>
+      <a class="flex flex-wrap gap-x-4 p-3 hover:bg-surface2" href="admin/match.html?code=V21&amp;demo=violations&amp;role=referee"><b class="display w-10">A5</b><span class="font-semibold">Same, as referee</span><span class="text-muted text-sm">Cannot save; must ask the committee</span></a>
+      <a class="flex flex-wrap gap-x-4 p-3 hover:bg-surface2" href="admin/match.html?code=F"><b class="display w-10">A5</b><span class="font-semibold">Match: relay score entry</span><span class="text-muted text-sm">Cumulative scores at each milestone</span></a>
+      <a class="flex flex-wrap gap-x-4 p-3 hover:bg-surface2" href="admin/match.html?code=V20&amp;state=group&amp;step=attendance"><b class="display w-10">A5</b><span class="font-semibold">Match: attendance</span><span class="text-muted text-sm">First step of a scheduled match</span></a>
+      <a class="flex flex-wrap gap-x-4 p-3 hover:bg-surface2" href="admin/close-group.html?state=group"><b class="display w-10">A6</b><span class="font-semibold">Close group</span><span class="text-muted text-sm">Provisional table, draw ordering, lock</span></a>
+      <a class="flex flex-wrap gap-x-4 p-3 hover:bg-surface2" href="admin/awards.html"><b class="display w-10">A7</b><span class="font-semibold">Side awards</span><span class="text-muted text-sm">Award form, winners by type</span></a>
+      <a class="flex flex-wrap gap-x-4 p-3 hover:bg-surface2" href="admin/users.html"><b class="display w-10">A8</b><span class="font-semibold">Users</span><span class="text-muted text-sm">Create, reset password, deactivate</span></a>
+    </div>
+  </section>
+  <p class="text-xs text-muted mt-8">All names are generated. No real player data is stored in this repository (plan §7).</p>
+</main>
+</body>
+</html>
