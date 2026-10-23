@@ -2,7 +2,7 @@
 
 > Status: draft for review · Last updated: 2026-10-23
 >
-> Read [plan.md](plan.md) first for scope, roadmap and decisions. This doc says **how the system behaves**. Anything marked **⚠ A<n>** is an interpretation of the rules that the BTC must confirm (see [§10](#10-assumptions-to-confirm)).
+> Read [plan.md](plan.md) first for scope, roadmap and decisions. This doc says **how the system behaves**. References like **(A<n>)** point to a rule interpretation the BTC confirmed (see [§10](#10-rule-interpretations-confirmed-by-the-btc-on-2026-10-23)).
 
 ## 1. Glossary (VI ↔ EN)
 
@@ -39,7 +39,7 @@ Every rule number is a **season setting**, so a rule change next year is configu
 | `slot_types`          | Open, Low, Open, High, Open                | Same order in group and relay                              |
 | `low_rank_range`      | 4–7                                        | Eligible ranks for a Low-rank set                          |
 | `high_rank_range`     | 1–3                                        | Eligible ranks for a High-rank set                         |
-| `max_rank`            | 7                                          | Also defines the "lowest rank" in roster compensation ⚠ A3 |
+| `max_rank`            | 7                                          | Also defines the "lowest rank" in roster compensation (A3) |
 | `group_handicap_cap`  | 20                                         | Max handicap per set                                       |
 | `ko_handicap_cap`     | 15                                         | Max total handicap per relay match                         |
 | `relay_milestones`    | 25, 50, 75, 100, 125                       |                                                            |
@@ -94,7 +94,9 @@ Draft seasons are visible only to admins.
 
 **`court`**: `season_id`, `name` ("Sân 1"), `sort_order`.
 
-**`team`**: `season_id`, `name`, `color` (hex, used in UI chips), `logo_url?`, `captain_id → season_player?`.
+**`team`**: `season_id`, `name`, `color` (hex, used in UI chips), `logo_url?`, `captain_id → season_player?`, `disqualified_at?`, `disqualified_reason?`.
+
+**`match.status_before_annul`** (enum?, on `match`): the status before annulment, so that "Reinstate" can restore it.
 
 **`season_player`**: a person's registration in a season (public).
 
@@ -127,7 +129,7 @@ Draft seasons are visible only to admins.
 | `scheduled_at`                               | timestamptz?    |                                                                                              |
 | `court_id`                                   | fk?             |                                                                                              |
 | `referee_id`                                 | fk → `profile`? |                                                                                              |
-| `status`                                     | enum            | `scheduled` → `lineup_locked` → `in_progress` → `completed`; or `forfeit`                    |
+| `status`                                     | enum            | `scheduled` → `lineup_locked` → `in_progress` → `completed`; or `forfeit` / `annulled`       |
 | `forfeit_team_id`                            | fk?             | The team that loses by forfeit                                                               |
 | `forfeit_reason`                             | text?           |                                                                                              |
 | `relay_handicap_home`, `relay_handicap_away` | smallint?       | Relay only: start-of-leg-1 points, snapshot at lock time                                     |
@@ -177,7 +179,7 @@ A slot's effective players are the registered ones with any substitutions applie
 | Data                                                                                                                                       | anon (public)                                    | referee                                            | btc |
 | ------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------ | -------------------------------------------------- | --- |
 | `season` (non-draft), `team`, `court`, `person`, `season_player`, `award*`, `group_closure`, completed or in-progress `match`/`match_slot` | read                                             | read                                               | all |
-| Lineups (`match_slot` players) of matches not yet `lineup_locked` ⚠ A6                                                                     | —                                                | read                                               | all |
+| Lineups (`match_slot` players) of matches not yet `lineup_locked` (A6)                                                                     | —                                                | read                                               | all |
 | `match`, `match_attendance`, `match_slot`, `slot_substitution`                                                                             | —                                                | write while the match is not `completed`/`forfeit` | all |
 | `season_player_private`, `audit_log`, `lineup_override`                                                                                    | —                                                | —                                                  | all |
 | `profile`                                                                                                                                  | `display_name` of assigned referees (via a view) | own row                                            | all |
@@ -201,7 +203,7 @@ Each check returns a violation `{ code, slotNo?, playerId?, message_key }`.
 | `CONSECUTIVE`     | No player appears in two consecutive slots (n and n+1)                                                                                               |
 | `LOW_RANK_SLOT`   | Both players in a `low` slot have rank within `low_rank_range`                                                                                       |
 | `HIGH_RANK_SLOT`  | Both players in a `high` slot have rank within `high_rank_range`                                                                                     |
-| `COMPENSATION`    | If this team has **fewer present players** than the opponent and exactly **one** present player of rank `max_rank`, that player plays ≥ 2 slots ⚠ A3 |
+| `COMPENSATION`    | If this team has **fewer present players** than the opponent and exactly **one** present player of rank `max_rank`, that player plays ≥ 2 slots (A3) |
 | `MIN_PRESENT`     | Present players ≥ `min_players_present`. Otherwise the match is blocked and the BTC sees the "Disqualify team" action                                |
 | `SUB_RANK`        | A substitute's rank is within ±1 of the replaced player's rank                                                                                       |
 
@@ -223,7 +225,7 @@ the side with the lower S starts with h; the other starts with 0
 
 Example: 63 vs 54 gives the 54 pair a start of 9. A difference of 23 with cap 20 gives a start of 20.
 
-### 4.3 Relay handicap: `relayHandicap(slots, cap)` ⚠ A1
+### 4.3 Relay handicap: `relayHandicap(slots, cap)` (A1)
 
 ```
 net = Σ over legs i=1..5 of (S_home,i − S_away,i)       // signed, effective players
@@ -257,11 +259,16 @@ The match winner is whoever reaches the final milestone. A warning appears if `k
 ### 4.5 Forfeit and disqualification
 
 - **Group forfeit:** the winner gets 5–0 in sets and 31–0 in every set. Lineups and handicaps are ignored.
-- **Knock-out forfeit:** the winner advances, and the score is recorded as `125–0` ⚠ A5.
-- **Disqualify team** (BTC action, e.g. fewer than `min_players_present` after 10 minutes):
-  - All of the team's **remaining** group matches become forfeits.
-  - Completed matches keep their results.
-  - The team stays in the standings table, ranked by its results ⚠ A4.
+- **Knock-out forfeit:** the winner advances, and the score is recorded as `125–0` (A5).
+- **Disqualify team** (BTC action, e.g. fewer than `min_players_present` after 10 minutes). It requires a reason and a confirmation dialog that lists every affected match (A4).
+  - **During the group stage:** every group match of the team is set to `annulled`, **including the matches already played**. Annulled matches:
+    - do not count toward the standings or the player stats;
+    - stay visible on the public match pages with an "Annulled" badge and the reason.
+
+    The team is removed from the standings table and listed below it as "Disqualified".
+
+  - **During the knock-out:** the team's next match becomes a knock-out forfeit and the opponent advances. Group results stay locked, because the group is already closed.
+  - **Reinstate** (BTC, audited) restores the previous statuses. It is allowed only while the group is not closed.
 
 ### 4.6 Standings: `computeStandings(teams, matches, settings)`
 
@@ -272,7 +279,7 @@ Per team:
 - Sets won and lost, set difference (`SD`)
 - Points for and against, point difference (`PD`)
 
-Only `completed` and `forfeit` matches count.
+Only `completed` and `forfeit` matches count; `annulled` matches and disqualified teams are excluded.
 
 **Ranking order** (rules §vii.3):
 
@@ -286,11 +293,13 @@ Only `completed` and `forfeit` matches count.
 5. Overall point difference.
 6. Draw: the BTC orders the remaining tied teams manually on the Close-group screen.
 
-The resolution procedure ⚠ A2:
+The resolution procedure (A2):
 
-- Apply the criteria in order to the tied group.
-- When a criterion splits the group, each subgroup that is **still level continues from the next criterion**. It does not restart at step 2.
-- A subgroup of exactly 2 teams that came out of step 3 still goes on to step 4. Step 2 applies only when exactly two teams were level on points from the start.
+- **Two teams** level on points are separated by step 2. One match is always decisive, because a match has 5 sets and cannot be drawn.
+- **Three or more teams** level on points are ranked **in one pass** by the mini-table (3.1 → 3.2 → 3.3). The mini-table orders the whole group at once. It is **not** re-applied to a subgroup that is still level, and step 2 is never used inside a 3+ group.
+- Teams still level after 3.3 go on to steps 4, 5 and 6, in that order.
+
+Example: A, B and C each win one mini-table match (A > B, B > C, C > A), so they are level on 3.1. Step 3.2 (set difference among the three) ranks all three. If B is separated by 3.2 but A and C are still level after 3.3, A and C go to step 4. Their own head-to-head result is not used again.
 
 The function returns the order and, for each team, **which criterion decided its position**. The UI shows that criterion as a hint (e.g. "ahead on head-to-head").
 
@@ -407,24 +416,27 @@ Side actions:
 
 **Verification:** after import, the script prints the computed standings and team totals and diffs them against the sheet's summary columns (`Tổng hợp kết quả` S:AE, `TKV_Doi`). Any difference fails the run.
 
-## 10. Assumptions to confirm
+## 10. Rule interpretations (confirmed by the BTC on 2026-10-23)
 
-| #   | Assumption                                                                                                                                              | Where |
-| --- | ------------------------------------------------------------------------------------------------------------------------------------------------------- | ----- |
-| A1  | Relay handicap: there is **no per-leg cap**; the signed sum is capped once at `ko_handicap_cap`.                                                        | §4.3  |
-| A2  | Tie-break: a subgroup still level after the mini-table continues to overall SD and PD; it does **not** restart at head-to-head.                         | §4.6  |
-| A3  | "Lowest rank" in roster compensation means rank `max_rank` (7), not the lowest rank present on that day.                                                | §4.1  |
-| A4  | A disqualified team stays in the standings table with its results plus forfeited losses. It is not removed and its opponents' results are not annulled. | §4.5  |
-| A5  | A knock-out forfeit is recorded as 125–0 and the winner advances.                                                                                       | §4.5  |
-| A6  | Lineups are public only once the match is `lineup_locked`, so the opponent cannot see them early.                                                       | §3.2  |
-| A7  | A referee can enter results for any match, not only the matches assigned to them; "My matches" only changes the sort order.                             | §6 A5 |
+The rules text leaves these points open. The BTC confirmed each answer, and each one is covered by a unit test.
+
+| #   | Interpretation                                                                                                                                                                                                                | Where |
+| --- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----- |
+| A1  | Relay handicap has **no per-leg cap**. The signed sum is capped once at `ko_handicap_cap`.                                                                                                                                    | §4.3  |
+| A2  | Three or more teams level on points are ranked in **one pass** of the mini-table (head-to-head points → set difference → point difference). Teams still level go to overall SD, then PD, then the draw. There is no re-split. | §4.6  |
+| A3  | "Lowest rank" in roster compensation means rank `max_rank` (7).                                                                                                                                                               | §4.1  |
+| A4  | A team disqualified in the group stage has **all** its group matches annulled, including the ones already played. It is removed from the standings so the stage stays fair to every team.                                     | §4.5  |
+| A5  | A knock-out forfeit is recorded as 125–0 and the winner advances.                                                                                                                                                             | §4.5  |
+| A6  | Lineups are public only once the match is `lineup_locked`, so the opponent cannot see them early.                                                                                                                             | §3.2  |
+| A7  | A referee can enter results for any match; "My matches" only changes the sort order.                                                                                                                                          | §6 A5 |
 
 ## 11. Testing
 
 - **Unit tests (Vitest), `src/domain/**`, target ≥ 95 % line coverage:**
   - one test file per function in §4;
   - table-driven cases for every violation code;
-  - every tie-break branch, including the 3-way loop A > B > C > A.
+  - every tie-break branch, including the 3-way loop A > B > C > A and a partial split that falls through to overall SD;
+  - disqualification annuls played and remaining matches, and Reinstate restores them.
 - **Oracle test:** `src/domain/__oracle__/abt2026.test.ts` loads the real workbook from `ABT_2026_XLSX` when that variable is set and checks:
   - the standings order and totals against the sheet;
   - every group-stage handicap against §4.2.

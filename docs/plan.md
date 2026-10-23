@@ -173,14 +173,14 @@ Each step is its own PR into `dev` and is reviewed before the next one starts.
 
 ## 9. Risks
 
-| Risk                                                                                    | Mitigation                                                                                                                               |
-| --------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
-| The rules text is ambiguous (handicap direction, relay handicap, multi-team tie-breaks) | Each interpretation is written in [spec.md §Assumptions](spec.md#10-assumptions-to-confirm), confirmed by the BTC, and covered by a test |
-| 2026 practice differed from the written rules (per-leg relay handicap)                  | Handicap caps are configurable per season; 2026 scores are imported as recorded, without recomputation                                   |
-| Supabase free project pauses when idle                                                  | Weekly keep-alive cron                                                                                                                   |
-| Venue Wi-Fi or mobile data is weak on match days                                        | Light pages, server-rendered, small payloads; a referee can re-submit scores without losing input                                        |
-| Personal data leaks through the public repo                                             | Gitignore rules, fake fixtures, RLS on private columns, PR review                                                                        |
-| Vercel Hobby plan terms (non-commercial use)                                            | Internal, non-revenue event; revisit if the company wants it on its own infrastructure                                                   |
+| Risk                                                                                    | Mitigation                                                                                                                                                                           |
+| --------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| The rules text is ambiguous (handicap direction, relay handicap, multi-team tie-breaks) | Each interpretation is written in [spec.md §10](spec.md#10-rule-interpretations-confirmed-by-the-btc-on-2026-10-23), confirmed by the BTC (A1–A7, 2026-10-23), and covered by a test |
+| 2026 practice differed from the written rules (per-leg relay handicap)                  | Handicap caps are configurable per season; 2026 scores are imported as recorded, without recomputation                                                                               |
+| Supabase free project pauses when idle                                                  | Weekly keep-alive cron                                                                                                                                                               |
+| Venue Wi-Fi or mobile data is weak on match days                                        | Light pages, server-rendered, small payloads; a referee can re-submit scores without losing input                                                                                    |
+| Personal data leaks through the public repo                                             | Gitignore rules, fake fixtures, RLS on private columns, PR review                                                                                                                    |
+| Vercel Hobby plan terms (non-commercial use)                                            | Internal, non-revenue event; revisit if the company wants it on its own infrastructure                                                                                               |
 
 ## 10. Decision log
 
@@ -210,3 +210,4 @@ These decisions were settled in the kickoff grilling session on 2026-10-23.
 | D20 | Separate public repo, `dev → staging → main`, squash-only                                                                                                           |
 | D21 | No real personal data in the repo                                                                                                                                   |
 | D22 | HTML mockups for all screens before any code                                                                                                                        |
+| D23 | Rule interpretations A1–A7 confirmed (spec §10). Notably, disqualifying a team annuls **all** its group matches, played ones included                               |
