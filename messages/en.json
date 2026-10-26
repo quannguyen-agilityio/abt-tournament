@@ -35,5 +35,24 @@
     "players": "Players",
     "awards": "Side awards",
     "rules": "Rules"
+  },
+  "Admin": {
+    "title": "Admin",
+    "comingSoon": "Coming soon",
+    "badge": "Admin",
+    "role": "Role",
+    "roleBtc": "Organizing Committee",
+    "roleReferee": "Referee",
+    "navLabel": "Admin navigation",
+    "nav": {
+      "season": "Season",
+      "players": "Players & fees",
+      "teams": "Teams",
+      "schedule": "Schedule",
+      "matches": "Matches",
+      "closeGroup": "Close group",
+      "awards": "Side awards",
+      "users": "Users"
+    }
   }
 }
