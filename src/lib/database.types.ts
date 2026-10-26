@@ -3,6 +3,190 @@ export type Json = string | number | boolean | null | { [key: string]: Json | un
 export type Database = {
   public: {
     Tables: {
+      audit_log: {
+        Row: {
+          action: Database['public']['Enums']['audit_action'];
+          actor_id: string | null;
+          after: Json | null;
+          at: string;
+          before: Json | null;
+          entity: string;
+          entity_id: string;
+          id: string;
+        };
+        ComputedFields: never;
+        Insert: {
+          action: Database['public']['Enums']['audit_action'];
+          actor_id?: string | null;
+          after?: Json | null;
+          at?: string;
+          before?: Json | null;
+          entity: string;
+          entity_id: string;
+          id?: string;
+        };
+        Update: {
+          action?: Database['public']['Enums']['audit_action'];
+          actor_id?: string | null;
+          after?: Json | null;
+          at?: string;
+          before?: Json | null;
+          entity?: string;
+          entity_id?: string;
+          id?: string;
+        };
+        Relationships: [];
+      };
+      award: {
+        Row: {
+          created_at: string;
+          criteria_en: string | null;
+          criteria_vi: string;
+          id: string;
+          name_en: string | null;
+          name_vi: string;
+          note: string | null;
+          season_id: string;
+          sort_order: number;
+          sponsor: string | null;
+          updated_at: string;
+          value_vnd: number | null;
+        };
+        ComputedFields: never;
+        Insert: {
+          created_at?: string;
+          criteria_en?: string | null;
+          criteria_vi?: string;
+          id?: string;
+          name_en?: string | null;
+          name_vi: string;
+          note?: string | null;
+          season_id: string;
+          sort_order?: number;
+          sponsor?: string | null;
+          updated_at?: string;
+          value_vnd?: number | null;
+        };
+        Update: {
+          created_at?: string;
+          criteria_en?: string | null;
+          criteria_vi?: string;
+          id?: string;
+          name_en?: string | null;
+          name_vi?: string;
+          note?: string | null;
+          season_id?: string;
+          sort_order?: number;
+          sponsor?: string | null;
+          updated_at?: string;
+          value_vnd?: number | null;
+        };
+        Relationships: [
+          {
+            foreignKeyName: 'award_season_id_fkey';
+            columns: ['season_id'];
+            isOneToOne: false;
+            referencedRelation: 'season';
+            referencedColumns: ['id'];
+          },
+        ];
+      };
+      award_winner: {
+        Row: {
+          award_id: string;
+          created_at: string;
+          id: string;
+          kind: Database['public']['Enums']['award_winner_kind'];
+          match_id: string | null;
+          note: string | null;
+          team_id: string | null;
+          updated_at: string;
+        };
+        ComputedFields: never;
+        Insert: {
+          award_id: string;
+          created_at?: string;
+          id?: string;
+          kind: Database['public']['Enums']['award_winner_kind'];
+          match_id?: string | null;
+          note?: string | null;
+          team_id?: string | null;
+          updated_at?: string;
+        };
+        Update: {
+          award_id?: string;
+          created_at?: string;
+          id?: string;
+          kind?: Database['public']['Enums']['award_winner_kind'];
+          match_id?: string | null;
+          note?: string | null;
+          team_id?: string | null;
+          updated_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: 'award_winner_award_id_fkey';
+            columns: ['award_id'];
+            isOneToOne: false;
+            referencedRelation: 'award';
+            referencedColumns: ['id'];
+          },
+          {
+            foreignKeyName: 'award_winner_match_id_fkey';
+            columns: ['match_id'];
+            isOneToOne: false;
+            referencedRelation: 'match';
+            referencedColumns: ['id'];
+          },
+          {
+            foreignKeyName: 'award_winner_team_id_fkey';
+            columns: ['team_id'];
+            isOneToOne: false;
+            referencedRelation: 'team';
+            referencedColumns: ['id'];
+          },
+        ];
+      };
+      award_winner_member: {
+        Row: {
+          award_winner_id: string;
+          created_at: string;
+          id: string;
+          season_player_id: string;
+          updated_at: string;
+        };
+        ComputedFields: never;
+        Insert: {
+          award_winner_id: string;
+          created_at?: string;
+          id?: string;
+          season_player_id: string;
+          updated_at?: string;
+        };
+        Update: {
+          award_winner_id?: string;
+          created_at?: string;
+          id?: string;
+          season_player_id?: string;
+          updated_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: 'award_winner_member_award_winner_id_fkey';
+            columns: ['award_winner_id'];
+            isOneToOne: false;
+            referencedRelation: 'award_winner';
+            referencedColumns: ['id'];
+          },
+          {
+            foreignKeyName: 'award_winner_member_season_player_id_fkey';
+            columns: ['season_player_id'];
+            isOneToOne: false;
+            referencedRelation: 'season_player';
+            referencedColumns: ['id'];
+          },
+        ];
+      };
       court: {
         Row: {
           created_at: string;
@@ -35,6 +219,369 @@ export type Database = {
             columns: ['season_id'];
             isOneToOne: false;
             referencedRelation: 'season';
+            referencedColumns: ['id'];
+          },
+        ];
+      };
+      group_closure: {
+        Row: {
+          closed_at: string;
+          closed_by: string | null;
+          created_at: string;
+          final_order: string[];
+          id: string;
+          manual_draws: NonNullable<Json>;
+          season_id: string;
+          updated_at: string;
+        };
+        ComputedFields: never;
+        Insert: {
+          closed_at?: string;
+          closed_by?: string | null;
+          created_at?: string;
+          final_order: string[];
+          id?: string;
+          manual_draws?: NonNullable<Json>;
+          season_id: string;
+          updated_at?: string;
+        };
+        Update: {
+          closed_at?: string;
+          closed_by?: string | null;
+          created_at?: string;
+          final_order?: string[];
+          id?: string;
+          manual_draws?: NonNullable<Json>;
+          season_id?: string;
+          updated_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: 'group_closure_closed_by_fkey';
+            columns: ['closed_by'];
+            isOneToOne: false;
+            referencedRelation: 'profile';
+            referencedColumns: ['user_id'];
+          },
+          {
+            foreignKeyName: 'group_closure_season_id_fkey';
+            columns: ['season_id'];
+            isOneToOne: true;
+            referencedRelation: 'season';
+            referencedColumns: ['id'];
+          },
+        ];
+      };
+      lineup_override: {
+        Row: {
+          created_at: string;
+          created_by: string | null;
+          id: string;
+          match_id: string;
+          reason: string;
+          rule_code: Database['public']['Enums']['lineup_rule_code'];
+          team_id: string;
+          updated_at: string;
+        };
+        ComputedFields: never;
+        Insert: {
+          created_at?: string;
+          created_by?: string | null;
+          id?: string;
+          match_id: string;
+          reason: string;
+          rule_code: Database['public']['Enums']['lineup_rule_code'];
+          team_id: string;
+          updated_at?: string;
+        };
+        Update: {
+          created_at?: string;
+          created_by?: string | null;
+          id?: string;
+          match_id?: string;
+          reason?: string;
+          rule_code?: Database['public']['Enums']['lineup_rule_code'];
+          team_id?: string;
+          updated_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: 'lineup_override_created_by_fkey';
+            columns: ['created_by'];
+            isOneToOne: false;
+            referencedRelation: 'profile';
+            referencedColumns: ['user_id'];
+          },
+          {
+            foreignKeyName: 'lineup_override_match_id_fkey';
+            columns: ['match_id'];
+            isOneToOne: false;
+            referencedRelation: 'match';
+            referencedColumns: ['id'];
+          },
+          {
+            foreignKeyName: 'lineup_override_team_id_fkey';
+            columns: ['team_id'];
+            isOneToOne: false;
+            referencedRelation: 'team';
+            referencedColumns: ['id'];
+          },
+        ];
+      };
+      match: {
+        Row: {
+          away_team_id: string | null;
+          code: string;
+          court_id: string | null;
+          created_at: string;
+          forfeit_reason: string | null;
+          forfeit_team_id: string | null;
+          home_team_id: string | null;
+          id: string;
+          imported: boolean;
+          referee_id: string | null;
+          relay_handicap_away: number | null;
+          relay_handicap_home: number | null;
+          round: number | null;
+          scheduled_at: string | null;
+          season_id: string;
+          stage: Database['public']['Enums']['match_stage'];
+          status: Database['public']['Enums']['match_status'];
+          status_before_annul: Database['public']['Enums']['match_status'] | null;
+          updated_at: string;
+          winner_team_id: string | null;
+        };
+        ComputedFields: never;
+        Insert: {
+          away_team_id?: string | null;
+          code: string;
+          court_id?: string | null;
+          created_at?: string;
+          forfeit_reason?: string | null;
+          forfeit_team_id?: string | null;
+          home_team_id?: string | null;
+          id?: string;
+          imported?: boolean;
+          referee_id?: string | null;
+          relay_handicap_away?: number | null;
+          relay_handicap_home?: number | null;
+          round?: number | null;
+          scheduled_at?: string | null;
+          season_id: string;
+          stage: Database['public']['Enums']['match_stage'];
+          status?: Database['public']['Enums']['match_status'];
+          status_before_annul?: Database['public']['Enums']['match_status'] | null;
+          updated_at?: string;
+          winner_team_id?: string | null;
+        };
+        Update: {
+          away_team_id?: string | null;
+          code?: string;
+          court_id?: string | null;
+          created_at?: string;
+          forfeit_reason?: string | null;
+          forfeit_team_id?: string | null;
+          home_team_id?: string | null;
+          id?: string;
+          imported?: boolean;
+          referee_id?: string | null;
+          relay_handicap_away?: number | null;
+          relay_handicap_home?: number | null;
+          round?: number | null;
+          scheduled_at?: string | null;
+          season_id?: string;
+          stage?: Database['public']['Enums']['match_stage'];
+          status?: Database['public']['Enums']['match_status'];
+          status_before_annul?: Database['public']['Enums']['match_status'] | null;
+          updated_at?: string;
+          winner_team_id?: string | null;
+        };
+        Relationships: [
+          {
+            foreignKeyName: 'match_away_team_id_fkey';
+            columns: ['away_team_id'];
+            isOneToOne: false;
+            referencedRelation: 'team';
+            referencedColumns: ['id'];
+          },
+          {
+            foreignKeyName: 'match_court_id_fkey';
+            columns: ['court_id'];
+            isOneToOne: false;
+            referencedRelation: 'court';
+            referencedColumns: ['id'];
+          },
+          {
+            foreignKeyName: 'match_forfeit_team_id_fkey';
+            columns: ['forfeit_team_id'];
+            isOneToOne: false;
+            referencedRelation: 'team';
+            referencedColumns: ['id'];
+          },
+          {
+            foreignKeyName: 'match_home_team_id_fkey';
+            columns: ['home_team_id'];
+            isOneToOne: false;
+            referencedRelation: 'team';
+            referencedColumns: ['id'];
+          },
+          {
+            foreignKeyName: 'match_referee_id_fkey';
+            columns: ['referee_id'];
+            isOneToOne: false;
+            referencedRelation: 'profile';
+            referencedColumns: ['user_id'];
+          },
+          {
+            foreignKeyName: 'match_season_id_fkey';
+            columns: ['season_id'];
+            isOneToOne: false;
+            referencedRelation: 'season';
+            referencedColumns: ['id'];
+          },
+          {
+            foreignKeyName: 'match_winner_team_id_fkey';
+            columns: ['winner_team_id'];
+            isOneToOne: false;
+            referencedRelation: 'team';
+            referencedColumns: ['id'];
+          },
+        ];
+      };
+      match_attendance: {
+        Row: {
+          created_at: string;
+          id: string;
+          match_id: string;
+          season_player_id: string;
+          team_id: string;
+          updated_at: string;
+        };
+        ComputedFields: never;
+        Insert: {
+          created_at?: string;
+          id?: string;
+          match_id: string;
+          season_player_id: string;
+          team_id: string;
+          updated_at?: string;
+        };
+        Update: {
+          created_at?: string;
+          id?: string;
+          match_id?: string;
+          season_player_id?: string;
+          team_id?: string;
+          updated_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: 'match_attendance_match_id_fkey';
+            columns: ['match_id'];
+            isOneToOne: false;
+            referencedRelation: 'match';
+            referencedColumns: ['id'];
+          },
+          {
+            foreignKeyName: 'match_attendance_season_player_id_fkey';
+            columns: ['season_player_id'];
+            isOneToOne: false;
+            referencedRelation: 'season_player';
+            referencedColumns: ['id'];
+          },
+          {
+            foreignKeyName: 'match_attendance_team_id_fkey';
+            columns: ['team_id'];
+            isOneToOne: false;
+            referencedRelation: 'team';
+            referencedColumns: ['id'];
+          },
+        ];
+      };
+      match_slot: {
+        Row: {
+          away_p1: string | null;
+          away_p2: string | null;
+          created_at: string;
+          handicap_away: number;
+          handicap_home: number;
+          home_p1: string | null;
+          home_p2: string | null;
+          id: string;
+          match_id: string;
+          score_away: number | null;
+          score_home: number | null;
+          slot_no: number;
+          slot_type: Database['public']['Enums']['slot_type'];
+          updated_at: string;
+        };
+        ComputedFields: never;
+        Insert: {
+          away_p1?: string | null;
+          away_p2?: string | null;
+          created_at?: string;
+          handicap_away?: number;
+          handicap_home?: number;
+          home_p1?: string | null;
+          home_p2?: string | null;
+          id?: string;
+          match_id: string;
+          score_away?: number | null;
+          score_home?: number | null;
+          slot_no: number;
+          slot_type: Database['public']['Enums']['slot_type'];
+          updated_at?: string;
+        };
+        Update: {
+          away_p1?: string | null;
+          away_p2?: string | null;
+          created_at?: string;
+          handicap_away?: number;
+          handicap_home?: number;
+          home_p1?: string | null;
+          home_p2?: string | null;
+          id?: string;
+          match_id?: string;
+          score_away?: number | null;
+          score_home?: number | null;
+          slot_no?: number;
+          slot_type?: Database['public']['Enums']['slot_type'];
+          updated_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: 'match_slot_away_p1_fkey';
+            columns: ['away_p1'];
+            isOneToOne: false;
+            referencedRelation: 'season_player';
+            referencedColumns: ['id'];
+          },
+          {
+            foreignKeyName: 'match_slot_away_p2_fkey';
+            columns: ['away_p2'];
+            isOneToOne: false;
+            referencedRelation: 'season_player';
+            referencedColumns: ['id'];
+          },
+          {
+            foreignKeyName: 'match_slot_home_p1_fkey';
+            columns: ['home_p1'];
+            isOneToOne: false;
+            referencedRelation: 'season_player';
+            referencedColumns: ['id'];
+          },
+          {
+            foreignKeyName: 'match_slot_home_p2_fkey';
+            columns: ['home_p2'];
+            isOneToOne: false;
+            referencedRelation: 'season_player';
+            referencedColumns: ['id'];
+          },
+          {
+            foreignKeyName: 'match_slot_match_id_fkey';
+            columns: ['match_id'];
+            isOneToOne: false;
+            referencedRelation: 'match';
             referencedColumns: ['id'];
           },
         ];
@@ -242,6 +789,72 @@ export type Database = {
           },
         ];
       };
+      slot_substitution: {
+        Row: {
+          created_at: string;
+          created_by: string | null;
+          id: string;
+          match_slot_id: string;
+          reason: string;
+          replaced_id: string;
+          side: Database['public']['Enums']['match_side'];
+          substitute_id: string;
+          updated_at: string;
+        };
+        ComputedFields: never;
+        Insert: {
+          created_at?: string;
+          created_by?: string | null;
+          id?: string;
+          match_slot_id: string;
+          reason?: string;
+          replaced_id: string;
+          side: Database['public']['Enums']['match_side'];
+          substitute_id: string;
+          updated_at?: string;
+        };
+        Update: {
+          created_at?: string;
+          created_by?: string | null;
+          id?: string;
+          match_slot_id?: string;
+          reason?: string;
+          replaced_id?: string;
+          side?: Database['public']['Enums']['match_side'];
+          substitute_id?: string;
+          updated_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: 'slot_substitution_created_by_fkey';
+            columns: ['created_by'];
+            isOneToOne: false;
+            referencedRelation: 'profile';
+            referencedColumns: ['user_id'];
+          },
+          {
+            foreignKeyName: 'slot_substitution_match_slot_id_fkey';
+            columns: ['match_slot_id'];
+            isOneToOne: false;
+            referencedRelation: 'match_slot';
+            referencedColumns: ['id'];
+          },
+          {
+            foreignKeyName: 'slot_substitution_replaced_id_fkey';
+            columns: ['replaced_id'];
+            isOneToOne: false;
+            referencedRelation: 'season_player';
+            referencedColumns: ['id'];
+          },
+          {
+            foreignKeyName: 'slot_substitution_substitute_id_fkey';
+            columns: ['substitute_id'];
+            isOneToOne: false;
+            referencedRelation: 'season_player';
+            referencedColumns: ['id'];
+          },
+        ];
+      };
       team: {
         Row: {
           captain_id: string | null;
@@ -305,10 +918,27 @@ export type Database = {
       [_ in never]: never;
     };
     Enums: {
+      audit_action: 'insert' | 'update' | 'delete';
+      award_winner_kind: 'player' | 'pair' | 'team';
       gender: 'male' | 'female';
+      lineup_rule_code:
+        | 'SLOT_INCOMPLETE'
+        | 'NOT_PRESENT'
+        | 'MIN_SETS'
+        | 'MAX_SETS'
+        | 'CONSECUTIVE'
+        | 'LOW_RANK_SLOT'
+        | 'HIGH_RANK_SLOT'
+        | 'COMPENSATION'
+        | 'MIN_PRESENT'
+        | 'SUB_RANK';
+      match_side: 'home' | 'away';
+      match_stage: 'group' | 'semi_final' | 'third_place' | 'final';
+      match_status: 'scheduled' | 'lineup_locked' | 'in_progress' | 'completed' | 'forfeit' | 'annulled';
       member_type: 'employee' | 'intern' | 'guest';
       season_player_status: 'active' | 'withdrawn';
       season_status: 'draft' | 'published' | 'group' | 'knockout' | 'finished';
+      slot_type: 'open' | 'low' | 'high';
       user_role: 'btc' | 'referee';
     };
     CompositeTypes: {
@@ -417,10 +1047,28 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
+      audit_action: ['insert', 'update', 'delete'],
+      award_winner_kind: ['player', 'pair', 'team'],
       gender: ['male', 'female'],
+      lineup_rule_code: [
+        'SLOT_INCOMPLETE',
+        'NOT_PRESENT',
+        'MIN_SETS',
+        'MAX_SETS',
+        'CONSECUTIVE',
+        'LOW_RANK_SLOT',
+        'HIGH_RANK_SLOT',
+        'COMPENSATION',
+        'MIN_PRESENT',
+        'SUB_RANK',
+      ],
+      match_side: ['home', 'away'],
+      match_stage: ['group', 'semi_final', 'third_place', 'final'],
+      match_status: ['scheduled', 'lineup_locked', 'in_progress', 'completed', 'forfeit', 'annulled'],
       member_type: ['employee', 'intern', 'guest'],
       season_player_status: ['active', 'withdrawn'],
       season_status: ['draft', 'published', 'group', 'knockout', 'finished'],
+      slot_type: ['open', 'low', 'high'],
       user_role: ['btc', 'referee'],
     },
   },

@@ -28,6 +28,7 @@ pnpm dev                        # http://localhost:3000
 | `pnpm db:start`   | Start the local Supabase stack (`pnpm db:stop` to stop it)                              |
 | `pnpm db:reset`   | Recreate the local database from `supabase/migrations/` and the seed                    |
 | `pnpm db:types`   | Regenerate `src/lib/database.types.ts` from the local database                          |
+| `pnpm db:test`    | Database tests (pgTAP, `supabase/tests/`) against the local stack                       |
 | `pnpm build`      | Production build                                                                        |
 | `pnpm start`      | Serve the production build                                                              |
 | `pnpm lint`       | ESLint                                                                                  |
@@ -37,7 +38,7 @@ pnpm dev                        # http://localhost:3000
 | `pnpm test:e2e`   | End-to-end tests (Playwright), run `pnpm exec playwright install chromium` once first   |
 | `pnpm i18n:check` | Fail when `messages/vi.json` and `messages/en.json` differ in keys or have empty values |
 
-Layout: `src/app` (routes), `src/domain` (pure TypeScript, no `next`/`react`/`@supabase` imports, enforced by ESLint), `src/lib`, `src/components`, `messages/`, `supabase/` (config and migrations).
+Layout: `src/app` (routes), `src/domain` (pure TypeScript, no `next`/`react`/`@supabase` imports, enforced by ESLint), `src/lib`, `src/components`, `messages/`, `supabase/` (config, migrations and pgTAP tests).
 
 ### Database
 
@@ -47,6 +48,7 @@ Schema changes are SQL migrations in `supabase/migrations/`, applied in order to
 pnpm exec supabase migration new <name>   # create an empty migration
 pnpm db:reset                             # apply all migrations to the local database
 pnpm db:types                             # then regenerate the TypeScript types and commit them
+pnpm db:test                              # run the pgTAP tests in supabase/tests/
 ```
 
 Supabase clients live in `src/lib/supabase/`:
