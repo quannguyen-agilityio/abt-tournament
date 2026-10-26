@@ -18,6 +18,9 @@ const barlowCondensed = Barlow_Condensed({
   subsets: ['latin', 'vietnamese'],
 });
 
+// Runs before first paint so the stored theme never flashes. Read here (not via cookies()) to keep the layout static.
+const THEME_SCRIPT = `(function(){try{var m=document.cookie.match(/(?:^|; )theme=(light|dark)(?:;|$)/);if(m)document.documentElement.setAttribute("data-theme",m[1])}catch(e){}})()`;
+
 export function generateStaticParams() {
   return routing.locales.map((locale) => ({ locale }));
 }
@@ -35,7 +38,14 @@ export default async function RootLayout({ children, params }: LayoutProps<'/[lo
   setRequestLocale(locale);
 
   return (
-    <html lang={locale} className={`${beVietnamPro.variable} ${barlowCondensed.variable} h-full antialiased`}>
+    <html
+      lang={locale}
+      className={`${beVietnamPro.variable} ${barlowCondensed.variable} h-full antialiased`}
+      suppressHydrationWarning
+    >
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: THEME_SCRIPT }} />
+      </head>
       <body className="flex min-h-full flex-col">
         <NextIntlClientProvider>{children}</NextIntlClientProvider>
       </body>

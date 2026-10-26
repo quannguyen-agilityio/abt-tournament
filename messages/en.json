@@ -16,5 +16,11 @@
     "switchTo": "Switch to {language}",
     "vi": "Vietnamese",
     "en": "English"
+  },
+  "Theme": {
+    "title": "Theme: {mode}",
+    "system": "System",
+    "light": "Light",
+    "dark": "Dark"
   }
 }

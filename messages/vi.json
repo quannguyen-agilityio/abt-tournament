@@ -16,5 +16,11 @@
     "switchTo": "Chuyển sang {language}",
     "vi": "Tiếng Việt",
     "en": "Tiếng Anh"
+  },
+  "Theme": {
+    "title": "Giao diện: {mode}",
+    "system": "Theo hệ thống",
+    "light": "Sáng",
+    "dark": "Tối"
   }
 }
