@@ -18,6 +18,33 @@ const eslintConfig = defineConfig([
     '.claude/**',
     'supabase/**',
   ]),
+  {
+    // Keep the domain layer pure: no framework, UI or database imports.
+    files: ['src/domain/**/*.{ts,tsx}'],
+    rules: {
+      'no-restricted-imports': [
+        'error',
+        {
+          patterns: [
+            {
+              group: [
+                'next',
+                'next/*',
+                'react',
+                'react/*',
+                'react-dom',
+                'react-dom/*',
+                '@supabase/*',
+                '@/app/*',
+                '@/components/*',
+              ],
+              message: 'src/domain must stay framework-free: no next, react or @supabase imports.',
+            },
+          ],
+        },
+      ],
+    },
+  },
   prettier,
 ]);
 
