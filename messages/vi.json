@@ -22,5 +22,18 @@
     "system": "Theo hệ thống",
     "light": "Sáng",
     "dark": "Tối"
+  },
+  "Nav": {
+    "primary": "Điều hướng chính",
+    "season": "Mùa giải",
+    "admin": "Quản trị",
+    "home": "Trang chủ",
+    "standings": "Bảng xếp hạng",
+    "matches": "Lịch & kết quả",
+    "bracket": "Knock-out",
+    "teams": "Đội",
+    "players": "VĐV",
+    "awards": "Giải phụ",
+    "rules": "Điều lệ"
   }
 }

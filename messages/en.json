@@ -22,5 +22,18 @@
     "system": "System",
     "light": "Light",
     "dark": "Dark"
+  },
+  "Nav": {
+    "primary": "Main navigation",
+    "season": "Season",
+    "admin": "Admin",
+    "home": "Home",
+    "standings": "Standings",
+    "matches": "Schedule & results",
+    "bracket": "Knock-out",
+    "teams": "Teams",
+    "players": "Players",
+    "awards": "Side awards",
+    "rules": "Rules"
   }
 }

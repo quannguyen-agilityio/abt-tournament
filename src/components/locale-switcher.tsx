@@ -2,6 +2,7 @@
 
 import { useLocale, useTranslations } from 'next-intl';
 import { useSearchParams } from 'next/navigation';
+import { buttonVariants } from '@/components/ui/button';
 import { Link, usePathname } from '@/i18n/navigation';
 import { routing } from '@/i18n/routing';
 
@@ -19,7 +20,7 @@ export function LocaleSwitcher() {
       locale={other}
       hrefLang={other}
       aria-label={t('switchTo', { language: t(other) })}
-      className="text-sm font-medium underline-offset-4 hover:underline"
+      className={buttonVariants({ variant: 'outline' })}
     >
       {other.toUpperCase()}
     </Link>
