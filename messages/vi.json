@@ -54,5 +54,27 @@
       "awards": "Giải phụ",
       "users": "Người dùng"
     }
+  },
+  "SeasonSettings": {
+    "errors": {
+      "invalid": "Giá trị không hợp lệ.",
+      "invalidType": "Giá trị sai kiểu dữ liệu.",
+      "notInteger": "Nhập một số nguyên.",
+      "tooSmall": "Phải lớn hơn hoặc bằng {minimum}.",
+      "tooBig": "Phải nhỏ hơn hoặc bằng {maximum}.",
+      "tooFewItems": "Cần ít nhất {minimum} mục.",
+      "invalidValue": "Chọn một trong: {values}.",
+      "unknownKeys": "Thông số không xác định: {keys}.",
+      "invalidTimezone": "Nhập múi giờ IANA hợp lệ, ví dụ Asia/Ho_Chi_Minh.",
+      "rankRangeReversed": "Rank đầu của khoảng không được lớn hơn rank cuối.",
+      "rankRangeAboveMaxRank": "Khoảng rank phải nằm trong 1–{maxRank}.",
+      "slotCountMismatch": "Cần đúng {count} loại set, mỗi set một loại.",
+      "milestoneCountMismatch": "Cần đúng {count} mốc tiếp sức, mỗi lượt một mốc.",
+      "milestonesNotIncreasing": "Mỗi mốc tiếp sức phải lớn hơn mốc trước đó.",
+      "setsPerPlayerReversed": "Số set tối thiểu mỗi VĐV không được lớn hơn số set tối đa.",
+      "groupHandicapTooLarge": "Mức chấp tối đa phải nhỏ hơn điểm kết thúc set ({target}).",
+      "koHandicapTooLarge": "Mức chấp tiếp sức tối đa phải nhỏ hơn mốc cuối ({target}).",
+      "minPlayersTooLow": "Cần ít nhất {minimum} VĐV để xếp đủ các set; hãy đặt từ {minimum} trở lên."
+    }
   }
 }

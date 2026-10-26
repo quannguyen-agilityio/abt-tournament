@@ -54,5 +54,27 @@
       "awards": "Side awards",
       "users": "Users"
     }
+  },
+  "SeasonSettings": {
+    "errors": {
+      "invalid": "This value is not valid.",
+      "invalidType": "This value has the wrong type.",
+      "notInteger": "Enter a whole number.",
+      "tooSmall": "Must be at least {minimum}.",
+      "tooBig": "Must be at most {maximum}.",
+      "tooFewItems": "Add at least {minimum} item(s).",
+      "invalidValue": "Choose one of: {values}.",
+      "unknownKeys": "Unknown setting(s): {keys}.",
+      "invalidTimezone": "Enter a valid IANA time zone, e.g. Asia/Ho_Chi_Minh.",
+      "rankRangeReversed": "The lowest rank in the range must not be greater than the highest.",
+      "rankRangeAboveMaxRank": "The range must stay within ranks 1–{maxRank}.",
+      "slotCountMismatch": "List exactly {count} set types, one per set.",
+      "milestoneCountMismatch": "List exactly {count} relay milestones, one per leg.",
+      "milestonesNotIncreasing": "Each relay milestone must be higher than the one before it.",
+      "setsPerPlayerReversed": "The minimum sets per player must not exceed the maximum.",
+      "groupHandicapTooLarge": "The handicap cap must be below the set target ({target}).",
+      "koHandicapTooLarge": "The relay handicap cap must be below the final milestone ({target}).",
+      "minPlayersTooLow": "At least {minimum} players are needed to fill every set; raise this to {minimum} or more."
+    }
   }
 }
