@@ -22,19 +22,20 @@ pnpm dev                        # http://localhost:3000
 
 `pnpm exec supabase status` prints the URLs and keys again. Studio runs on http://127.0.0.1:54323 and the test mailbox (password-reset emails) on http://127.0.0.1:54324. Public sign-up is disabled (`supabase/config.toml`): create users in Studio or through the admin screens.
 
-| Script           | What it does                                                                          |
-| ---------------- | ------------------------------------------------------------------------------------- |
-| `pnpm dev`       | Dev server                                                                            |
-| `pnpm db:start`  | Start the local Supabase stack (`pnpm db:stop` to stop it)                            |
-| `pnpm db:reset`  | Recreate the local database from `supabase/migrations/` and the seed                  |
-| `pnpm db:types`  | Regenerate `src/lib/database.types.ts` from the local database                        |
-| `pnpm build`     | Production build                                                                      |
-| `pnpm start`     | Serve the production build                                                            |
-| `pnpm lint`      | ESLint                                                                                |
-| `pnpm typecheck` | TypeScript check                                                                      |
-| `pnpm format`    | Format with Prettier (`pnpm format:check` to verify only)                             |
-| `pnpm test`      | Unit tests (Vitest)                                                                   |
-| `pnpm test:e2e`  | End-to-end tests (Playwright), run `pnpm exec playwright install chromium` once first |
+| Script            | What it does                                                                            |
+| ----------------- | --------------------------------------------------------------------------------------- |
+| `pnpm dev`        | Dev server                                                                              |
+| `pnpm db:start`   | Start the local Supabase stack (`pnpm db:stop` to stop it)                              |
+| `pnpm db:reset`   | Recreate the local database from `supabase/migrations/` and the seed                    |
+| `pnpm db:types`   | Regenerate `src/lib/database.types.ts` from the local database                          |
+| `pnpm build`      | Production build                                                                        |
+| `pnpm start`      | Serve the production build                                                              |
+| `pnpm lint`       | ESLint                                                                                  |
+| `pnpm typecheck`  | TypeScript check                                                                        |
+| `pnpm format`     | Format with Prettier (`pnpm format:check` to verify only)                               |
+| `pnpm test`       | Unit tests (Vitest)                                                                     |
+| `pnpm test:e2e`   | End-to-end tests (Playwright), run `pnpm exec playwright install chromium` once first   |
+| `pnpm i18n:check` | Fail when `messages/vi.json` and `messages/en.json` differ in keys or have empty values |
 
 Layout: `src/app` (routes), `src/domain` (pure TypeScript, no `next`/`react`/`@supabase` imports, enforced by ESLint), `src/lib`, `src/components`, `messages/`, `supabase/` (config and migrations).
 

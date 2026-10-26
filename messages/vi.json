@@ -1,0 +1,20 @@
+{
+  "Metadata": {
+    "title": "ABT Tournament",
+    "description": "Ứng dụng web quản lý giải cầu lông Agility Badminton Tournament (ABT)."
+  },
+  "Common": {
+    "language": "Ngôn ngữ"
+  },
+  "Home": {
+    "title": "ABT Tournament",
+    "description": "Ứng dụng web quản lý giải cầu lông Agility Badminton Tournament (ABT).",
+    "season": "Mùa giải {year}",
+    "comingSoon": "Sắp ra mắt"
+  },
+  "LocaleSwitcher": {
+    "switchTo": "Chuyển sang {language}",
+    "vi": "Tiếng Việt",
+    "en": "Tiếng Anh"
+  }
+}
