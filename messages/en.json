@@ -11,5 +11,10 @@
     "description": "Web app for running the Agility Badminton Tournament (ABT).",
     "season": "Season {year}",
     "comingSoon": "Coming soon"
+  },
+  "LocaleSwitcher": {
+    "switchTo": "Switch to {language}",
+    "vi": "Vietnamese",
+    "en": "English"
   }
 }

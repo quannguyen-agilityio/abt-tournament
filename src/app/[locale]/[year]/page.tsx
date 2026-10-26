@@ -2,6 +2,7 @@ import { Suspense } from 'react';
 import { notFound } from 'next/navigation';
 import { hasLocale } from 'next-intl';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
+import { LocaleSwitcher } from '@/components/locale-switcher';
 import { Button } from '@/components/ui/button';
 import { routing } from '@/i18n/routing';
 
@@ -17,6 +18,7 @@ async function SeasonHome({ params }: Pick<PageProps<'/[locale]/[year]'>, 'param
       <p>{t('season', { year })}</p>
       <p>{t('description')}</p>
       <Button disabled>{t('comingSoon')}</Button>
+      <LocaleSwitcher />
     </main>
   );
 }
