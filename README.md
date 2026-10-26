@@ -67,6 +67,10 @@ Seed accounts, for local use only:
 
 The referee is assigned to every match on "Sân 1".
 
+### Row Level Security
+
+RLS is enabled on every table (spec §3.2). Visitors (`anon`) read public data only. Lineups stay hidden until the match is `lineup_locked`, and referee names come from the `referee_name` view. A referee also reads lineups and attendance and writes match data until the match is `completed` or `forfeit`. The BTC can do everything. `supabase/tests/rls.test.sql` checks the policies.
+
 Supabase clients live in `src/lib/supabase/`:
 
 | File        | Use from                                  | Key                                                                                              |
