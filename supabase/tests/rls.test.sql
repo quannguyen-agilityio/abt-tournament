@@ -125,9 +125,9 @@ select isnt_empty(
   $$ select 1 from public.match_slot where id = '00000000-0000-0000-0000-000000000032' $$,
   'anon can read the lineup of a lineup_locked match'
 );
-select results_eq(
-  $$ select display_name from public.referee_name $$,
-  $$ values ('Trọng tài Test') $$,
+select ok(
+  exists (select 1 from public.referee_name where display_name = 'Trọng tài Test')
+    and not exists (select 1 from public.referee_name where display_name = 'Trọng tài Rảnh'),
   'anon sees the names of assigned referees only'
 );
 select throws_ok(

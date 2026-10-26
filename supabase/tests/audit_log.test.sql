@@ -4,6 +4,9 @@ create extension if not exists pgtap with schema extensions;
 
 select plan(9);
 
+-- Start from an empty log so the seed's own audit rows do not count (rolled back at the end).
+delete from public.audit_log;
+
 -- Fixtures: fake names only.
 insert into auth.users (id, email)
 values ('00000000-0000-0000-0000-0000000000a1', 'referee.test@example.com');
