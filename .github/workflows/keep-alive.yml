@@ -6,7 +6,7 @@ on:
   schedule:
     # Mondays and Thursdays at 01:00 UTC (08:00 in Vietnam). Twice a week so
     # one failed or skipped run never leaves a 7-day gap.
-    - cron: "0 1 * * 1,4"
+    - cron: '0 1 * * 1,4'
   workflow_dispatch:
 
 permissions: {}

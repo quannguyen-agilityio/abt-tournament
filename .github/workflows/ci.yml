@@ -1,0 +1,104 @@
+# Runs on every PR (spec §11). `staging` and `main` require both jobs to pass (plan §6).
+name: CI
+
+on:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+env:
+  # pnpm 11 fails an install when a dependency's build script is not approved in
+  # pnpm-workspace.yaml. Skip those with a warning instead. Set for the whole run because with CI=1
+  # every `pnpm <script>` re-runs the install first (verify-deps-before-run).
+  pnpm_config_strict_dep_builds: 'false'
+
+# A new push to the same PR cancels the run still in progress.
+concurrency:
+  group: ci-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  checks:
+    name: Lint, typecheck and unit tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v5
+
+      # Version comes from `packageManager` in package.json.
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Lint
+        run: pnpm lint
+
+      - name: Typecheck
+        run: pnpm typecheck
+
+      - name: Format
+        run: pnpm format:check
+
+      - name: i18n key parity
+        run: pnpm i18n:check
+
+      - name: Unit tests
+        run: pnpm test
+
+  e2e:
+    name: E2E (Playwright)
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      # Local stack from supabase/config.toml, with migrations and seed applied. Services the app
+      # does not use are skipped to save time.
+      - name: Start local Supabase
+        run: pnpm exec supabase start -x studio,imgproxy,edge-runtime,logflare,vector,supavisor
+
+      # Expose the local URL and keys under the names the app reads (.env.example). These are the
+      # CLI's fixed demo keys, not secrets.
+      - name: Export Supabase env
+        run: |
+          pnpm exec supabase status -o env \
+            --override-name api.url=NEXT_PUBLIC_SUPABASE_URL \
+            --override-name auth.anon_key=NEXT_PUBLIC_SUPABASE_ANON_KEY \
+            --override-name auth.service_role_key=SUPABASE_SERVICE_ROLE_KEY \
+            | grep -E '^(NEXT_PUBLIC_SUPABASE_URL|NEXT_PUBLIC_SUPABASE_ANON_KEY|SUPABASE_SERVICE_ROLE_KEY)=' \
+            | sed 's/="\(.*\)"$/=\1/' >> "$GITHUB_ENV"
+
+      - name: Install Playwright browser
+        run: pnpm exec playwright install --with-deps chromium
+
+      # The Playwright webServer builds the app and serves it with `pnpm start`.
+      - name: Run Playwright
+        run: pnpm test:e2e
+
+      - name: Upload Playwright report
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: |
+            playwright-report/
+            test-results/
+          retention-days: 14
