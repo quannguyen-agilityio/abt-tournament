@@ -1,7 +1,7 @@
 ---
 name: create-github-issue
-description: Verify a suspected bug by reproducing it, then file it as a GitHub issue with gh, including repro steps, evidence, affected files and a fix idea. Use when the user wants to turn a likely bug (e.g. an entry in docs/likely-bugs.md, or a free-text bug description) into a GitHub issue/ticket.
-argument-hint: "<bug number from docs/likely-bugs.md | free-text bug description> [--yes]"
+description: Verify a suspected bug by reproducing it, then file it as a GitHub issue with gh, including repro steps, evidence, root cause, affected files, a fix idea and acceptance criteria. Use when the user wants to turn a likely bug (a free-text description, a failing check, a spec mismatch) into a GitHub issue/ticket.
+argument-hint: "<free-text bug description> [--yes]"
 allowed-tools: Bash(gh auth status:*), Bash(gh repo view:*), Bash(gh issue list:*), Bash(gh issue view:*), Bash(gh label list:*), Bash(git rev-parse:*), Bash(git status:*), Bash(node --version), Bash(pnpm --version)
 ---
 
@@ -12,67 +12,62 @@ allowed-tools: Bash(gh auth status:*), Bash(gh repo view:*), Bash(gh issue list:
 Run it from the repo root in Claude Code:
 
 ```
-/create-github-issue <bug number | "bug title" | free-text description> [--yes]
+/create-github-issue <free-text bug description> [--yes]
 ```
 
-| Example                                                     | What it does                                                                 |
-| ----------------------------------------------------------- | ---------------------------------------------------------------------------- |
-| `/create-github-issue 1`                                    | Verifies bug #1 from `docs/likely-bugs.md`, then asks before filing it       |
-| `/create-github-issue #12`                                  | Same, for bug #12 (the `#` is optional)                                      |
-| `/create-github-issue "Search box doesn't filter"`          | Finds the `docs/likely-bugs.md` entry by its title                           |
-| `/create-github-issue Delete button does nothing on Safari` | Treats the text as a new bug report and finds the code it points at          |
-| `/create-github-issue 3 --yes`                              | Files without the confirmation step (still stops if the bug isn't confirmed) |
+| Example                                                            | What it does                                                                 |
+| ------------------------------------------------------------------ | ---------------------------------------------------------------------------- |
+| `/create-github-issue Locale switcher drops the season year`       | Finds the code it points at, reproduces it, then asks before filing          |
+| `/create-github-issue anon can read season_player_private`         | Checks the RLS claim against the local database before filing                |
+| `/create-github-issue Standings tiebreak differs from spec §4.6`   | Compares the rules engine with the spec, and files it if they really differ  |
+| `/create-github-issue Locale switcher drops the season year --yes` | Files without the confirmation step (still stops if the bug isn't confirmed) |
 
-Before you start, you need `gh` logged in to github.com with access to the repo (`gh auth login`).
+Before you start, you need `gh` logged in to github.com with access to the repo (`gh auth login`), and Docker running if the bug involves the database.
 
-You get back the verdict and, once filed, the issue URL. For a bug from `docs/likely-bugs.md`, the entry gets an uncommitted `- **Issue:** <url>` line. Next step: `/resolve-github-issue <issue number> <base branch>`.
+You get back the verdict and, once filed, the issue URL. Next step: `/resolve-github-issue <issue number> dev`.
 
-Input: `$ARGUMENTS`
-
-The input is one of:
-
-- A bug number or title from `docs/likely-bugs.md` (e.g. `1`, `#12`, `"Search box doesn't filter"`). Read that entry in full: Where, What, Repro, Fix idea, and any (verified)/(inferred) notes.
-- A free-text bug description. Use it as-is, and look up the code it points at.
-
-If `--yes` is present, skip the confirmation in step 5. Otherwise always confirm.
+Input: `$ARGUMENTS`. A free-text bug description. Use it as-is, and look up the code, spec section or screen it points at. If `--yes` is present, skip the confirmation in step 5. Otherwise always confirm.
 
 Work through the steps in order. **Never create an issue for a bug you couldn't reproduce or confirm.**
 
 ## 1. Preflight
 
 1. Run `gh auth status` and `gh repo view --json nameWithOwner,defaultBranchRef`. If gh is missing, not authenticated, or can't see the repo behind `origin` (see `git remote -v`), stop and tell the user to run `gh auth login`.
-2. Look for duplicates: `gh issue list --state all --search "<key words>"`. If an open or closed issue already covers this bug, show it to the user and stop, unless they say to continue.
+2. Look for duplicates: `gh issue list --state all --search "<key words>"`. Also check the open story/task issues for the same area: the behaviour may simply not be built yet. That's a missing feature tracked by its own issue, not a bug. If an issue already covers it, show it to the user and stop, unless they say to continue.
 3. Record the environment for the issue: `git rev-parse --short HEAD`, the branch name, `node --version` and `pnpm --version`.
 
 ## 2. Reproduce
 
-The app lives in `practice-one/` (React + Vite + TypeScript, pnpm, Storybook 6.5). Pick the cheapest method that actually demonstrates the bug:
+The app is Next.js 16 + React 19 + TypeScript at the repo root, with Supabase, `next-intl` (`/vi/…`, `/en/…`), Vitest and Playwright. Scripts and layout: `README.md`. The expected behaviour comes from `docs/spec.md`, `docs/plan.md` and the mockups in `docs/design/`. Pick the cheapest method that actually demonstrates the bug:
 
-| Bug kind                                                                    | How to reproduce                                                                                                                                                                                                                                                                                                                                                               |
-| --------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| Static / code-level (dead code, wrong props, bad class names, wrong config) | Read the exact lines and quote them. Trace the data flow to show the failure path. Run `pnpm build` (tsc) if types are involved.                                                                                                                                                                                                                                               |
-| Tooling (lint, hooks, build, CI)                                            | Run the real command (`pnpm lint:eslint`, `pnpm build`, `ls -l .husky`, `git config core.hooksPath`…) and capture the exit code and the relevant output. For CI, read the failing run with `gh run view <id> --log-failed`.                                                                                                                                                    |
-| Runtime UI behaviour                                                        | Start `pnpm dev` (http://localhost:3000) in the background, drive it with the Playwright MCP tools (`browser_navigate`, `browser_snapshot`, `browser_click`…), follow the repro steps, then `browser_take_screenshot` and `browser_console_messages`. Fall back to the `claude-in-chrome` skill if Playwright isn't connected. Stop the server and `browser_close` afterwards. |
-| Storybook                                                                   | `NODE_OPTIONS=--openssl-legacy-provider pnpm storybook` (needed on Node ≥ 17). Open the affected story ids.                                                                                                                                                                                                                                                                    |
-| Network / config                                                            | Run the app with and without the relevant env var (e.g. `ROOT_URL`). Capture the request URLs, status codes and the visible result.                                                                                                                                                                                                                                            |
+| Bug kind                                             | How to reproduce                                                                                                                                                                                                                                                                                                                                                            |
+| ---------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Static / code-level (wrong logic, types, config)     | Read the exact lines and quote them. Trace the data flow to show the failure path. Run `pnpm typecheck` if types are involved.                                                                                                                                                                                                                                              |
+| Rules engine (`src/domain/`)                         | Write a probe Vitest test **in the scratchpad or a throwaway worktree**, with an input from the spec, and show the actual vs. the expected output. Quote the spec section.                                                                                                                                                                                                  |
+| Tooling (lint, typecheck, build, tests, CI)          | Run the real command (`pnpm lint`, `pnpm typecheck`, `pnpm test`, `pnpm build`, `pnpm i18n:check`) and capture the exit code and the relevant output. For CI, read the failing run with `gh run view <id> --log-failed`.                                                                                                                                                   |
+| Database (schema, constraints, RLS, triggers)        | With the local stack up (`pnpm exec supabase status`; `pnpm db:start` if needed), run SQL against it (`psql` with the `DB_URL` from `pnpm exec supabase status -o env`, or Studio at http://127.0.0.1:54323). Test RLS as `anon` and `authenticated`. Don't `pnpm db:reset` without asking, because the stack is shared with other sessions. Clean up any rows you add. |
+| Runtime UI behaviour                                 | Start `pnpm dev` (http://localhost:3000) in the background, drive it with the Playwright MCP tools (`browser_navigate`, `browser_snapshot`, `browser_click`…), follow the repro steps in both locales if text is involved, then `browser_take_screenshot` and `browser_console_messages`. Stop the server (by PID, not `pkill -f`) and `browser_close` afterwards. |
+| Config / env                                         | Run the app with and without the relevant setting. Show variable _names_, never values.                                                                                                                                                                                                                                                                                    |
 
 Rules:
 
-- **Don't change tracked source files to reproduce.** If you need a probe (a script, a test, a temporary edit), put it in the scratchpad or a throwaway git worktree, and make sure `git status` is clean when you're done.
-- **Redact secrets from all evidence.** Tokens, env values, home paths and usernames must not appear (this matters most for env-exposure bugs like #12). Show variable _names_ or counts, never values.
+- **Don't change tracked source files to reproduce.** If you need a probe (a script, a test, a temporary edit), put it in the scratchpad or a throwaway worktree under `.claude/worktrees/`, and make sure `git status` is clean when you're done.
+- **Redact secrets from all evidence.** The repo is public. Keys, `.env.local` values, JWTs, home paths, usernames and real people's names must not appear. Show variable _names_ or counts, never values.
 - Save screenshots and log excerpts to the scratchpad. Keep log excerpts short, just the lines that prove the bug.
 
 Reach one verdict:
 
 - **Confirmed**: the bug was observed. Continue.
 - **Confirmed (static)**: it can't be observed at runtime, but the code path is unambiguous. Continue, and say so in the issue.
-- **Not reproduced**: the observed behaviour is correct. Stop and report what you ran and saw. Offer to mark the entry in `docs/likely-bugs.md` as not reproduced.
-- **Blocked**: you couldn't run what was needed (missing backend, tool, or permission). Stop and tell the user what's missing. Don't file the issue.
+- **Not a bug yet**: the behaviour belongs to a story or task that isn't done. Stop, and point to that issue.
+- **Not reproduced**: the observed behaviour is correct. Stop and report what you ran and saw.
+- **Blocked**: you couldn't run what was needed (Docker down, missing tool or permission). Stop and tell the user what's missing. Don't file the issue.
 
 ## 3. Choose title and labels
 
-- Title: `[<Area>] <symptom in user terms>`, under ~70 chars. Example: `[Search] Typing in the search box doesn't filter books`.
-- Labels: run `gh label list` and pick only labels that exist: a type (e.g. `bug`), and a severity/priority if the project has them. If the right labels don't exist, mention that and file without them. Don't create labels unless the user asks.
+- Title: the symptom in user terms, under ~70 chars, in the same style as the existing issues (`gh issue list --limit 20`). Prefix the screen id if there is one, e.g. `P3 · Matches filter by court shows other courts`.
+- Labels: run `gh label list` and pick only labels that exist: `bug`, plus the area labels that fit (`database`, `auth`, `i18n`, `domain`, `admin`, `public`, `infra`, `testing`, `accessibility`…). Don't create labels unless the user asks.
+- Milestone: use the milestone of the story the bug belongs to, if any (`gh issue view <story> --json milestone`).
 
 ## 4. Draft the issue body
 
@@ -81,8 +76,9 @@ Write it to `<scratchpad>/issue-<slug>.md` using this template. Leave out sectio
 ```markdown
 ## Summary
 
-<1–2 sentences: what is broken and who it affects.>
+<1–2 sentences: what is broken and who it affects (public viewers, BTC admins, referees).>
 
+**Refs:** <spec §…, screen id, related story #n>
 **Severity:** <High | Medium | Low>, <one-line justification>
 **Verification:** <Confirmed by reproduction | Confirmed by code inspection> on `<short sha>` (`<branch>`), Node <ver>, pnpm <ver>
 
@@ -93,7 +89,7 @@ Write it to `<scratchpad>/issue-<slug>.md` using this template. Leave out sectio
 
 ## Expected
 
-…
+<per the spec, quoted where it helps>
 
 ## Actual
 
@@ -101,7 +97,7 @@ Write it to `<scratchpad>/issue-<slug>.md` using this template. Leave out sectio
 
 ## Evidence
 
-<command + trimmed output in a code block, and/or screenshots, and/or console errors>
+<command + trimmed output in a code block, SQL + result, and/or screenshots, and/or console errors>
 
 ## Root cause
 
@@ -109,31 +105,34 @@ Write it to `<scratchpad>/issue-<slug>.md` using this template. Leave out sectio
 
 ## Suggested fix
 
-<the fix idea; note any related bugs it interacts with, e.g. "fixing #14 will make #15 visible">
+<the fix idea; note any related issues it interacts with>
 
 ## Affected files
 
-- `practice-one/src/...:<line>`
+- `src/...:<line>`
 
-<sub>Source: docs/likely-bugs.md #<n></sub>
+### Acceptance criteria
+
+- [ ] <the expected behaviour, testable>
+- [ ] <a regression test: Vitest for domain logic, SQL check for the database, Playwright for UI flows>
 ```
 
-Screenshots: GitHub's API can't attach images to issues, so commit each one to the repo's `issue-assets` branch and link it from **Evidence**. Check every image for secrets first. Everyone who can see the repo can see the file.
+Screenshots: GitHub's API can't attach images to issues. If the repo has an `issue-assets` branch (`gh api "repos/{owner}/{repo}/branches/issue-assets"`), commit each image there and link it from **Evidence**:
 
 ```bash
 REPO=$(gh repo view --json nameWithOwner --jq .nameWithOwner)
-DEST=<slug>/<image>.png   # e.g. search-box-filter/before.png
+DEST=<slug>/<image>.png   # e.g. locale-switcher-year/before.png
 python3 -c 'import base64,json,sys; print(json.dumps({"message": "docs: add screenshot " + sys.argv[2], "branch": "issue-assets", "content": base64.b64encode(open(sys.argv[1], "rb").read()).decode()}))' \
   <scratchpad>/<image>.png "$DEST" > <scratchpad>/upload.json
 gh api -X PUT "repos/$REPO/contents/$DEST" --input <scratchpad>/upload.json --jq .content.path
 # markdown: ![<image>](https://github.com/<owner>/<repo>/blob/issue-assets/<DEST>?raw=true)
 ```
 
-If the branch is missing (`gh api "repos/$REPO/branches/issue-assets"` returns 404), tell the user and file without the images instead of creating branches on your own. Screenshots from the GitLab era live on the `gitlab-uploads` branch; don't add to it.
+If the branch is missing (404), don't create it on your own. Describe what the screenshot shows in **Evidence**, leave the file in the scratchpad, and tell the user. Check every image for secrets and real names first, because everyone can see the repo.
 
 ## 5. Confirm
 
-Unless `--yes` was passed, show the user the verdict, title, labels and the full body, and ask whether to create the issue, edit it, or cancel. Creating an issue is outward-facing, so don't skip this.
+Unless `--yes` was passed, show the user the verdict, title, labels, milestone and the full body, and ask whether to create the issue, edit it, or cancel. Creating an issue is outward-facing, so don't skip this.
 
 ## 6. Create
 
@@ -141,11 +140,11 @@ Unless `--yes` was passed, show the user the verdict, title, labels and the full
 gh issue create \
   --title "<title>" \
   --body-file <scratchpad>/issue-<slug>.md \
-  --label "<label1>,<label2>"
+  --label "bug,<area>" \
+  [--milestone "<milestone>"]
 ```
 
 Then:
 
 1. Report the issue number and URL that gh prints.
-2. If the bug came from `docs/likely-bugs.md`, add a `- **Issue:** <url>` line under that entry's heading, and change its marker to **(verified)** if reproduction confirmed it. Don't commit; tell the user the file changed.
-3. Check that `git status` shows nothing besides that doc edit, and that no dev server or Storybook process is still running.
+2. Check that `git status` is unchanged, that no throwaway worktree is left (`git worktree list`), and that no dev server is still running.
