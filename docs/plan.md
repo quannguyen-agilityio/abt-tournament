@@ -1,6 +1,6 @@
 # ABT Tournament: Project Plan
 
-> Status: draft for review · Last updated: 2026-10-23 · Owner: Organizing Committee (BTC)
+> Status: approved by the BTC · Last updated: 2026-10-26 · Owner: Organizing Committee (BTC)
 >
 > Companion doc: [spec.md](spec.md) (data model, rules engine, screens, permissions).
 
@@ -160,7 +160,7 @@ Target: production-ready by **mid-April 2027**, which leaves a buffer before the
 
 | Milestone | Window        | Deliverable                                                                                           |
 | --------- | ------------- | ----------------------------------------------------------------------------------------------------- |
-| M0        | Oct–Nov 2026  | Repo setup ✅, `plan.md` + `spec.md` (this PR), HTML mockups of all 17 screens, BTC review            |
+| M0        | Oct–Nov 2026  | Repo setup ✅, `plan.md` + `spec.md` ✅, HTML mockups of all 17 screens ✅, BTC review ✅             |
 | M1        | Nov 2026      | Next.js scaffold, Supabase schema and migrations, auth, i18n, theming, CI, keep-alive cron            |
 | M2        | Dec 2026      | Rules engine + Vitest; 2026 import script; oracle tests green against the 2026 workbook               |
 | M3        | Jan 2027      | Admin: season, players, teams, schedule, users                                                        |
