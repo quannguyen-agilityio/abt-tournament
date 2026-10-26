@@ -16,5 +16,43 @@
     "switchTo": "Switch to {language}",
     "vi": "Vietnamese",
     "en": "English"
+  },
+  "Theme": {
+    "title": "Theme: {mode}",
+    "system": "System",
+    "light": "Light",
+    "dark": "Dark"
+  },
+  "Nav": {
+    "primary": "Main navigation",
+    "season": "Season",
+    "admin": "Admin",
+    "home": "Home",
+    "standings": "Standings",
+    "matches": "Schedule & results",
+    "bracket": "Knock-out",
+    "teams": "Teams",
+    "players": "Players",
+    "awards": "Side awards",
+    "rules": "Rules"
+  },
+  "Admin": {
+    "title": "Admin",
+    "comingSoon": "Coming soon",
+    "badge": "Admin",
+    "role": "Role",
+    "roleBtc": "Organizing Committee",
+    "roleReferee": "Referee",
+    "navLabel": "Admin navigation",
+    "nav": {
+      "season": "Season",
+      "players": "Players & fees",
+      "teams": "Teams",
+      "schedule": "Schedule",
+      "matches": "Matches",
+      "closeGroup": "Close group",
+      "awards": "Side awards",
+      "users": "Users"
+    }
   }
 }

@@ -16,5 +16,43 @@
     "switchTo": "Chuyển sang {language}",
     "vi": "Tiếng Việt",
     "en": "Tiếng Anh"
+  },
+  "Theme": {
+    "title": "Giao diện: {mode}",
+    "system": "Theo hệ thống",
+    "light": "Sáng",
+    "dark": "Tối"
+  },
+  "Nav": {
+    "primary": "Điều hướng chính",
+    "season": "Mùa giải",
+    "admin": "Quản trị",
+    "home": "Trang chủ",
+    "standings": "Bảng xếp hạng",
+    "matches": "Lịch & kết quả",
+    "bracket": "Knock-out",
+    "teams": "Đội",
+    "players": "VĐV",
+    "awards": "Giải phụ",
+    "rules": "Điều lệ"
+  },
+  "Admin": {
+    "title": "Quản trị",
+    "comingSoon": "Sắp ra mắt",
+    "badge": "Quản trị",
+    "role": "Vai trò",
+    "roleBtc": "BTC",
+    "roleReferee": "Trọng tài",
+    "navLabel": "Điều hướng quản trị",
+    "nav": {
+      "season": "Mùa giải",
+      "players": "VĐV & lệ phí",
+      "teams": "Đội",
+      "schedule": "Lịch thi đấu",
+      "matches": "Trận đấu",
+      "closeGroup": "Chốt vòng bảng",
+      "awards": "Giải phụ",
+      "users": "Người dùng"
+    }
   }
 }
