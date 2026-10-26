@@ -1,0 +1,48 @@
+# Free Supabase projects pause after 7 days without activity (plan §5, §9).
+# Ping each project's REST API once a week so neither of them pauses.
+name: Supabase keep-alive
+
+on:
+  schedule:
+    # Mondays and Thursdays at 01:00 UTC (08:00 in Vietnam). Twice a week so
+    # one failed or skipped run never leaves a 7-day gap.
+    - cron: "0 1 * * 1,4"
+  workflow_dispatch:
+
+permissions: {}
+
+jobs:
+  ping:
+    name: Ping ${{ matrix.project }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - project: abt-staging
+            env: STAGING
+          - project: abt-prod
+            env: PROD
+    steps:
+      - name: Ping REST API
+        env:
+          SUPABASE_URL: ${{ secrets[format('SUPABASE_{0}_URL', matrix.env)] }}
+          SUPABASE_ANON_KEY: ${{ secrets[format('SUPABASE_{0}_ANON_KEY', matrix.env)] }}
+        run: |
+          if [ -z "$SUPABASE_URL" ] || [ -z "$SUPABASE_ANON_KEY" ]; then
+            echo "::error::Missing secret SUPABASE_${{ matrix.env }}_URL or SUPABASE_${{ matrix.env }}_ANON_KEY"
+            exit 1
+          fi
+
+          # Print only the status code; never echo the URL or the key.
+          status=$(curl --silent --output /dev/null --write-out '%{http_code}' \
+            --retry 3 --retry-all-errors --max-time 30 \
+            --header "apikey: $SUPABASE_ANON_KEY" \
+            "${SUPABASE_URL%/}/rest/v1/")
+
+          echo "${{ matrix.project }}: HTTP $status"
+          if [ "$status" -lt 200 ] || [ "$status" -ge 400 ]; then
+            echo "::error::${{ matrix.project }} returned HTTP $status (paused, or wrong secrets?)"
+            exit 1
+          fi
