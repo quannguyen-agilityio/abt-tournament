@@ -14,7 +14,7 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: 'ABT Tournament',
-  description: 'Badminton tournament management for the ABT club.',
+  description: 'Web app for running the Agility Badminton Tournament (ABT).',
 };
 
 export default function RootLayout({ children }: LayoutProps<'/'>) {
