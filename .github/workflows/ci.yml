@@ -75,6 +75,10 @@ jobs:
       - name: Start local Supabase
         run: pnpm exec supabase start -x studio,imgproxy,edge-runtime,logflare,vector,supavisor
 
+      # pgTAP tests in supabase/tests/: audit triggers and RLS policies (spec §3.2).
+      - name: Database tests
+        run: pnpm db:test
+
       # Expose the local URL and keys under the names the app reads (.env.example). These are the
       # CLI's fixed demo keys, not secrets.
       - name: Export Supabase env

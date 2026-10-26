@@ -264,6 +264,13 @@ export type Database = {
             referencedColumns: ['user_id'];
           },
           {
+            foreignKeyName: 'group_closure_closed_by_fkey';
+            columns: ['closed_by'];
+            isOneToOne: false;
+            referencedRelation: 'referee_name';
+            referencedColumns: ['user_id'];
+          },
+          {
             foreignKeyName: 'group_closure_season_id_fkey';
             columns: ['season_id'];
             isOneToOne: true;
@@ -310,6 +317,13 @@ export type Database = {
             columns: ['created_by'];
             isOneToOne: false;
             referencedRelation: 'profile';
+            referencedColumns: ['user_id'];
+          },
+          {
+            foreignKeyName: 'lineup_override_created_by_fkey';
+            columns: ['created_by'];
+            isOneToOne: false;
+            referencedRelation: 'referee_name';
             referencedColumns: ['user_id'];
           },
           {
@@ -430,6 +444,13 @@ export type Database = {
             columns: ['referee_id'];
             isOneToOne: false;
             referencedRelation: 'profile';
+            referencedColumns: ['user_id'];
+          },
+          {
+            foreignKeyName: 'match_referee_id_fkey';
+            columns: ['referee_id'];
+            isOneToOne: false;
+            referencedRelation: 'referee_name';
             referencedColumns: ['user_id'];
           },
           {
@@ -833,6 +854,13 @@ export type Database = {
             referencedColumns: ['user_id'];
           },
           {
+            foreignKeyName: 'slot_substitution_created_by_fkey';
+            columns: ['created_by'];
+            isOneToOne: false;
+            referencedRelation: 'referee_name';
+            referencedColumns: ['user_id'];
+          },
+          {
             foreignKeyName: 'slot_substitution_match_slot_id_fkey';
             columns: ['match_slot_id'];
             isOneToOne: false;
@@ -912,7 +940,22 @@ export type Database = {
       };
     };
     Views: {
-      [_ in never]: never;
+      referee_name: {
+        Row: {
+          display_name: string;
+          user_id: string;
+        };
+        ComputedFields: never;
+        Insert: {
+          display_name?: string | null;
+          user_id?: string | null;
+        };
+        Update: {
+          display_name?: string | null;
+          user_id?: string | null;
+        };
+        Relationships: [];
+      };
     };
     Functions: {
       [_ in never]: never;

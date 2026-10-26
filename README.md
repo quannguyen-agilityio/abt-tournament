@@ -20,7 +20,7 @@ cp .env.example .env.local      # then paste the anon and service_role keys prin
 pnpm dev                        # http://localhost:3000
 ```
 
-`pnpm exec supabase status` prints the URLs and keys again. Studio runs on http://127.0.0.1:54323 and the test mailbox (password-reset emails) on http://127.0.0.1:54324. Public sign-up is disabled (`supabase/config.toml`): create users in Studio or through the admin screens.
+`pnpm exec supabase status` prints the URLs and keys again. Studio runs on http://127.0.0.1:54323 and the test mailbox (password-reset emails) on http://127.0.0.1:54324. Public sign-up is disabled (`supabase/config.toml`): create users in Studio or through the admin screens, or use the [seed accounts](#seed-data).
 
 | Script            | What it does                                                                            |
 | ----------------- | --------------------------------------------------------------------------------------- |
@@ -50,6 +50,26 @@ pnpm db:reset                             # apply all migrations to the local da
 pnpm db:types                             # then regenerate the TypeScript types and commit them
 pnpm db:test                              # run the pgTAP tests in supabase/tests/
 ```
+
+### Seed data
+
+`pnpm db:start` and `pnpm db:reset` load `supabase/seed.sql`: fake demo data, no real names (plan §7).
+
+- **ABT 2025** (finished): 7 teams × 8 players, every group match played, group closed, knock-out and side awards.
+- **ABT 2027** (current, group stage): match days are relative to the day of the reset. Last week's rounds are completed. Today has a completed, an in-progress and a `lineup_locked` match, plus an unlocked lineup (V16) that only the BTC and referees can see. The knock-out is next week.
+
+Seed accounts, for local use only:
+
+| Email                 | Password   | Role    |
+| --------------------- | ---------- | ------- |
+| `btc@example.com`     | `abt-demo` | BTC     |
+| `referee@example.com` | `abt-demo` | Referee |
+
+The referee is assigned to every match on "Sân 1".
+
+### Row Level Security
+
+RLS is enabled on every table (spec §3.2). Visitors (`anon`) read public data only. Lineups stay hidden until the match is `lineup_locked`, and referee names come from the `referee_name` view. A referee also reads lineups and attendance and writes match data until the match is `completed` or `forfeit`. The BTC can do everything. `supabase/tests/rls.test.sql` checks the policies.
 
 Supabase clients live in `src/lib/supabase/`:
 
