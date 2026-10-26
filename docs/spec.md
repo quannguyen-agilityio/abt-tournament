@@ -1,6 +1,6 @@
 # ABT Tournament: Functional & Technical Spec
 
-> Status: draft for review · Last updated: 2026-10-23
+> Status: approved by the BTC · Last updated: 2026-10-26
 >
 > Read [plan.md](plan.md) first for scope, roadmap and decisions. This doc says **how the system behaves**. References like **(A<n>)** point to a rule interpretation the BTC confirmed (see [§10](#10-rule-interpretations-confirmed-by-the-btc-on-2026-10-23)).
 
