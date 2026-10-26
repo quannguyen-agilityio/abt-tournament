@@ -4,6 +4,10 @@ node_modules/
 out/
 dist/
 coverage/
+test-results/
+playwright-report/
+blob-report/
+playwright/.cache/
 .pnp
 .pnp.*
 *.tsbuildinfo
