@@ -1,0 +1,15 @@
+{
+  "Metadata": {
+    "title": "ABT Tournament",
+    "description": "Web app for running the Agility Badminton Tournament (ABT)."
+  },
+  "Common": {
+    "language": "Language"
+  },
+  "Home": {
+    "title": "ABT Tournament",
+    "description": "Web app for running the Agility Badminton Tournament (ABT).",
+    "season": "Season {year}",
+    "comingSoon": "Coming soon"
+  }
+}
