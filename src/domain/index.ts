@@ -2,3 +2,4 @@
 // The tournament rules engine lives here, see docs/plan.md section 5.
 export * from './settings';
 export * from './schedule';
+export * from './bracket';
