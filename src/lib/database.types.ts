@@ -3,6 +3,40 @@ export type Json = string | number | boolean | null | { [key: string]: Json | un
 export type Database = {
   public: {
     Tables: {
+      audit_log: {
+        Row: {
+          action: Database['public']['Enums']['audit_action'];
+          actor_id: string | null;
+          after: Json | null;
+          at: string;
+          before: Json | null;
+          entity: string;
+          entity_id: string;
+          id: string;
+        };
+        ComputedFields: never;
+        Insert: {
+          action: Database['public']['Enums']['audit_action'];
+          actor_id?: string | null;
+          after?: Json | null;
+          at?: string;
+          before?: Json | null;
+          entity: string;
+          entity_id: string;
+          id?: string;
+        };
+        Update: {
+          action?: Database['public']['Enums']['audit_action'];
+          actor_id?: string | null;
+          after?: Json | null;
+          at?: string;
+          before?: Json | null;
+          entity?: string;
+          entity_id?: string;
+          id?: string;
+        };
+        Relationships: [];
+      };
       award: {
         Row: {
           created_at: string;
@@ -884,6 +918,7 @@ export type Database = {
       [_ in never]: never;
     };
     Enums: {
+      audit_action: 'insert' | 'update' | 'delete';
       award_winner_kind: 'player' | 'pair' | 'team';
       gender: 'male' | 'female';
       lineup_rule_code:
@@ -1012,6 +1047,7 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
+      audit_action: ['insert', 'update', 'delete'],
       award_winner_kind: ['player', 'pair', 'team'],
       gender: ['male', 'female'],
       lineup_rule_code: [
