@@ -77,6 +77,20 @@
       "minPlayersTooLow": "Cần ít nhất {minimum} VĐV để xếp đủ các set; hãy đặt từ {minimum} trở lên."
     }
   },
+  "Lineup": {
+    "violations": {
+      "SLOT_INCOMPLETE": "Chọn hai VĐV khác nhau cho set này.",
+      "NOT_PRESENT": "VĐV này chưa được điểm danh cho trận đấu.",
+      "MIN_SETS": "Mỗi VĐV có mặt phải đánh ít nhất {minimum} set.",
+      "MAX_SETS": "Mỗi VĐV chỉ được đánh tối đa {maximum} set.",
+      "CONSECUTIVE": "Một VĐV không được đánh hai set liên tiếp.",
+      "LOW_RANK_SLOT": "Cả hai VĐV trong set Rank thấp phải có rank {min}–{max}.",
+      "HIGH_RANK_SLOT": "Cả hai VĐV trong set Rank cao phải có rank {min}–{max}.",
+      "COMPENSATION": "Khi có mặt ít VĐV hơn đối thủ, VĐV rank {rank} duy nhất phải đánh ít nhất {minimum} set.",
+      "MIN_PRESENT": "Cần ít nhất {minimum} VĐV có mặt, nếu không đội có thể bị loại khỏi giải.",
+      "SUB_RANK": "VĐV thay người phải chênh tối đa {tolerance} rank so với VĐV được thay."
+    }
+  },
   "Auth": {
     "signIn": "Đăng nhập",
     "signingIn": "Đang đăng nhập…",
