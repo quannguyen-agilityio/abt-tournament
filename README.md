@@ -79,14 +79,49 @@ Supabase clients live in `src/lib/supabase/`:
 | `server.ts` | Server Components, Server Actions, routes | anon + the user's session cookie (RLS applies)                                                   |
 | `admin.ts`  | Server Actions only, after a `btc` check  | service role (bypasses RLS). Imports `server-only`, so a Client Component import fails the build |
 
-### Remote projects
+## Deployments
 
-Dev and Staging share the `abt-staging` Supabase project; production is `abt-prod` (plan §6). To push migrations to one of them, log in and link it first (the project ref is in the dashboard URL):
+Vercel builds the app on every push. Database migrations are pushed to Supabase by hand (plan §6).
+
+| Env        | Branch    | Vercel                            | Supabase      |
+| ---------- | --------- | --------------------------------- | ------------- |
+| Dev        | `dev`     | Preview deployment, branch domain | `abt-staging` |
+| Staging    | `staging` | Preview deployment, branch domain | `abt-staging` |
+| Production | `main`    | Production deployment             | `abt-prod`    |
+
+### Vercel setup (once)
+
+1. In Vercel, **Add New → Project** and import this GitHub repository. Keep the root directory at the repository root. The framework, install and build commands come from `vercel.json`. It sets `pnpm_config_strict_dep_builds=false` because Vercel builds with `CI=1`, which makes pnpm re-run the install before every script (the same reason as in `.github/workflows/ci.yml`).
+2. **Settings → Git → Production Branch:** `main`.
+3. **Settings → Environment Variables**, with the values from the Supabase dashboard (**Project Settings → API**):
+
+   | Variable                        | Production              | Preview                    |
+   | ------------------------------- | ----------------------- | -------------------------- |
+   | `NEXT_PUBLIC_SUPABASE_URL`      | `abt-prod` URL          | `abt-staging` URL          |
+   | `NEXT_PUBLIC_SUPABASE_ANON_KEY` | `abt-prod` anon key     | `abt-staging` anon key     |
+   | `SUPABASE_SERVICE_ROLE_KEY`     | `abt-prod` service_role | `abt-staging` service_role |
+
+   Mark `SUPABASE_SERVICE_ROLE_KEY` as **Sensitive**. `NEXT_PUBLIC_*` values are inlined at build time, so redeploy after changing them. Preview also covers PR and feature-branch deployments, so they use `abt-staging` too.
+
+4. **Settings → Domains:** add one domain per branch and assign it to its Git branch, for example `<name>-dev.vercel.app` → `dev` and `<name>-staging.vercel.app` → `staging`. The production domain points at `main`.
+5. In each Supabase project, **Authentication → URL Configuration:** set the Site URL to that environment's domain (`abt-prod`: production; `abt-staging`: the staging domain) and add the other branch domains of that project to Redirect URLs.
+
+### Database migrations
+
+Vercel never touches the database. Push migrations with the Supabase CLI, from an up-to-date checkout of the branch being deployed. Log in and link the project first (the project ref is in the dashboard URL):
 
 ```bash
 pnpm exec supabase login
-pnpm exec supabase link --project-ref <abt-staging ref>
+pnpm exec supabase link --project-ref <abt-staging or abt-prod ref>
+pnpm exec supabase migration list   # local vs. remote: which migrations are not applied yet
 pnpm exec supabase db push
 ```
 
 The link is stored in `supabase/.temp/` (gitignored), so each machine links once. Switch projects by running `link` again.
+
+When to push:
+
+- **`abt-staging`:** right after a PR with a migration is merged into `dev`, from `dev`. Vercel deploys `dev` on the merge, so the Dev site may run the new code on the old schema for a few minutes. Staging shares the project, so it already has the schema when `dev` is promoted.
+- **`abt-prod`:** before merging the `staging` → `main` PR, from `staging`. Then merge, and Vercel deploys the new code onto the new schema.
+
+`abt-staging` serves both `dev` and `staging`, and production gets the schema before the code. So a migration must keep working with the code that is already deployed: add columns and tables first, and drop or rename only in a later release. Never edit a migration that has been pushed; add a new one.
