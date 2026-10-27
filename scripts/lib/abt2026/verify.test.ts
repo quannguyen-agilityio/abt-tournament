@@ -1,7 +1,14 @@
 import { describe, expect, it } from 'vitest';
 import { fakeSheets, findRow } from './fixture';
 import { parseWorkbook } from './parse';
-import { computeGroupStandings, computeTeamTotals, formatStandings, verifyImport } from './verify';
+import {
+  computeGroupStandings,
+  computeTeamTotals,
+  formatStandings,
+  verifyImport,
+  verifyWithErrata,
+  type Erratum,
+} from './verify';
 
 const RESULTS = 'Tổng hợp kết quả';
 const load = (edit?: Parameters<typeof fakeSheets>[0]) => parseWorkbook(fakeSheets(edit)).data;
@@ -68,5 +75,38 @@ describe('formatStandings', () => {
     expect(lines).toHaveLength(5);
     expect(lines[0]).toMatch(/^#\s+Team/);
     expect(lines[1]).toMatch(/^1\s+Red Dragons/);
+  });
+});
+
+describe('errata', () => {
+  const broken = () =>
+    load((c) => {
+      c[RESULTS][`AA${findRow(c[RESULTS], 'S', 'Red Dragons')}`] = 1;
+    });
+  const computedFor = verifyImport(broken())[0].match(/computed (\d+)/)![1];
+  const erratum: Erratum = {
+    source: 'summary',
+    teamNumber: 1,
+    field: 'pointsFor',
+    sheet: 1,
+    expected: Number(computedFor),
+    reason: 'test',
+  };
+
+  it('accepts a difference an erratum matches exactly', () => {
+    const result = verifyWithErrata(broken(), [erratum]);
+    expect(result.failures).toEqual([]);
+    expect(result.accepted).toEqual([erratum]);
+  });
+
+  it('still fails when the sheet value differs from the erratum', () => {
+    const result = verifyWithErrata(broken(), [{ ...erratum, sheet: 2 }]);
+    expect(result.failures).toHaveLength(2);
+    expect(result.accepted).toEqual([]);
+  });
+
+  it('fails when an erratum no longer occurs', () => {
+    const result = verifyWithErrata(load(), [erratum]);
+    expect(result.failures).toEqual([expect.stringMatching(/^Erratum no longer occurs: summary team 1 pointsFor/)]);
   });
 });

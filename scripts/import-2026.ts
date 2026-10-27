@@ -6,7 +6,7 @@ import { createClient } from '@supabase/supabase-js';
 import type { Database } from '../src/lib/database.types';
 import { ImportError, parseWorkbook } from './lib/abt2026/parse';
 import { syncImport, type Change } from './lib/abt2026/sync';
-import { computeGroupStandings, formatStandings, verifyImport } from './lib/abt2026/verify';
+import { computeGroupStandings, formatStandings, SHEET_ERRATA, verifyWithErrata } from './lib/abt2026/verify';
 import { readWorkbook } from './lib/abt2026/xlsx';
 
 const USAGE = 'Usage: pnpm import:2026 --file <ABT_2026.xlsx> --env <local|staging|prod> [--dry-run] [--yes]';
@@ -82,8 +82,15 @@ async function main() {
   );
   if (notes.length > 0) console.log(`Fixes applied:\n${notes.map((n) => `  - ${n}`).join('\n')}`);
   console.log(`\nComputed standings:\n${formatStandings(data, computeGroupStandings(data))}\n`);
-  const diffs = verifyImport(data);
-  if (diffs.length > 0) fail(`Verification FAILED, nothing was written:\n${diffs.map((d) => `  - ${d}`).join('\n')}`);
+  const { failures, accepted } = verifyWithErrata(data, SHEET_ERRATA);
+  if (failures.length > 0)
+    fail(`Verification FAILED, nothing was written:\n${failures.map((d) => `  - ${d}`).join('\n')}`);
+  if (accepted.length > 0) {
+    const lines = accepted.map(
+      (e) => `  - ${e.source} team ${e.teamNumber} ${e.field}: sheet ${e.sheet}, computed ${e.expected} (${e.reason})`,
+    );
+    console.log(`Accepted errors in the sheet:\n${lines.join('\n')}`);
+  }
   console.log('Verification passed: standings and team totals match the workbook.');
 
   // Connect.

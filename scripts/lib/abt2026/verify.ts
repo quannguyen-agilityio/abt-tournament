@@ -55,24 +55,101 @@ export function computeTeamTotals(data: Import2026): TeamTotals[] {
   return [...totals.values()];
 }
 
-function compare<T extends object>(label: string, expected: T | undefined, actual: T | undefined, fields: (keyof T)[]) {
-  if (!expected || !actual) return [`${label}: missing from the ${expected ? 'sheet' : 'computed result'}`];
-  return fields
-    .filter((f) => expected[f] !== actual[f])
-    .map((f) => `${label} ${String(f)}: computed ${String(expected[f])}, sheet ${String(actual[f])}`);
+/** A number the sheet shows that differs from the one computed from the sets. */
+export interface Difference {
+  source: 'summary' | 'tkv';
+  teamNumber: number;
+  field: string;
+  /** Value in the sheet. */
+  sheet: number;
+  /** Value computed from the set rows. */
+  expected: number;
 }
 
-/** Differences between the computed numbers and the sheet's summary and TKV_Doi; empty means they agree. */
-export function verifyImport(data: Import2026): string[] {
-  const name = (n: number) => data.teams.find((t) => t.number === n)?.name ?? `team ${n}`;
-  const diffs: string[] = [];
+/** A known error in the sheet itself, accepted only while it occurs exactly as written. */
+export interface Erratum extends Difference {
+  reason: string;
+}
 
+/** Errors in the 2026 workbook's own summary formulas (team numbers follow `Xếp Rank`). */
+export const SHEET_ERRATA: readonly Erratum[] = [
+  {
+    source: 'summary',
+    teamNumber: 4,
+    field: 'pointsFor',
+    sheet: 832,
+    expected: 865,
+    reason: 'AA7/AB7 sum the V16 rows from the home column although team 4 is away in V16',
+  },
+  {
+    source: 'summary',
+    teamNumber: 4,
+    field: 'pointsAgainst',
+    sheet: 766,
+    expected: 733,
+    reason: 'AA7/AB7 sum the V16 rows from the home column although team 4 is away in V16',
+  },
+  {
+    source: 'summary',
+    teamNumber: 4,
+    field: 'pointDiff',
+    sheet: 66,
+    expected: 132,
+    reason: 'AA7/AB7 sum the V16 rows from the home column although team 4 is away in V16',
+  },
+  {
+    source: 'summary',
+    teamNumber: 3,
+    field: 'rank',
+    sheet: 2,
+    expected: 3,
+    reason:
+      'the sheet rank formula ignores head-to-head; team 6 won it (spec §4.6 step 2), as Y14:Z17 and the SF2 seeding agree',
+  },
+  {
+    source: 'summary',
+    teamNumber: 6,
+    field: 'rank',
+    sheet: 3,
+    expected: 2,
+    reason:
+      'the sheet rank formula ignores head-to-head; team 6 won it (spec §4.6 step 2), as Y14:Z17 and the SF2 seeding agree',
+  },
+];
+
+function compare<T extends object>(
+  source: Difference['source'],
+  teamNumber: number,
+  computed: T | undefined,
+  sheet: T | undefined,
+  fields: (keyof T & string)[],
+): Difference[] | string {
+  if (!computed || !sheet)
+    return `${source}: team ${teamNumber} is missing from the ${computed ? 'sheet' : 'computed result'}`;
+  return fields
+    .filter((f) => computed[f] !== sheet[f])
+    .map((f) => ({ source, teamNumber, field: f, sheet: sheet[f] as number, expected: computed[f] as number }));
+}
+
+export interface Verification {
+  /** Differences not covered by an erratum, plus errata that no longer occur. */
+  failures: string[];
+  accepted: Erratum[];
+}
+
+/** Every difference between the computed numbers and the sheet's summary and TKV_Doi, or a missing-row message. */
+function findDifferences(data: Import2026): (Difference | string)[] {
+  const out: (Difference | string)[] = [];
   const computed = new Map(computeGroupStandings(data).rows.map((r) => [Number(r.teamId), r]));
   const summary = new Map(data.summary.map((s) => [s.teamNumber, s]));
+  const totals = new Map(computeTeamTotals(data).map((x) => [x.teamNumber, x]));
+  const sheet = new Map(data.teamTotals.map((x) => [x.teamNumber, x]));
+  const add = (r: Difference[] | string) => out.push(...(typeof r === 'string' ? [r] : r));
   for (const t of data.teams) {
-    diffs.push(
-      ...compare<StandingsRow>(
-        `Standings, ${name(t.number)},`,
+    add(
+      compare<StandingsRow>(
+        'summary',
+        t.number,
         computed.get(t.number),
         summary.get(t.number) as StandingsRow | undefined,
         [
@@ -90,13 +167,8 @@ export function verifyImport(data: Import2026): string[] {
         ],
       ),
     );
-  }
-
-  const totals = new Map(computeTeamTotals(data).map((x) => [x.teamNumber, x]));
-  const sheet = new Map(data.teamTotals.map((x) => [x.teamNumber, x]));
-  for (const t of data.teams) {
-    diffs.push(
-      ...compare(`TKV_Doi, ${name(t.number)},`, totals.get(t.number), sheet.get(t.number), [
+    add(
+      compare('tkv', t.number, totals.get(t.number), sheet.get(t.number), [
         'sets',
         'won',
         'lost',
@@ -106,7 +178,45 @@ export function verifyImport(data: Import2026): string[] {
       ]),
     );
   }
-  return diffs;
+  return out;
+}
+
+/**
+ * Compares the computed numbers with the sheet's summary and TKV_Doi. A difference is accepted only
+ * when an erratum matches it exactly (team, field, both values); an erratum that matches nothing fails too.
+ */
+export function verifyWithErrata(data: Import2026, errata: readonly Erratum[] = []): Verification {
+  const name = (n: number) => data.teams.find((t) => t.number === n)?.name ?? `team ${n}`;
+  const failures: string[] = [];
+  const used = new Set<Erratum>();
+  for (const d of findDifferences(data)) {
+    if (typeof d === 'string') {
+      failures.push(d);
+      continue;
+    }
+    const known = errata.find(
+      (e) =>
+        e.source === d.source &&
+        e.teamNumber === d.teamNumber &&
+        e.field === d.field &&
+        e.sheet === d.sheet &&
+        e.expected === d.expected,
+    );
+    if (known) used.add(known);
+    else
+      failures.push(
+        `${d.source === 'tkv' ? 'TKV_Doi' : 'Standings'}, ${name(d.teamNumber)}, ${d.field}: computed ${d.expected}, sheet ${d.sheet}`,
+      );
+  }
+  for (const e of errata.filter((x) => !used.has(x))) {
+    failures.push(`Erratum no longer occurs: ${e.source} team ${e.teamNumber} ${e.field} (${e.reason})`);
+  }
+  return { failures, accepted: [...used] };
+}
+
+/** Differences that fail the import (no errata); empty means the sheet agrees with the computed numbers. */
+export function verifyImport(data: Import2026, errata: readonly Erratum[] = []): string[] {
+  return verifyWithErrata(data, errata).failures;
 }
 
 /** A printable standings table: rank, team and the numbers. */
