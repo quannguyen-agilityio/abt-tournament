@@ -37,7 +37,7 @@ export function UserRowActions({
           </form>
         )}
         <details className="group">
-          <summary className="border-border hover:bg-muted inline-flex h-7 cursor-pointer list-none items-center rounded-lg border px-2.5 text-[0.8rem] font-medium select-none [&::-webkit-details-marker]:hidden">
+          <summary className="border-border hover:bg-muted inline-flex h-7 cursor-pointer list-none items-center rounded-lg border px-2.5 text-[0.8rem] font-medium whitespace-nowrap select-none [&::-webkit-details-marker]:hidden">
             {t('resetPassword')}
           </summary>
           <form action={resetAction} className="mt-2 flex items-center gap-2">

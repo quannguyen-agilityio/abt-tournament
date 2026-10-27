@@ -23,13 +23,15 @@ export function CreateUserForm() {
   const [state, action, pending] = useActionState(createUser, undefined);
   const passwordRef = useRef<HTMLInputElement>(null);
   const error = state && 'error' in state ? state.error : undefined;
+  // React resets the form after the action, so a failed submit refills it from the returned fields.
+  const fields = state && 'error' in state ? state.fields : undefined;
 
   return (
     <form
       // key remounts the (uncontrolled) fields after a success, which clears them.
       key={state && 'ok' in state ? state.email : 'form'}
       action={action}
-      className="border-border bg-surface flex flex-col gap-4 rounded-[10px] border p-5"
+      className="border-border bg-surface flex w-full max-w-md flex-col gap-4 rounded-[10px] border p-5"
     >
       <h2 className="font-display text-xl font-bold uppercase">{t('title')}</h2>
       <div className="flex flex-col gap-1.5">
@@ -37,6 +39,7 @@ export function CreateUserForm() {
         <Input
           id="user-display-name"
           name="displayName"
+          defaultValue={fields?.displayName}
           required
           maxLength={MAX_DISPLAY_NAME_LENGTH}
           autoComplete="off"
@@ -50,6 +53,7 @@ export function CreateUserForm() {
           id="user-email"
           name="email"
           type="email"
+          defaultValue={fields?.email}
           required
           autoComplete="off"
           aria-invalid={error === 'email' || error === 'emailTaken' || undefined}
@@ -61,7 +65,7 @@ export function CreateUserForm() {
         <select
           id="user-role"
           name="role"
-          defaultValue="referee"
+          defaultValue={fields?.role === 'btc' ? 'btc' : 'referee'}
           aria-invalid={error === 'role' || undefined}
           className="border-input focus-visible:border-ring focus-visible:ring-ring/50 dark:bg-input/30 h-9 w-full rounded-lg border bg-transparent px-2.5 text-base outline-none focus-visible:ring-3 md:text-sm"
         >
@@ -78,6 +82,7 @@ export function CreateUserForm() {
             id="user-password"
             name="password"
             type="text"
+            defaultValue={fields?.password}
             required
             minLength={MIN_PASSWORD_LENGTH}
             autoComplete="off"

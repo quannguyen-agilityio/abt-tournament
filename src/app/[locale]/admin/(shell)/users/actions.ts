@@ -10,23 +10,34 @@ import { createAdminClient } from '@/lib/supabase/admin';
 // refresh a token.
 const BAN_FOREVER = '876000h';
 
+/** On error, the submitted fields come back so the form can refill them (React resets it). */
+export type CreateUserFields = { displayName: string; email: string; role: string; password: string };
+
 export type CreateUserState =
-  { error: NewUserError | 'emailTaken' | 'weak' | 'failed' } | { ok: true; email: string } | undefined;
+  | { error: NewUserError | 'emailTaken' | 'weak' | 'failed'; fields: CreateUserFields }
+  | { ok: true; email: string }
+  | undefined;
 
 export type UserActionState = { error: 'tooShort' | 'weak' | 'self' | 'failed' } | { ok: true } | undefined;
 
 export async function createUser(_prev: CreateUserState, formData: FormData): Promise<CreateUserState> {
   await requireBtc();
+  const fields: CreateUserFields = {
+    displayName: String(formData.get('displayName') ?? ''),
+    email: String(formData.get('email') ?? ''),
+    role: String(formData.get('role') ?? ''),
+    password: String(formData.get('password') ?? ''),
+  };
   const parsed = parseNewUser(formData);
-  if (!parsed.ok) return { error: parsed.error };
+  if (!parsed.ok) return { error: parsed.error, fields };
   const { email, displayName, role, password } = parsed.value;
 
   const admin = createAdminClient();
   const { data, error } = await admin.auth.admin.createUser({ email, password, email_confirm: true });
   if (error || !data.user) {
-    if (error?.code === 'email_exists' || error?.code === 'user_already_exists') return { error: 'emailTaken' };
-    if (error?.code === 'weak_password') return { error: 'weak' };
-    return { error: 'failed' };
+    if (error?.code === 'email_exists' || error?.code === 'user_already_exists') return { error: 'emailTaken', fields };
+    if (error?.code === 'weak_password') return { error: 'weak', fields };
+    return { error: 'failed', fields };
   }
 
   const { error: profileError } = await admin.from('profile').insert({
@@ -39,7 +50,7 @@ export async function createUser(_prev: CreateUserState, formData: FormData): Pr
   if (profileError) {
     // Without a profile the account is unusable and would block re-creating the email: roll back.
     await admin.auth.admin.deleteUser(data.user.id);
-    return { error: 'failed' };
+    return { error: 'failed', fields };
   }
 
   refresh();

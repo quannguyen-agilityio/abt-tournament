@@ -32,7 +32,7 @@ async function Users({ params }: Pick<PageProps<'/[locale]/admin/users'>, 'param
         <h1 className="font-display text-3xl font-bold">{t('users.title')}</h1>
         <p className="text-muted-foreground text-sm">{t('users.count', { count: rows.length })}</p>
       </div>
-      <div className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_360px]">
+      <div className="flex flex-col gap-6">
         <div className="border-border bg-surface overflow-x-auto rounded-[10px] border">
           <table className="w-full text-sm">
             <caption className="sr-only">{t('users.tableLabel')}</caption>
@@ -67,11 +67,11 @@ async function Users({ params }: Pick<PageProps<'/[locale]/admin/users'>, 'param
                 const isSelf = u.id === viewer.id;
                 return (
                   <tr key={u.id} className="border-border border-b align-top last:border-b-0">
-                    <th scope="row" className="px-3 py-2.5 text-left font-semibold">
+                    <th scope="row" className="px-3 py-2.5 text-left font-semibold whitespace-nowrap">
                       {u.displayName}
                       {isSelf && <span className="text-muted-foreground ml-1 font-normal">{t('users.you')}</span>}
                     </th>
-                    <td className="px-3 py-2.5 break-all">{u.email}</td>
+                    <td className="px-3 py-2.5 whitespace-nowrap">{u.email}</td>
                     <td className="px-3 py-2.5">
                       <span
                         className={
