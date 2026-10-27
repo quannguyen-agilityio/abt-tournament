@@ -94,7 +94,7 @@ Draft seasons are visible only to admins.
 
 **`court`**: `season_id`, `name` ("Sân 1"), `sort_order`.
 
-**`team`**: `season_id`, `name`, `color` (hex, used in UI chips), `logo_url?`, `captain_id → season_player?`, `disqualified_at?`, `disqualified_reason?`.
+**`team`**: `season_id`, `name`, `color` (hex, used in UI chips), `logo_url?`, `captain_id → season_player?`, `captain_chosen` (false: the captain follows the active Rank 1 player as the roster changes; true: the BTC picked them), `disqualified_at?`, `disqualified_reason?`.
 
 **`match.status_before_annul`** (enum?, on `match`): the status before annulment, so that "Reinstate" can restore it.
 

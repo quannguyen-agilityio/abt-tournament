@@ -885,6 +885,7 @@ export type Database = {
       };
       team: {
         Row: {
+          captain_chosen: boolean;
           captain_id: string | null;
           color: string;
           created_at: string;
@@ -898,6 +899,7 @@ export type Database = {
         };
         ComputedFields: never;
         Insert: {
+          captain_chosen?: boolean;
           captain_id?: string | null;
           color: string;
           created_at?: string;
@@ -910,6 +912,7 @@ export type Database = {
           updated_at?: string;
         };
         Update: {
+          captain_chosen?: boolean;
           captain_id?: string | null;
           color?: string;
           created_at?: string;
@@ -960,6 +963,7 @@ export type Database = {
     Functions: {
       clone_season: { Args: { p_name: string; p_source_id: string; p_venue: string; p_year: number }; Returns: string };
       import_season_players: { Args: { p_rows: Json; p_season_id: string }; Returns: number };
+      import_team_draw: { Args: { p_assignments: Json; p_new_teams: Json; p_season_id: string }; Returns: number };
       set_current_season: { Args: { p_season_id: string }; Returns: undefined };
     };
     Enums: {

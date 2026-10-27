@@ -181,6 +181,88 @@
         }
       }
     },
+    "teams": {
+      "title": "Teams",
+      "subtitle": "{season} · {count, plural, one {# team} other {# teams}} · {players, plural, one {# player} other {# players}}",
+      "back": "← Season",
+      "empty": "No teams yet. Add a team or import the draw.",
+      "dragHint": "Drag players between teams, or use the team menu on each row. The captain defaults to the team's Rank 1 player.",
+      "add": "Add team",
+      "addTitle": "New team",
+      "create": "Create",
+      "name": "Name",
+      "color": "Color",
+      "nameOf": "Name of {name}",
+      "colorOf": "Color of {name}",
+      "save": "Save",
+      "saving": "Saving…",
+      "delete": "Delete",
+      "captain": "Captain",
+      "makeCaptain": "Captain?",
+      "makeCaptainLabel": "Make {name} captain",
+      "moveLabel": "Team of {name}",
+      "noTeam": "No team",
+      "withdrawn": "Withdrawn",
+      "unassigned": "No team",
+      "emptyTeam": "Drop players here.",
+      "rosterCount": "{count, plural, one {# active player} other {# active players}}",
+      "warnings": {
+        "title": "Check the teams",
+        "missingRanks": "{team} has no {ranks} player.",
+        "sizes": "Team sizes differ: {sizes}.",
+        "unassigned": "{count, plural, one {# active player has} other {# active players have}} no team."
+      },
+      "errors": {
+        "name": "Enter a name of at most {max} characters.",
+        "color": "Choose a color.",
+        "notEmpty": "Move the players out before deleting the team.",
+        "inUse": "This team already has matches and cannot be deleted.",
+        "failed": "Could not save the change. Please try again later."
+      },
+      "draw": {
+        "open": "Import draw",
+        "title": "Import the draw from CSV",
+        "hint": "Required header: {header}. Columns can be in any order. Each player of this season is matched by name or slug. A team name the season does not have yet creates that team. Players the file does not list keep their team. Up to {rows} rows.",
+        "file": "CSV file",
+        "csv": "CSV content",
+        "csvPlaceholder": "Choose a file above or paste the CSV here",
+        "preview": "Preview",
+        "previewing": "Checking…",
+        "apply": "Apply {count, plural, one {# move} other {# moves}}",
+        "applying": "Applying…",
+        "kind": {
+          "assign": "Move",
+          "unchanged": "Unchanged",
+          "invalid": "Invalid"
+        },
+        "newTeams": "New teams: {names}",
+        "columns": {
+          "line": "Line",
+          "name": "Player",
+          "status": "Result",
+          "details": "Details"
+        },
+        "noTeam": "No team",
+        "newTeam": "new team",
+        "unchangedNote": "Already in {team}",
+        "invalidNote": "Will not be imported",
+        "rowErrors": {
+          "fullName": "The player name is empty",
+          "teamName": "Team name must be 1 to {max} characters",
+          "unknownPlayer": "No player of this season has this name",
+          "ambiguousPlayer": "Several players of this season have this name; use the slug instead",
+          "duplicate": "Same player as an earlier row"
+        },
+        "result": "Assigned {applied, plural, one {# player} other {# players}}, skipped {skipped, plural, one {# invalid row} other {# invalid rows}}.",
+        "errors": {
+          "failed": "Could not read or import the file. Please try again later.",
+          "tooLarge": "The file is too large (100 KB at most).",
+          "empty": "The file is empty.",
+          "header": "The header must contain full_name and team_name.",
+          "tooMany": "Too many rows (500 at most)."
+        }
+      }
+    },
     "seasons": {
       "title": "Seasons",
       "count": "{count, plural, one {# season} other {# seasons}}",
