@@ -167,6 +167,31 @@ function splitBy(ids: readonly string[], steps: readonly Step[], level: (ids: st
   return placed;
 }
 
+/** Results of the `completed` and `forfeit` group matches; annulled matches never count (A4). */
+function countedResults(
+  matches: readonly StandingsMatch[],
+  settings: Pick<SeasonSettings, 'set_target' | 'sets_per_match'>,
+): MatchResult[] {
+  return matches
+    .filter((m) => m.stage === 'group' && COUNTED.includes(m.status))
+    .map((m) => readResult(m, settings))
+    .filter((r): r is MatchResult => r !== null);
+}
+
+/**
+ * Per-team totals for the team pages (spec §5 P6): record, sets won and lost, points for and
+ * against and their differences, over the same matches as the standings. Every team in a counted
+ * match gets an entry; unlike the table, a disqualified team is not left out, but its annulled
+ * matches add nothing.
+ */
+export function teamStats(
+  matches: readonly StandingsMatch[],
+  settings: Pick<SeasonSettings, 'set_target' | 'sets_per_match'>,
+): Map<string, TeamStats> {
+  const results = countedResults(matches, settings);
+  return tally([...new Set(results.flatMap((r) => [r.home, r.away]))], results);
+}
+
 /**
  * Group-stage standings (spec §4.6). Only `completed` and `forfeit` group matches count; annulled
  * matches and matches of disqualified teams do not. The ranking order:
@@ -187,10 +212,7 @@ export function computeStandings(
 ): StandingsResult {
   const active = teams.filter((t) => !t.disqualified).map((t) => t.id);
   const activeSet = new Set(active);
-  const results = matches
-    .filter((m) => m.stage === 'group' && COUNTED.includes(m.status))
-    .map((m) => readResult(m, settings))
-    .filter((r): r is MatchResult => r !== null && activeSet.has(r.home) && activeSet.has(r.away));
+  const results = countedResults(matches, settings).filter((r) => activeSet.has(r.home) && activeSet.has(r.away));
   const overall = tally(active, results);
 
   const inputOrder = new Map(active.map((id, i) => [id, i]));
