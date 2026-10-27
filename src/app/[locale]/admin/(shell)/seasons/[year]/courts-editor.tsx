@@ -33,7 +33,7 @@ export function CourtsEditor({ seasonId, courts }: { seasonId: string; courts: C
               <span className="text-muted-foreground w-5 text-sm tabular-nums" aria-hidden="true">
                 {i + 1}
               </span>
-              <form action={renameAction} className="flex min-w-0 flex-1 items-center gap-2">
+              <form action={renameAction} className="flex min-w-48 flex-1 items-center gap-2">
                 <input type="hidden" name="seasonId" value={seasonId} />
                 <input type="hidden" name="courtId" value={court.id} />
                 <Input
