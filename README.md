@@ -78,6 +78,12 @@ The referee is assigned to every match on "Sân 1".
 
 Credentials: `--env local` reads the service role key from `pnpm exec supabase status`. `staging` and `prod` read `NEXT_PUBLIC_SUPABASE_URL` and `SUPABASE_SERVICE_ROLE_KEY` from `.env.staging.local` and `.env.prod.local` (gitignored). A write to staging or prod also needs `--yes`.
 
+The same workbook is the rules engine's oracle (spec §11). `src/domain/__oracle__/abt2026.test.ts` checks the standings order and totals against the sheet and every group-stage handicap against spec §4.2. It runs only when `ABT_2026_XLSX` is set, so CI skips it:
+
+```bash
+ABT_2026_XLSX=~/Downloads/ABT_2026.xlsx pnpm test
+```
+
 ### Row Level Security
 
 RLS is enabled on every table (spec §3.2). Visitors (`anon`) read public data only. Lineups stay hidden until the match is `lineup_locked`, and referee names come from the `referee_name` view. A referee also reads lineups and attendance and writes match data until the match is `completed` or `forfeit`. The BTC can do everything. `supabase/tests/rls.test.sql` checks the policies.
