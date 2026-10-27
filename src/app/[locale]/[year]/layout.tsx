@@ -13,13 +13,18 @@ import { listPublicSeasons } from '@/lib/seasons-db';
 
 const HEADER_CLASS = 'sticky top-0 z-20 border-b border-border bg-surface/90 backdrop-blur';
 
-async function SeasonHeader({ params }: Pick<LayoutProps<'/[locale]/[year]'>, 'params'>) {
+// A season missing from the list (unknown year, or a draft hidden by RLS) is a 404 for the public.
+async function visibleSeasons(params: LayoutProps<'/[locale]/[year]'>['params']) {
   const { locale, year } = await params;
   if (!hasLocale(routing.locales, locale) || !/^\d{4}$/.test(year)) notFound();
   setRequestLocale(locale);
-  // A season missing from the list (unknown year, or a draft hidden by RLS) is a 404 for the public.
   const seasons = await listPublicSeasons();
   if (!seasons.includes(Number(year))) notFound();
+  return { year, seasons };
+}
+
+async function SeasonHeader({ params }: Pick<LayoutProps<'/[locale]/[year]'>, 'params'>) {
+  const { year, seasons } = await visibleSeasons(params);
 
   return (
     <header className={HEADER_CLASS}>
@@ -41,13 +46,23 @@ async function SeasonHeader({ params }: Pick<LayoutProps<'/[locale]/[year]'>, 'p
   );
 }
 
+async function SeasonGate({ params, children }: Pick<LayoutProps<'/[locale]/[year]'>, 'params' | 'children'>) {
+  await visibleSeasons(params);
+  return children;
+}
+
 export default function SeasonLayout({ children, params }: LayoutProps<'/[locale]/[year]'>) {
   return (
     <>
       <Suspense fallback={<header className={`${HEADER_CLASS} h-14`} />}>
         <SeasonHeader params={params} />
       </Suspense>
-      <main className="mx-auto w-full max-w-6xl flex-1 px-4 py-6 sm:py-8">{children}</main>
+      <main className="mx-auto w-full max-w-6xl flex-1 px-4 py-6 sm:py-8">
+        {/* Each Suspense boundary throws its own notFound(), so the pages are gated too, not just the header. */}
+        <Suspense>
+          <SeasonGate params={params}>{children}</SeasonGate>
+        </Suspense>
+      </main>
       <Suspense>
         <SiteFooter />
       </Suspense>
