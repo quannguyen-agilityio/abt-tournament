@@ -78,7 +78,10 @@ function violation(code: LineupRuleCode, details: Omit<LineupViolation, 'code' |
 }
 
 /** The slot's players for one side, as registered with any substitutions applied. */
-export function effectivePair(slot: LineupSlot, side: Side): [string | null, string | null] {
+export function effectivePair(
+  slot: Pick<LineupSlot, 'home_p1' | 'home_p2' | 'away_p1' | 'away_p2' | 'substitutions'>,
+  side: Side,
+): [string | null, string | null] {
   const pair: [string | null, string | null] = [slot[`${side}_p1`], slot[`${side}_p2`]];
   for (const sub of slot.substitutions ?? []) {
     if (sub.side !== side) continue;
