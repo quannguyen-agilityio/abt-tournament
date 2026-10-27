@@ -42,7 +42,7 @@ describe('settingsFromForm', () => {
     });
   });
 
-  it('turns blank and non-numeric fields into NaN so the schema reports them', () => {
+  it('turns blank and non-numeric fields into NaN so the schema asks for a whole number', () => {
     const data = defaultForm();
     data.set(SETTINGS_FIELDS.setTarget, '');
     data.set(SETTINGS_FIELDS.lowMax, 'abc');
@@ -52,9 +52,9 @@ describe('settingsFromForm', () => {
     if (result.ok) return;
     expect(result.errors.map((e) => [e.path, e.message_key])).toEqual(
       expect.arrayContaining([
-        ['set_target', 'SeasonSettings.errors.invalidType'],
-        ['low_rank_range.max', 'SeasonSettings.errors.invalidType'],
-        ['relay_milestones.1', 'SeasonSettings.errors.invalidType'],
+        ['set_target', 'SeasonSettings.errors.notInteger'],
+        ['low_rank_range.max', 'SeasonSettings.errors.notInteger'],
+        ['relay_milestones.1', 'SeasonSettings.errors.notInteger'],
       ]),
     );
   });
