@@ -1,8 +1,11 @@
+import { createClient } from '@supabase/supabase-js';
 import createMiddleware from 'next-intl/middleware';
 import { NextResponse, type NextRequest } from 'next/server';
 import { routing } from './i18n/routing';
 import { LOGIN_PATH, protectedAdminPath } from './lib/auth/paths';
+import type { Database } from './lib/database.types';
 import { currentSeasonYear } from './lib/season';
+import { supabasePublicEnv } from './lib/supabase/env';
 import { refreshSession } from './lib/supabase/proxy';
 
 const handleI18nRouting = createMiddleware(routing);
@@ -24,18 +27,34 @@ export default async function proxy(request: NextRequest) {
     return session.applyTo(handleI18nRouting(request));
   }
 
-  return withSeasonRedirect(request, handleI18nRouting(request));
+  return await withSeasonRedirect(request, handleI18nRouting(request));
+}
+
+// Year of the season marked current. Anonymous and cookie-less: the current season is never a draft,
+// so RLS lets anon read it. Any failure falls back to the calendar year, so `/` works without the DB.
+async function currentYear(): Promise<number> {
+  try {
+    const { url, anonKey } = supabasePublicEnv();
+    const supabase = createClient<Database>(url, anonKey, {
+      auth: { persistSession: false, autoRefreshToken: false },
+    });
+    const { data, error } = await supabase.from('season').select('year').eq('is_current', true).maybeSingle();
+    if (!error && data) return data.year;
+  } catch {
+    // Fall through to the calendar year.
+  }
+  return currentSeasonYear();
 }
 
 // Redirecting here (rather than in the page) yields a real 307 instead of a
 // streamed redirect, and `/` goes straight to `/{locale}/{year}` in one hop.
-function withSeasonRedirect(request: NextRequest, response: NextResponse) {
+async function withSeasonRedirect(request: NextRequest, response: NextResponse) {
   const location = response.headers.get('location');
   const target = location ? new URL(location, request.url) : request.nextUrl;
   const match = LOCALE_ROOT.exec(target.pathname);
   if (!match) return response;
 
-  const destination = new URL(`/${match[1]}/${currentSeasonYear()}`, request.url);
+  const destination = new URL(`/${match[1]}/${await currentYear()}`, request.url);
   destination.search = target.search;
   if (location) {
     response.headers.set('location', destination.toString());
