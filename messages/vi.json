@@ -54,6 +54,152 @@
       "awards": "Giải phụ",
       "users": "Người dùng"
     },
+    "seasons": {
+      "title": "Mùa giải",
+      "count": "{count} mùa giải",
+      "tableLabel": "Các mùa giải",
+      "year": "Năm",
+      "name": "Tên",
+      "venue": "Địa điểm",
+      "statusHeader": "Trạng thái",
+      "actions": "Thao tác",
+      "empty": "Chưa có mùa giải nào.",
+      "current": "Hiện tại",
+      "open": "Mở",
+      "status": {
+        "draft": "Nháp",
+        "published": "Đã công bố",
+        "group": "Vòng bảng",
+        "knockout": "Knock-out",
+        "finished": "Đã kết thúc"
+      },
+      "create": {
+        "title": "Tạo mùa giải",
+        "year": "Năm",
+        "name": "Tên mùa giải",
+        "namePlaceholder": "ABT {year}",
+        "nameHint": "Để trống để dùng tên mặc định.",
+        "venue": "Địa điểm (không bắt buộc)",
+        "source": "Bắt đầu từ",
+        "sourceNone": "Luật mặc định (mùa giải trống)",
+        "sourceClone": "Sao chép {name}",
+        "sourceHint": "Sao chép giữ lại thông số, sân và danh sách VĐV đang hoạt động, nhưng không có đội. Mùa giải mới ở trạng thái nháp.",
+        "submit": "Tạo mùa giải",
+        "saving": "Đang tạo…",
+        "errors": {
+          "year": "Nhập năm từ {min} đến {max}.",
+          "name": "Tên mùa giải tối đa {nameMax} ký tự.",
+          "venue": "Địa điểm tối đa {venueMax} ký tự.",
+          "source": "Chọn lại mùa giải để sao chép.",
+          "yearTaken": "Đã có mùa giải cho năm này.",
+          "failed": "Không thể tạo mùa giải. Vui lòng thử lại sau."
+        }
+      },
+      "detail": {
+        "back": "← Tất cả mùa giải",
+        "title": "Mùa giải",
+        "stepperLabel": "Trạng thái mùa giải",
+        "move": {
+          "published": "Chuyển sang Đã công bố",
+          "group": "Chuyển sang Vòng bảng",
+          "knockout": "Chuyển sang Knock-out",
+          "finished": "Chuyển sang Đã kết thúc",
+          "unpublish": "Hủy công bố (về Nháp)"
+        },
+        "blocked": {
+          "closeGroup": "Hãy chốt vòng bảng để bắt đầu knock-out.",
+          "current": "Mùa giải hiện tại phải luôn công khai nên không thể hủy công bố. Hãy chọn mùa giải khác làm hiện tại trước."
+        },
+        "finishedHint": "Mùa giải đã kết thúc.",
+        "statusErrors": {
+          "transition": "Không thể chuyển sang trạng thái này. Hãy tải lại trang và thử lại.",
+          "failed": "Không thể đổi trạng thái. Vui lòng thử lại sau."
+        },
+        "isCurrent": "Đây là mùa giải hiện tại",
+        "setCurrent": "Đặt làm mùa giải hiện tại",
+        "setCurrentHint": "Trang chủ sẽ chuyển thẳng tới mùa giải hiện tại.",
+        "setCurrentDraft": "Hãy công bố mùa giải trước khi đặt làm mùa giải hiện tại.",
+        "currentErrors": {
+          "draft": "Mùa giải nháp không thể là mùa giải hiện tại. Hãy công bố trước.",
+          "failed": "Không thể đặt mùa giải hiện tại. Vui lòng thử lại sau."
+        },
+        "year": "Năm",
+        "yearHint": "Năm là định danh của mùa giải nên không thể sửa.",
+        "name": "Tên mùa giải",
+        "venue": "Địa điểm",
+        "matchDays": "Ngày thi đấu",
+        "matchDay": "Ngày thi đấu {number}",
+        "matchDaysEmpty": "Chưa có ngày thi đấu nào.",
+        "addDay": "Thêm ngày",
+        "removeDay": "Xóa",
+        "save": "Lưu",
+        "saving": "Đang lưu…",
+        "saved": "Đã lưu.",
+        "errors": {
+          "name": "Nhập tên mùa giải, tối đa {nameMax} ký tự.",
+          "venue": "Địa điểm tối đa {venueMax} ký tự.",
+          "failed": "Không thể lưu. Vui lòng thử lại sau."
+        }
+      },
+      "settings": {
+        "title": "Thông số luật",
+        "setTarget": "Điểm chạm mỗi set",
+        "setsPerMatch": "Số set mỗi trận",
+        "maxRank": "Rank thấp nhất",
+        "groupHandicapCap": "Chấp tối đa vòng bảng",
+        "koHandicapCap": "Chấp tối đa knock-out",
+        "perSet": "mỗi set",
+        "perMatch": "mỗi trận",
+        "minPlayersPresent": "VĐV có mặt tối thiểu",
+        "minSetsPerPlayer": "Set tối thiểu mỗi VĐV",
+        "maxSetsPerPlayer": "Set tối đa mỗi VĐV",
+        "slotTypes": "Thứ tự set",
+        "slotLabel": "Set {number}",
+        "slot": {
+          "open": "Tự do",
+          "low": "Rank thấp",
+          "high": "Rank cao"
+        },
+        "slotHint": "Số set theo \"Số set mỗi trận\". Vòng bảng và tiếp sức dùng chung thứ tự này.",
+        "lowRange": "Rank của set Rank thấp",
+        "highRange": "Rank của set Rank cao",
+        "rangeMin": "Từ rank",
+        "rangeMax": "Đến rank",
+        "relayMilestones": "Mốc điểm tiếp sức",
+        "relayMilestonesHint": "Mỗi lượt một mốc, cách nhau bằng dấu phẩy hoặc khoảng trắng. Ví dụ: 25, 50, 75, 100, 125.",
+        "fees": "Lệ phí (VND)",
+        "feeEmployee": "Nhân viên",
+        "feeIntern": "Thực tập sinh",
+        "feeGuest": "Khách",
+        "timezone": "Múi giờ",
+        "knockoutTeams": "Số đội vào knock-out",
+        "knockoutTeamsHint": "Cố định 4 đội (bán kết 1–4 và 2–3).",
+        "appliesLater": "Thay đổi chỉ áp dụng cho các trận tạo sau đó: thứ tự set được sao chép vào trận khi trận được tạo.",
+        "fixErrors": "Còn {count} lỗi cần sửa trước khi lưu.",
+        "failed": "Không thể lưu thông số. Vui lòng thử lại sau.",
+        "saved": "Đã lưu thông số.",
+        "save": "Lưu thông số",
+        "saving": "Đang lưu…"
+      },
+      "courts": {
+        "title": "Sân",
+        "empty": "Chưa có sân nào.",
+        "listLabel": "Danh sách sân theo thứ tự",
+        "nameOf": "Tên sân {number}",
+        "rename": "Lưu tên",
+        "moveUp": "Đưa {name} lên",
+        "moveDown": "Đưa {name} xuống",
+        "delete": "Xóa",
+        "new": "Tên sân mới",
+        "newPlaceholder": "Tên sân mới",
+        "add": "Thêm sân",
+        "errors": {
+          "name": "Nhập tên sân, tối đa {max} ký tự.",
+          "inUse": "Sân này đang được dùng trong một trận đấu nên không thể xóa.",
+          "failed": "Không thể cập nhật sân. Vui lòng thử lại sau."
+        }
+      }
+    },
     "users": {
       "title": "Người dùng",
       "count": "{count} tài khoản",

@@ -1,4 +1,3 @@
-import { connection } from 'next/server';
 import { Suspense } from 'react';
 import { AdminBadge } from '@/components/admin-badge';
 import { AdminSidebar } from '@/components/admin-sidebar';
@@ -7,13 +6,11 @@ import { ThemeToggle } from '@/components/theme-toggle';
 import { Wordmark } from '@/components/wordmark';
 import { adminNavFor } from '@/lib/admin-nav';
 import { requireStaff } from '@/lib/auth/session';
-import { currentSeasonYear } from '@/lib/season';
+import { getCurrentSeasonYear } from '@/lib/seasons-db';
 
 async function AdminBody({ children }: { children: React.ReactNode }) {
   const viewer = await requireStaff();
-  // currentSeasonYear() reads the clock, which is request-time data under cacheComponents.
-  await connection();
-  const year = currentSeasonYear();
+  const year = await getCurrentSeasonYear();
   const entries = adminNavFor(viewer.role).map((e) => ({ key: e.key, href: e.href(year) }));
 
   return (

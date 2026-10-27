@@ -958,7 +958,8 @@ export type Database = {
       };
     };
     Functions: {
-      [_ in never]: never;
+      clone_season: { Args: { p_name: string; p_source_id: string; p_venue: string; p_year: number }; Returns: string };
+      set_current_season: { Args: { p_season_id: string }; Returns: undefined };
     };
     Enums: {
       audit_action: 'insert' | 'update' | 'delete';

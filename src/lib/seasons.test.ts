@@ -1,12 +1,23 @@
 import { describe, expect, it } from 'vitest';
-import { FIRST_SEASON_YEAR, listSeasons } from './seasons';
+import { resolveCurrentYear, sortYearsDesc } from './seasons';
 
-describe('listSeasons', () => {
-  it('returns unique years, newest first, from the first season to the current one', () => {
-    const years = listSeasons();
-    expect(new Set(years).size).toBe(years.length);
-    expect(years).toEqual([...years].sort((a, b) => b - a));
-    expect(years.at(-1)).toBe(FIRST_SEASON_YEAR);
-    expect(years).toContain(2026);
+describe('sortYearsDesc', () => {
+  it('sorts newest first and drops duplicates', () => {
+    expect(sortYearsDesc([2025, 2027, 2026, 2025])).toEqual([2027, 2026, 2025]);
+  });
+
+  it('returns an empty list for no seasons', () => {
+    expect(sortYearsDesc([])).toEqual([]);
+  });
+});
+
+describe('resolveCurrentYear', () => {
+  it('uses the season marked current', () => {
+    expect(resolveCurrentYear({ year: 2025 }, new Date('2027-06-01T00:00:00Z'))).toBe(2025);
+  });
+
+  it('falls back to the calendar year when no season is current', () => {
+    expect(resolveCurrentYear(null, new Date('2027-06-01T00:00:00Z'))).toBe(2027);
+    expect(resolveCurrentYear(undefined, new Date('2027-06-01T00:00:00Z'))).toBe(2027);
   });
 });

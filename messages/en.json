@@ -54,6 +54,152 @@
       "awards": "Side awards",
       "users": "Users"
     },
+    "seasons": {
+      "title": "Seasons",
+      "count": "{count, plural, one {# season} other {# seasons}}",
+      "tableLabel": "Seasons",
+      "year": "Year",
+      "name": "Name",
+      "venue": "Venue",
+      "statusHeader": "Status",
+      "actions": "Actions",
+      "empty": "No seasons yet.",
+      "current": "Current",
+      "open": "Open",
+      "status": {
+        "draft": "Draft",
+        "published": "Published",
+        "group": "Group stage",
+        "knockout": "Knockout",
+        "finished": "Finished"
+      },
+      "create": {
+        "title": "Create season",
+        "year": "Year",
+        "name": "Season name",
+        "namePlaceholder": "ABT {year}",
+        "nameHint": "Leave blank to use the default name.",
+        "venue": "Venue (optional)",
+        "source": "Start from",
+        "sourceNone": "Default rules (empty season)",
+        "sourceClone": "Clone {name}",
+        "sourceHint": "Cloning keeps the settings, courts and active players, but no teams. The new season starts as a draft.",
+        "submit": "Create season",
+        "saving": "Creating…",
+        "errors": {
+          "year": "Enter a year between {min} and {max}.",
+          "name": "The season name is at most {nameMax} characters.",
+          "venue": "The venue is at most {venueMax} characters.",
+          "source": "Pick the season to clone again.",
+          "yearTaken": "A season for this year already exists.",
+          "failed": "Could not create the season. Please try again later."
+        }
+      },
+      "detail": {
+        "back": "← All seasons",
+        "title": "Season",
+        "stepperLabel": "Season status",
+        "move": {
+          "published": "Move to Published",
+          "group": "Move to Group stage",
+          "knockout": "Move to Knockout",
+          "finished": "Move to Finished",
+          "unpublish": "Unpublish (back to draft)"
+        },
+        "blocked": {
+          "closeGroup": "Close the group stage to start the knock-out.",
+          "current": "The current season must stay public, so it cannot be unpublished. Set another season as current first."
+        },
+        "finishedHint": "This season is finished.",
+        "statusErrors": {
+          "transition": "This status change is not allowed. Reload the page and try again.",
+          "failed": "Could not change the status. Please try again later."
+        },
+        "isCurrent": "This is the current season",
+        "setCurrent": "Set as current season",
+        "setCurrentHint": "The home page redirects to the current season.",
+        "setCurrentDraft": "Publish the season before setting it as current.",
+        "currentErrors": {
+          "draft": "A draft season cannot be the current one. Publish it first.",
+          "failed": "Could not set the current season. Please try again later."
+        },
+        "year": "Year",
+        "yearHint": "The year identifies the season, so it cannot be changed.",
+        "name": "Season name",
+        "venue": "Venue",
+        "matchDays": "Match days",
+        "matchDay": "Match day {number}",
+        "matchDaysEmpty": "No match days yet.",
+        "addDay": "Add day",
+        "removeDay": "Remove",
+        "save": "Save",
+        "saving": "Saving…",
+        "saved": "Saved.",
+        "errors": {
+          "name": "Enter a season name of at most {nameMax} characters.",
+          "venue": "The venue is at most {venueMax} characters.",
+          "failed": "Could not save. Please try again later."
+        }
+      },
+      "settings": {
+        "title": "Rules parameters",
+        "setTarget": "Set target",
+        "setsPerMatch": "Sets per match",
+        "maxRank": "Lowest rank",
+        "groupHandicapCap": "Group handicap cap",
+        "koHandicapCap": "Knockout handicap cap",
+        "perSet": "per set",
+        "perMatch": "per match",
+        "minPlayersPresent": "Minimum players present",
+        "minSetsPerPlayer": "Minimum sets per player",
+        "maxSetsPerPlayer": "Maximum sets per player",
+        "slotTypes": "Set order",
+        "slotLabel": "Set {number}",
+        "slot": {
+          "open": "Open",
+          "low": "Low-rank",
+          "high": "High-rank"
+        },
+        "slotHint": "One per set, following \"Sets per match\". Group stage and relay use the same order.",
+        "lowRange": "Ranks for a Low-rank set",
+        "highRange": "Ranks for a High-rank set",
+        "rangeMin": "From rank",
+        "rangeMax": "To rank",
+        "relayMilestones": "Relay milestones",
+        "relayMilestonesHint": "One per leg, separated by commas or spaces. Example: 25, 50, 75, 100, 125.",
+        "fees": "Fees (VND)",
+        "feeEmployee": "Employee",
+        "feeIntern": "Intern",
+        "feeGuest": "Guest",
+        "timezone": "Time zone",
+        "knockoutTeams": "Knockout teams",
+        "knockoutTeamsHint": "Fixed at 4 teams (semi-finals 1 v 4 and 2 v 3).",
+        "appliesLater": "Changes only apply to matches created afterwards: the set order is copied into a match when it is created.",
+        "fixErrors": "{count, plural, one {# error} other {# errors}} to fix before saving.",
+        "failed": "Could not save the parameters. Please try again later.",
+        "saved": "Parameters saved.",
+        "save": "Save parameters",
+        "saving": "Saving…"
+      },
+      "courts": {
+        "title": "Courts",
+        "empty": "No courts yet.",
+        "listLabel": "Courts in order",
+        "nameOf": "Name of court {number}",
+        "rename": "Save name",
+        "moveUp": "Move {name} up",
+        "moveDown": "Move {name} down",
+        "delete": "Delete",
+        "new": "New court name",
+        "newPlaceholder": "New court name",
+        "add": "Add court",
+        "errors": {
+          "name": "Enter a court name of at most {max} characters.",
+          "inUse": "This court is used by a match, so it cannot be deleted.",
+          "failed": "Could not update the courts. Please try again later."
+        }
+      }
+    },
     "users": {
       "title": "Users",
       "count": "{count, plural, one {# account} other {# accounts}}",

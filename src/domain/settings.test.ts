@@ -58,6 +58,7 @@ describe('parseSeasonSettings', () => {
       ['a non-object', null, '', 'invalidType', {}],
       ['a wrong type', { set_target: '31' }, 'set_target', 'invalidType', {}],
       ['a fraction', { set_target: 30.5 }, 'set_target', 'notInteger', {}],
+      ['a blank form field (NaN)', { set_target: NaN }, 'set_target', 'notInteger', {}],
       ['a zero target', { set_target: 0 }, 'set_target', 'tooSmall', { minimum: 1 }],
       ['a zero max sets', { max_sets_per_player: 0 }, 'max_sets_per_player', 'tooSmall', { minimum: 1 }],
       ['a negative cap', { ko_handicap_cap: -1 }, 'ko_handicap_cap', 'tooSmall', { minimum: 0 }],

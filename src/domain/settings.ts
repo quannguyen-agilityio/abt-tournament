@@ -189,7 +189,10 @@ function toSettingsError(issue: z.core.$ZodIssue): SettingsError {
     case 'custom':
       return error(issue.message, (issue.params ?? {}) as Record<string, string | number>);
     case 'invalid_type':
-      return error(issue.expected === 'int' ? 'notInteger' : 'invalidType');
+      // NaN is what a blank or non-numeric form field turns into (`received` is set at runtime only).
+      return error(
+        issue.expected === 'int' || ('received' in issue && issue.received === 'NaN') ? 'notInteger' : 'invalidType',
+      );
     case 'too_small':
       return issue.origin === 'array'
         ? error('tooFewItems', { minimum: Number(issue.minimum) })
