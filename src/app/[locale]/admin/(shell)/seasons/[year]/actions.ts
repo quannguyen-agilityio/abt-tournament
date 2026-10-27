@@ -2,10 +2,13 @@
 
 import { refresh } from 'next/cache';
 
+import { parseSeasonSettings, type SettingsError } from '@/domain/settings';
 import { canSetCurrent, canTransitionSeason, SEASON_STATUSES, type SeasonStatus } from '@/domain/season-status';
 import { requireBtc } from '@/lib/auth/session';
 import { isUuid } from '@/lib/auth/users';
+import type { Json } from '@/lib/database.types';
 import { parseSeasonDetails, type SeasonDetailsError } from '@/lib/season-admin';
+import { settingsFromForm } from '@/lib/season-settings-form';
 import { createClient } from '@/lib/supabase/server';
 
 // Raised by set_current_season (errcode P0001) for a draft season.
@@ -79,6 +82,29 @@ export async function updateSeasonDetails(_prev: SeasonDetailsState, formData: F
   const supabase = await createClient();
   const { error } = await supabase.from('season').update({ name, venue, match_days: matchDays }).eq('id', seasonId);
   if (error) return { error: 'failed', fields };
+
+  refresh();
+  return { ok: true };
+}
+
+export type SeasonSettingsState =
+  { ok: true } | { ok: false; errors: SettingsError[] } | { error: 'failed' } | undefined;
+
+export async function saveSeasonSettings(_prev: SeasonSettingsState, formData: FormData): Promise<SeasonSettingsState> {
+  await requireBtc();
+  const seasonId = String(formData.get('seasonId') ?? '');
+  if (!isUuid(seasonId)) return { error: 'failed' };
+
+  // Authoritative check: store the parsed settings (defaults filled in), never the raw input.
+  const result = parseSeasonSettings(settingsFromForm(formData));
+  if (!result.ok) return result;
+
+  const supabase = await createClient();
+  const { error } = await supabase
+    .from('season')
+    .update({ settings: result.settings as unknown as NonNullable<Json> })
+    .eq('id', seasonId);
+  if (error) return { error: 'failed' };
 
   refresh();
   return { ok: true };

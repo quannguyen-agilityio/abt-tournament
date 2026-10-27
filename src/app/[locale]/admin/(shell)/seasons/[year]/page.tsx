@@ -7,6 +7,7 @@ import { routing } from '@/i18n/routing';
 import { requireBtc } from '@/lib/auth/session';
 import { createClient } from '@/lib/supabase/server';
 import { SeasonDetailsForm } from './season-details-form';
+import { SeasonSettingsForm } from './season-settings-form';
 import { SeasonStatusPanel } from './season-status-panel';
 
 async function SeasonDetail({ params }: Pick<PageProps<'/[locale]/admin/seasons/[year]'>, 'params'>) {
@@ -21,7 +22,7 @@ async function SeasonDetail({ params }: Pick<PageProps<'/[locale]/admin/seasons/
   const supabase = await createClient();
   const { data: season, error } = await supabase
     .from('season')
-    .select('id, year, name, venue, status, is_current, match_days')
+    .select('id, year, name, venue, status, is_current, match_days, settings')
     .eq('year', Number(yearParam))
     .maybeSingle();
   if (error) throw error;
@@ -59,6 +60,10 @@ async function SeasonDetail({ params }: Pick<PageProps<'/[locale]/admin/seasons/
             />
           </section>
         </div>
+        <section className="border-border bg-surface flex min-w-0 flex-col gap-4 rounded-[10px] border p-5">
+          <h2 className="font-display text-2xl font-bold uppercase">{t('settings.title')}</h2>
+          <SeasonSettingsForm seasonId={season.id} stored={season.settings} />
+        </section>
       </div>
     </div>
   );

@@ -140,6 +140,46 @@
           "venue": "The venue is at most {venueMax} characters.",
           "failed": "Could not save. Please try again later."
         }
+      },
+      "settings": {
+        "title": "Rules parameters",
+        "setTarget": "Set target",
+        "setsPerMatch": "Sets per match",
+        "maxRank": "Lowest rank",
+        "groupHandicapCap": "Group handicap cap",
+        "koHandicapCap": "Knockout handicap cap",
+        "perSet": "per set",
+        "perMatch": "per match",
+        "minPlayersPresent": "Minimum players present",
+        "minSetsPerPlayer": "Minimum sets per player",
+        "maxSetsPerPlayer": "Maximum sets per player",
+        "slotTypes": "Set order",
+        "slotLabel": "Set {number}",
+        "slot": {
+          "open": "Open",
+          "low": "Low-rank",
+          "high": "High-rank"
+        },
+        "slotHint": "One per set, following \"Sets per match\". Group stage and relay use the same order.",
+        "lowRange": "Ranks for a Low-rank set",
+        "highRange": "Ranks for a High-rank set",
+        "rangeMin": "From rank",
+        "rangeMax": "To rank",
+        "relayMilestones": "Relay milestones",
+        "relayMilestonesHint": "One per leg, separated by commas or spaces. Example: 25, 50, 75, 100, 125.",
+        "fees": "Fees (VND)",
+        "feeEmployee": "Employee",
+        "feeIntern": "Intern",
+        "feeGuest": "Guest",
+        "timezone": "Time zone",
+        "knockoutTeams": "Knockout teams",
+        "knockoutTeamsHint": "Fixed at 4 teams (semi-finals 1 v 4 and 2 v 3).",
+        "appliesLater": "Changes only apply to matches created afterwards: the set order is copied into a match when it is created.",
+        "fixErrors": "{count, plural, one {# error} other {# errors}} to fix before saving.",
+        "failed": "Could not save the parameters. Please try again later.",
+        "saved": "Parameters saved.",
+        "save": "Save parameters",
+        "saving": "Saving…"
       }
     },
     "users": {

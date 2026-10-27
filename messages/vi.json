@@ -140,6 +140,46 @@
           "venue": "Địa điểm tối đa {venueMax} ký tự.",
           "failed": "Không thể lưu. Vui lòng thử lại sau."
         }
+      },
+      "settings": {
+        "title": "Thông số luật",
+        "setTarget": "Điểm chạm mỗi set",
+        "setsPerMatch": "Số set mỗi trận",
+        "maxRank": "Rank thấp nhất",
+        "groupHandicapCap": "Chấp tối đa vòng bảng",
+        "koHandicapCap": "Chấp tối đa knock-out",
+        "perSet": "mỗi set",
+        "perMatch": "mỗi trận",
+        "minPlayersPresent": "VĐV có mặt tối thiểu",
+        "minSetsPerPlayer": "Set tối thiểu mỗi VĐV",
+        "maxSetsPerPlayer": "Set tối đa mỗi VĐV",
+        "slotTypes": "Thứ tự set",
+        "slotLabel": "Set {number}",
+        "slot": {
+          "open": "Tự do",
+          "low": "Rank thấp",
+          "high": "Rank cao"
+        },
+        "slotHint": "Số set theo \"Số set mỗi trận\". Vòng bảng và tiếp sức dùng chung thứ tự này.",
+        "lowRange": "Rank của set Rank thấp",
+        "highRange": "Rank của set Rank cao",
+        "rangeMin": "Từ rank",
+        "rangeMax": "Đến rank",
+        "relayMilestones": "Mốc điểm tiếp sức",
+        "relayMilestonesHint": "Mỗi lượt một mốc, cách nhau bằng dấu phẩy hoặc khoảng trắng. Ví dụ: 25, 50, 75, 100, 125.",
+        "fees": "Lệ phí (VND)",
+        "feeEmployee": "Nhân viên",
+        "feeIntern": "Thực tập sinh",
+        "feeGuest": "Khách",
+        "timezone": "Múi giờ",
+        "knockoutTeams": "Số đội vào knock-out",
+        "knockoutTeamsHint": "Cố định 4 đội (bán kết 1–4 và 2–3).",
+        "appliesLater": "Thay đổi chỉ áp dụng cho các trận tạo sau đó: thứ tự set được sao chép vào trận khi trận được tạo.",
+        "fixErrors": "Còn {count} lỗi cần sửa trước khi lưu.",
+        "failed": "Không thể lưu thông số. Vui lòng thử lại sau.",
+        "saved": "Đã lưu thông số.",
+        "save": "Lưu thông số",
+        "saving": "Đang lưu…"
       }
     },
     "users": {
