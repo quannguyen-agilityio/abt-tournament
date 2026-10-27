@@ -6,6 +6,7 @@ import { Link } from '@/i18n/navigation';
 import { routing } from '@/i18n/routing';
 import { requireBtc } from '@/lib/auth/session';
 import { createClient } from '@/lib/supabase/server';
+import { CourtsEditor } from './courts-editor';
 import { SeasonDetailsForm } from './season-details-form';
 import { SeasonSettingsForm } from './season-settings-form';
 import { SeasonStatusPanel } from './season-status-panel';
@@ -27,6 +28,13 @@ async function SeasonDetail({ params }: Pick<PageProps<'/[locale]/admin/seasons/
     .maybeSingle();
   if (error) throw error;
   if (!season) notFound();
+  const { data: courts, error: courtsError } = await supabase
+    .from('court')
+    .select('id, name')
+    .eq('season_id', season.id)
+    .order('sort_order')
+    .order('name');
+  if (courtsError) throw courtsError;
 
   return (
     <div className="flex flex-col gap-4">
@@ -58,6 +66,10 @@ async function SeasonDetail({ params }: Pick<PageProps<'/[locale]/admin/seasons/
               venue={season.venue}
               matchDays={season.match_days}
             />
+          </section>
+          <section className="border-border bg-surface flex flex-col gap-4 rounded-[10px] border p-5">
+            <h2 className="font-display text-2xl font-bold uppercase">{t('courts.title')}</h2>
+            <CourtsEditor seasonId={season.id} courts={courts ?? []} />
           </section>
         </div>
         <section className="border-border bg-surface flex min-w-0 flex-col gap-4 rounded-[10px] border p-5">

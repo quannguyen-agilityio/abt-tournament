@@ -1,5 +1,13 @@
 import { describe, expect, it } from 'vitest';
-import { MAX_SEASON_NAME_LENGTH, MAX_SEASON_VENUE_LENGTH, parseNewSeason, parseSeasonDetails } from './season-admin';
+import {
+  MAX_COURT_NAME_LENGTH,
+  MAX_SEASON_NAME_LENGTH,
+  MAX_SEASON_VENUE_LENGTH,
+  moveCourt,
+  parseCourtName,
+  parseNewSeason,
+  parseSeasonDetails,
+} from './season-admin';
 
 const SOURCE = '3456bbe9-8367-4339-b11c-ef62b6d7c0af';
 
@@ -85,5 +93,57 @@ describe('parseSeasonDetails', () => {
       ok: false,
       error: 'venue',
     });
+  });
+});
+
+describe('parseCourtName', () => {
+  it('trims and accepts up to 40 characters', () => {
+    expect(parseCourtName('  Sân 1 ')).toBe('Sân 1');
+    expect(parseCourtName('x'.repeat(MAX_COURT_NAME_LENGTH))).toBe('x'.repeat(MAX_COURT_NAME_LENGTH));
+  });
+
+  it('rejects blank and over-long names', () => {
+    expect(parseCourtName('   ')).toBeNull();
+    expect(parseCourtName('')).toBeNull();
+    expect(parseCourtName('x'.repeat(MAX_COURT_NAME_LENGTH + 1))).toBeNull();
+  });
+});
+
+describe('moveCourt', () => {
+  const courts = [{ id: 'a' }, { id: 'b' }, { id: 'c' }];
+
+  it('swaps a court with its neighbour and renumbers from 1', () => {
+    expect(moveCourt(courts, 'b', 'up')).toEqual([
+      { id: 'b', sort_order: 1 },
+      { id: 'a', sort_order: 2 },
+      { id: 'c', sort_order: 3 },
+    ]);
+    expect(moveCourt(courts, 'b', 'down')).toEqual([
+      { id: 'a', sort_order: 1 },
+      { id: 'c', sort_order: 2 },
+      { id: 'b', sort_order: 3 },
+    ]);
+  });
+
+  it('keeps the order at the edges but still renumbers', () => {
+    const gappy = [
+      { id: 'a', sort_order: 0 },
+      { id: 'b', sort_order: 0 },
+    ];
+    expect(moveCourt(gappy, 'a', 'up')).toEqual([
+      { id: 'a', sort_order: 1 },
+      { id: 'b', sort_order: 2 },
+    ]);
+    expect(moveCourt(courts, 'c', 'down').map((c) => c.id)).toEqual(['a', 'b', 'c']);
+  });
+
+  it('ignores an unknown court and does not mutate the input', () => {
+    expect(moveCourt(courts, 'zzz', 'up').map((c) => c.id)).toEqual(['a', 'b', 'c']);
+    expect(courts.map((c) => c.id)).toEqual(['a', 'b', 'c']);
+  });
+
+  it('handles an empty list and a single court', () => {
+    expect(moveCourt([], 'a', 'up')).toEqual([]);
+    expect(moveCourt([{ id: 'a' }], 'a', 'down')).toEqual([{ id: 'a', sort_order: 1 }]);
   });
 });

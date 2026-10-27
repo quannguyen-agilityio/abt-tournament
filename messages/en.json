@@ -180,6 +180,24 @@
         "saved": "Parameters saved.",
         "save": "Save parameters",
         "saving": "Saving…"
+      },
+      "courts": {
+        "title": "Courts",
+        "empty": "No courts yet.",
+        "listLabel": "Courts in order",
+        "nameOf": "Name of court {number}",
+        "rename": "Save name",
+        "moveUp": "Move {name} up",
+        "moveDown": "Move {name} down",
+        "delete": "Delete",
+        "new": "New court name",
+        "newPlaceholder": "New court name",
+        "add": "Add court",
+        "errors": {
+          "name": "Enter a court name of at most {max} characters.",
+          "inUse": "This court is used by a match, so it cannot be deleted.",
+          "failed": "Could not update the courts. Please try again later."
+        }
       }
     },
     "users": {

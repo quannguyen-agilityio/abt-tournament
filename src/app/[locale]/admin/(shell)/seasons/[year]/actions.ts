@@ -7,9 +7,17 @@ import { canSetCurrent, canTransitionSeason, SEASON_STATUSES, type SeasonStatus 
 import { requireBtc } from '@/lib/auth/session';
 import { isUuid } from '@/lib/auth/users';
 import type { Json } from '@/lib/database.types';
-import { parseSeasonDetails, type SeasonDetailsError } from '@/lib/season-admin';
+import {
+  moveCourt as reorderCourts,
+  parseCourtName,
+  parseSeasonDetails,
+  type SeasonDetailsError,
+} from '@/lib/season-admin';
 import { settingsFromForm } from '@/lib/season-settings-form';
 import { createClient } from '@/lib/supabase/server';
+
+// Postgres foreign_key_violation: a match still refers to the court.
+const FOREIGN_KEY_VIOLATION = '23503';
 
 // Raised by set_current_season (errcode P0001) for a draft season.
 const RAISE_EXCEPTION = 'P0001';
@@ -105,6 +113,101 @@ export async function saveSeasonSettings(_prev: SeasonSettingsState, formData: F
     .update({ settings: result.settings as unknown as NonNullable<Json> })
     .eq('id', seasonId);
   if (error) return { error: 'failed' };
+
+  refresh();
+  return { ok: true };
+}
+
+export type CourtActionState = { error: 'name' | 'inUse' | 'failed' } | { ok: true } | undefined;
+
+type Supabase = Awaited<ReturnType<typeof createClient>>;
+
+/** True when the court exists and belongs to the season: a form could be tampered with. */
+async function courtInSeason(supabase: Supabase, courtId: string, seasonId: string): Promise<boolean> {
+  const { data } = await supabase.from('court').select('id').eq('id', courtId).eq('season_id', seasonId).maybeSingle();
+  return !!data;
+}
+
+export async function addCourt(_prev: CourtActionState, formData: FormData): Promise<CourtActionState> {
+  await requireBtc();
+  const seasonId = String(formData.get('seasonId') ?? '');
+  if (!isUuid(seasonId)) return { error: 'failed' };
+  const name = parseCourtName(String(formData.get('name') ?? ''));
+  if (!name) return { error: 'name' };
+
+  const supabase = await createClient();
+  const { data: last, error: readError } = await supabase
+    .from('court')
+    .select('sort_order')
+    .eq('season_id', seasonId)
+    .order('sort_order', { ascending: false })
+    .limit(1)
+    .maybeSingle();
+  if (readError) return { error: 'failed' };
+
+  const { error } = await supabase
+    .from('court')
+    .insert({ season_id: seasonId, name, sort_order: (last?.sort_order ?? 0) + 1 });
+  if (error) return { error: 'failed' };
+
+  refresh();
+  return { ok: true };
+}
+
+export async function renameCourt(_prev: CourtActionState, formData: FormData): Promise<CourtActionState> {
+  await requireBtc();
+  const seasonId = String(formData.get('seasonId') ?? '');
+  const courtId = String(formData.get('courtId') ?? '');
+  if (!isUuid(seasonId) || !isUuid(courtId)) return { error: 'failed' };
+  const name = parseCourtName(String(formData.get('name') ?? ''));
+  if (!name) return { error: 'name' };
+
+  const supabase = await createClient();
+  if (!(await courtInSeason(supabase, courtId, seasonId))) return { error: 'failed' };
+  const { error } = await supabase.from('court').update({ name }).eq('id', courtId);
+  if (error) return { error: 'failed' };
+
+  refresh();
+  return { ok: true };
+}
+
+export async function moveCourt(_prev: CourtActionState, formData: FormData): Promise<CourtActionState> {
+  await requireBtc();
+  const seasonId = String(formData.get('seasonId') ?? '');
+  const courtId = String(formData.get('courtId') ?? '');
+  const direction = formData.get('direction');
+  if (!isUuid(seasonId) || !isUuid(courtId) || (direction !== 'up' && direction !== 'down')) return { error: 'failed' };
+
+  const supabase = await createClient();
+  const { data: courts, error: readError } = await supabase
+    .from('court')
+    .select('id, sort_order')
+    .eq('season_id', seasonId)
+    .order('sort_order')
+    .order('name');
+  if (readError || !courts.some((c) => c.id === courtId)) return { error: 'failed' };
+
+  const current = new Map(courts.map((c) => [c.id, c.sort_order]));
+  const changed = reorderCourts(courts, courtId, direction).filter((c) => current.get(c.id) !== c.sort_order);
+  for (const { id, sort_order } of changed) {
+    const { error } = await supabase.from('court').update({ sort_order }).eq('id', id).eq('season_id', seasonId);
+    if (error) return { error: 'failed' };
+  }
+
+  refresh();
+  return { ok: true };
+}
+
+export async function deleteCourt(_prev: CourtActionState, formData: FormData): Promise<CourtActionState> {
+  await requireBtc();
+  const seasonId = String(formData.get('seasonId') ?? '');
+  const courtId = String(formData.get('courtId') ?? '');
+  if (!isUuid(seasonId) || !isUuid(courtId)) return { error: 'failed' };
+
+  const supabase = await createClient();
+  if (!(await courtInSeason(supabase, courtId, seasonId))) return { error: 'failed' };
+  const { error } = await supabase.from('court').delete().eq('id', courtId);
+  if (error) return { error: error.code === FOREIGN_KEY_VIOLATION ? 'inUse' : 'failed' };
 
   refresh();
   return { ok: true };

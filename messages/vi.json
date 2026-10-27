@@ -180,6 +180,24 @@
         "saved": "Đã lưu thông số.",
         "save": "Lưu thông số",
         "saving": "Đang lưu…"
+      },
+      "courts": {
+        "title": "Sân",
+        "empty": "Chưa có sân nào.",
+        "listLabel": "Danh sách sân theo thứ tự",
+        "nameOf": "Tên sân {number}",
+        "rename": "Lưu tên",
+        "moveUp": "Đưa {name} lên",
+        "moveDown": "Đưa {name} xuống",
+        "delete": "Xóa",
+        "new": "Tên sân mới",
+        "newPlaceholder": "Tên sân mới",
+        "add": "Thêm sân",
+        "errors": {
+          "name": "Nhập tên sân, tối đa {max} ký tự.",
+          "inUse": "Sân này đang được dùng trong một trận đấu nên không thể xóa.",
+          "failed": "Không thể cập nhật sân. Vui lòng thử lại sau."
+        }
       }
     },
     "users": {

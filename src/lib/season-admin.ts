@@ -72,3 +72,25 @@ export function parseSeasonDetails(
 
   return { ok: true, value: { name, venue, matchDays } };
 }
+
+export const MAX_COURT_NAME_LENGTH = 40;
+
+/** A court name: trimmed, non-empty, at most {@link MAX_COURT_NAME_LENGTH} characters; otherwise `null`. */
+export function parseCourtName(value: string): string | null {
+  const name = value.trim();
+  return name && name.length <= MAX_COURT_NAME_LENGTH ? name : null;
+}
+
+export type CourtOrder = { id: string; sort_order: number };
+
+/**
+ * Moves a court one place up or down in `courts` (already in display order) and renumbers every
+ * court 1..n. A court at the edge, or one that is not in the list, keeps its place.
+ */
+export function moveCourt(courts: { id: string }[], id: string, direction: 'up' | 'down'): CourtOrder[] {
+  const ids = courts.map((c) => c.id);
+  const from = ids.indexOf(id);
+  const to = direction === 'up' ? from - 1 : from + 1;
+  if (from !== -1 && to >= 0 && to < ids.length) [ids[from], ids[to]] = [ids[to], ids[from]];
+  return ids.map((courtId, i) => ({ id: courtId, sort_order: i + 1 }));
+}
