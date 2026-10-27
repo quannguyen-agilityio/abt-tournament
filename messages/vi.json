@@ -54,6 +54,48 @@
       "awards": "Giải phụ",
       "users": "Người dùng"
     },
+    "seasons": {
+      "title": "Mùa giải",
+      "count": "{count} mùa giải",
+      "tableLabel": "Các mùa giải",
+      "year": "Năm",
+      "name": "Tên",
+      "venue": "Địa điểm",
+      "statusHeader": "Trạng thái",
+      "actions": "Thao tác",
+      "empty": "Chưa có mùa giải nào.",
+      "current": "Hiện tại",
+      "open": "Mở",
+      "status": {
+        "draft": "Nháp",
+        "published": "Đã công bố",
+        "group": "Vòng bảng",
+        "knockout": "Knock-out",
+        "finished": "Đã kết thúc"
+      },
+      "create": {
+        "title": "Tạo mùa giải",
+        "year": "Năm",
+        "name": "Tên mùa giải",
+        "namePlaceholder": "ABT {year}",
+        "nameHint": "Để trống để dùng tên mặc định.",
+        "venue": "Địa điểm (không bắt buộc)",
+        "source": "Bắt đầu từ",
+        "sourceNone": "Luật mặc định (mùa giải trống)",
+        "sourceClone": "Sao chép {name}",
+        "sourceHint": "Sao chép giữ lại thông số, sân và danh sách VĐV đang hoạt động, nhưng không có đội. Mùa giải mới ở trạng thái nháp.",
+        "submit": "Tạo mùa giải",
+        "saving": "Đang tạo…",
+        "errors": {
+          "year": "Nhập năm từ {min} đến {max}.",
+          "name": "Tên mùa giải tối đa {nameMax} ký tự.",
+          "venue": "Địa điểm tối đa {venueMax} ký tự.",
+          "source": "Chọn lại mùa giải để sao chép.",
+          "yearTaken": "Đã có mùa giải cho năm này.",
+          "failed": "Không thể tạo mùa giải. Vui lòng thử lại sau."
+        }
+      }
+    },
     "users": {
       "title": "Người dùng",
       "count": "{count} tài khoản",

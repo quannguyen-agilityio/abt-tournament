@@ -54,6 +54,48 @@
       "awards": "Side awards",
       "users": "Users"
     },
+    "seasons": {
+      "title": "Seasons",
+      "count": "{count, plural, one {# season} other {# seasons}}",
+      "tableLabel": "Seasons",
+      "year": "Year",
+      "name": "Name",
+      "venue": "Venue",
+      "statusHeader": "Status",
+      "actions": "Actions",
+      "empty": "No seasons yet.",
+      "current": "Current",
+      "open": "Open",
+      "status": {
+        "draft": "Draft",
+        "published": "Published",
+        "group": "Group stage",
+        "knockout": "Knockout",
+        "finished": "Finished"
+      },
+      "create": {
+        "title": "Create season",
+        "year": "Year",
+        "name": "Season name",
+        "namePlaceholder": "ABT {year}",
+        "nameHint": "Leave blank to use the default name.",
+        "venue": "Venue (optional)",
+        "source": "Start from",
+        "sourceNone": "Default rules (empty season)",
+        "sourceClone": "Clone {name}",
+        "sourceHint": "Cloning keeps the settings, courts and active players, but no teams. The new season starts as a draft.",
+        "submit": "Create season",
+        "saving": "Creating…",
+        "errors": {
+          "year": "Enter a year between {min} and {max}.",
+          "name": "The season name is at most {nameMax} characters.",
+          "venue": "The venue is at most {venueMax} characters.",
+          "source": "Pick the season to clone again.",
+          "yearTaken": "A season for this year already exists.",
+          "failed": "Could not create the season. Please try again later."
+        }
+      }
+    },
     "users": {
       "title": "Users",
       "count": "{count, plural, one {# account} other {# accounts}}",
