@@ -105,6 +105,13 @@
       "KO_CAP_REACHES_MILESTONE": "Mức chấp tối đa vòng loại trực tiếp ({cap}) đã chạm mốc đầu tiên ({milestone}), nên điểm chấp có thể quyết định lượt 1 trước khi bắt đầu."
     }
   },
+  "Disqualification": {
+    "errors": {
+      "NOT_IN_SEASON": "Đội này không có trận nào trong mùa giải.",
+      "NO_NEXT_MATCH": "Đội này không còn trận đấu loại trực tiếp nào để xử thua.",
+      "GROUP_CLOSED": "Vòng bảng đã chốt, không thể khôi phục đội này nữa."
+    }
+  },
   "Auth": {
     "signIn": "Đăng nhập",
     "signingIn": "Đang đăng nhập…",

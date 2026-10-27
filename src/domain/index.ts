@@ -6,3 +6,4 @@ export * from './bracket';
 export * from './lineup';
 export * from './handicap';
 export * from './score';
+export * from './forfeit';

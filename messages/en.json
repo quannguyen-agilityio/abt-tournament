@@ -105,6 +105,13 @@
       "KO_CAP_REACHES_MILESTONE": "The knock-out handicap cap ({cap}) reaches the first milestone ({milestone}), so a leg-1 handicap can decide that leg before it starts."
     }
   },
+  "Disqualification": {
+    "errors": {
+      "NOT_IN_SEASON": "This team has no matches this season.",
+      "NO_NEXT_MATCH": "This team has no knock-out match left to forfeit.",
+      "GROUP_CLOSED": "The group stage is closed, so the team can no longer be reinstated."
+    }
+  },
   "Auth": {
     "signIn": "Sign in",
     "signingIn": "Signing in…",
