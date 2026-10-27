@@ -1,7 +1,7 @@
 'use client';
 
 import { useLocale, useTranslations } from 'next-intl';
-import { useActionState, useState } from 'react';
+import { startTransition, useActionState, useState } from 'react';
 import type { MemberType } from '@/domain/settings';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -180,7 +180,22 @@ function EditRow({
     if (result && 'ok' in result && result.ok) onDone();
     return result;
   }, undefined);
-  const [fee, setFee] = useState(String(player.feeAmount ?? defaultFees[player.memberType ?? 'employee']));
+  const [values, setValues] = useState({
+    fullName: player.fullName,
+    gender: player.gender,
+    rank: String(player.rank),
+    skillPoints: String(player.skillPoints),
+    teamId: player.teamId ?? '',
+    memberType: player.memberType ?? 'employee',
+    feeAmount: String(player.feeAmount ?? defaultFees[player.memberType ?? 'employee']),
+  });
+  const field = (key: keyof typeof values) => ({
+    value: values[key],
+    onChange: (e: { currentTarget: { value: string } }) => {
+      const value = e.currentTarget.value;
+      setValues((v) => ({ ...v, [key]: value }));
+    },
+  });
   const errors = errorsOf(state);
   const invalid = (field: PlayerEditError) => errors.includes(field) || undefined;
   const name = player.fullName;
@@ -192,7 +207,7 @@ function EditRow({
           <Input
             form={formId}
             name="fullName"
-            defaultValue={player.fullName}
+            {...field('fullName')}
             required
             maxLength={MAX_PLAYER_NAME_LENGTH}
             autoComplete="off"
@@ -205,7 +220,7 @@ function EditRow({
           <select
             form={formId}
             name="gender"
-            defaultValue={player.gender}
+            {...field('gender')}
             aria-label={t('aria.gender', { name })}
             aria-invalid={invalid('gender')}
             className={SELECT_CLASS}
@@ -226,7 +241,7 @@ function EditRow({
             min={1}
             max={maxRank}
             step={1}
-            defaultValue={player.rank}
+            {...field('rank')}
             required
             aria-label={t('aria.rank', { name })}
             aria-invalid={invalid('rank')}
@@ -242,7 +257,7 @@ function EditRow({
             min={0}
             max={MAX_SKILL_POINTS}
             step={1}
-            defaultValue={player.skillPoints}
+            {...field('skillPoints')}
             required
             aria-label={t('aria.skill', { name })}
             aria-invalid={invalid('skillPoints')}
@@ -253,7 +268,7 @@ function EditRow({
           <select
             form={formId}
             name="teamId"
-            defaultValue={player.teamId ?? ''}
+            {...field('teamId')}
             aria-label={t('aria.team', { name })}
             aria-invalid={invalid('team')}
             className={SELECT_CLASS}
@@ -270,12 +285,15 @@ function EditRow({
           <select
             form={formId}
             name="memberType"
-            defaultValue={player.memberType ?? 'employee'}
+            value={values.memberType}
             aria-label={t('aria.memberType', { name })}
             aria-invalid={invalid('memberType')}
             className={SELECT_CLASS}
             // The fee follows the member type: start from the season's default for that type.
-            onChange={(e) => setFee(String(defaultFees[e.currentTarget.value as MemberType] ?? 0))}
+            onChange={(e) => {
+              const memberType = e.currentTarget.value as MemberType;
+              setValues((v) => ({ ...v, memberType, feeAmount: String(defaultFees[memberType] ?? 0) }));
+            }}
           >
             {MEMBER_TYPES.map((type) => (
               <option key={type} value={type}>
@@ -293,8 +311,7 @@ function EditRow({
             min={0}
             max={MAX_FEE_AMOUNT}
             step={1}
-            value={fee}
-            onChange={(e) => setFee(e.currentTarget.value)}
+            {...field('feeAmount')}
             required
             aria-label={t('aria.fee', { name })}
             aria-invalid={invalid('feeAmount')}
@@ -303,7 +320,16 @@ function EditRow({
         </td>
         <td className={CELL} />
         <td className={CELL}>
-          <form id={formId} action={action} className="flex items-center gap-2">
+          <form
+            id={formId}
+            // Not `action`: React resets a form after its action, which would drop a failed edit.
+            onSubmit={(e) => {
+              e.preventDefault();
+              const formData = new FormData(e.currentTarget);
+              startTransition(() => action(formData));
+            }}
+            className="flex items-center gap-2"
+          >
             <Hidden seasonId={seasonId} playerId={player.id} />
             <Button type="submit" size="sm" disabled={pending}>
               {pending ? t('saving') : t('save')}
