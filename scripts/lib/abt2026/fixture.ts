@@ -190,7 +190,7 @@ export function buildCells(): Fixture {
   row += 3;
   for (const m of KO) {
     const scores = [0, 1, 2, 3, 4].map((leg) => relayScore(leg, m.homeWins));
-    block({ ...m, court: 1, scores, headerSets: [0, 0], handicaps: [{ q: 3 }, { i: 2 }] });
+    block({ ...m, court: 1, scores, headerSets: [0, 0], handicaps: [{ q: 3 }, { q: 5 }] });
   }
 
   // Summary (S:AE), in rank order; V is the stale manual column.

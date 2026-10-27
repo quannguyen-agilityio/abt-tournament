@@ -1,5 +1,6 @@
 // Parses the ABT 2026 workbook (spec §9) into an import model. Every problem found is collected
 // with its cell reference and thrown together as one ImportError.
+import { slotHandicap } from '../../../src/domain/handicap';
 import { DEFAULT_SEASON_SETTINGS } from '../../../src/domain/settings';
 import type {
   Import2026,
@@ -179,6 +180,8 @@ interface Resolver {
   teamByKey: Map<string, number>;
   notes: Set<string>;
   problems: string[];
+  /** Relay legs whose sheet Q differs from the recomputed home start. */
+  relayQMismatches: number;
 }
 
 /** Looks a result-sheet name up in `Xếp Rank`; notes a spelling that differs from the canonical one. */
@@ -294,8 +297,19 @@ function parseMatch(g: Grid, row: number, res: Resolver): ImportMatch | null {
     const scoreHome = int(cell('L', r));
     const scoreAway = int(cell('N', r));
     // "Chấp" sits on the stronger side: it is the other side's start.
-    const hcAway = int(cell('I', r)) ?? 0;
-    const hcHome = int(cell('Q', r)) ?? 0;
+    const sheetAway = int(cell('I', r)) ?? 0;
+    const sheetHome = int(cell('Q', r)) ?? 0;
+    let hcAway = sheetAway;
+    let hcHome = sheetHome;
+    if (!isGroup && h1 && h2 && a1 && a2) {
+      // The sheet's Q formula is broken on relay legs: recompute from skill points and check I.
+      const hc = slotHandicap([h1.skill, h2.skill], [a1.skill, a2.skill], DEFAULT_SEASON_SETTINGS.group_handicap_cap);
+      if (hc.away !== sheetAway)
+        problems.push(`${ref('I', r)}: relay handicap ${sheetAway} but skill points give ${hc.away}`);
+      if (hc.home !== sheetHome) res.relayQMismatches += 1;
+      hcAway = hc.away;
+      hcHome = hc.home;
+    }
     if (scoreHome === null || scoreAway === null) problems.push(`${ref('L', r)}: score missing`);
     if (hcHome < 0 || hcAway < 0) problems.push(`${ref('I', r)}: negative handicap`);
     if (hcHome !== 0 && hcAway !== 0)
@@ -552,8 +566,12 @@ export function parseWorkbook(sheets: Record<string, Grid>): { data: Import2026;
     teamByKey: new Map(teams.map((t) => [nameKey(t.name), t.number])),
     notes,
     problems,
+    relayQMismatches: 0,
   };
   const matches = parseMatches(results, res);
+  if (matches.some((m) => m.stage !== 'group')) {
+    notes.add(`Relay Q column recomputed from skill points; ${res.relayQMismatches} leg(s) differed from the sheet`);
+  }
   const summary = parseSummary(results, res);
   const teamTotals = parseTeamTotals(totals, res);
   const awards = parseAwards(awardsSheet, res, teams, new Set(matches.map((m) => m.code)));

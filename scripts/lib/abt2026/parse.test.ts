@@ -60,6 +60,27 @@ describe('parseWorkbook', () => {
     expect(v01.slots[2]).toMatchObject({ handicap_home: 0, handicap_away: 0 });
   });
 
+  it('recomputes relay leg handicaps from skill points and notes the Q column', () => {
+    const r = findRow(fakeSheetCells(), 'H', 'BK1 - 1');
+    const { data, notes } = parse((c) => {
+      // The away pair loses a strong player: the home pair is 18 points stronger, so away starts with 18.
+      c[RESULTS][`P${r}`] = playerName(3, 7);
+      c[RESULTS][`I${r}`] = 18;
+    });
+    const sf1 = data.matches.find((m) => m.code === 'SF1')!;
+    expect(sf1.slots[0]).toMatchObject({ handicap_home: 0, handicap_away: 18, score_home: 25, score_away: 20 });
+    expect(sf1.slots[1]).toMatchObject({ handicap_home: 0, handicap_away: 0 });
+    expect(notes).toContain('Relay Q column recomputed from skill points; 8 leg(s) differed from the sheet');
+  });
+
+  it('errors when a relay I value disagrees with the skill points', () => {
+    const r = findRow(fakeSheetCells(), 'H', 'HB - 2');
+    const errs = problems((c) => {
+      c[RESULTS][`I${r}`] = 3;
+    });
+    expect(errs).toEqual([`${RESULTS}!I${r}: relay handicap 3 but skill points give 0`]);
+  });
+
   it('rejects a handicap on both sides', () => {
     const errs = problems((c) => {
       const r = findRow(c[RESULTS], 'H', 'V03 - 1');
