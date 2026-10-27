@@ -25,7 +25,7 @@ function text(formData: FormData, name: string): string {
 }
 
 /** A whole number written with digits only (after trimming); otherwise `null`. */
-function wholeNumber(value: string): number | null {
+export function wholeNumber(value: string): number | null {
   const trimmed = value.trim();
   return /^\d+$/.test(trimmed) ? Number(trimmed) : null;
 }
