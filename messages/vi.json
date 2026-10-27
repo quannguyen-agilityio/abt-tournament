@@ -91,6 +91,20 @@
       "SUB_RANK": "VĐV thay người phải chênh tối đa {tolerance} rank so với VĐV được thay."
     }
   },
+  "Score": {
+    "violations": {
+      "SCORE_INVALID": "Nhập số nguyên từ 0 trở lên.",
+      "SCORE_INCOMPLETE": "Nhập điểm cho cả hai bên.",
+      "SET_TARGET": "Phải có đúng một bên đạt {target} điểm, bên còn lại dưới {target}.",
+      "BELOW_HANDICAP": "Điểm không được thấp hơn {handicap} điểm chấp.",
+      "LEG_MILESTONE": "Lượt này kết thúc khi một bên đạt {milestone} điểm.",
+      "LEG_DECREASING": "Điểm tiếp sức được cộng dồn, không được thấp hơn {previous}.",
+      "LEG_OUT_OF_ORDER": "Nhập lượt {leg} trước."
+    },
+    "warnings": {
+      "KO_CAP_REACHES_MILESTONE": "Mức chấp tối đa vòng loại trực tiếp ({cap}) đã chạm mốc đầu tiên ({milestone}), nên điểm chấp có thể quyết định lượt 1 trước khi bắt đầu."
+    }
+  },
   "Auth": {
     "signIn": "Đăng nhập",
     "signingIn": "Đang đăng nhập…",
