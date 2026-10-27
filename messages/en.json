@@ -54,6 +54,69 @@
       "awards": "Side awards",
       "users": "Users"
     },
+    "players": {
+      "title": "Players & fees",
+      "subtitle": "{season} · {count, plural, one {# player} other {# players}}",
+      "back": "← Season",
+      "empty": "No players in this season yet.",
+      "summary": {
+        "collected": "Collected",
+        "expected": "Expected",
+        "paid": "Paid",
+        "paidValue": "{paid}/{total}",
+        "unpaid": "Unpaid"
+      },
+      "tableLabel": "Season players",
+      "columns": {
+        "player": "Player",
+        "gender": "Gender",
+        "rank": "Rank",
+        "skill": "Skill",
+        "team": "Team",
+        "memberType": "Member type",
+        "fee": "Fee",
+        "paid": "Paid",
+        "actions": "Actions"
+      },
+      "gender": {
+        "male": "Male",
+        "female": "Female"
+      },
+      "memberType": {
+        "employee": "Employee",
+        "intern": "Intern",
+        "guest": "Guest"
+      },
+      "noTeam": "No team",
+      "withdrawn": "Withdrawn",
+      "edit": "Edit",
+      "save": "Save",
+      "saving": "Saving…",
+      "cancel": "Cancel",
+      "withdraw": "Withdraw",
+      "reinstate": "Reinstate",
+      "paidLabel": "Fee paid by {name}",
+      "actionsOn": "{action} {name}",
+      "aria": {
+        "name": "Name of {name}",
+        "gender": "Gender of {name}",
+        "rank": "Rank of {name}",
+        "skill": "Skill points of {name}",
+        "team": "Team of {name}",
+        "memberType": "Member type of {name}",
+        "fee": "Fee of {name}"
+      },
+      "errors": {
+        "fullName": "Enter a name of at most {max} characters.",
+        "gender": "Choose a gender.",
+        "rank": "Rank must be a whole number from 1 to {maxRank}.",
+        "skillPoints": "Skill points must be a whole number from 0 to {max}.",
+        "team": "Choose a team of this season.",
+        "memberType": "Choose a member type.",
+        "feeAmount": "Fee must be a whole amount from 0 to {max}.",
+        "failed": "Could not update the player. Please try again later."
+      }
+    },
     "seasons": {
       "title": "Seasons",
       "count": "{count, plural, one {# season} other {# seasons}}",

@@ -54,6 +54,69 @@
       "awards": "Giải phụ",
       "users": "Người dùng"
     },
+    "players": {
+      "title": "Cầu thủ & lệ phí",
+      "subtitle": "{season} · {count, plural, other {# cầu thủ}}",
+      "back": "← Mùa giải",
+      "empty": "Mùa giải này chưa có cầu thủ nào.",
+      "summary": {
+        "collected": "Đã thu",
+        "expected": "Cần thu",
+        "paid": "Đã đóng",
+        "paidValue": "{paid}/{total}",
+        "unpaid": "Chưa đóng"
+      },
+      "tableLabel": "Cầu thủ của mùa giải",
+      "columns": {
+        "player": "Cầu thủ",
+        "gender": "Giới tính",
+        "rank": "Hạng",
+        "skill": "Điểm kỹ năng",
+        "team": "Đội",
+        "memberType": "Loại thành viên",
+        "fee": "Lệ phí",
+        "paid": "Đã đóng",
+        "actions": "Thao tác"
+      },
+      "gender": {
+        "male": "Nam",
+        "female": "Nữ"
+      },
+      "memberType": {
+        "employee": "Nhân viên",
+        "intern": "Thực tập sinh",
+        "guest": "Khách mời"
+      },
+      "noTeam": "Chưa có đội",
+      "withdrawn": "Đã rút lui",
+      "edit": "Sửa",
+      "save": "Lưu",
+      "saving": "Đang lưu…",
+      "cancel": "Hủy",
+      "withdraw": "Cho rút lui",
+      "reinstate": "Khôi phục",
+      "paidLabel": "Lệ phí của {name} đã đóng",
+      "actionsOn": "{action} {name}",
+      "aria": {
+        "name": "Tên của {name}",
+        "gender": "Giới tính của {name}",
+        "rank": "Hạng của {name}",
+        "skill": "Điểm kỹ năng của {name}",
+        "team": "Đội của {name}",
+        "memberType": "Loại thành viên của {name}",
+        "fee": "Lệ phí của {name}"
+      },
+      "errors": {
+        "fullName": "Nhập tên tối đa {max} ký tự.",
+        "gender": "Chọn giới tính.",
+        "rank": "Hạng phải là số nguyên từ 1 đến {maxRank}.",
+        "skillPoints": "Điểm kỹ năng phải là số nguyên từ 0 đến {max}.",
+        "team": "Chọn một đội của mùa giải này.",
+        "memberType": "Chọn loại thành viên.",
+        "feeAmount": "Lệ phí phải là số tiền nguyên từ 0 đến {max}.",
+        "failed": "Không thể cập nhật cầu thủ. Vui lòng thử lại sau."
+      }
+    },
     "seasons": {
       "title": "Mùa giải",
       "count": "{count} mùa giải",
