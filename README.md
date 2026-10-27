@@ -22,21 +22,22 @@ pnpm dev                        # http://localhost:3000
 
 `pnpm exec supabase status` prints the URLs and keys again. Studio runs on http://127.0.0.1:54323 and the test mailbox (password-reset emails) on http://127.0.0.1:54324. Public sign-up is disabled (`supabase/config.toml`): create users in Studio or through the admin screens, or use the [seed accounts](#seed-data).
 
-| Script            | What it does                                                                            |
-| ----------------- | --------------------------------------------------------------------------------------- |
-| `pnpm dev`        | Dev server                                                                              |
-| `pnpm db:start`   | Start the local Supabase stack (`pnpm db:stop` to stop it)                              |
-| `pnpm db:reset`   | Recreate the local database from `supabase/migrations/` and the seed                    |
-| `pnpm db:types`   | Regenerate `src/lib/database.types.ts` from the local database                          |
-| `pnpm db:test`    | Database tests (pgTAP, `supabase/tests/`) against the local stack                       |
-| `pnpm build`      | Production build                                                                        |
-| `pnpm start`      | Serve the production build                                                              |
-| `pnpm lint`       | ESLint                                                                                  |
-| `pnpm typecheck`  | TypeScript check                                                                        |
-| `pnpm format`     | Format with Prettier (`pnpm format:check` to verify only)                               |
-| `pnpm test`       | Unit tests (Vitest)                                                                     |
-| `pnpm test:e2e`   | End-to-end tests (Playwright), run `pnpm exec playwright install chromium` once first   |
-| `pnpm i18n:check` | Fail when `messages/vi.json` and `messages/en.json` differ in keys or have empty values |
+| Script             | What it does                                                                            |
+| ------------------ | --------------------------------------------------------------------------------------- |
+| `pnpm dev`         | Dev server                                                                              |
+| `pnpm db:start`    | Start the local Supabase stack (`pnpm db:stop` to stop it)                              |
+| `pnpm db:reset`    | Recreate the local database from `supabase/migrations/` and the seed                    |
+| `pnpm db:types`    | Regenerate `src/lib/database.types.ts` from the local database                          |
+| `pnpm db:test`     | Database tests (pgTAP, `supabase/tests/`) against the local stack                       |
+| `pnpm build`       | Production build                                                                        |
+| `pnpm start`       | Serve the production build                                                              |
+| `pnpm lint`        | ESLint                                                                                  |
+| `pnpm typecheck`   | TypeScript check                                                                        |
+| `pnpm format`      | Format with Prettier (`pnpm format:check` to verify only)                               |
+| `pnpm test`        | Unit tests (Vitest)                                                                     |
+| `pnpm test:e2e`    | End-to-end tests (Playwright), run `pnpm exec playwright install chromium` once first   |
+| `pnpm i18n:check`  | Fail when `messages/vi.json` and `messages/en.json` differ in keys or have empty values |
+| `pnpm import:2026` | Import the ABT 2026 workbook ([below](#abt-2026-import))                                |
 
 Layout: `src/app` (routes), `src/domain` (pure TypeScript, no `next`/`react`/`@supabase` imports, enforced by ESLint), `src/lib`, `src/components`, `messages/`, `supabase/` (config, migrations and pgTAP tests).
 
@@ -66,6 +67,16 @@ Seed accounts, for local use only:
 | `referee@example.com` | `abt-demo` | Referee |
 
 The referee is assigned to every match on "Sân 1".
+
+### ABT 2026 import
+
+`pnpm import:2026 --file <ABT_2026.xlsx> --env <local|staging|prod> [--dry-run] [--yes]` loads the 2026 season (spec §9). The workbook holds real names, so it stays on your machine: never commit it.
+
+1. It parses the workbook and recomputes the group standings and team totals, then compares them with the sheet's own summary. Any difference is printed and the run stops before it writes anything.
+2. It upserts by natural keys (season year, team name, person slug, match code, ...) and writes only what differs, so running it again changes nothing. It prints the changes per table and warnings, such as referees without a matching profile and awards whose winners must be added by hand in A7. Existing award winners are never touched.
+3. `--dry-run` reads the database and prints what would change without writing.
+
+Credentials: `--env local` reads the service role key from `pnpm exec supabase status`. `staging` and `prod` read `NEXT_PUBLIC_SUPABASE_URL` and `SUPABASE_SERVICE_ROLE_KEY` from `.env.staging.local` and `.env.prod.local` (gitignored). A write to staging or prod also needs `--yes`.
 
 ### Row Level Security
 

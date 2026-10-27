@@ -22,7 +22,8 @@
     "db:reset": "supabase db reset",
     "db:test": "supabase test db",
     "db:types": "supabase gen types typescript --local --schema public > src/lib/database.types.ts && prettier --write src/lib/database.types.ts",
-    "i18n:check": "node scripts/i18n-check.mjs"
+    "i18n:check": "node scripts/i18n-check.mjs",
+    "import:2026": "tsx scripts/import-2026.ts"
   },
   "dependencies": {
     "@base-ui/react": "^1.9.0",
