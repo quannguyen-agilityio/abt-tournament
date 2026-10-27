@@ -3,11 +3,13 @@ import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { notFound } from 'next/navigation';
 import { Suspense } from 'react';
 import { routing } from '@/i18n/routing';
+import { requireStaff } from '@/lib/auth/session';
 
 async function AdminHome({ params }: Pick<PageProps<'/[locale]/admin'>, 'params'>) {
   const { locale } = await params;
   if (!hasLocale(routing.locales, locale)) notFound();
   setRequestLocale(locale);
+  await requireStaff();
   const t = await getTranslations('Admin');
 
   return (

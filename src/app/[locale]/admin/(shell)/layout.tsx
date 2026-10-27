@@ -6,11 +6,11 @@ import { LocaleSwitcher } from '@/components/locale-switcher';
 import { ThemeToggle } from '@/components/theme-toggle';
 import { Wordmark } from '@/components/wordmark';
 import { adminNavFor } from '@/lib/admin-nav';
-import { getViewer } from '@/lib/auth/viewer';
+import { requireStaff } from '@/lib/auth/session';
 import { currentSeasonYear } from '@/lib/season';
 
 async function AdminBody({ children }: { children: React.ReactNode }) {
-  const viewer = await getViewer();
+  const viewer = await requireStaff();
   // currentSeasonYear() reads the clock, which is request-time data under cacheComponents.
   await connection();
   const year = currentSeasonYear();

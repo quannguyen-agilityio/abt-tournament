@@ -1,8 +1,10 @@
 'use client';
 
 import { useTranslations } from 'next-intl';
+import { Button } from '@/components/ui/button';
 import { Link, usePathname } from '@/i18n/navigation';
 import type { AdminNavKey, AdminRole } from '@/lib/admin-nav';
+import { signOut } from '@/lib/auth/actions';
 import { cn } from '@/lib/utils';
 
 type Props = {
@@ -12,6 +14,7 @@ type Props = {
 
 export function AdminSidebar({ entries, viewer }: Props) {
   const t = useTranslations('Admin');
+  const tAuth = useTranslations('Auth');
   const pathname = usePathname();
   // The season entry is a prefix of the season-scoped ones, so the longest match wins.
   const active = entries
@@ -27,6 +30,11 @@ export function AdminSidebar({ entries, viewer }: Props) {
         <span className="bg-brand-soft text-primary mt-1 inline-flex items-center rounded-full border border-transparent px-2 py-0.5 text-xs font-medium">
           {t(viewer.role === 'btc' ? 'roleBtc' : 'roleReferee')}
         </span>
+        <form action={signOut} className="mt-3">
+          <Button type="submit" variant="outline" size="sm" className="w-full">
+            {tAuth('signOut')}
+          </Button>
+        </form>
       </div>
       <nav aria-label={t('navLabel')} className="overflow-x-auto">
         <ul className="flex w-max gap-1 lg:w-auto lg:flex-col">
