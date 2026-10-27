@@ -488,22 +488,34 @@ export function parseWinners(
     .trim()
     .replace(/[-+,;:]+$/, '')
     .trim();
-  const parts = rest.split(/\s*[-+]\s*/).filter((p) => p !== '');
   const player = (name: string | undefined) => (name ? res.byKey.get(nameKey(name)) : undefined);
 
-  const [first, second] = [player(parts[0]), player(parts[1])];
-  if (first && second && first !== second) {
-    const extra = [...parts.slice(2), tail].filter(Boolean).join(' - ');
-    const note = [ref ? `${ref[1]}-${ref[2]}` : null, extra || null].filter(Boolean).join('; ') || null;
-    const matchCode = ref && res.matchCodes.has(ref[1]) ? ref[1] : null;
-    return [{ kind: 'pair', players: [first.slug, second.slug], matchCode, note }];
+  // Split at the first " - " or " + ": the left side is a player, the right side starts with the
+  // partner (the longest known name wins) and may continue with free text.
+  const split = /^(.*?)\s*[-+]\s*(.*)$/.exec(rest);
+  const lead = split ? player(split[1]) : undefined;
+  if (split && lead) {
+    const words = split[2].split(' ').filter(Boolean);
+    for (let n = words.length; n >= 1; n--) {
+      const partner = player(words.slice(0, n).join(' '));
+      if (!partner || partner === lead) continue;
+      const extra = [
+        words
+          .slice(n)
+          .join(' ')
+          .replace(/^[-+,;:\s]+/, ''),
+        tail,
+      ]
+        .filter(Boolean)
+        .join(' - ');
+      const note = [ref ? `${ref[1]}-${ref[2]}` : null, extra || null].filter(Boolean).join('; ') || null;
+      const matchCode = ref && res.matchCodes.has(ref[1]) ? ref[1] : null;
+      return [{ kind: 'pair', players: [lead.slug, partner.slug], matchCode, note }];
+    }
   }
   const whole = player(t);
   if (whole) return [{ kind: 'player', player: whole.slug, note: null }];
-  const lead = player(parts[0]);
-  if (lead && parts.length > 1 && !second) {
-    return [{ kind: 'player', player: lead.slug, note: parts.slice(1).join(' - ') }];
-  }
+  if (split && lead && split[2]) return [{ kind: 'player', player: lead.slug, note: split[2] }];
   return null;
 }
 

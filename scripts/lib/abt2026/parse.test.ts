@@ -285,6 +285,17 @@ describe('parseWinners', () => {
     expect(parseWinners('Alpha One', ctx)).toEqual([{ kind: 'player', player: 'alpha-one', note: null }]);
   });
 
+  it('takes a pair followed by trailing text, whatever the separator', () => {
+    const pair = (note: string | null) => [
+      { kind: 'pair', players: ['alpha-one', 'alpha-two'], matchCode: null, note },
+    ];
+    expect(parseWinners('Alpha One - Alpha Two lost 3, rest unknown', ctx)).toEqual(pair('lost 3, rest unknown'));
+    expect(parseWinners('Alpha One + Alpha Two lost 3', ctx)).toEqual(pair('lost 3'));
+    expect(parseWinners('Alpha One + Alpha Two 31-11 Bravo One + Bravo Two', ctx)).toEqual(
+      pair('31-11 Bravo One + Bravo Two'),
+    );
+  });
+
   it('keeps a match code that does not exist in the note only', () => {
     expect(parseWinners('Alpha One - Alpha Two V18-3', ctx)).toEqual([
       { kind: 'pair', players: ['alpha-one', 'alpha-two'], matchCode: null, note: 'V18-3' },
