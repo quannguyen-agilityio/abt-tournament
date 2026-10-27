@@ -388,7 +388,7 @@ export function PlayersTable({
   const columns = ['player', 'gender', 'rank', 'skill', 'team', 'memberType', 'fee', 'paid', 'actions'] as const;
 
   return (
-    <div className="border-border bg-surface overflow-x-auto rounded-[10px] border">
+    <div className="border-border bg-surface relative overflow-x-auto rounded-[10px] border">
       <table className="w-full min-w-[56rem] border-collapse text-left text-sm" aria-label={t('tableLabel')}>
         <thead>
           <tr className="text-muted-foreground text-xs uppercase">

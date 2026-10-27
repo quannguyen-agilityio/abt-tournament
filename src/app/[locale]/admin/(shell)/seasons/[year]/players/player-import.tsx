@@ -244,10 +244,10 @@ export function PlayerImport({ seasonId, maxRank }: { seasonId: string; maxRank:
       {open && (
         <section
           aria-label={t('title')}
-          className="border-border bg-surface order-last flex basis-full flex-col gap-4 rounded-[10px] border p-5"
+          className="border-border bg-surface order-last flex min-w-0 basis-full flex-col gap-4 rounded-[10px] border p-5"
         >
           <h2 className="font-display text-xl font-bold">{t('title')}</h2>
-          <p className="text-muted-foreground text-sm">
+          <p className="text-muted-foreground text-sm wrap-anywhere">
             {t('hint', {
               header: REQUIRED_COLUMNS.join(','),
               maxRank,
@@ -309,7 +309,7 @@ export function PlayerImport({ seasonId, maxRank }: { seasonId: string; maxRank:
                   </li>
                 ))}
               </ul>
-              <div className="border-border overflow-x-auto rounded-[10px] border">
+              <div className="border-border relative overflow-x-auto rounded-[10px] border">
                 <table className="w-full min-w-[40rem] border-collapse text-left text-sm">
                   <thead>
                     <tr className="text-muted-foreground text-xs uppercase">
