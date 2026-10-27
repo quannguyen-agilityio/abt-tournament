@@ -9,6 +9,7 @@ import { requireBtc } from '@/lib/auth/session';
 import { formatMoney } from '@/lib/format';
 import { sortSeasonPlayers, summarizeFees } from '@/lib/season-players';
 import { createClient } from '@/lib/supabase/server';
+import { PlayerImport } from './player-import';
 import { PlayersTable, type PlayerRow } from './players-table';
 
 async function SeasonPlayers({ params }: Pick<PageProps<'/[locale]/admin/seasons/[year]/players'>, 'params'>) {
@@ -79,12 +80,15 @@ async function SeasonPlayers({ params }: Pick<PageProps<'/[locale]/admin/seasons
 
   return (
     <div className="flex flex-col gap-4">
-      <div>
-        <Link href={`/admin/seasons/${season.year}`} className="text-primary text-sm font-medium hover:underline">
-          {t('back')}
-        </Link>
-        <h1 className="font-display mt-1 text-3xl font-bold">{t('title')}</h1>
-        <p className="text-muted-foreground text-sm">{t('subtitle', { season: season.name, count: rows.length })}</p>
+      <div className="flex flex-wrap items-end justify-between gap-3">
+        <div>
+          <Link href={`/admin/seasons/${season.year}`} className="text-primary text-sm font-medium hover:underline">
+            {t('back')}
+          </Link>
+          <h1 className="font-display mt-1 text-3xl font-bold">{t('title')}</h1>
+          <p className="text-muted-foreground text-sm">{t('subtitle', { season: season.name, count: rows.length })}</p>
+        </div>
+        <PlayerImport seasonId={season.id} maxRank={settings.max_rank} />
       </div>
       <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
         {stats.map((stat) => (

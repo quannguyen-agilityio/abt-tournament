@@ -96,7 +96,6 @@
       "withdraw": "Cho rút lui",
       "reinstate": "Khôi phục",
       "paidLabel": "Lệ phí của {name} đã đóng",
-      "actionsOn": "{action} {name}",
       "aria": {
         "name": "Tên của {name}",
         "gender": "Giới tính của {name}",
@@ -115,6 +114,71 @@
         "memberType": "Chọn loại thành viên.",
         "feeAmount": "Lệ phí phải là số tiền nguyên từ 0 đến {max}.",
         "failed": "Không thể cập nhật cầu thủ. Vui lòng thử lại sau."
+      },
+      "import": {
+        "open": "Nhập CSV",
+        "title": "Nhập danh sách người chơi từ CSV",
+        "hint": "Dòng tiêu đề bắt buộc: {header}. Các cột có thể đặt theo thứ tự bất kỳ. gender: male hoặc female. rank: số nguyên từ 1 đến {maxRank}. skill_points: số nguyên từ 0 đến {max}. member_type: employee, intern hoặc guest. Tối đa {rows} dòng. Tên trùng với người đã có sẽ cập nhật người đó.",
+        "file": "Tệp CSV",
+        "csv": "Nội dung CSV",
+        "csvPlaceholder": "Chọn tệp ở trên hoặc dán nội dung CSV vào đây",
+        "preview": "Xem trước",
+        "previewing": "Đang kiểm tra…",
+        "apply": "Áp dụng {count} dòng",
+        "applying": "Đang áp dụng…",
+        "counts": {
+          "new": "Mới",
+          "changed": "Thay đổi",
+          "unchanged": "Không đổi",
+          "invalid": "Không hợp lệ",
+          "ambiguous": "Cần chọn"
+        },
+        "columns": {
+          "line": "Dòng",
+          "name": "Tên",
+          "status": "Kết quả",
+          "details": "Chi tiết"
+        },
+        "kind": {
+          "new": "Mới",
+          "changed": "Thay đổi",
+          "unchanged": "Không đổi",
+          "invalid": "Không hợp lệ",
+          "ambiguous": "Cần chọn"
+        },
+        "newPerson": "Người mới",
+        "existingPerson": "Đã có trong hệ thống, mới vào mùa này",
+        "slug": "Slug: {slug}",
+        "unchangedNote": "Không có thay đổi",
+        "invalidNote": "Sẽ không được nhập",
+        "choose": "Chọn một người",
+        "chooseLabel": "Dòng {line} là ai?",
+        "createNew": "Tạo người mới",
+        "inSeason": "đã có trong mùa này",
+        "fields": {
+          "gender": "Giới tính",
+          "rank": "Hạng",
+          "skillPoints": "Điểm kỹ năng",
+          "memberType": "Loại thành viên"
+        },
+        "rowErrors": {
+          "fullName": "Tên phải dài 1 đến {max} ký tự và có ít nhất một chữ cái hoặc chữ số",
+          "gender": "Giới tính phải là male hoặc female",
+          "rank": "Hạng phải là số nguyên từ 1 đến {maxRank}",
+          "skillPoints": "Điểm kỹ năng phải là số nguyên từ 0 đến {max}",
+          "memberType": "Loại thành viên phải là employee, intern hoặc guest",
+          "duplicate": "Trùng người với một dòng phía trên"
+        },
+        "result": "Đã nhập {applied, plural, other {# người chơi}}, bỏ qua {skipped, plural, other {# dòng không hợp lệ}}.",
+        "errors": {
+          "failed": "Không đọc hoặc nhập được tệp. Vui lòng thử lại sau.",
+          "tooLarge": "Tệp quá lớn (tối đa 200 KB).",
+          "empty": "Tệp trống.",
+          "header": "Dòng tiêu đề phải có full_name, gender, rank, skill_points và member_type.",
+          "tooMany": "Quá nhiều dòng (tối đa 500).",
+          "unresolved": "Hãy chọn người cho mọi dòng cần chọn rồi thử lại.",
+          "conflict": "Có người khác vừa thay đổi danh sách. Hãy xem trước lại rồi áp dụng."
+        }
       }
     },
     "seasons": {
