@@ -94,6 +94,52 @@
           "yearTaken": "Đã có mùa giải cho năm này.",
           "failed": "Không thể tạo mùa giải. Vui lòng thử lại sau."
         }
+      },
+      "detail": {
+        "back": "← Tất cả mùa giải",
+        "title": "Mùa giải",
+        "stepperLabel": "Trạng thái mùa giải",
+        "move": {
+          "published": "Chuyển sang Đã công bố",
+          "group": "Chuyển sang Vòng bảng",
+          "knockout": "Chuyển sang Knock-out",
+          "finished": "Chuyển sang Đã kết thúc",
+          "unpublish": "Hủy công bố (về Nháp)"
+        },
+        "blocked": {
+          "closeGroup": "Hãy chốt vòng bảng để bắt đầu knock-out.",
+          "current": "Mùa giải hiện tại phải luôn công khai nên không thể hủy công bố. Hãy chọn mùa giải khác làm hiện tại trước."
+        },
+        "finishedHint": "Mùa giải đã kết thúc.",
+        "statusErrors": {
+          "transition": "Không thể chuyển sang trạng thái này. Hãy tải lại trang và thử lại.",
+          "failed": "Không thể đổi trạng thái. Vui lòng thử lại sau."
+        },
+        "isCurrent": "Đây là mùa giải hiện tại",
+        "setCurrent": "Đặt làm mùa giải hiện tại",
+        "setCurrentHint": "Trang chủ sẽ chuyển thẳng tới mùa giải hiện tại.",
+        "setCurrentDraft": "Hãy công bố mùa giải trước khi đặt làm mùa giải hiện tại.",
+        "currentErrors": {
+          "draft": "Mùa giải nháp không thể là mùa giải hiện tại. Hãy công bố trước.",
+          "failed": "Không thể đặt mùa giải hiện tại. Vui lòng thử lại sau."
+        },
+        "year": "Năm",
+        "yearHint": "Năm là định danh của mùa giải nên không thể sửa.",
+        "name": "Tên mùa giải",
+        "venue": "Địa điểm",
+        "matchDays": "Ngày thi đấu",
+        "matchDay": "Ngày thi đấu {number}",
+        "matchDaysEmpty": "Chưa có ngày thi đấu nào.",
+        "addDay": "Thêm ngày",
+        "removeDay": "Xóa",
+        "save": "Lưu",
+        "saving": "Đang lưu…",
+        "saved": "Đã lưu.",
+        "errors": {
+          "name": "Nhập tên mùa giải, tối đa {nameMax} ký tự.",
+          "venue": "Địa điểm tối đa {venueMax} ký tự.",
+          "failed": "Không thể lưu. Vui lòng thử lại sau."
+        }
       }
     },
     "users": {

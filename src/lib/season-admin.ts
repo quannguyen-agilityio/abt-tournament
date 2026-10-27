@@ -39,3 +39,36 @@ export function parseNewSeason(
 
   return { ok: true, value: { year, name, venue, sourceId: source || null } };
 }
+
+export type SeasonDetailsInput = { name: string; venue: string; matchDays: string[] };
+
+export type SeasonDetailsError = 'name' | 'venue';
+
+/** A real calendar date written as `YYYY-MM-DD`. */
+function isIsoDate(value: string): boolean {
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(value)) return false;
+  const date = new Date(`${value}T00:00:00Z`);
+  return !Number.isNaN(date.getTime()) && date.toISOString().slice(0, 10) === value;
+}
+
+/**
+ * Validates the season details form. Match days come as repeated `matchDays` fields; blanks and
+ * invalid dates are dropped, and the rest are de-duplicated and sorted.
+ */
+export function parseSeasonDetails(
+  formData: FormData,
+): { ok: true; value: SeasonDetailsInput } | { ok: false; error: SeasonDetailsError } {
+  const name = text(formData, 'name').trim();
+  if (!name || name.length > MAX_SEASON_NAME_LENGTH) return { ok: false, error: 'name' };
+
+  const venue = text(formData, 'venue').trim();
+  if (venue.length > MAX_SEASON_VENUE_LENGTH) return { ok: false, error: 'venue' };
+
+  const days = formData
+    .getAll('matchDays')
+    .map((d) => (typeof d === 'string' ? d.trim() : ''))
+    .filter(isIsoDate);
+  const matchDays = [...new Set(days)].sort();
+
+  return { ok: true, value: { name, venue, matchDays } };
+}

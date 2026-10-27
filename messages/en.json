@@ -94,6 +94,52 @@
           "yearTaken": "A season for this year already exists.",
           "failed": "Could not create the season. Please try again later."
         }
+      },
+      "detail": {
+        "back": "← All seasons",
+        "title": "Season",
+        "stepperLabel": "Season status",
+        "move": {
+          "published": "Move to Published",
+          "group": "Move to Group stage",
+          "knockout": "Move to Knockout",
+          "finished": "Move to Finished",
+          "unpublish": "Unpublish (back to draft)"
+        },
+        "blocked": {
+          "closeGroup": "Close the group stage to start the knock-out.",
+          "current": "The current season must stay public, so it cannot be unpublished. Set another season as current first."
+        },
+        "finishedHint": "This season is finished.",
+        "statusErrors": {
+          "transition": "This status change is not allowed. Reload the page and try again.",
+          "failed": "Could not change the status. Please try again later."
+        },
+        "isCurrent": "This is the current season",
+        "setCurrent": "Set as current season",
+        "setCurrentHint": "The home page redirects to the current season.",
+        "setCurrentDraft": "Publish the season before setting it as current.",
+        "currentErrors": {
+          "draft": "A draft season cannot be the current one. Publish it first.",
+          "failed": "Could not set the current season. Please try again later."
+        },
+        "year": "Year",
+        "yearHint": "The year identifies the season, so it cannot be changed.",
+        "name": "Season name",
+        "venue": "Venue",
+        "matchDays": "Match days",
+        "matchDay": "Match day {number}",
+        "matchDaysEmpty": "No match days yet.",
+        "addDay": "Add day",
+        "removeDay": "Remove",
+        "save": "Save",
+        "saving": "Saving…",
+        "saved": "Saved.",
+        "errors": {
+          "name": "Enter a season name of at most {nameMax} characters.",
+          "venue": "The venue is at most {venueMax} characters.",
+          "failed": "Could not save. Please try again later."
+        }
       }
     },
     "users": {
