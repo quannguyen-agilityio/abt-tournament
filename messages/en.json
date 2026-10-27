@@ -89,6 +89,24 @@
       "invalid": "Wrong email or password.",
       "inactive": "This account has been deactivated. Contact the Organizing Committee.",
       "failed": "Could not sign in. Try again later."
+    },
+    "signedInAs": "Signed in as {email}",
+    "changePassword": {
+      "title": "Change password",
+      "mustChangeHint": "You are using a temporary password. Set a new one to continue.",
+      "hint": "Set a new password for your account.",
+      "newPassword": "New password",
+      "confirm": "Repeat the new password",
+      "minLength": "At least {min} characters.",
+      "submit": "Save password",
+      "saving": "Saving…",
+      "errors": {
+        "tooShort": "The new password needs at least {min} characters.",
+        "mismatch": "The two passwords do not match.",
+        "samePassword": "The new password must differ from the current one.",
+        "weak": "This password is too weak. Choose another one.",
+        "failed": "Could not change the password. Try again later."
+      }
     }
   }
 }

@@ -89,6 +89,24 @@
       "invalid": "Email hoặc mật khẩu không đúng.",
       "inactive": "Tài khoản này đã bị vô hiệu hoá. Hãy liên hệ BTC.",
       "failed": "Không đăng nhập được. Hãy thử lại sau."
+    },
+    "signedInAs": "Đăng nhập với {email}",
+    "changePassword": {
+      "title": "Đổi mật khẩu",
+      "mustChangeHint": "Bạn đang dùng mật khẩu tạm. Hãy đặt mật khẩu mới để tiếp tục.",
+      "hint": "Đặt mật khẩu mới cho tài khoản của bạn.",
+      "newPassword": "Mật khẩu mới",
+      "confirm": "Nhập lại mật khẩu mới",
+      "minLength": "Tối thiểu {min} ký tự.",
+      "submit": "Lưu mật khẩu",
+      "saving": "Đang lưu…",
+      "errors": {
+        "tooShort": "Mật khẩu mới phải có ít nhất {min} ký tự.",
+        "mismatch": "Hai mật khẩu không khớp.",
+        "samePassword": "Mật khẩu mới phải khác mật khẩu hiện tại.",
+        "weak": "Mật khẩu này quá yếu. Hãy chọn mật khẩu khác.",
+        "failed": "Không đổi được mật khẩu. Hãy thử lại sau."
+      }
     }
   }
 }
