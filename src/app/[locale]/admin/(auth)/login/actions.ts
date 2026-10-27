@@ -15,7 +15,11 @@ export async function signIn(_prev: SignInState, formData: FormData): Promise<Si
 
   const supabase = await createClient();
   const { data, error } = await supabase.auth.signInWithPassword({ email, password });
-  if (error) return { error: error.code === 'invalid_credentials' ? 'invalid' : 'failed', email };
+  if (error) {
+    // A deactivated account is also banned in Auth (see the users actions).
+    if (error.code === 'user_banned') return { error: 'inactive', email };
+    return { error: error.code === 'invalid_credentials' ? 'invalid' : 'failed', email };
+  }
 
   // Accounts are created by the BTC with a profile (spec §6 A8); one without a profile, or a
   // deactivated one, must not keep a session.

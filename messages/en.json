@@ -53,6 +53,60 @@
       "closeGroup": "Close group",
       "awards": "Side awards",
       "users": "Users"
+    },
+    "users": {
+      "title": "Users",
+      "count": "{count, plural, one {# account} other {# accounts}}",
+      "tableLabel": "Accounts",
+      "name": "Name",
+      "email": "Email",
+      "status": "Status",
+      "actions": "Actions",
+      "you": "(you)",
+      "statusActive": "Active",
+      "statusMustChange": "Must change password",
+      "statusInactive": "Deactivated",
+      "deactivate": "Deactivate",
+      "reactivate": "Reactivate",
+      "resetPassword": "Reset password",
+      "empty": "No accounts yet.",
+      "create": {
+        "title": "Create account",
+        "displayName": "Display name",
+        "email": "Email",
+        "role": "Role",
+        "password": "Temporary password",
+        "passwordHint": "The user must change it at first sign-in. At least {min} characters.",
+        "generate": "Generate",
+        "submit": "Create account",
+        "saving": "Creating…",
+        "success": "Account created for {email}. Give them the temporary password.",
+        "errors": {
+          "email": "Enter a valid email address.",
+          "displayName": "Enter a display name of up to {max} characters.",
+          "role": "Choose a role.",
+          "tooShort": "The temporary password needs at least {min} characters.",
+          "emailTaken": "An account with this email already exists.",
+          "weak": "This password is too weak. Choose another one.",
+          "failed": "Could not create the account. Try again later."
+        }
+      },
+      "reset": {
+        "newPassword": "New temporary password",
+        "submit": "Reset",
+        "saving": "Resetting…",
+        "success": "Password reset. They must change it at next sign-in.",
+        "errors": {
+          "tooShort": "The temporary password needs at least {min} characters.",
+          "weak": "This password is too weak. Choose another one.",
+          "self": "You cannot do this to your own account.",
+          "failed": "Could not reset the password. Try again later."
+        }
+      },
+      "toggleErrors": {
+        "self": "You cannot deactivate your own account.",
+        "failed": "Could not update the account. Try again later."
+      }
     }
   },
   "SeasonSettings": {

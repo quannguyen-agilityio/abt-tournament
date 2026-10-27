@@ -53,6 +53,60 @@
       "closeGroup": "Chốt vòng bảng",
       "awards": "Giải phụ",
       "users": "Người dùng"
+    },
+    "users": {
+      "title": "Người dùng",
+      "count": "{count} tài khoản",
+      "tableLabel": "Tài khoản",
+      "name": "Tên",
+      "email": "Email",
+      "status": "Trạng thái",
+      "actions": "Thao tác",
+      "you": "(bạn)",
+      "statusActive": "Hoạt động",
+      "statusMustChange": "Phải đổi mật khẩu",
+      "statusInactive": "Đã khóa",
+      "deactivate": "Khóa",
+      "reactivate": "Mở khóa",
+      "resetPassword": "Đặt lại mật khẩu",
+      "empty": "Chưa có tài khoản nào.",
+      "create": {
+        "title": "Tạo tài khoản",
+        "displayName": "Tên hiển thị",
+        "email": "Email",
+        "role": "Vai trò",
+        "password": "Mật khẩu tạm",
+        "passwordHint": "Người dùng phải đổi mật khẩu ở lần đăng nhập đầu tiên. Tối thiểu {min} ký tự.",
+        "generate": "Tạo ngẫu nhiên",
+        "submit": "Tạo tài khoản",
+        "saving": "Đang tạo…",
+        "success": "Đã tạo tài khoản cho {email}. Hãy gửi mật khẩu tạm cho họ.",
+        "errors": {
+          "email": "Nhập địa chỉ email hợp lệ.",
+          "displayName": "Nhập tên hiển thị tối đa {max} ký tự.",
+          "role": "Chọn một vai trò.",
+          "tooShort": "Mật khẩu tạm cần ít nhất {min} ký tự.",
+          "emailTaken": "Đã có tài khoản dùng email này.",
+          "weak": "Mật khẩu này quá yếu. Hãy chọn mật khẩu khác.",
+          "failed": "Không thể tạo tài khoản. Vui lòng thử lại sau."
+        }
+      },
+      "reset": {
+        "newPassword": "Mật khẩu tạm mới",
+        "submit": "Đặt lại",
+        "saving": "Đang đặt lại…",
+        "success": "Đã đặt lại mật khẩu. Họ phải đổi mật khẩu ở lần đăng nhập tiếp theo.",
+        "errors": {
+          "tooShort": "Mật khẩu tạm cần ít nhất {min} ký tự.",
+          "weak": "Mật khẩu này quá yếu. Hãy chọn mật khẩu khác.",
+          "self": "Bạn không thể làm điều này với tài khoản của chính mình.",
+          "failed": "Không thể đặt lại mật khẩu. Vui lòng thử lại sau."
+        }
+      },
+      "toggleErrors": {
+        "self": "Bạn không thể khóa tài khoản của chính mình.",
+        "failed": "Không thể cập nhật tài khoản. Vui lòng thử lại sau."
+      }
     }
   },
   "SeasonSettings": {
