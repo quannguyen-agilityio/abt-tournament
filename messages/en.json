@@ -76,5 +76,19 @@
       "koHandicapTooLarge": "The relay handicap cap must be below the final milestone ({target}).",
       "minPlayersTooLow": "At least {minimum} players are needed to fill every set; raise this to {minimum} or more."
     }
+  },
+  "Auth": {
+    "signIn": "Sign in",
+    "signingIn": "Signing in…",
+    "email": "Email",
+    "password": "Password",
+    "signInHint": "Accounts are issued by the Organizing Committee. Ask them to reset a forgotten password.",
+    "signOut": "Sign out",
+    "errors": {
+      "missing": "Enter your email and password.",
+      "invalid": "Wrong email or password.",
+      "inactive": "This account has been deactivated. Contact the Organizing Committee.",
+      "failed": "Could not sign in. Try again later."
+    }
   }
 }

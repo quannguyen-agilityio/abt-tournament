@@ -76,5 +76,19 @@
       "koHandicapTooLarge": "Mức chấp tiếp sức tối đa phải nhỏ hơn mốc cuối ({target}).",
       "minPlayersTooLow": "Cần ít nhất {minimum} VĐV để xếp đủ các set; hãy đặt từ {minimum} trở lên."
     }
+  },
+  "Auth": {
+    "signIn": "Đăng nhập",
+    "signingIn": "Đang đăng nhập…",
+    "email": "Email",
+    "password": "Mật khẩu",
+    "signInHint": "Tài khoản do BTC cấp. Quên mật khẩu, hãy nhờ BTC đặt lại.",
+    "signOut": "Đăng xuất",
+    "errors": {
+      "missing": "Nhập email và mật khẩu.",
+      "invalid": "Email hoặc mật khẩu không đúng.",
+      "inactive": "Tài khoản này đã bị vô hiệu hoá. Hãy liên hệ BTC.",
+      "failed": "Không đăng nhập được. Hãy thử lại sau."
+    }
   }
 }
