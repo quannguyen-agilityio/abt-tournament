@@ -91,6 +91,20 @@
       "SUB_RANK": "A substitute must be within {tolerance} rank of the player they replace."
     }
   },
+  "Score": {
+    "violations": {
+      "SCORE_INVALID": "Enter a whole number of 0 or more.",
+      "SCORE_INCOMPLETE": "Enter the score for both sides.",
+      "SET_TARGET": "Exactly one side must reach {target} and the other must be below it.",
+      "BELOW_HANDICAP": "The score cannot be below the {handicap} start points.",
+      "LEG_MILESTONE": "This leg ends when one side reaches {milestone}.",
+      "LEG_DECREASING": "Relay scores are cumulative and cannot drop below {previous}.",
+      "LEG_OUT_OF_ORDER": "Enter leg {leg} first."
+    },
+    "warnings": {
+      "KO_CAP_REACHES_MILESTONE": "The knock-out handicap cap ({cap}) reaches the first milestone ({milestone}), so a leg-1 handicap can decide that leg before it starts."
+    }
+  },
   "Auth": {
     "signIn": "Sign in",
     "signingIn": "Signing in…",

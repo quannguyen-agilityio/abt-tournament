@@ -4,3 +4,5 @@ export * from './settings';
 export * from './schedule';
 export * from './bracket';
 export * from './lineup';
+export * from './handicap';
+export * from './score';
