@@ -959,6 +959,7 @@ export type Database = {
     };
     Functions: {
       clone_season: { Args: { p_name: string; p_source_id: string; p_venue: string; p_year: number }; Returns: string };
+      import_season_players: { Args: { p_rows: Json; p_season_id: string }; Returns: number };
       set_current_season: { Args: { p_season_id: string }; Returns: undefined };
     };
     Enums: {

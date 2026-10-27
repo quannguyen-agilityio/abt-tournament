@@ -54,6 +54,133 @@
       "awards": "Side awards",
       "users": "Users"
     },
+    "players": {
+      "title": "Players & fees",
+      "subtitle": "{season} · {count, plural, one {# player} other {# players}}",
+      "back": "← Season",
+      "empty": "No players in this season yet.",
+      "summary": {
+        "collected": "Collected",
+        "expected": "Expected",
+        "paid": "Paid",
+        "paidValue": "{paid}/{total}",
+        "unpaid": "Unpaid"
+      },
+      "tableLabel": "Season players",
+      "columns": {
+        "player": "Player",
+        "gender": "Gender",
+        "rank": "Rank",
+        "skill": "Skill",
+        "team": "Team",
+        "memberType": "Member type",
+        "fee": "Fee",
+        "paid": "Paid",
+        "actions": "Actions"
+      },
+      "gender": {
+        "male": "Male",
+        "female": "Female"
+      },
+      "memberType": {
+        "employee": "Employee",
+        "intern": "Intern",
+        "guest": "Guest"
+      },
+      "noTeam": "No team",
+      "withdrawn": "Withdrawn",
+      "edit": "Edit",
+      "save": "Save",
+      "saving": "Saving…",
+      "cancel": "Cancel",
+      "withdraw": "Withdraw",
+      "reinstate": "Reinstate",
+      "paidLabel": "Fee paid by {name}",
+      "aria": {
+        "name": "Name of {name}",
+        "gender": "Gender of {name}",
+        "rank": "Rank of {name}",
+        "skill": "Skill points of {name}",
+        "team": "Team of {name}",
+        "memberType": "Member type of {name}",
+        "fee": "Fee of {name}"
+      },
+      "errors": {
+        "fullName": "Enter a name of at most {max} characters.",
+        "gender": "Choose a gender.",
+        "rank": "Rank must be a whole number from 1 to {maxRank}.",
+        "skillPoints": "Skill points must be a whole number from 0 to {max}.",
+        "team": "Choose a team of this season.",
+        "memberType": "Choose a member type.",
+        "feeAmount": "Fee must be a whole amount from 0 to {max}.",
+        "failed": "Could not update the player. Please try again later."
+      },
+      "import": {
+        "open": "Import CSV",
+        "title": "Import players from CSV",
+        "hint": "Required header: {header}. Columns can be in any order. gender: male or female. rank: a whole number from 1 to {maxRank}. skill_points: a whole number from 0 to {max}. member_type: employee, intern or guest. Up to {rows} rows. A name that matches an existing person updates that person.",
+        "file": "CSV file",
+        "csv": "CSV content",
+        "csvPlaceholder": "Choose a file above or paste the CSV here",
+        "preview": "Preview",
+        "previewing": "Checking…",
+        "apply": "Apply {count, plural, one {# row} other {# rows}}",
+        "applying": "Applying…",
+        "counts": {
+          "new": "New",
+          "changed": "Changed",
+          "unchanged": "Unchanged",
+          "invalid": "Invalid",
+          "ambiguous": "Needs a choice"
+        },
+        "columns": {
+          "line": "Line",
+          "name": "Name",
+          "status": "Result",
+          "details": "Details"
+        },
+        "kind": {
+          "new": "New",
+          "changed": "Changed",
+          "unchanged": "Unchanged",
+          "invalid": "Invalid",
+          "ambiguous": "Needs a choice"
+        },
+        "newPerson": "New person",
+        "existingPerson": "Existing person, new to this season",
+        "slug": "Slug: {slug}",
+        "unchangedNote": "No changes",
+        "invalidNote": "Will not be imported",
+        "choose": "Choose a person",
+        "chooseLabel": "Which person is line {line}?",
+        "createNew": "Create a new person",
+        "inSeason": "in this season",
+        "fields": {
+          "gender": "Gender",
+          "rank": "Rank",
+          "skillPoints": "Skill",
+          "memberType": "Member type"
+        },
+        "rowErrors": {
+          "fullName": "Name must be 1 to {max} characters with at least one letter or digit",
+          "gender": "Gender must be male or female",
+          "rank": "Rank must be a whole number from 1 to {maxRank}",
+          "skillPoints": "Skill points must be a whole number from 0 to {max}",
+          "memberType": "Member type must be employee, intern or guest",
+          "duplicate": "Same person as an earlier row"
+        },
+        "result": "Imported {applied, plural, one {# player} other {# players}}, skipped {skipped, plural, one {# invalid row} other {# invalid rows}}.",
+        "errors": {
+          "failed": "Could not read or import the file. Please try again later.",
+          "tooLarge": "The file is too large (200 KB at most).",
+          "empty": "The file is empty.",
+          "header": "The header must contain full_name, gender, rank, skill_points and member_type.",
+          "tooMany": "Too many rows (500 at most).",
+          "unresolved": "Choose a person for every row that needs a choice, then try again.",
+          "conflict": "Someone else changed the players meanwhile. Preview again before applying."
+        }
+      }
+    },
     "seasons": {
       "title": "Seasons",
       "count": "{count, plural, one {# season} other {# seasons}}",
