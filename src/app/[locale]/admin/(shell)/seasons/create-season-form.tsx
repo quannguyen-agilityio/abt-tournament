@@ -23,9 +23,9 @@ export function CreateSeasonForm({ sources }: { sources: { id: string; name: str
     >
       <h2 className="font-display text-xl font-bold uppercase">{t('title')}</h2>
       <div className="flex flex-col gap-1.5">
-        <Label htmlFor="season-year">{t('year')}</Label>
+        <Label htmlFor="new-season-year">{t('year')}</Label>
         <Input
-          id="season-year"
+          id="new-season-year"
           name="year"
           type="number"
           inputMode="numeric"
@@ -40,26 +40,26 @@ export function CreateSeasonForm({ sources }: { sources: { id: string; name: str
         />
       </div>
       <div className="flex flex-col gap-1.5">
-        <Label htmlFor="season-name">{t('name')}</Label>
+        <Label htmlFor="new-season-name">{t('name')}</Label>
         <Input
-          id="season-name"
+          id="new-season-name"
           name="name"
           defaultValue={fields?.name}
           placeholder={t('namePlaceholder', { year: year || fields?.year || 'YYYY' })}
           maxLength={MAX_SEASON_NAME_LENGTH}
           autoComplete="off"
-          aria-describedby="season-name-hint"
+          aria-describedby="new-season-name-hint"
           aria-invalid={error === 'name' || undefined}
           className="h-9"
         />
-        <span id="season-name-hint" className="text-muted-foreground text-xs">
+        <span id="new-season-name-hint" className="text-muted-foreground text-xs">
           {t('nameHint')}
         </span>
       </div>
       <div className="flex flex-col gap-1.5">
-        <Label htmlFor="season-venue">{t('venue')}</Label>
+        <Label htmlFor="new-season-venue">{t('venue')}</Label>
         <Input
-          id="season-venue"
+          id="new-season-venue"
           name="venue"
           defaultValue={fields?.venue}
           maxLength={MAX_SEASON_VENUE_LENGTH}
@@ -69,12 +69,12 @@ export function CreateSeasonForm({ sources }: { sources: { id: string; name: str
         />
       </div>
       <div className="flex flex-col gap-1.5">
-        <Label htmlFor="season-source">{t('source')}</Label>
+        <Label htmlFor="new-season-source">{t('source')}</Label>
         <select
-          id="season-source"
+          id="new-season-source"
           name="source"
           defaultValue={fields?.source ?? sources[0]?.id ?? ''}
-          aria-describedby="season-source-hint"
+          aria-describedby="new-season-source-hint"
           aria-invalid={error === 'source' || undefined}
           className="border-input focus-visible:border-ring focus-visible:ring-ring/50 dark:bg-input/30 h-9 w-full rounded-lg border bg-transparent px-2.5 text-base outline-none focus-visible:ring-3 md:text-sm"
         >
@@ -85,7 +85,7 @@ export function CreateSeasonForm({ sources }: { sources: { id: string; name: str
             </option>
           ))}
         </select>
-        <span id="season-source-hint" className="text-muted-foreground text-xs">
+        <span id="new-season-source-hint" className="text-muted-foreground text-xs">
           {t('sourceHint')}
         </span>
       </div>
