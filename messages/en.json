@@ -76,5 +76,19 @@
       "koHandicapTooLarge": "The relay handicap cap must be below the final milestone ({target}).",
       "minPlayersTooLow": "At least {minimum} players are needed to fill every set; raise this to {minimum} or more."
     }
+  },
+  "Lineup": {
+    "violations": {
+      "SLOT_INCOMPLETE": "Pick two different players for this set.",
+      "NOT_PRESENT": "This player is not checked in for this match.",
+      "MIN_SETS": "Every present player must play at least {minimum} set(s).",
+      "MAX_SETS": "A player may play at most {maximum} sets.",
+      "CONSECUTIVE": "A player cannot play two sets in a row.",
+      "LOW_RANK_SLOT": "Both players in a low-rank set must be rank {min}–{max}.",
+      "HIGH_RANK_SLOT": "Both players in a high-rank set must be rank {min}–{max}.",
+      "COMPENSATION": "With fewer players present than the opponent, the only rank-{rank} player must play at least {minimum} sets.",
+      "MIN_PRESENT": "At least {minimum} players must be present. Otherwise the team can be disqualified.",
+      "SUB_RANK": "A substitute must be within {tolerance} rank of the player they replace."
+    }
   }
 }
