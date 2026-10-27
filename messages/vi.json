@@ -181,6 +181,88 @@
         }
       }
     },
+    "teams": {
+      "title": "Đội",
+      "subtitle": "{season} · {count} đội · {players} VĐV",
+      "back": "← Mùa giải",
+      "empty": "Chưa có đội nào. Hãy thêm đội hoặc nhập kết quả bốc thăm.",
+      "dragHint": "Kéo VĐV giữa các đội, hoặc chọn đội ở menu trên mỗi dòng. Đội trưởng mặc định là VĐV Rank 1 của đội.",
+      "add": "Thêm đội",
+      "addTitle": "Đội mới",
+      "create": "Tạo",
+      "name": "Tên",
+      "color": "Màu",
+      "nameOf": "Tên đội {name}",
+      "colorOf": "Màu đội {name}",
+      "save": "Lưu",
+      "saving": "Đang lưu…",
+      "delete": "Xoá",
+      "captain": "Đội trưởng",
+      "makeCaptain": "Đội trưởng?",
+      "makeCaptainLabel": "Chọn {name} làm đội trưởng",
+      "moveLabel": "Đội của {name}",
+      "noTeam": "Chưa có đội",
+      "withdrawn": "Đã rút lui",
+      "unassigned": "Chưa có đội",
+      "emptyTeam": "Thả VĐV vào đây.",
+      "rosterCount": "{count} VĐV đang thi đấu",
+      "warnings": {
+        "title": "Kiểm tra các đội",
+        "missingRanks": "{team} chưa có VĐV {ranks}.",
+        "sizes": "Số VĐV các đội không bằng nhau: {sizes}.",
+        "unassigned": "{count} VĐV đang thi đấu chưa có đội."
+      },
+      "errors": {
+        "name": "Nhập tên tối đa {max} ký tự.",
+        "color": "Hãy chọn màu.",
+        "notEmpty": "Hãy chuyển hết VĐV ra trước khi xoá đội.",
+        "inUse": "Đội đã có trận đấu nên không xoá được.",
+        "failed": "Không lưu được thay đổi. Vui lòng thử lại sau."
+      },
+      "draw": {
+        "open": "Nhập bốc thăm",
+        "title": "Nhập kết quả bốc thăm từ CSV",
+        "hint": "Dòng tiêu đề bắt buộc: {header}. Các cột có thể theo thứ tự bất kỳ. Mỗi VĐV của mùa giải được khớp theo tên hoặc slug. Tên đội mà mùa giải chưa có sẽ tạo đội đó. VĐV không có trong tệp giữ nguyên đội. Tối đa {rows} dòng.",
+        "file": "Tệp CSV",
+        "csv": "Nội dung CSV",
+        "csvPlaceholder": "Chọn tệp ở trên hoặc dán nội dung CSV vào đây",
+        "preview": "Xem trước",
+        "previewing": "Đang kiểm tra…",
+        "apply": "Áp dụng {count} thay đổi",
+        "applying": "Đang áp dụng…",
+        "kind": {
+          "assign": "Chuyển đội",
+          "unchanged": "Không đổi",
+          "invalid": "Không hợp lệ"
+        },
+        "newTeams": "Đội mới: {names}",
+        "columns": {
+          "line": "Dòng",
+          "name": "VĐV",
+          "status": "Kết quả",
+          "details": "Chi tiết"
+        },
+        "noTeam": "Chưa có đội",
+        "newTeam": "đội mới",
+        "unchangedNote": "Đã ở {team}",
+        "invalidNote": "Sẽ không được nhập",
+        "rowErrors": {
+          "fullName": "Tên VĐV đang trống",
+          "teamName": "Tên đội phải từ 1 đến {max} ký tự",
+          "unknownPlayer": "Không có VĐV nào của mùa giải mang tên này",
+          "ambiguousPlayer": "Có nhiều VĐV của mùa giải trùng tên này; hãy dùng slug",
+          "duplicate": "Trùng VĐV với một dòng phía trên"
+        },
+        "result": "Đã xếp đội cho {applied} VĐV, bỏ qua {skipped} dòng không hợp lệ.",
+        "errors": {
+          "failed": "Không đọc hoặc nhập được tệp. Vui lòng thử lại sau.",
+          "tooLarge": "Tệp quá lớn (tối đa 100 KB).",
+          "empty": "Tệp trống.",
+          "header": "Dòng tiêu đề phải có full_name và team_name.",
+          "tooMany": "Quá nhiều dòng (tối đa 500)."
+        }
+      }
+    },
     "seasons": {
       "title": "Mùa giải",
       "count": "{count} mùa giải",
