@@ -7,3 +7,4 @@ export * from './lineup';
 export * from './handicap';
 export * from './score';
 export * from './forfeit';
+export * from './standings';
