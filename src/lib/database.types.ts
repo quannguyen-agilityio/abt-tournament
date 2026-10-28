@@ -975,6 +975,10 @@ export type Database = {
           team_id: string;
         }[];
       };
+      lock_match_lineups: {
+        Args: { p_match_id: string; p_relay_away?: number; p_relay_home?: number; p_slots: Json };
+        Returns: undefined;
+      };
       save_lineup: {
         Args: {
           p_match_id: string;
@@ -986,6 +990,7 @@ export type Database = {
         Returns: undefined;
       };
       set_current_season: { Args: { p_season_id: string }; Returns: undefined };
+      unlock_match_lineups: { Args: { p_match_id: string }; Returns: undefined };
     };
     Enums: {
       audit_action: 'insert' | 'update' | 'delete';
