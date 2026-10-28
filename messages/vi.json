@@ -36,6 +36,79 @@
     "awards": "Giải phụ",
     "rules": "Điều lệ"
   },
+  "Public": {
+    "provisional": "Tạm tính, vòng bảng chưa chốt",
+    "closed": "Vòng bảng đã chốt",
+    "stage": {
+      "semi_final": "Bán kết",
+      "third_place": "Tranh hạng 3",
+      "final": "Chung kết"
+    },
+    "matchStatus": {
+      "scheduled": "Sắp diễn ra",
+      "lineup_locked": "Đã khóa đội hình",
+      "in_progress": "Đang đấu",
+      "completed": "Kết thúc",
+      "forfeit": "Xử thua",
+      "annulled": "Đã hủy"
+    },
+    "standings": {
+      "title": "Bảng xếp hạng",
+      "subtitle": "Vòng bảng · {teams} đội · {played}/{total} trận",
+      "caption": "Bảng xếp hạng vòng bảng",
+      "empty": "Chưa có đội nào trong mùa giải này.",
+      "cols": {
+        "pos": "#",
+        "team": "Đội",
+        "played": "Tr",
+        "won": "T",
+        "lost": "B",
+        "points": "Điểm",
+        "sets": "Set",
+        "setDiff": "HS set",
+        "pointsFor": "Điểm số",
+        "pointDiff": "HS điểm",
+        "why": "Xếp nhờ"
+      },
+      "colsFull": {
+        "played": "Số trận",
+        "won": "Thắng",
+        "lost": "Thua",
+        "points": "Điểm (số trận thắng)",
+        "sets": "Set thắng–thua",
+        "setDiff": "Hiệu số set",
+        "pointsFor": "Điểm ghi–mất",
+        "pointDiff": "Hiệu số điểm"
+      },
+      "hint": {
+        "head_to_head": "đối đầu",
+        "mini_points": "mini-league: điểm",
+        "mini_set_diff": "mini-league: hiệu số set",
+        "mini_point_diff": "mini-league: hiệu số điểm",
+        "set_diff": "hiệu số set",
+        "point_diff": "hiệu số điểm",
+        "draw": "bốc thăm",
+        "draw_pending": "chờ bốc thăm"
+      },
+      "topCount": "Top {count} vào bán kết",
+      "disqualifiedTitle": "Bị loại",
+      "disqualifiedNote": "Các trận của đội bị loại ở vòng bảng bị hủy và không được tính.",
+      "noReason": "Không nêu lý do",
+      "tiebreakTitle": "Thứ tự xét",
+      "tiebreak": "Điểm → đối đầu (2 đội) hoặc mini-league (từ 3 đội: điểm, hiệu số set, hiệu số điểm giữa các đội đó) → hiệu số set toàn giải → hiệu số điểm toàn giải → bốc thăm."
+    },
+    "bracket": {
+      "title": "Knock-out",
+      "relayNote": "Đánh tiếp sức: 5 lượt, mốc 25/50/75/100/125. Chấp tổng được cộng từ đầu lượt 1.",
+      "pending": "Các đội được xác định khi vòng bảng chốt.",
+      "pendingSeeds": "SF1 = #1 v #4 · SF2 = #2 v #3",
+      "seed": "Hạt giống #{seed}",
+      "winnerOf": "Thắng {code}",
+      "loserOf": "Thua {code}",
+      "seedNumber": "#{seed}",
+      "empty": "Chưa có trận"
+    }
+  },
   "Admin": {
     "title": "Quản trị",
     "comingSoon": "Sắp ra mắt",

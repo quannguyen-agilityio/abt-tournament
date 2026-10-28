@@ -36,6 +36,79 @@
     "awards": "Side awards",
     "rules": "Rules"
   },
+  "Public": {
+    "provisional": "Provisional: group not closed yet",
+    "closed": "Group stage closed",
+    "stage": {
+      "semi_final": "Semi-final",
+      "third_place": "Third place",
+      "final": "Final"
+    },
+    "matchStatus": {
+      "scheduled": "Upcoming",
+      "lineup_locked": "Lineups locked",
+      "in_progress": "Live",
+      "completed": "Completed",
+      "forfeit": "Forfeit",
+      "annulled": "Annulled"
+    },
+    "standings": {
+      "title": "Standings",
+      "subtitle": "Group stage · {teams} teams · {played}/{total} matches",
+      "caption": "Group stage standings",
+      "empty": "No teams in this season yet.",
+      "cols": {
+        "pos": "#",
+        "team": "Team",
+        "played": "P",
+        "won": "W",
+        "lost": "L",
+        "points": "Pts",
+        "sets": "Sets",
+        "setDiff": "SD",
+        "pointsFor": "Points",
+        "pointDiff": "PD",
+        "why": "Decided by"
+      },
+      "colsFull": {
+        "played": "Played",
+        "won": "Won",
+        "lost": "Lost",
+        "points": "Points (matches won)",
+        "sets": "Sets won–lost",
+        "setDiff": "Set difference",
+        "pointsFor": "Points for–against",
+        "pointDiff": "Point difference"
+      },
+      "hint": {
+        "head_to_head": "head-to-head",
+        "mini_points": "mini-league: points",
+        "mini_set_diff": "mini-league: set difference",
+        "mini_point_diff": "mini-league: point difference",
+        "set_diff": "set difference",
+        "point_diff": "point difference",
+        "draw": "draw",
+        "draw_pending": "draw pending"
+      },
+      "topCount": "Top {count} go to the semi-finals",
+      "disqualifiedTitle": "Disqualified",
+      "disqualifiedNote": "Group matches of a disqualified team are annulled and do not count.",
+      "noReason": "No reason given",
+      "tiebreakTitle": "Tie-break order",
+      "tiebreak": "Points → head-to-head (2 teams) or mini-league (3+ teams: points, set difference, point difference among them) → overall set difference → overall point difference → draw."
+    },
+    "bracket": {
+      "title": "Knock-out",
+      "relayNote": "Relay: 5 legs to 25/50/75/100/125. The total handicap is added at the start of leg 1.",
+      "pending": "Teams are decided when the group stage closes.",
+      "pendingSeeds": "SF1 = #1 v #4 · SF2 = #2 v #3",
+      "seed": "Seed #{seed}",
+      "winnerOf": "Winner {code}",
+      "loserOf": "Loser {code}",
+      "seedNumber": "#{seed}",
+      "empty": "No match yet"
+    }
+  },
   "Admin": {
     "title": "Admin",
     "comingSoon": "Coming soon",
