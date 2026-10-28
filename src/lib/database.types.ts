@@ -968,7 +968,29 @@ export type Database = {
       };
       import_season_players: { Args: { p_rows: Json; p_season_id: string }; Returns: number };
       import_team_draw: { Args: { p_assignments: Json; p_new_teams: Json; p_season_id: string }; Returns: number };
+      lineup_override_codes: {
+        Args: { p_match_id: string };
+        Returns: {
+          rule_code: Database['public']['Enums']['lineup_rule_code'];
+          team_id: string;
+        }[];
+      };
+      lock_match_lineups: {
+        Args: { p_match_id: string; p_relay_away?: number; p_relay_home?: number; p_slots: Json };
+        Returns: undefined;
+      };
+      save_lineup: {
+        Args: {
+          p_match_id: string;
+          p_override_codes: Database['public']['Enums']['lineup_rule_code'][];
+          p_override_reason: string;
+          p_slots: Json;
+          p_team_id: string;
+        };
+        Returns: undefined;
+      };
       set_current_season: { Args: { p_season_id: string }; Returns: undefined };
+      unlock_match_lineups: { Args: { p_match_id: string }; Returns: undefined };
     };
     Enums: {
       audit_action: 'insert' | 'update' | 'delete';

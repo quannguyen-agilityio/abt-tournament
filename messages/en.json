@@ -769,6 +769,67 @@
           "invalid": "This list is not valid. Reload the page and try again.",
           "failed": "Could not save the attendance. Please try again."
         }
+      },
+      "lineup": {
+        "hint": "Pick two players per set. Each list shows only the present players whose rank fits the set, and the rules are checked as you pick.",
+        "previewHandicap": "Handicap preview",
+        "relayNet": "(net {net}, cap {cap})",
+        "relayPending": "Pick every leg for both teams to see the start points.",
+        "violationCount": "{count, plural, one {# violation} other {# violations}}",
+        "accepted": "Accepted by the committee",
+        "valid": "Lineup is valid",
+        "set": "Set {no}",
+        "leg": "Leg {no}",
+        "slotType": {
+          "open": "Open",
+          "low": "Low-rank",
+          "high": "High-rank"
+        },
+        "pickLabel": "Set {slot}, player {position}",
+        "pick": "— Pick a player —",
+        "absent": "(not present)",
+        "startHint": "Start points for this pair",
+        "violations": "Violations",
+        "overrideReason": "Override reason",
+        "overrideHint": "Saving records that the committee accepts these violations, with this reason.",
+        "notOverridable": "A team below the minimum present cannot be accepted. Disqualify the team instead.",
+        "refereeBlocked": "Referees cannot save a lineup with violations. Ask the committee.",
+        "save": "Save lineup",
+        "saveOverride": "Save with override",
+        "saving": "Saving…",
+        "saved": "Saved",
+        "errors": {
+          "locked": "The lineups are locked. Reload the page.",
+          "invalid": "This lineup is not valid. Reload the page and try again.",
+          "violations": "This lineup breaks the rules and cannot be saved.",
+          "reason": "Enter a reason to accept the violations.",
+          "failed": "Could not save the lineup. Please try again."
+        }
+      },
+      "lock": {
+        "hint": "Both lineups are ready. Locking takes the handicap snapshot and makes the lineups public.",
+        "notReady": "Save both lineups with no open violations to lock them.",
+        "lock": "Lock lineups",
+        "locking": "Locking…",
+        "errors": {
+          "locked": "The lineups are already locked. Reload the page.",
+          "invalid": "This match cannot be locked. Reload the page.",
+          "violations": "A lineup has violations the committee has not accepted. Reload the page.",
+          "incomplete": "Every set needs two players on each side.",
+          "changed": "A lineup changed in the meantime. Reload the page and try again.",
+          "failed": "Could not lock the lineups. Please try again."
+        },
+        "locked": "The lineups are locked and public. From now on, changes go through substitutions.",
+        "relayStart": "Start of leg 1",
+        "unlock": "Unlock lineups",
+        "unlocking": "Unlocking…",
+        "unlockHint": "Moves the match back to the lineup step and clears the handicaps. The audit log records who unlocked it.",
+        "unlockConfirm": "Unlock the lineups of {code}?",
+        "unlockErrors": {
+          "notLocked": "The lineups are no longer locked. Reload the page.",
+          "invalid": "Only the committee can unlock lineups.",
+          "failed": "Could not unlock the lineups. Please try again."
+        }
       }
     }
   },
