@@ -155,6 +155,36 @@
       "relayCap": "tối đa {cap}",
       "relayNoStart": "Không có điểm chấp",
       "progress": "Tiến độ tới {target}"
+    },
+    "gender": {
+      "male": "Nam",
+      "female": "Nữ"
+    },
+    "teams": {
+      "subtitle": "{count} đội",
+      "empty": "Chưa có đội nào trong mùa giải này.",
+      "captain": "Đội trưởng",
+      "captainOf": "Đội trưởng: {name}",
+      "noCaptain": "Chưa có đội trưởng",
+      "position": "#{position}",
+      "positionFull": "Hạng {position} trên bảng xếp hạng",
+      "record": "{won}–{lost}",
+      "recordFull": "{won} thắng, {lost} thua",
+      "disqualified": "Bị loại",
+      "back": "Đội",
+      "roster": "Danh sách VĐV",
+      "rosterCaption": "VĐV của {team}, xếp theo hạng",
+      "matches": "Trận đấu",
+      "noPlayers": "Đội chưa có VĐV.",
+      "noMatches": "Chưa có lịch thi đấu.",
+      "withdrawn": "Đã rút lui",
+      "cols": {
+        "rank": "Hạng",
+        "player": "VĐV",
+        "skill": "Điểm kỹ năng",
+        "gender": "Giới tính"
+      },
+      "rank": "R{rank}"
     }
   },
   "MatchStatus": {

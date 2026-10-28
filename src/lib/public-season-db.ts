@@ -8,6 +8,7 @@ import type { Database } from '@/lib/database.types';
 import type { MatchDetailInput, MatchPlayer } from '@/lib/public-match';
 import type { ScheduleMatchInput } from '@/lib/public-matches';
 import type { PublicTeam } from '@/lib/public-standings';
+import type { PublicPlayer } from '@/lib/public-teams';
 import { createClient } from '@/lib/supabase/server';
 
 export interface PublicSeason {
@@ -74,6 +75,38 @@ export const getSeasonTeams = cache(async (seasonId: string): Promise<PublicTeam
     color: t.color,
     disqualified: t.disqualified_at !== null,
     disqualifiedReason: t.disqualified_reason,
+  }));
+});
+
+/** Each team's captain (a `season_player` id), by team id. */
+export const getTeamCaptains = cache(async (seasonId: string): Promise<Map<string, string | null>> => {
+  await connection();
+  const supabase = await createClient();
+  const { data, error } = await supabase.from('team').select('id, captain_id').eq('season_id', seasonId);
+  if (error) throw error;
+  return new Map(data.map((t) => [t.id, t.captain_id]));
+});
+
+/** Every player registered in the season, withdrawn ones included, with their person. */
+export const getSeasonPlayers = cache(async (seasonId: string): Promise<PublicPlayer[]> => {
+  await connection();
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from('season_player')
+    .select('id, person_id, team_id, rank, skill_points, status, person(full_name, slug, gender, avatar_url)')
+    .eq('season_id', seasonId);
+  if (error) throw error;
+  return data.map((p) => ({
+    id: p.id,
+    personId: p.person_id,
+    slug: p.person.slug,
+    name: p.person.full_name,
+    gender: p.person.gender,
+    avatarUrl: p.person.avatar_url,
+    teamId: p.team_id,
+    rank: p.rank,
+    skill: p.skill_points,
+    status: p.status,
   }));
 });
 

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { formatDate, formatDateTime, formatDay, formatMoney, formatNumber, formatTime } from './format';
+import { formatDate, formatDateTime, formatDay, formatMoney, formatNumber, formatTime, signed } from './format';
 
 // Intl may emit U+00A0 / U+202F; compare with plain spaces.
 const norm = (s: string) => s.replace(/[  ]/g, ' ');
@@ -11,6 +11,15 @@ describe('formatNumber', () => {
   it('uses locale separators', () => {
     expect(norm(formatNumber(1234567.5, 'vi'))).toBe('1.234.567,5');
     expect(norm(formatNumber(1234567.5, 'en'))).toBe('1,234,567.5');
+  });
+});
+
+describe('signed', () => {
+  it('adds a plus to positive differences only', () => {
+    expect(signed(4, 'en')).toBe('+4');
+    expect(signed(0, 'en')).toBe('0');
+    expect(signed(-2, 'en')).toBe('-2');
+    expect(norm(signed(1200, 'vi'))).toBe('+1.200');
   });
 });
 

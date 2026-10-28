@@ -155,6 +155,36 @@
       "relayCap": "cap {cap}",
       "relayNoStart": "No start handicap",
       "progress": "Progress to {target}"
+    },
+    "gender": {
+      "male": "Male",
+      "female": "Female"
+    },
+    "teams": {
+      "subtitle": "{count, plural, one {# team} other {# teams}}",
+      "empty": "No teams in this season yet.",
+      "captain": "Captain",
+      "captainOf": "Captain: {name}",
+      "noCaptain": "No captain yet",
+      "position": "#{position}",
+      "positionFull": "Position {position} in the standings",
+      "record": "{won}–{lost}",
+      "recordFull": "{won} won, {lost} lost",
+      "disqualified": "Disqualified",
+      "back": "Teams",
+      "roster": "Roster",
+      "rosterCaption": "Players of {team}, by rank",
+      "matches": "Matches",
+      "noPlayers": "No players in this team yet.",
+      "noMatches": "No matches scheduled yet.",
+      "withdrawn": "Withdrawn",
+      "cols": {
+        "rank": "Rank",
+        "player": "Player",
+        "skill": "Skill points",
+        "gender": "Gender"
+      },
+      "rank": "R{rank}"
     }
   },
   "MatchStatus": {

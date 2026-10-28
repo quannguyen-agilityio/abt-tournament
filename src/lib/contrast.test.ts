@@ -1,6 +1,6 @@
 import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
-import { contrastRatio } from './contrast';
+import { contrastRatio, readableTextOn } from './contrast';
 import { parseThemeTokens } from './theme-tokens';
 
 const css = readFileSync(new URL('../app/globals.css', import.meta.url), 'utf8');
@@ -51,5 +51,14 @@ describe.each(['light', 'dark'] as const)('%s theme contrast', (theme) => {
   it('focus ring is at least 3:1 on background and card', () => {
     expect(contrastRatio(t.ring, t.background)).toBeGreaterThanOrEqual(3);
     expect(contrastRatio(t.ring, t.card)).toBeGreaterThanOrEqual(3);
+  });
+});
+
+describe('readableTextOn', () => {
+  it('picks white on dark colors and near-black on light ones', () => {
+    expect(readableTextOn('#2563eb')).toBe('#ffffff');
+    expect(readableTextOn('#475569')).toBe('#ffffff');
+    expect(readableTextOn('#facc15')).toBe('#111827');
+    expect(readableTextOn('#ffffff')).toBe('#111827');
   });
 });

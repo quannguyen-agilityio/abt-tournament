@@ -2,7 +2,7 @@ import { useLocale, useTranslations } from 'next-intl';
 import { TeamChip } from '@/components/team-chip';
 import type { MatchStage, MatchStatus } from '@/domain';
 import { Link } from '@/i18n/navigation';
-import { formatTime } from '@/lib/format';
+import { formatDateTime, formatTime } from '@/lib/format';
 import type { MatchCard as MatchCardData, MatchScore } from '@/lib/public-matches';
 import { cn } from '@/lib/utils';
 
@@ -41,19 +41,21 @@ export function useStageLabel() {
 export const scoreTone = (score: MatchScore, side: 'home' | 'away') =>
   score.winner !== null && score.winner !== side ? 'text-muted-foreground' : undefined;
 
-/** One P3 schedule card. Links to the match page (P4). */
+/** One P3 schedule card. Links to the match page (P4). `withDate` shows the day too, for lists not grouped by day. */
 export function MatchCard({
   match,
   year,
   teams,
   courts,
   timeZone,
+  withDate = false,
 }: {
   match: MatchCardData;
   year: string;
   teams: ReadonlyMap<string, CardTeam>;
   courts: ReadonlyMap<string, string>;
   timeZone: string;
+  withDate?: boolean;
 }) {
   const t = useTranslations('Public');
   const locale = useLocale() as 'vi' | 'en';
@@ -95,7 +97,9 @@ export function MatchCard({
       </div>
       {(match.scheduled_at || court) && (
         <div className="text-muted-foreground flex flex-wrap items-center gap-x-3 gap-y-1 text-xs tabular-nums">
-          {match.scheduled_at && <span>{formatTime(new Date(match.scheduled_at), locale, timeZone)}</span>}
+          {match.scheduled_at && (
+            <span>{(withDate ? formatDateTime : formatTime)(new Date(match.scheduled_at), locale, timeZone)}</span>
+          )}
           {court && <span>{court}</span>}
         </div>
       )}
