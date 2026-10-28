@@ -5,6 +5,7 @@ import { cache } from 'react';
 
 import { DEFAULT_SEASON_SETTINGS, parseSeasonSettings, type SeasonSettings } from '@/domain/settings';
 import type { Database } from '@/lib/database.types';
+import type { AwardInput } from '@/lib/public-awards';
 import type { MatchDetailInput, MatchPlayer } from '@/lib/public-match';
 import type { ScheduleMatchInput } from '@/lib/public-matches';
 import type { PublicTeam } from '@/lib/public-standings';
@@ -294,4 +295,26 @@ export const getMatchDetail = cache(async (seasonId: string, code: string): Prom
       ]),
     ),
   };
+});
+
+/** The season's side awards with their winners, the players they name and the related match. */
+export const getSeasonAwards = cache(async (seasonId: string): Promise<AwardInput[]> => {
+  await connection();
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from('award')
+    .select(
+      `id, sort_order, name_vi, name_en, criteria_vi, criteria_en, sponsor, value_vnd,
+      award_winner(id, kind, note, created_at, team(id, name, color), match(code),
+        award_winner_member(season_player(id, person(full_name, slug))))`,
+    )
+    .eq('season_id', seasonId);
+  if (error) throw error;
+  return data.map(({ award_winner: winners, ...award }) => ({
+    ...award,
+    winners: winners.map(({ award_winner_member: members, ...winner }) => ({
+      ...winner,
+      members: members.map(({ season_player: p }) => ({ id: p.id, name: p.person.full_name, slug: p.person.slug })),
+    })),
+  }));
 });
