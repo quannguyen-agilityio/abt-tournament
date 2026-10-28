@@ -591,6 +591,20 @@
         "self": "You cannot deactivate your own account.",
         "failed": "Could not update the account. Try again later."
       }
+    },
+    "matches": {
+      "title": "Matches",
+      "subtitle": "{season} · {count, plural, one {# match} other {# matches}}",
+      "noSeason": "There is no current season yet.",
+      "empty": "This season has no matches yet. The committee creates them on the Schedule page.",
+      "unscheduled": "No time yet",
+      "noCourt": "No court yet",
+      "tbd": "TBD",
+      "groups": {
+        "mine": "My matches · {count}",
+        "today": "Today · {count}",
+        "rest": "Other matches · {count}"
+      }
     }
   },
   "SeasonSettings": {

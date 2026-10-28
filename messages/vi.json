@@ -591,6 +591,20 @@
         "self": "Bạn không thể khóa tài khoản của chính mình.",
         "failed": "Không thể cập nhật tài khoản. Vui lòng thử lại sau."
       }
+    },
+    "matches": {
+      "title": "Trận đấu",
+      "subtitle": "{season} · {count} trận",
+      "noSeason": "Chưa có mùa giải hiện tại.",
+      "empty": "Mùa giải chưa có trận nào. BTC tạo lịch thi đấu ở trang Lịch thi đấu.",
+      "unscheduled": "Chưa xếp giờ",
+      "noCourt": "Chưa xếp sân",
+      "tbd": "Chưa xác định",
+      "groups": {
+        "mine": "Trận của tôi · {count}",
+        "today": "Hôm nay · {count}",
+        "rest": "Các trận khác · {count}"
+      }
     }
   },
   "SeasonSettings": {
