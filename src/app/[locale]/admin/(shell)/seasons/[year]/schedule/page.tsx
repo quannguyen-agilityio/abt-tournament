@@ -2,6 +2,7 @@ import { hasLocale } from 'next-intl';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { notFound } from 'next/navigation';
 import { Suspense } from 'react';
+import { MatchStatusBadge } from '@/components/match-status-badge';
 import { findScheduleConflicts } from '@/domain/schedule';
 import { DEFAULT_SEASON_SETTINGS, parseSeasonSettings } from '@/domain/settings';
 import { Link } from '@/i18n/navigation';
@@ -128,7 +129,7 @@ async function SeasonSchedule({ params }: Pick<PageProps<'/[locale]/admin/season
     >
       <div className="flex items-center gap-2">
         <b className="font-display">{m.code}</b>
-        <span className="text-muted-foreground text-xs">{t(`status.${m.status}`)}</span>
+        <MatchStatusBadge status={m.status} />
       </div>
       <div className="flex flex-wrap items-center gap-1 text-sm">
         {m.home_team_id && m.away_team_id ? (

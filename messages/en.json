@@ -109,6 +109,14 @@
       "empty": "No match yet"
     }
   },
+  "MatchStatus": {
+    "scheduled": "Scheduled",
+    "lineup_locked": "Lineups locked",
+    "in_progress": "In progress",
+    "completed": "Completed",
+    "forfeit": "Forfeit",
+    "annulled": "Annulled"
+  },
   "Admin": {
     "title": "Admin",
     "comingSoon": "Coming soon",
@@ -368,14 +376,6 @@
       "tbd": "TBD",
       "save": "Save",
       "saving": "Saving…",
-      "status": {
-        "scheduled": "Scheduled",
-        "lineup_locked": "Lineups locked",
-        "in_progress": "In progress",
-        "completed": "Completed",
-        "forfeit": "Forfeit",
-        "annulled": "Annulled"
-      },
       "conflicts": {
         "title": "Schedule conflicts",
         "none": "No conflicts.",
@@ -590,6 +590,57 @@
       "toggleErrors": {
         "self": "You cannot deactivate your own account.",
         "failed": "Could not update the account. Try again later."
+      }
+    },
+    "matches": {
+      "title": "Matches",
+      "subtitle": "{season} · {count, plural, one {# match} other {# matches}}",
+      "noSeason": "There is no current season yet.",
+      "empty": "This season has no matches yet. The committee creates them on the Schedule page.",
+      "unscheduled": "No time yet",
+      "noCourt": "No court yet",
+      "tbd": "TBD",
+      "groups": {
+        "mine": "My matches · {count}",
+        "today": "Today · {count}",
+        "rest": "Other matches · {count}"
+      }
+    },
+    "match": {
+      "back": "← Matches",
+      "stage": {
+        "group": "Group stage",
+        "semi_final": "Semi-final",
+        "third_place": "Third place",
+        "final": "Final"
+      },
+      "noCourt": "No court yet",
+      "unscheduled": "No time yet",
+      "tbd": "The teams of this match are not decided yet.",
+      "stepsLabel": "Match steps",
+      "steps": {
+        "attendance": "Attendance",
+        "lineup": "Lineups",
+        "lock": "Lock",
+        "scores": "Scores",
+        "done": "Complete"
+      },
+      "attendance": {
+        "hint": "Tick the players present for each team, then save. Each team needs at least {minimum} present.",
+        "count": "{count}/{total} present",
+        "noPlayers": "This team has no players yet.",
+        "belowMinimum": "Only {count} present (minimum {minimum}). The match cannot start.",
+        "disqualify": "Disqualify team",
+        "disqualifySoon": "Disqualifying a team arrives in an upcoming update.",
+        "save": "Save attendance",
+        "saving": "Saving…",
+        "saved": "Saved",
+        "locked": "The lineups are locked, so attendance can no longer change.",
+        "errors": {
+          "locked": "The lineups are locked, so attendance can no longer change. Reload the page.",
+          "invalid": "This list is not valid. Reload the page and try again.",
+          "failed": "Could not save the attendance. Please try again."
+        }
       }
     }
   },

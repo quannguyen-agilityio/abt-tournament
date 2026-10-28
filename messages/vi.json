@@ -109,6 +109,14 @@
       "empty": "Chưa có trận"
     }
   },
+  "MatchStatus": {
+    "scheduled": "Đã lên lịch",
+    "lineup_locked": "Đã khoá đội hình",
+    "in_progress": "Đang đấu",
+    "completed": "Đã kết thúc",
+    "forfeit": "Xử thua",
+    "annulled": "Đã huỷ"
+  },
   "Admin": {
     "title": "Quản trị",
     "comingSoon": "Sắp ra mắt",
@@ -368,14 +376,6 @@
       "tbd": "Chưa xác định",
       "save": "Lưu",
       "saving": "Đang lưu…",
-      "status": {
-        "scheduled": "Đã lên lịch",
-        "lineup_locked": "Đã khoá đội hình",
-        "in_progress": "Đang đấu",
-        "completed": "Đã kết thúc",
-        "forfeit": "Xử thua",
-        "annulled": "Đã huỷ"
-      },
       "conflicts": {
         "title": "Xung đột lịch",
         "none": "Không có xung đột.",
@@ -590,6 +590,57 @@
       "toggleErrors": {
         "self": "Bạn không thể khóa tài khoản của chính mình.",
         "failed": "Không thể cập nhật tài khoản. Vui lòng thử lại sau."
+      }
+    },
+    "matches": {
+      "title": "Trận đấu",
+      "subtitle": "{season} · {count} trận",
+      "noSeason": "Chưa có mùa giải hiện tại.",
+      "empty": "Mùa giải chưa có trận nào. BTC tạo lịch thi đấu ở trang Lịch thi đấu.",
+      "unscheduled": "Chưa xếp giờ",
+      "noCourt": "Chưa xếp sân",
+      "tbd": "Chưa xác định",
+      "groups": {
+        "mine": "Trận của tôi · {count}",
+        "today": "Hôm nay · {count}",
+        "rest": "Các trận khác · {count}"
+      }
+    },
+    "match": {
+      "back": "← Trận đấu",
+      "stage": {
+        "group": "Vòng bảng",
+        "semi_final": "Bán kết",
+        "third_place": "Tranh hạng ba",
+        "final": "Chung kết"
+      },
+      "noCourt": "Chưa xếp sân",
+      "unscheduled": "Chưa xếp giờ",
+      "tbd": "Hai đội của trận này chưa được xác định.",
+      "stepsLabel": "Các bước của trận",
+      "steps": {
+        "attendance": "Điểm danh",
+        "lineup": "Đội hình",
+        "lock": "Khoá",
+        "scores": "Tỉ số",
+        "done": "Hoàn tất"
+      },
+      "attendance": {
+        "hint": "Tích các VĐV có mặt của mỗi đội rồi bấm Lưu. Mỗi đội cần ít nhất {minimum} VĐV có mặt.",
+        "count": "{count}/{total} có mặt",
+        "noPlayers": "Đội chưa có VĐV nào.",
+        "belowMinimum": "Mới có {count} VĐV có mặt (tối thiểu {minimum}). Trận chưa thể bắt đầu.",
+        "disqualify": "Loại đội",
+        "disqualifySoon": "Chức năng loại đội sẽ có trong bản cập nhật tới.",
+        "save": "Lưu điểm danh",
+        "saving": "Đang lưu…",
+        "saved": "Đã lưu",
+        "locked": "Đội hình đã khoá nên không sửa điểm danh được nữa.",
+        "errors": {
+          "locked": "Đội hình đã khoá nên không sửa điểm danh được nữa. Tải lại trang.",
+          "invalid": "Danh sách không hợp lệ. Tải lại trang rồi thử lại.",
+          "failed": "Không lưu được điểm danh. Vui lòng thử lại."
+        }
       }
     }
   },
