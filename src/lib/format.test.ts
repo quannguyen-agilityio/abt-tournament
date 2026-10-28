@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { formatDate, formatDateTime, formatMoney, formatNumber, formatTime } from './format';
+import { formatDate, formatDateTime, formatDay, formatMoney, formatNumber, formatTime } from './format';
 
 // Intl may emit U+00A0 / U+202F; compare with plain spaces.
 const norm = (s: string) => s.replace(/[  ]/g, ' ');
@@ -38,5 +38,12 @@ describe('date and time in the season timezone', () => {
 
   it('honours an explicit timezone', () => {
     expect(formatDate(instant, 'en', 'UTC')).toBe('15/05/2027');
+  });
+});
+
+describe('formatDay', () => {
+  it('shows the weekday of a calendar day, whatever the timezone', () => {
+    expect(formatDay('2027-01-09', 'en')).toBe('Saturday 09/01');
+    expect(formatDay('2027-01-09', 'vi')).toBe('Thứ Bảy, 09/01');
   });
 });
