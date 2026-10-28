@@ -830,6 +830,25 @@
           "invalid": "Chỉ BTC mới mở khoá được đội hình.",
           "failed": "Không mở khoá được đội hình. Vui lòng thử lại."
         }
+      },
+      "scores": {
+        "hint": "Nhập tỉ số cuối của từng set rồi lưu dòng đó. Cặp được chấp xuất phát từ số điểm chấp, và set kết thúc khi một bên đạt {target} điểm.",
+        "setsWon": "Số set thắng",
+        "scoreLabel": "{slot}, điểm của {team}",
+        "save": "Lưu",
+        "saving": "Đang lưu…",
+        "retry": "Thử lại",
+        "saved": "Đã lưu",
+        "unsaved": "Chưa lưu",
+        "readOnly": "Trận đã hoàn tất nên tỉ số chỉ xem được.",
+        "errors": {
+          "closed": "Không thể thay đổi tỉ số của trận này nữa. Tải lại trang.",
+          "invalid": "Tỉ số không hợp lệ. Tải lại trang rồi thử lại.",
+          "violations": "Tỉ số vi phạm luật nên chưa được lưu.",
+          "changed": "Vừa có tỉ số khác được lưu và trang đã được cập nhật. Kiểm tra lại dòng này rồi lưu lại.",
+          "failed": "Không lưu được tỉ số. Vui lòng thử lại.",
+          "network": "Mất kết nối. Tỉ số vẫn được giữ ở đây: bấm thử lại khi có mạng."
+        }
       }
     }
   },

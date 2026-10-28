@@ -8,6 +8,7 @@ import { requireStaff } from '@/lib/auth/session';
 import { isUuid } from '@/lib/auth/users';
 import { attendanceEditable, parseAttendanceForm } from '@/lib/match-attendance';
 import { lineupEditable, lockSnapshot, overridable, parseLineupForm, unresolvedViolations } from '@/lib/match-lineup';
+import { parseScoreForm, scoresEditable, scoreState, slotScoreViolations, withScore } from '@/lib/match-scores';
 import { createClient } from '@/lib/supabase/server';
 
 export type AttendanceState = { ok: true; count: number } | { error: 'locked' | 'invalid' | 'failed' } | undefined;
@@ -240,4 +241,67 @@ export async function unlockLineups(_prev: UnlockState, formData: FormData): Pro
 
   refresh();
   return undefined;
+}
+
+/** A match with its season settings and the scores and start points of its slots. */
+async function loadScoreMatch(supabase: Supabase, matchId: string) {
+  const [matchResult, slotsResult] = await Promise.all([
+    supabase
+      .from('match')
+      .select('stage, status, home_team_id, away_team_id, season:season_id (settings)')
+      .eq('id', matchId)
+      .maybeSingle(),
+    supabase
+      .from('match_slot')
+      .select('slot_no, score_home, score_away, handicap_home, handicap_away')
+      .eq('match_id', matchId)
+      .order('slot_no'),
+  ]);
+  if (matchResult.error) throw matchResult.error;
+  if (slotsResult.error) throw slotsResult.error;
+  const match = matchResult.data;
+  if (!match?.season || !match.home_team_id || !match.away_team_id) return null;
+  const parsedSettings = parseSeasonSettings(match.season.settings);
+  return {
+    match,
+    settings: parsedSettings.ok ? parsedSettings.settings : DEFAULT_SEASON_SETTINGS,
+    slots: slotsResult.data,
+  };
+}
+
+export type ScoreState = { ok: true } | { error: 'closed' | 'invalid' | 'violations' | 'changed' | 'failed' };
+
+/**
+ * Saves one set's score on its own (A5 step 4), so a weak connection loses at most this row. The score
+ * is checked again here (spec §4.4) on the slots as they are saved; the first score starts the match.
+ * Called directly rather than as a form action, so the row keeps its input if the request fails.
+ */
+export async function saveSlotScore(formData: FormData): Promise<ScoreState> {
+  await requireStaff();
+  const input = parseScoreForm(formData);
+  if (!input) return { error: 'invalid' };
+  const { matchId, slotNo, score } = input;
+
+  const supabase = await createClient();
+  const loaded = await loadScoreMatch(supabase, matchId).catch(() => undefined);
+  if (loaded === undefined) return { error: 'failed' };
+  if (!loaded) return { error: 'invalid' };
+  const { match, settings, slots } = loaded;
+  if (!scoresEditable(match.status)) return { error: 'closed' };
+  if (match.stage !== 'group' || !slots.some((s) => s.slot_no === slotNo)) return { error: 'invalid' };
+  if (slotScoreViolations(withScore(slots, slotNo, score), slotNo, settings).length > 0) {
+    return { error: 'violations' };
+  }
+
+  const { error } = await supabase.rpc('save_slot_score', {
+    p_match_id: matchId,
+    p_slot_no: slotNo,
+    p_score_home: score.home,
+    p_score_away: score.away,
+    p_expected: scoreState(slots),
+  });
+  if (error) return { error: error.code === 'P0001' ? 'closed' : error.code === '40001' ? 'changed' : 'failed' };
+
+  refresh();
+  return { ok: true };
 }

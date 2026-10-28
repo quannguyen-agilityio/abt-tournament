@@ -830,6 +830,25 @@
           "invalid": "Only the committee can unlock lineups.",
           "failed": "Could not unlock the lineups. Please try again."
         }
+      },
+      "scores": {
+        "hint": "Enter each set's final score and save the row. A pair with start points begins from them, and a set ends when one side reaches {target}.",
+        "setsWon": "Sets won",
+        "scoreLabel": "{slot}, {team} score",
+        "save": "Save",
+        "saving": "Saving…",
+        "retry": "Retry",
+        "saved": "Saved",
+        "unsaved": "Not saved",
+        "readOnly": "The match is completed, so its scores are read-only.",
+        "errors": {
+          "closed": "Scores can no longer change for this match. Reload the page.",
+          "invalid": "This score is not valid. Reload the page and try again.",
+          "violations": "This score breaks the rules and was not saved.",
+          "changed": "Another score was saved in the meantime and the page was updated. Check this row and save again.",
+          "failed": "Could not save the score. Please try again.",
+          "network": "No connection. The score is kept here: retry when you are back online."
+        }
       }
     }
   },
