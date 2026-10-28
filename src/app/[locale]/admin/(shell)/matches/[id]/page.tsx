@@ -11,14 +11,17 @@ import { requireStaff } from '@/lib/auth/session';
 import { isUuid } from '@/lib/auth/users';
 import { formatDate, formatTime } from '@/lib/format';
 import { attendanceEditable } from '@/lib/match-attendance';
+import { lineupEditable, type SlotPair } from '@/lib/match-lineup';
 import { createClient } from '@/lib/supabase/server';
 import { cn } from '@/lib/utils';
 import { AttendanceForm, type AttendancePlayer } from './attendance-form';
+import { LineupStep, type LineupTeam } from './lineup-step';
 
 const STEPS = ['attendance', 'lineup', 'lock', 'scores', 'done'] as const;
+type Step = (typeof STEPS)[number];
 
-async function StaffMatch({ params }: Pick<PageProps<'/[locale]/admin/matches/[id]'>, 'params'>) {
-  const { locale, id } = await params;
+async function StaffMatch({ params, searchParams }: PageProps<'/[locale]/admin/matches/[id]'>) {
+  const [{ locale, id }, query] = await Promise.all([params, searchParams]);
   if (!hasLocale(routing.locales, locale)) notFound();
   setRequestLocale(locale);
   const viewer = await requireStaff();
@@ -30,7 +33,7 @@ async function StaffMatch({ params }: Pick<PageProps<'/[locale]/admin/matches/[i
   const { data: match, error } = await supabase
     .from('match')
     .select(
-      'id, code, stage, status, scheduled_at, home_team_id, away_team_id, court:court_id (name), season:season_id (settings)',
+      'id, code, stage, status, imported, scheduled_at, home_team_id, away_team_id, court:court_id (name), season:season_id (settings)',
     )
     .eq('id', id)
     .maybeSingle();
@@ -41,7 +44,7 @@ async function StaffMatch({ params }: Pick<PageProps<'/[locale]/admin/matches/[i
   const settings = parsedSettings.ok ? parsedSettings.settings : DEFAULT_SEASON_SETTINGS;
   const teamIds = [match.home_team_id, match.away_team_id].filter((x): x is string => x !== null);
 
-  const [teamsResult, playersResult, attendanceResult] = await Promise.all([
+  const [teamsResult, playersResult, attendanceResult, slotsResult, overridesResult] = await Promise.all([
     supabase.from('team').select('id, name, color').in('id', teamIds),
     supabase
       .from('season_player')
@@ -50,10 +53,19 @@ async function StaffMatch({ params }: Pick<PageProps<'/[locale]/admin/matches/[i
       .order('rank')
       .order('skill_points', { ascending: false }),
     supabase.from('match_attendance').select('team_id, season_player_id').eq('match_id', match.id),
+    supabase
+      .from('match_slot')
+      .select('slot_no, slot_type, home_p1, home_p2, away_p1, away_p2')
+      .eq('match_id', match.id)
+      .order('slot_no'),
+    // Which rules the BTC overrode, without the reasons (lineup_override itself is BTC-only).
+    supabase.rpc('lineup_override_codes', { p_match_id: match.id }),
   ]);
   if (teamsResult.error) throw teamsResult.error;
   if (playersResult.error) throw playersResult.error;
   if (attendanceResult.error) throw attendanceResult.error;
+  if (slotsResult.error) throw slotsResult.error;
+  if (overridesResult.error) throw overridesResult.error;
 
   const present = new Set(attendanceResult.data.map((a) => a.season_player_id));
   // Withdrawn players stay listed only if they were ticked before they withdrew.
@@ -67,8 +79,29 @@ async function StaffMatch({ params }: Pick<PageProps<'/[locale]/admin/matches/[i
 
   const at = match.scheduled_at ? new Date(match.scheduled_at) : null;
   const editable = attendanceEditable(match.status);
-  // Attendance is the only step built so far; the step bar shows where the flow goes next.
-  const current = 0;
+  const slots = slotsResult.data;
+  const lineupTeam = (team: (typeof teams)[number], side: 'home' | 'away'): LineupTeam => ({
+    team,
+    side,
+    present: rosterOf(team.id).filter((p) => present.has(p.id)),
+    saved: slots.map((slot): SlotPair => [slot[`${side}_p1`], slot[`${side}_p2`]]),
+    overridden: overridesResult.data.filter((o) => o.team_id === team.id).map((o) => o.rule_code),
+  });
+
+  // Steps reachable now: attendance and lineups while the match is scheduled. The rest of the flow
+  // follows in later updates.
+  const available: Step[] =
+    lineupEditable(match.status) && teams.length === 2 ? ['attendance', 'lineup'] : ['attendance'];
+  const bothTicked =
+    teams.length === 2 && teams.every((team) => attendanceResult.data.some((a) => a.team_id === team.id));
+  const requested = STEPS.find((step) => step === query.step);
+  const step: Step =
+    requested && available.includes(requested)
+      ? requested
+      : available.includes('lineup') && bothTicked
+        ? 'lineup'
+        : 'attendance';
+  const current = STEPS.indexOf(step);
 
   return (
     <div className="flex flex-col gap-5">
@@ -102,9 +135,9 @@ async function StaffMatch({ params }: Pick<PageProps<'/[locale]/admin/matches/[i
         aria-label={t('stepsLabel')}
         className="border-border bg-surface flex gap-5 overflow-x-auto rounded-[10px] border p-3"
       >
-        {STEPS.map((step, i) => (
+        {STEPS.map((stepName, i) => (
           <li
-            key={step}
+            key={stepName}
             aria-current={i === current ? 'step' : undefined}
             className={cn(
               'flex shrink-0 items-center gap-2 text-sm whitespace-nowrap',
@@ -119,7 +152,16 @@ async function StaffMatch({ params }: Pick<PageProps<'/[locale]/admin/matches/[i
             >
               {i + 1}
             </b>
-            {t(`steps.${step}`)}
+            {available.includes(stepName) && i !== current ? (
+              <Link
+                href={`/admin/matches/${match.id}?step=${stepName}`}
+                className="hover:text-foreground hover:underline"
+              >
+                {t(`steps.${stepName}`)}
+              </Link>
+            ) : (
+              t(`steps.${stepName}`)
+            )}
           </li>
         ))}
       </ol>
@@ -128,6 +170,25 @@ async function StaffMatch({ params }: Pick<PageProps<'/[locale]/admin/matches/[i
         <p className="border-border bg-surface text-muted-foreground rounded-[10px] border p-8 text-center text-sm">
           {t('tbd')}
         </p>
+      ) : step === 'lineup' ? (
+        <section aria-labelledby="lineup-title" className="flex flex-col gap-3">
+          <div>
+            <h2 id="lineup-title" className="font-display text-2xl font-bold uppercase">
+              {t('steps.lineup')}
+            </h2>
+            <p className="text-muted-foreground text-sm">{t('lineup.hint')}</p>
+          </div>
+          <LineupStep
+            matchId={match.id}
+            stage={match.stage}
+            imported={match.imported}
+            slots={slots.map((slot) => ({ slotNo: slot.slot_no, slotType: slot.slot_type }))}
+            teams={[lineupTeam(teams[0], 'home'), lineupTeam(teams[1], 'away')]}
+            settings={settings}
+            editable={lineupEditable(match.status)}
+            isBtc={viewer.role === 'btc'}
+          />
+        </section>
       ) : (
         <section aria-labelledby="attendance-title" className="flex flex-col gap-3">
           <div>
@@ -158,10 +219,10 @@ async function StaffMatch({ params }: Pick<PageProps<'/[locale]/admin/matches/[i
   );
 }
 
-export default function StaffMatchPage({ params }: PageProps<'/[locale]/admin/matches/[id]'>) {
+export default function StaffMatchPage({ params, searchParams }: PageProps<'/[locale]/admin/matches/[id]'>) {
   return (
     <Suspense>
-      <StaffMatch params={params} />
+      <StaffMatch params={params} searchParams={searchParams} />
     </Suspense>
   );
 }

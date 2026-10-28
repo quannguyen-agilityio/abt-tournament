@@ -689,6 +689,42 @@
           "invalid": "Danh sách không hợp lệ. Tải lại trang rồi thử lại.",
           "failed": "Không lưu được điểm danh. Vui lòng thử lại."
         }
+      },
+      "lineup": {
+        "hint": "Chọn 2 VĐV cho mỗi set. Mỗi danh sách chỉ có các VĐV có mặt và đúng rank của set; luật được kiểm tra ngay khi chọn.",
+        "previewHandicap": "Chấp dự kiến",
+        "relayNet": "(chênh {net}, tối đa {cap})",
+        "relayPending": "Chọn đủ các lượt của cả hai đội để xem điểm chấp.",
+        "violationCount": "{count} vi phạm",
+        "accepted": "BTC đã chấp nhận",
+        "valid": "Đội hình hợp lệ",
+        "set": "Set {no}",
+        "leg": "Lượt {no}",
+        "slotType": {
+          "open": "Tự do",
+          "low": "Rank thấp",
+          "high": "Rank cao"
+        },
+        "pickLabel": "Set {slot}, VĐV {position}",
+        "pick": "— Chọn VĐV —",
+        "absent": "(không có mặt)",
+        "startHint": "Điểm chấp xuất phát của cặp này",
+        "violations": "Vi phạm",
+        "overrideReason": "Lý do chấp nhận",
+        "overrideHint": "Khi lưu, hệ thống ghi nhận BTC chấp nhận các vi phạm này với lý do trên.",
+        "notOverridable": "Đội không đủ số VĐV tối thiểu thì không thể chấp nhận. Hãy loại đội.",
+        "refereeBlocked": "Trọng tài không lưu được đội hình vi phạm. Hãy báo BTC.",
+        "save": "Lưu đội hình",
+        "saveOverride": "Lưu và chấp nhận",
+        "saving": "Đang lưu…",
+        "saved": "Đã lưu",
+        "errors": {
+          "locked": "Đội hình đã khoá. Tải lại trang.",
+          "invalid": "Đội hình không hợp lệ. Tải lại trang rồi thử lại.",
+          "violations": "Đội hình vi phạm luật nên không lưu được.",
+          "reason": "Nhập lý do để chấp nhận các vi phạm.",
+          "failed": "Không lưu được đội hình. Vui lòng thử lại."
+        }
       }
     }
   },
