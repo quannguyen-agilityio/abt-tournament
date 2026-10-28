@@ -849,6 +849,30 @@
           "failed": "Không lưu được tỉ số. Vui lòng thử lại.",
           "network": "Mất kết nối. Tỉ số vẫn được giữ ở đây: bấm thử lại khi có mạng."
         }
+      },
+      "complete": {
+        "winner": "Thắng",
+        "notReady": "Lưu tỉ số hợp lệ cho mọi set để hoàn tất trận.",
+        "complete": "Hoàn tất trận",
+        "completing": "Đang hoàn tất…",
+        "confirm": "Hoàn tất trận {code}? {team} thắng {score}. Sau đó chỉ BTC mới mở lại được trận.",
+        "errors": {
+          "notReady": "Tỉ số đã lưu chưa phân định được trận. Tải lại trang.",
+          "closed": "Không thể hoàn tất trận lúc này. Tải lại trang.",
+          "invalid": "Không hoàn tất được trận này. Tải lại trang.",
+          "changed": "Tỉ số vừa bị thay đổi. Tải lại trang rồi thử lại.",
+          "failed": "Không hoàn tất được trận. Vui lòng thử lại."
+        },
+        "completed": "Trận đã hoàn tất.",
+        "reopen": "Mở lại trận",
+        "reopening": "Đang mở lại…",
+        "reopenHint": "Đưa trận về bước nhập tỉ số và xoá đội thắng để sửa tỉ số. Nhật ký ghi lại ai đã mở lại.",
+        "reopenConfirm": "Mở lại trận {code}?",
+        "reopenErrors": {
+          "notCompleted": "Trận không còn ở trạng thái hoàn tất. Tải lại trang.",
+          "invalid": "Chỉ BTC mới mở lại được trận.",
+          "failed": "Không mở lại được trận. Vui lòng thử lại."
+        }
       }
     }
   },

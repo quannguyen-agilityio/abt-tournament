@@ -12,10 +12,11 @@ import { isUuid } from '@/lib/auth/users';
 import { formatDate, formatTime } from '@/lib/format';
 import { attendanceEditable } from '@/lib/match-attendance';
 import { lineupEditable, type SlotPair } from '@/lib/match-lineup';
-import { scoresEditable } from '@/lib/match-scores';
+import { matchOutcome, scoresEditable } from '@/lib/match-scores';
 import { createClient } from '@/lib/supabase/server';
 import { cn } from '@/lib/utils';
 import { AttendanceForm, type AttendancePlayer } from './attendance-form';
+import { CompletedResult, CompleteForm } from './complete-form';
 import { LineupStep, type LineupTeam } from './lineup-step';
 import { LockedLineups } from './locked-lineups';
 import { ScoresStep } from './scores-step';
@@ -38,7 +39,7 @@ async function StaffMatch({ params, searchParams }: PageProps<'/[locale]/admin/m
   const { data: match, error } = await supabase
     .from('match')
     .select(
-      'id, code, stage, status, imported, relay_handicap_home, relay_handicap_away, scheduled_at, home_team_id, away_team_id, court:court_id (name), season:season_id (settings)',
+      'id, code, stage, status, imported, relay_handicap_home, relay_handicap_away, winner_team_id, scheduled_at, home_team_id, away_team_id, court:court_id (name), season:season_id (settings)',
     )
     .eq('id', id)
     .maybeSingle();
@@ -105,7 +106,9 @@ async function StaffMatch({ params, searchParams }: PageProps<'/[locale]/admin/m
       : lineupEditable(match.status)
         ? ['attendance', 'lineup']
         : scoring
-          ? ['attendance', 'lock', 'scores']
+          ? match.status === 'completed'
+            ? ['attendance', 'lock', 'scores', 'done']
+            : ['attendance', 'lock', 'scores']
           : locked
             ? ['attendance', 'lock']
             : ['attendance'];
@@ -115,16 +118,34 @@ async function StaffMatch({ params, searchParams }: PageProps<'/[locale]/admin/m
   const step: Step =
     requested && available.includes(requested)
       ? requested
-      : available.includes('scores')
-        ? 'scores'
-        : locked && available.includes('lock')
-          ? 'lock'
-          : available.includes('lineup') && bothTicked
-            ? 'lineup'
-            : 'attendance';
+      : available.includes('done')
+        ? 'done'
+        : available.includes('scores')
+          ? 'scores'
+          : locked && available.includes('lock')
+            ? 'lock'
+            : available.includes('lineup') && bothTicked
+              ? 'lineup'
+              : 'attendance';
   const nameOf = new Map(playersResult.data.map((p) => [p.id, p.person?.full_name ?? '']));
   const namesOf = (...ids: (string | null)[]) => ids.filter((x) => x !== null).map((x) => nameOf.get(x) ?? '—');
   const current = STEPS.indexOf(step);
+
+  // The result from the saved scores; once completed, the stored winner.
+  const outcome = matchOutcome(slots, settings);
+  const sideOf = (teamId: string | null) =>
+    teamId === match.home_team_id ? 'home' : teamId === match.away_team_id ? 'away' : null;
+  const winnerSide = match.status === 'completed' ? sideOf(match.winner_team_id) : outcome.winner;
+  const winner = teams.length === 2 && winnerSide ? teams[winnerSide === 'home' ? 0 : 1] : null;
+  const scoreRows = slots.map((slot) => ({
+    slotNo: slot.slot_no,
+    slotType: slot.slot_type,
+    home: namesOf(slot.home_p1, slot.home_p2),
+    away: namesOf(slot.away_p1, slot.away_p2),
+    handicap: { home: slot.handicap_home, away: slot.handicap_away },
+    score:
+      slot.score_home !== null && slot.score_away !== null ? { home: slot.score_home, away: slot.score_away } : null,
+  }));
 
   return (
     <div className="flex flex-col gap-5">
@@ -206,19 +227,32 @@ async function StaffMatch({ params, searchParams }: PageProps<'/[locale]/admin/m
           <ScoresStep
             matchId={match.id}
             teams={[teams[0], teams[1]]}
-            slots={slots.map((slot) => ({
-              slotNo: slot.slot_no,
-              slotType: slot.slot_type,
-              home: namesOf(slot.home_p1, slot.home_p2),
-              away: namesOf(slot.away_p1, slot.away_p2),
-              handicap: { home: slot.handicap_home, away: slot.handicap_away },
-              score:
-                slot.score_home !== null && slot.score_away !== null
-                  ? { home: slot.score_home, away: slot.score_away }
-                  : null,
-            }))}
+            slots={scoreRows}
             settings={settings}
             editable={scoresEditable(match.status)}
+          />
+          {match.status === 'in_progress' && (
+            <CompleteForm matchId={match.id} code={match.code} winner={winner} score={outcome.score} />
+          )}
+        </section>
+      ) : step === 'done' ? (
+        <section aria-labelledby="done-title" className="flex flex-col gap-3">
+          <h2 id="done-title" className="font-display text-2xl font-bold uppercase">
+            {t('steps.done')}
+          </h2>
+          <CompletedResult
+            matchId={match.id}
+            code={match.code}
+            winner={winner}
+            score={outcome.score}
+            canReopen={viewer.role === 'btc'}
+          />
+          <ScoresStep
+            matchId={match.id}
+            teams={[teams[0], teams[1]]}
+            slots={scoreRows}
+            settings={settings}
+            editable={false}
           />
         </section>
       ) : step === 'lock' ? (

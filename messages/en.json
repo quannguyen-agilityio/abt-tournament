@@ -849,6 +849,30 @@
           "failed": "Could not save the score. Please try again.",
           "network": "No connection. The score is kept here: retry when you are back online."
         }
+      },
+      "complete": {
+        "winner": "Winner",
+        "notReady": "Save every set with a valid score to complete the match.",
+        "complete": "Complete match",
+        "completing": "Completing…",
+        "confirm": "Complete {code}? {team} wins {score}. After this, only the committee can reopen the match.",
+        "errors": {
+          "notReady": "The saved scores do not decide the match yet. Reload the page.",
+          "closed": "This match cannot be completed now. Reload the page.",
+          "invalid": "This match cannot be completed. Reload the page.",
+          "changed": "A score changed in the meantime. Reload the page and try again.",
+          "failed": "Could not complete the match. Please try again."
+        },
+        "completed": "The match is completed.",
+        "reopen": "Reopen match",
+        "reopening": "Reopening…",
+        "reopenHint": "Moves the match back to score entry and clears the winner, so a score can be corrected. The audit log records who reopened it.",
+        "reopenConfirm": "Reopen {code}?",
+        "reopenErrors": {
+          "notCompleted": "The match is no longer completed. Reload the page.",
+          "invalid": "Only the committee can reopen a match.",
+          "failed": "Could not reopen the match. Please try again."
+        }
       }
     }
   },

@@ -8,7 +8,14 @@ import { requireStaff } from '@/lib/auth/session';
 import { isUuid } from '@/lib/auth/users';
 import { attendanceEditable, parseAttendanceForm } from '@/lib/match-attendance';
 import { lineupEditable, lockSnapshot, overridable, parseLineupForm, unresolvedViolations } from '@/lib/match-lineup';
-import { parseScoreForm, scoresEditable, scoreState, slotScoreViolations, withScore } from '@/lib/match-scores';
+import {
+  matchOutcome,
+  parseScoreForm,
+  scoresEditable,
+  scoreState,
+  slotScoreViolations,
+  withScore,
+} from '@/lib/match-scores';
 import { createClient } from '@/lib/supabase/server';
 
 export type AttendanceState = { ok: true; count: number } | { error: 'locked' | 'invalid' | 'failed' } | undefined;
@@ -243,7 +250,7 @@ export async function unlockLineups(_prev: UnlockState, formData: FormData): Pro
   return undefined;
 }
 
-/** A match with its season settings and the scores and start points of its slots. */
+/** A match with both teams, its season settings and the scores and start points of its slots. */
 async function loadScoreMatch(supabase: Supabase, matchId: string) {
   const [matchResult, slotsResult] = await Promise.all([
     supabase
@@ -264,6 +271,7 @@ async function loadScoreMatch(supabase: Supabase, matchId: string) {
   const parsedSettings = parseSeasonSettings(match.season.settings);
   return {
     match,
+    teams: { home: match.home_team_id, away: match.away_team_id },
     settings: parsedSettings.ok ? parsedSettings.settings : DEFAULT_SEASON_SETTINGS,
     slots: slotsResult.data,
   };
@@ -304,4 +312,52 @@ export async function saveSlotScore(formData: FormData): Promise<ScoreState> {
 
   refresh();
   return { ok: true };
+}
+
+export type CompleteState = { error: 'notReady' | 'closed' | 'invalid' | 'changed' | 'failed' } | undefined;
+
+/**
+ * Completes a match (A5 step 5): derives the winner from the saved scores (spec §4.4) and stores it.
+ * From then on only the BTC can change the match, by reopening it.
+ */
+export async function completeMatch(_prev: CompleteState, formData: FormData): Promise<CompleteState> {
+  await requireStaff();
+  const matchId = String(formData.get('matchId') ?? '');
+  if (!isUuid(matchId)) return { error: 'invalid' };
+
+  const supabase = await createClient();
+  const loaded = await loadScoreMatch(supabase, matchId).catch(() => undefined);
+  if (loaded === undefined) return { error: 'failed' };
+  if (!loaded) return { error: 'invalid' };
+  const { match, teams, settings, slots } = loaded;
+  if (match.status !== 'in_progress') return { error: 'closed' };
+  if (match.stage !== 'group') return { error: 'invalid' };
+  const { winner } = matchOutcome(slots, settings);
+  if (!winner) return { error: 'notReady' };
+
+  const { error } = await supabase.rpc('complete_match', {
+    p_match_id: matchId,
+    p_winner_team_id: teams[winner],
+    p_expected: scoreState(slots),
+  });
+  if (error) return { error: error.code === 'P0001' ? 'closed' : error.code === '40001' ? 'changed' : 'failed' };
+
+  refresh();
+  return undefined;
+}
+
+export type ReopenState = { error: 'notCompleted' | 'invalid' | 'failed' } | undefined;
+
+/** BTC only: moves a completed match back to score entry and clears the winner. The audit log records it. */
+export async function reopenMatch(_prev: ReopenState, formData: FormData): Promise<ReopenState> {
+  const viewer = await requireStaff();
+  const matchId = String(formData.get('matchId') ?? '');
+  if (viewer.role !== 'btc' || !isUuid(matchId)) return { error: 'invalid' };
+
+  const supabase = await createClient();
+  const { error } = await supabase.rpc('reopen_match', { p_match_id: matchId });
+  if (error) return { error: error.code === 'P0001' ? 'notCompleted' : 'failed' };
+
+  refresh();
+  return undefined;
 }
