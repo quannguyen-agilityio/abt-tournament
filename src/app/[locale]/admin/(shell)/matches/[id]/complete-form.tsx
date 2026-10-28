@@ -62,7 +62,7 @@ export function CompletedResult({ matchId, code, winner, score, canReopen }: Pro
         role="status"
         className="border-win/35 bg-win/10 flex flex-wrap items-center gap-2 rounded-[10px] border p-3 text-sm"
       >
-        {t('completed')}
+        {t('completed')}{' '}
         {winner && (
           <>
             {t('winner')} <TeamChip name={winner.name} color={winner.color} />
