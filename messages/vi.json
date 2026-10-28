@@ -605,6 +605,43 @@
         "today": "Hôm nay · {count}",
         "rest": "Các trận khác · {count}"
       }
+    },
+    "match": {
+      "back": "← Trận đấu",
+      "stage": {
+        "group": "Vòng bảng",
+        "semi_final": "Bán kết",
+        "third_place": "Tranh hạng ba",
+        "final": "Chung kết"
+      },
+      "noCourt": "Chưa xếp sân",
+      "unscheduled": "Chưa xếp giờ",
+      "tbd": "Hai đội của trận này chưa được xác định.",
+      "stepsLabel": "Các bước của trận",
+      "steps": {
+        "attendance": "Điểm danh",
+        "lineup": "Đội hình",
+        "lock": "Khoá",
+        "scores": "Tỉ số",
+        "done": "Hoàn tất"
+      },
+      "attendance": {
+        "hint": "Tích các VĐV có mặt của mỗi đội rồi bấm Lưu. Mỗi đội cần ít nhất {minimum} VĐV có mặt.",
+        "count": "{count}/{total} có mặt",
+        "noPlayers": "Đội chưa có VĐV nào.",
+        "belowMinimum": "Mới có {count} VĐV có mặt (tối thiểu {minimum}). Trận chưa thể bắt đầu.",
+        "disqualify": "Loại đội",
+        "disqualifySoon": "Chức năng loại đội sẽ có trong bản cập nhật tới.",
+        "save": "Lưu điểm danh",
+        "saving": "Đang lưu…",
+        "saved": "Đã lưu",
+        "locked": "Đội hình đã khoá nên không sửa điểm danh được nữa.",
+        "errors": {
+          "locked": "Đội hình đã khoá nên không sửa điểm danh được nữa. Tải lại trang.",
+          "invalid": "Danh sách không hợp lệ. Tải lại trang rồi thử lại.",
+          "failed": "Không lưu được điểm danh. Vui lòng thử lại."
+        }
+      }
     }
   },
   "SeasonSettings": {

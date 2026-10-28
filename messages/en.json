@@ -605,6 +605,43 @@
         "today": "Today · {count}",
         "rest": "Other matches · {count}"
       }
+    },
+    "match": {
+      "back": "← Matches",
+      "stage": {
+        "group": "Group stage",
+        "semi_final": "Semi-final",
+        "third_place": "Third place",
+        "final": "Final"
+      },
+      "noCourt": "No court yet",
+      "unscheduled": "No time yet",
+      "tbd": "The teams of this match are not decided yet.",
+      "stepsLabel": "Match steps",
+      "steps": {
+        "attendance": "Attendance",
+        "lineup": "Lineups",
+        "lock": "Lock",
+        "scores": "Scores",
+        "done": "Complete"
+      },
+      "attendance": {
+        "hint": "Tick the players present for each team, then save. Each team needs at least {minimum} present.",
+        "count": "{count}/{total} present",
+        "noPlayers": "This team has no players yet.",
+        "belowMinimum": "Only {count} present (minimum {minimum}). The match cannot start.",
+        "disqualify": "Disqualify team",
+        "disqualifySoon": "Disqualifying a team arrives in an upcoming update.",
+        "save": "Save attendance",
+        "saving": "Saving…",
+        "saved": "Saved",
+        "locked": "The lineups are locked, so attendance can no longer change.",
+        "errors": {
+          "locked": "The lineups are locked, so attendance can no longer change. Reload the page.",
+          "invalid": "This list is not valid. Reload the page and try again.",
+          "failed": "Could not save the attendance. Please try again."
+        }
+      }
     }
   },
   "SeasonSettings": {
