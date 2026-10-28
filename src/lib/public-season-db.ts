@@ -5,6 +5,7 @@ import { cache } from 'react';
 
 import { DEFAULT_SEASON_SETTINGS, parseSeasonSettings, type SeasonSettings } from '@/domain/settings';
 import type { Database } from '@/lib/database.types';
+import type { MatchDetailInput, MatchPlayer } from '@/lib/public-match';
 import type { ScheduleMatchInput } from '@/lib/public-matches';
 import type { PublicTeam } from '@/lib/public-standings';
 import { createClient } from '@/lib/supabase/server';
@@ -128,4 +129,76 @@ export const getSeasonSchedule = cache(async (seasonId: string): Promise<Schedul
     .eq('season_id', seasonId);
   if (error) throw error;
   return data.map(({ match_slot: slots, ...match }) => ({ ...match, slots }));
+});
+
+export interface MatchDetail extends MatchDetailInput {
+  court: string | null;
+  referee: string | null;
+  players: Map<string, MatchPlayer>;
+}
+
+/**
+ * One match of the season by code, with its slots, substitutions, the players they name and the
+ * referee's display name. RLS returns no slots until the lineup is public (A6).
+ */
+export const getMatchDetail = cache(async (seasonId: string, code: string): Promise<MatchDetail | null> => {
+  await connection();
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from('match')
+    .select(
+      `id, code, stage, round, status, status_before_annul, home_team_id, away_team_id, forfeit_team_id,
+      forfeit_reason, winner_team_id, scheduled_at, referee_id, relay_handicap_home, relay_handicap_away,
+      court(name),
+      match_slot(slot_no, slot_type, home_p1, home_p2, away_p1, away_p2, handicap_home, handicap_away,
+        score_home, score_away, slot_substitution(side, replaced_id, substitute_id, reason, created_at))`,
+    )
+    .eq('season_id', seasonId)
+    .eq('code', code)
+    .maybeSingle();
+  if (error) throw error;
+  if (!data) return null;
+
+  const { court, referee_id: refereeId, match_slot: rows, ...match } = data;
+  const slots = rows.map(({ slot_substitution: subs, ...slot }) => ({
+    ...slot,
+    substitutions: [...subs]
+      .sort((a, b) => a.created_at.localeCompare(b.created_at))
+      .map(({ side, replaced_id, substitute_id, reason }) => ({ side, replaced_id, substitute_id, reason })),
+  }));
+  const ids = [
+    ...new Set(
+      slots.flatMap((s) => [
+        s.home_p1,
+        s.home_p2,
+        s.away_p1,
+        s.away_p2,
+        ...s.substitutions.flatMap((sub) => [sub.replaced_id, sub.substitute_id]),
+      ]),
+    ),
+  ].filter((id): id is string => id !== null);
+
+  const [players, referee] = await Promise.all([
+    ids.length === 0
+      ? Promise.resolve({ data: [], error: null })
+      : supabase.from('season_player').select('id, rank, skill_points, person(full_name, slug)').in('id', ids),
+    refereeId
+      ? supabase.from('referee_name').select('display_name').eq('user_id', refereeId).maybeSingle()
+      : Promise.resolve({ data: null, error: null }),
+  ]);
+  if (players.error) throw players.error;
+  if (referee.error) throw referee.error;
+
+  return {
+    ...match,
+    slots,
+    court: court?.name ?? null,
+    referee: referee.data?.display_name ?? null,
+    players: new Map(
+      players.data.map((p) => [
+        p.id,
+        { id: p.id, name: p.person.full_name, slug: p.person.slug, rank: p.rank, skill: p.skill_points },
+      ]),
+    ),
+  };
 });

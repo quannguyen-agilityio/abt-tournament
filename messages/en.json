@@ -125,6 +125,36 @@
       "empty": "No matches fit these filters.",
       "noSchedule": "No schedule yet.",
       "unscheduled": "Time to be announced"
+    },
+    "match": {
+      "referee": "Referee: {name}",
+      "sets": "Sets",
+      "legs": "Legs",
+      "set": "Set {no}",
+      "leg": "Leg {no}",
+      "slotType": {
+        "open": "Open",
+        "low": "Low-rank",
+        "high": "High-rank"
+      },
+      "rankSkill": "R{rank} · {skill}",
+      "rankSkillFull": "Rank {rank}, {skill} skill points",
+      "start": "+{points} start",
+      "toMilestone": "→ {milestone}",
+      "notPlayed": "Not played yet",
+      "winner": "Winner",
+      "lineupHidden": "Lineups are published once the match lineups are locked.",
+      "substitution": "Substitution",
+      "forfeitTitle": "{team} forfeits",
+      "noReason": "No reason given",
+      "forfeitGroup": "Recorded as {sets}–0 in sets and {target}–0 in every set.",
+      "forfeitKo": "Recorded as {target}–0; the winner advances.",
+      "annulledNote": "Annulled matches do not count toward the standings or player stats.",
+      "annulledReason": "{team} was disqualified: {reason}",
+      "relayStart": "Start handicap",
+      "relayCap": "cap {cap}",
+      "relayNoStart": "No start handicap",
+      "progress": "Progress to {target}"
     }
   },
   "Admin": {

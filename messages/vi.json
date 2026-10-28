@@ -125,6 +125,36 @@
       "empty": "Không có trận nào khớp bộ lọc.",
       "noSchedule": "Chưa có lịch thi đấu.",
       "unscheduled": "Chưa xếp lịch"
+    },
+    "match": {
+      "referee": "Trọng tài: {name}",
+      "sets": "Các set",
+      "legs": "Các lượt",
+      "set": "Set {no}",
+      "leg": "Lượt {no}",
+      "slotType": {
+        "open": "Tự do",
+        "low": "Rank thấp",
+        "high": "Rank cao"
+      },
+      "rankSkill": "R{rank} · {skill}",
+      "rankSkillFull": "Rank {rank}, điểm kỹ năng {skill}",
+      "start": "+{points} chấp",
+      "toMilestone": "→ {milestone}",
+      "notPlayed": "Chưa đấu",
+      "winner": "Thắng",
+      "lineupHidden": "Đội hình được công bố khi trận đấu đã khóa đội hình.",
+      "substitution": "Thay người",
+      "forfeitTitle": "{team} bị xử thua",
+      "noReason": "Không ghi lý do",
+      "forfeitGroup": "Ghi nhận {sets}–0 về set, {target}–0 mỗi set.",
+      "forfeitKo": "Ghi nhận {target}–0, đội thắng đi tiếp.",
+      "annulledNote": "Trận đã hủy không tính vào bảng xếp hạng và thống kê VĐV.",
+      "annulledReason": "{team} bị loại: {reason}",
+      "relayStart": "Chấp đầu lượt 1",
+      "relayCap": "tối đa {cap}",
+      "relayNoStart": "Không có điểm chấp",
+      "progress": "Tiến độ tới {target}"
     }
   },
   "Admin": {
