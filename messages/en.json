@@ -833,7 +833,11 @@
       },
       "scores": {
         "hint": "Enter each set's final score and save the row. A pair with start points begins from them, and a set ends when one side reaches {target}.",
+        "hintRelay": "Enter the running score at the end of each leg, in order, and save it. Leg 1 starts from the start points, each leg ends when one side reaches its milestone, and the side that reaches {milestone} wins.",
         "setsWon": "Sets won",
+        "relayScore": "Score",
+        "relayStart": "Start of leg 1",
+        "toMilestone": "to {milestone}",
         "scoreLabel": "{slot}, {team} score",
         "save": "Save",
         "saving": "Saving…",

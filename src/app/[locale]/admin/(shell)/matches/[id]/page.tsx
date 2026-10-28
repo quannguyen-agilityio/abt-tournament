@@ -12,7 +12,7 @@ import { isUuid } from '@/lib/auth/users';
 import { formatDate, formatTime } from '@/lib/format';
 import { attendanceEditable } from '@/lib/match-attendance';
 import { lineupEditable, type SlotPair } from '@/lib/match-lineup';
-import { matchOutcome, scoresEditable } from '@/lib/match-scores';
+import { matchOutcome, scoreRules, scoresEditable } from '@/lib/match-scores';
 import { createClient } from '@/lib/supabase/server';
 import { cn } from '@/lib/utils';
 import { AttendanceForm, type AttendancePlayer } from './attendance-form';
@@ -97,21 +97,18 @@ async function StaffMatch({ params, searchParams }: PageProps<'/[locale]/admin/m
   });
 
   // Steps reachable now: attendance and lineups while the match is scheduled, the locked lineups and the
-  // scores once they are locked. Relay legs follow in a later update.
+  // scores once they are locked, and the result once the match is completed.
   const locked = LOCKED_STATUSES.includes(match.status);
-  const scoring = locked && match.stage === 'group';
   const available: Step[] =
     teams.length < 2
       ? ['attendance']
       : lineupEditable(match.status)
         ? ['attendance', 'lineup']
-        : scoring
+        : locked
           ? match.status === 'completed'
             ? ['attendance', 'lock', 'scores', 'done']
             : ['attendance', 'lock', 'scores']
-          : locked
-            ? ['attendance', 'lock']
-            : ['attendance'];
+          : ['attendance'];
   const bothTicked =
     teams.length === 2 && teams.every((team) => attendanceResult.data.some((a) => a.team_id === team.id));
   const requested = STEPS.find((step) => step === query.step);
@@ -132,7 +129,8 @@ async function StaffMatch({ params, searchParams }: PageProps<'/[locale]/admin/m
   const current = STEPS.indexOf(step);
 
   // The result from the saved scores; once completed, the stored winner.
-  const outcome = matchOutcome(slots, settings);
+  const rules = scoreRules(match);
+  const outcome = matchOutcome(rules, slots, settings);
   const sideOf = (teamId: string | null) =>
     teamId === match.home_team_id ? 'home' : teamId === match.away_team_id ? 'away' : null;
   const winnerSide = match.status === 'completed' ? sideOf(match.winner_team_id) : outcome.winner;
@@ -221,13 +219,18 @@ async function StaffMatch({ params, searchParams }: PageProps<'/[locale]/admin/m
               {t('steps.scores')}
             </h2>
             <p className="text-muted-foreground text-sm">
-              {scoresEditable(match.status) ? t('scores.hint', { target: settings.set_target }) : t('scores.readOnly')}
+              {!scoresEditable(match.status)
+                ? t('scores.readOnly')
+                : rules.relay
+                  ? t('scores.hintRelay', { milestone: settings.relay_milestones.at(-1) ?? 0 })
+                  : t('scores.hint', { target: settings.set_target })}
             </p>
           </div>
           <ScoresStep
             matchId={match.id}
             teams={[teams[0], teams[1]]}
             slots={scoreRows}
+            rules={rules}
             settings={settings}
             editable={scoresEditable(match.status)}
           />
@@ -251,6 +254,7 @@ async function StaffMatch({ params, searchParams }: PageProps<'/[locale]/admin/m
             matchId={match.id}
             teams={[teams[0], teams[1]]}
             slots={scoreRows}
+            rules={rules}
             settings={settings}
             editable={false}
           />

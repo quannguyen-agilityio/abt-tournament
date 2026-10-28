@@ -14,6 +14,7 @@ import {
   scoresEditable,
   scoreState,
   slotScoreViolations,
+  scoreRules,
   withScore,
 } from '@/lib/match-scores';
 import { createClient } from '@/lib/supabase/server';
@@ -250,12 +251,14 @@ export async function unlockLineups(_prev: UnlockState, formData: FormData): Pro
   return undefined;
 }
 
-/** A match with both teams, its season settings and the scores and start points of its slots. */
+/** A match with both teams, how it is scored, its season settings and the scores and start points of its slots. */
 async function loadScoreMatch(supabase: Supabase, matchId: string) {
   const [matchResult, slotsResult] = await Promise.all([
     supabase
       .from('match')
-      .select('stage, status, home_team_id, away_team_id, season:season_id (settings)')
+      .select(
+        'stage, status, home_team_id, away_team_id, relay_handicap_home, relay_handicap_away, season:season_id (settings)',
+      )
       .eq('id', matchId)
       .maybeSingle(),
     supabase
@@ -272,6 +275,7 @@ async function loadScoreMatch(supabase: Supabase, matchId: string) {
   return {
     match,
     teams: { home: match.home_team_id, away: match.away_team_id },
+    rules: scoreRules(match),
     settings: parsedSettings.ok ? parsedSettings.settings : DEFAULT_SEASON_SETTINGS,
     slots: slotsResult.data,
   };
@@ -280,7 +284,7 @@ async function loadScoreMatch(supabase: Supabase, matchId: string) {
 export type ScoreState = { ok: true } | { error: 'closed' | 'invalid' | 'violations' | 'changed' | 'failed' };
 
 /**
- * Saves one set's score on its own (A5 step 4), so a weak connection loses at most this row. The score
+ * Saves one set's score, or one relay leg's cumulative score, on its own (A5 step 4), so a weak connection loses at most this row. The score
  * is checked again here (spec §4.4) on the slots as they are saved; the first score starts the match.
  * Called directly rather than as a form action, so the row keeps its input if the request fails.
  */
@@ -294,10 +298,10 @@ export async function saveSlotScore(formData: FormData): Promise<ScoreState> {
   const loaded = await loadScoreMatch(supabase, matchId).catch(() => undefined);
   if (loaded === undefined) return { error: 'failed' };
   if (!loaded) return { error: 'invalid' };
-  const { match, settings, slots } = loaded;
+  const { match, rules, settings, slots } = loaded;
   if (!scoresEditable(match.status)) return { error: 'closed' };
-  if (match.stage !== 'group' || !slots.some((s) => s.slot_no === slotNo)) return { error: 'invalid' };
-  if (slotScoreViolations(withScore(slots, slotNo, score), slotNo, settings).length > 0) {
+  if (!slots.some((s) => s.slot_no === slotNo)) return { error: 'invalid' };
+  if (slotScoreViolations(rules, withScore(slots, slotNo, score), slotNo, settings).length > 0) {
     return { error: 'violations' };
   }
 
@@ -329,10 +333,9 @@ export async function completeMatch(_prev: CompleteState, formData: FormData): P
   const loaded = await loadScoreMatch(supabase, matchId).catch(() => undefined);
   if (loaded === undefined) return { error: 'failed' };
   if (!loaded) return { error: 'invalid' };
-  const { match, teams, settings, slots } = loaded;
+  const { match, teams, rules, settings, slots } = loaded;
   if (match.status !== 'in_progress') return { error: 'closed' };
-  if (match.stage !== 'group') return { error: 'invalid' };
-  const { winner } = matchOutcome(slots, settings);
+  const { winner } = matchOutcome(rules, slots, settings);
   if (!winner) return { error: 'notReady' };
 
   const { error } = await supabase.rpc('complete_match', {

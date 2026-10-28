@@ -1,10 +1,13 @@
+import type { Handicap } from '../domain/handicap';
 import type { Side } from '../domain/lineup';
 import {
   groupMatchResult,
   validateGroupSet,
+  validateRelayLegs,
   type GroupSetScore,
   type Score,
   type ScoreViolation,
+  type ScoreWarningCode,
 } from '../domain/score';
 import type { SeasonSettings } from '../domain/settings';
 import { isUuid } from './auth/users';
@@ -31,7 +34,7 @@ export function scoresEditable(status: string): boolean {
   return status === 'lineup_locked' || status === 'in_progress';
 }
 
-/** A slot as the score step reads it: its scores and its start points (group). */
+/** A slot as the score step reads it: its scores and its start points (group; 0–0 for a relay leg). */
 export type ScoreSlot = GroupSetScore;
 
 /**
@@ -57,28 +60,62 @@ export function withScore(slots: readonly ScoreSlot[], slotNo: number, score: Sc
   );
 }
 
-/** The violations that keep one slot's score from being saved (spec §4.4). */
+type ScoreSettings = Pick<SeasonSettings, 'set_target' | 'sets_per_match' | 'relay_milestones' | 'ko_handicap_cap'>;
+
+/** How a match is scored: group sets, or relay legs from the leg-1 start (`match.relay_handicap_*`). */
+export type ScoreRules = { relay: false } | { relay: true; start: Handicap };
+
+/** The scoring rules of a match row. Relay legs build on the start of leg 1, snapshot at the lock (§4.3). */
+export function scoreRules(match: {
+  stage: string;
+  relay_handicap_home: number | null;
+  relay_handicap_away: number | null;
+}): ScoreRules {
+  if (match.stage === 'group') return { relay: false };
+  return { relay: true, start: { home: match.relay_handicap_home ?? 0, away: match.relay_handicap_away ?? 0 } };
+}
+
+/**
+ * The violations that keep one slot's score from being saved (spec §4.4), on the slots as they would
+ * be after saving it. A group set stands alone. Relay legs are cumulative, so every leg is checked: a
+ * changed leg may no longer fit the legs saved after it, and a leg is only entered after the one before.
+ */
 export function slotScoreViolations(
+  rules: ScoreRules,
   slots: readonly ScoreSlot[],
   slotNo: number,
-  settings: Pick<SeasonSettings, 'set_target'>,
+  settings: ScoreSettings,
 ): ScoreViolation[] {
+  if (rules.relay) return validateRelayLegs(slots, rules.start, settings).violations;
   const slot = slots.find((s) => s.slot_no === slotNo);
   return slot ? validateGroupSet(slot, settings).violations : [];
+}
+
+/** Relay legs are entered in order: leg n opens once leg n − 1 is saved. Group sets are always open. */
+export function slotEnterable(rules: ScoreRules, slots: readonly ScoreSlot[], slotNo: number): boolean {
+  if (!rules.relay || slotNo === 1) return true;
+  const previous = slots.find((s) => s.slot_no === slotNo - 1);
+  return previous !== undefined && previous.score_home !== null && previous.score_away !== null;
 }
 
 export type MatchOutcome = {
   /** Null until every slot is entered and valid. */
   winner: Side | null;
-  /** Group: sets won. */
+  /** Group: sets won. Relay: the scoreboard after the last valid leg, or the start. */
   score: Score;
+  /** Relay only: a season whose cap reaches the first milestone (spec §4.4). */
+  warnings: ScoreViolation<ScoreWarningCode>[];
 };
 
-/** The match result from the saved scores (spec §4.4): sets won decide a group match. */
-export function matchOutcome(
-  slots: readonly ScoreSlot[],
-  settings: Pick<SeasonSettings, 'set_target' | 'sets_per_match'>,
-): MatchOutcome {
+/**
+ * The match result from the saved scores (spec §4.4): sets won decide a group match, and a relay goes
+ * to the side at the final milestone.
+ */
+export function matchOutcome(rules: ScoreRules, slots: readonly ScoreSlot[], settings: ScoreSettings): MatchOutcome {
+  if (rules.relay) {
+    const result = validateRelayLegs(slots, rules.start, settings);
+    return { winner: result.winner, score: result.score, warnings: result.warnings };
+  }
   const result = groupMatchResult(slots, settings);
-  return { winner: result.winner, score: result.setsWon };
+  return { winner: result.winner, score: result.setsWon, warnings: [] };
 }

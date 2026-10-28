@@ -833,7 +833,11 @@
       },
       "scores": {
         "hint": "Nhập tỉ số cuối của từng set rồi lưu dòng đó. Cặp được chấp xuất phát từ số điểm chấp, và set kết thúc khi một bên đạt {target} điểm.",
+        "hintRelay": "Nhập tỉ số cộng dồn khi kết thúc từng lượt, theo thứ tự, rồi lưu. Lượt 1 xuất phát từ điểm chấp, mỗi lượt kết thúc khi một bên chạm mốc của lượt, và bên chạm {milestone} trước thắng.",
         "setsWon": "Số set thắng",
+        "relayScore": "Tỉ số",
+        "relayStart": "Điểm xuất phát lượt 1",
+        "toMilestone": "đến {milestone}",
         "scoreLabel": "{slot}, điểm của {team}",
         "save": "Lưu",
         "saving": "Đang lưu…",
