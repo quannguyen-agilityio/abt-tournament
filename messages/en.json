@@ -39,6 +39,19 @@
   "Public": {
     "provisional": "Provisional: group not closed yet",
     "closed": "Group stage closed",
+    "stage": {
+      "semi_final": "Semi-final",
+      "third_place": "Third place",
+      "final": "Final"
+    },
+    "matchStatus": {
+      "scheduled": "Upcoming",
+      "lineup_locked": "Lineups locked",
+      "in_progress": "Live",
+      "completed": "Completed",
+      "forfeit": "Forfeit",
+      "annulled": "Annulled"
+    },
     "standings": {
       "title": "Standings",
       "subtitle": "Group stage · {teams} teams · {played}/{total} matches",
@@ -83,6 +96,17 @@
       "noReason": "No reason given",
       "tiebreakTitle": "Tie-break order",
       "tiebreak": "Points → head-to-head (2 teams) or mini-league (3+ teams: points, set difference, point difference among them) → overall set difference → overall point difference → draw."
+    },
+    "bracket": {
+      "title": "Knock-out",
+      "relayNote": "Relay: 5 legs to 25/50/75/100/125. The total handicap is added at the start of leg 1.",
+      "pending": "Teams are decided when the group stage closes.",
+      "pendingSeeds": "SF1 = #1 v #4 · SF2 = #2 v #3",
+      "seed": "Seed #{seed}",
+      "winnerOf": "Winner {code}",
+      "loserOf": "Loser {code}",
+      "seedNumber": "#{seed}",
+      "empty": "No match yet"
     }
   },
   "Admin": {
