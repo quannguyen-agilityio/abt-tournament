@@ -336,6 +336,62 @@
         }
       }
     },
+    "schedule": {
+      "title": "Lịch thi đấu",
+      "back": "← Mùa giải",
+      "subtitle": "{season} · {count} trận · {teams} đội",
+      "regenerateHint": "Có thể tạo lại lịch cho tới khi một trận vòng bảng có đội hình hoặc tỉ số.",
+      "lockedHint": "Đã có trận vòng bảng có đội hình hoặc tỉ số nên không thể tạo lại lịch vòng tròn.",
+      "generate": "Tạo lịch vòng tròn",
+      "regenerate": "Tạo lại lịch vòng tròn",
+      "regenerateConfirm": "Thay toàn bộ trận vòng bảng? Ngày, giờ, sân và trọng tài sẽ bị xoá.",
+      "cancel": "Huỷ",
+      "generating": "Đang tạo…",
+      "generated": "Đã tạo {count} trận.",
+      "empty": "Chưa có trận nào. Hãy tạo lịch vòng tròn để bắt đầu.",
+      "needTeams": "Cần ít nhất 2 đội trước khi tạo lịch vòng tròn.",
+      "noMatchDays": "Mùa giải chưa có ngày thi đấu. <link>Thêm ngày ở trang mùa giải</link> để xếp trận.",
+      "dayEmpty": "Chưa có trận nào trong ngày này.",
+      "gridLabel": "Các trận ngày {day}",
+      "unscheduled": "Chưa xếp lịch · {count}",
+      "assign": "Xếp lịch",
+      "assignHint": "Chọn ngày, giờ ({timezone}), sân và trọng tài cho từng trận. Bỏ trống ngày và giờ để gỡ trận khỏi lịch.",
+      "slotOf": "Lịch của {code}",
+      "date": "Ngày",
+      "time": "Giờ",
+      "court": "Sân",
+      "referee": "Trọng tài",
+      "noDate": "Chưa chọn ngày",
+      "noCourt": "Chưa có sân",
+      "noReferee": "Chưa có trọng tài",
+      "refereeIs": "Trọng tài: {name}",
+      "tbd": "Chưa xác định",
+      "save": "Lưu",
+      "saving": "Đang lưu…",
+      "status": {
+        "scheduled": "Đã lên lịch",
+        "lineup_locked": "Đã khoá đội hình",
+        "in_progress": "Đang đấu",
+        "completed": "Đã kết thúc",
+        "forfeit": "Xử thua",
+        "annulled": "Đã huỷ"
+      },
+      "conflicts": {
+        "title": "Xung đột lịch",
+        "none": "Không có xung đột.",
+        "team": "{when}: {subject} thi đấu hai trận cùng lúc ({matches}).",
+        "referee": "{when}: trọng tài {subject} bị xếp hai trận ({matches}).",
+        "court": "{when}: {subject} có hai trận cùng lúc ({matches})."
+      },
+      "errors": {
+        "teams": "Cần có ít nhất 2 đội.",
+        "locked": "Đã có trận vòng bảng có đội hình hoặc tỉ số nên không thể tạo lại lịch.",
+        "failed": "Không lưu được thay đổi. Vui lòng thử lại sau.",
+        "dateTime": "Chọn cả ngày và giờ, hoặc bỏ trống cả hai.",
+        "court": "Chọn một sân của mùa giải này.",
+        "referee": "Chọn một tài khoản đang hoạt động làm trọng tài."
+      }
+    },
     "seasons": {
       "title": "Mùa giải",
       "count": "{count} mùa giải",

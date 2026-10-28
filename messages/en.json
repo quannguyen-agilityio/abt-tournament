@@ -336,6 +336,62 @@
         }
       }
     },
+    "schedule": {
+      "title": "Schedule",
+      "back": "← Season",
+      "subtitle": "{season} · {count, plural, one {# match} other {# matches}} · {teams, plural, one {# team} other {# teams}}",
+      "regenerateHint": "Regenerating is allowed until a group match has a lineup or a score.",
+      "lockedHint": "A group match already has a lineup or a score, so the round-robin can no longer be regenerated.",
+      "generate": "Generate round-robin",
+      "regenerate": "Regenerate round-robin",
+      "regenerateConfirm": "Replace every group match? Dates, times, courts and referees are cleared.",
+      "cancel": "Cancel",
+      "generating": "Generating…",
+      "generated": "{count, plural, one {# match} other {# matches}} generated.",
+      "empty": "No matches yet. Generate the round-robin to start.",
+      "needTeams": "Add at least 2 teams before generating the round-robin.",
+      "noMatchDays": "The season has no match days yet. <link>Add them on the season page</link> to place matches.",
+      "dayEmpty": "No matches on this day yet.",
+      "gridLabel": "Matches on {day}",
+      "unscheduled": "Not scheduled · {count}",
+      "assign": "Assign slots",
+      "assignHint": "Pick a day, a time ({timezone}), a court and a referee for each match. Clearing the day and time unschedules the match.",
+      "slotOf": "Slot of {code}",
+      "date": "Day",
+      "time": "Time",
+      "court": "Court",
+      "referee": "Referee",
+      "noDate": "No day",
+      "noCourt": "No court",
+      "noReferee": "No referee",
+      "refereeIs": "Referee: {name}",
+      "tbd": "TBD",
+      "save": "Save",
+      "saving": "Saving…",
+      "status": {
+        "scheduled": "Scheduled",
+        "lineup_locked": "Lineups locked",
+        "in_progress": "In progress",
+        "completed": "Completed",
+        "forfeit": "Forfeit",
+        "annulled": "Annulled"
+      },
+      "conflicts": {
+        "title": "Schedule conflicts",
+        "none": "No conflicts.",
+        "team": "{when}: {subject} plays twice at once ({matches}).",
+        "referee": "{when}: referee {subject} is booked twice ({matches}).",
+        "court": "{when}: {subject} has two matches at once ({matches})."
+      },
+      "errors": {
+        "teams": "Add at least 2 teams first.",
+        "locked": "A group match already has a lineup or a score, so the schedule cannot be regenerated.",
+        "failed": "Could not save the change. Please try again later.",
+        "dateTime": "Pick both a day and a time, or clear both.",
+        "court": "Choose a court of this season.",
+        "referee": "Choose an active account as referee."
+      }
+    },
     "seasons": {
       "title": "Seasons",
       "count": "{count, plural, one {# season} other {# seasons}}",

@@ -962,6 +962,10 @@ export type Database = {
     };
     Functions: {
       clone_season: { Args: { p_name: string; p_source_id: string; p_venue: string; p_year: number }; Returns: string };
+      generate_group_schedule: {
+        Args: { p_matches: Json; p_season_id: string; p_slot_types: Database['public']['Enums']['slot_type'][] };
+        Returns: number;
+      };
       import_season_players: { Args: { p_rows: Json; p_season_id: string }; Returns: number };
       import_team_draw: { Args: { p_assignments: Json; p_new_teams: Json; p_season_id: string }; Returns: number };
       set_current_season: { Args: { p_season_id: string }; Returns: undefined };

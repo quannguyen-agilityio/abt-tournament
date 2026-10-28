@@ -66,3 +66,10 @@ export function formatTime(date: Date, locale: AppLocale, timeZone = DEFAULT_SEA
 export function formatDateTime(date: Date, locale: AppLocale, timeZone = DEFAULT_SEASON_TIMEZONE) {
   return `${formatDate(date, locale, timeZone)} ${formatTime(date, locale, timeZone)}`;
 }
+
+/** A calendar day (`YYYY-MM-DD`) with its weekday, e.g. "Saturday 09/01" in en. */
+export function formatDay(day: string, locale: AppLocale) {
+  return dateFormatter(locale, 'UTC', { weekday: 'long', day: '2-digit', month: '2-digit' }).format(
+    new Date(`${day}T00:00:00Z`),
+  );
+}
