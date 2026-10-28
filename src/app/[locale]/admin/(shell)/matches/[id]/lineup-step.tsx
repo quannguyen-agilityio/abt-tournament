@@ -256,7 +256,7 @@ function TeamLineupForm({
         {slots.map((slot, i) => (
           <div
             key={slot.slotNo}
-            className="grid grid-cols-[56px_minmax(0,1fr)_minmax(0,1fr)_40px] items-center gap-2 sm:grid-cols-[64px_minmax(0,1fr)_minmax(0,1fr)_48px]"
+            className="grid grid-cols-[56px_minmax(0,1fr)_40px] items-center gap-2 sm:grid-cols-[64px_minmax(0,1fr)_48px]"
           >
             <div className="flex flex-col">
               <b className="font-display">{t(relay ? 'leg' : 'set', { no: slot.slotNo })}</b>
@@ -264,31 +264,33 @@ function TeamLineupForm({
                 {t(`slotType.${slot.slotType}`)}
               </span>
             </div>
-            {([0, 1] as const).map((position) => {
-              const value = picks[i][position];
-              const options = slotOptions(team.present, slot.slotType, settings, picks[i]);
-              return (
-                <select
-                  key={position}
-                  name={`slot-${slot.slotNo}-p${position + 1}`}
-                  value={value ?? ''}
-                  disabled={!editable}
-                  aria-label={t('pickLabel', { slot: slot.slotNo, position: position + 1 })}
-                  aria-invalid={slotHasProblem(slot.slotNo, value) || undefined}
-                  onChange={(e) => onPick(i, position, e.target.value || null)}
-                  className={SELECT}
-                >
-                  <option value="">{t('pick')}</option>
-                  {options.map((p) => (
-                    <option key={p.id} value={p.id}>
-                      R{p.rank} · {p.name} ({p.skillPoints})
-                    </option>
-                  ))}
-                  {/* A saved pick of a player who is no longer present. */}
-                  {value && !nameOf.has(value) && <option value={value}>{t('absent')}</option>}
-                </select>
-              );
-            })}
+            <div className="grid min-w-0 gap-1.5 sm:grid-cols-2 sm:gap-2">
+              {([0, 1] as const).map((position) => {
+                const value = picks[i][position];
+                const options = slotOptions(team.present, slot.slotType, settings, picks[i]);
+                return (
+                  <select
+                    key={position}
+                    name={`slot-${slot.slotNo}-p${position + 1}`}
+                    value={value ?? ''}
+                    disabled={!editable}
+                    aria-label={t('pickLabel', { slot: slot.slotNo, position: position + 1 })}
+                    aria-invalid={slotHasProblem(slot.slotNo, value) || undefined}
+                    onChange={(e) => onPick(i, position, e.target.value || null)}
+                    className={SELECT}
+                  >
+                    <option value="">{t('pick')}</option>
+                    {options.map((p) => (
+                      <option key={p.id} value={p.id}>
+                        R{p.rank} · {p.name} ({p.skillPoints})
+                      </option>
+                    ))}
+                    {/* A saved pick of a player who is no longer present. */}
+                    {value && !nameOf.has(value) && <option value={value}>{t('absent')}</option>}
+                  </select>
+                );
+              })}
+            </div>
             <span className="text-right">
               {starts[i] > 0 && (
                 <span
