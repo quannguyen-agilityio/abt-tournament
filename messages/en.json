@@ -235,6 +235,19 @@
       "historyTitle": "History",
       "historyRankSkill": "Rank {rank} · {skill} pts",
       "noTeam": "No team"
+    },
+    "awards": {
+      "subtitle": "{count, plural, one {# side award} other {# side awards}}",
+      "empty": "No side awards yet.",
+      "sponsor": "Sponsor: {name}",
+      "winners": "Winners",
+      "pending": "To be announced",
+      "kind": {
+        "player": "Player",
+        "pair": "Pair",
+        "team": "Team"
+      },
+      "match": "Match {code}"
     }
   },
   "MatchStatus": {

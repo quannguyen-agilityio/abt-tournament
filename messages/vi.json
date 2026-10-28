@@ -235,6 +235,19 @@
       "historyTitle": "Qua các mùa",
       "historyRankSkill": "Rank {rank} · {skill} điểm",
       "noTeam": "Chưa có đội"
+    },
+    "awards": {
+      "subtitle": "{count} giải phụ",
+      "empty": "Chưa có giải phụ nào.",
+      "sponsor": "Nhà tài trợ: {name}",
+      "winners": "Người đoạt giải",
+      "pending": "Chưa công bố",
+      "kind": {
+        "player": "VĐV",
+        "pair": "Cặp",
+        "team": "Đội"
+      },
+      "match": "Trận {code}"
     }
   },
   "MatchStatus": {
