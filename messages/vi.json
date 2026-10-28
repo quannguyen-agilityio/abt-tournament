@@ -42,7 +42,8 @@
     "stage": {
       "semi_final": "Bán kết",
       "third_place": "Tranh hạng 3",
-      "final": "Chung kết"
+      "final": "Chung kết",
+      "group": "Vòng bảng"
     },
     "matchStatus": {
       "scheduled": "Sắp diễn ra",
@@ -107,6 +108,23 @@
       "loserOf": "Thua {code}",
       "seedNumber": "#{seed}",
       "empty": "Chưa có trận"
+    },
+    "groupRound": "Vòng bảng · Vòng {round}",
+    "tbd": "Chưa xác định",
+    "matches": {
+      "subtitle": "{count, plural, other {# trận}}",
+      "filters": "Bộ lọc",
+      "day": "Ngày",
+      "team": "Đội",
+      "court": "Sân",
+      "stage": "Giai đoạn",
+      "all": "Tất cả",
+      "stageGroup": "Vòng bảng",
+      "stageKo": "Knock-out",
+      "clear": "Xóa bộ lọc",
+      "empty": "Không có trận nào khớp bộ lọc.",
+      "noSchedule": "Chưa có lịch thi đấu.",
+      "unscheduled": "Chưa xếp lịch"
     }
   },
   "Admin": {

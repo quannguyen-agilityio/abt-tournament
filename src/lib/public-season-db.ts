@@ -5,6 +5,7 @@ import { cache } from 'react';
 
 import { DEFAULT_SEASON_SETTINGS, parseSeasonSettings, type SeasonSettings } from '@/domain/settings';
 import type { Database } from '@/lib/database.types';
+import type { ScheduleMatchInput } from '@/lib/public-matches';
 import type { PublicTeam } from '@/lib/public-standings';
 import { createClient } from '@/lib/supabase/server';
 
@@ -14,6 +15,7 @@ export interface PublicSeason {
   name: string;
   status: Database['public']['Enums']['season_status'];
   settings: SeasonSettings;
+  matchDays: string[];
 }
 
 /** A match with its court name and slot scores, as the public pages read it. */
@@ -40,7 +42,7 @@ export const getPublicSeason = cache(async (year: number): Promise<PublicSeason 
   const supabase = await createClient();
   const { data, error } = await supabase
     .from('season')
-    .select('id, year, name, status, settings')
+    .select('id, year, name, status, settings, match_days')
     .eq('year', year)
     .maybeSingle();
   if (error) throw error;
@@ -52,6 +54,7 @@ export const getPublicSeason = cache(async (year: number): Promise<PublicSeason 
     name: data.name,
     status: data.status,
     settings: parsed.ok ? parsed.settings : DEFAULT_SEASON_SETTINGS,
+    matchDays: data.match_days,
   };
 });
 
@@ -103,4 +106,26 @@ export const getSeasonMatches = cache(async (seasonId: string, stage: 'group' | 
     court: court?.name ?? null,
     slots: [...slots].sort((a, b) => a.slot_no - b.slot_no),
   }));
+});
+
+export const getSeasonCourts = cache(async (seasonId: string): Promise<{ id: string; name: string }[]> => {
+  await connection();
+  const supabase = await createClient();
+  const { data, error } = await supabase.from('court').select('id, name').eq('season_id', seasonId).order('sort_order');
+  if (error) throw error;
+  return data;
+});
+
+/** Every match of the season with only what a schedule card needs, to keep the P3 payload small. */
+export const getSeasonSchedule = cache(async (seasonId: string): Promise<ScheduleMatchInput[]> => {
+  await connection();
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from('match')
+    .select(
+      'id, code, stage, round, status, home_team_id, away_team_id, forfeit_team_id, winner_team_id, scheduled_at, court_id, match_slot(slot_no, score_home, score_away)',
+    )
+    .eq('season_id', seasonId);
+  if (error) throw error;
+  return data.map(({ match_slot: slots, ...match }) => ({ ...match, slots }));
 });

@@ -42,7 +42,8 @@
     "stage": {
       "semi_final": "Semi-final",
       "third_place": "Third place",
-      "final": "Final"
+      "final": "Final",
+      "group": "Group stage"
     },
     "matchStatus": {
       "scheduled": "Upcoming",
@@ -107,6 +108,23 @@
       "loserOf": "Loser {code}",
       "seedNumber": "#{seed}",
       "empty": "No match yet"
+    },
+    "groupRound": "Group · Round {round}",
+    "tbd": "TBD",
+    "matches": {
+      "subtitle": "{count, plural, one {# match} other {# matches}}",
+      "filters": "Filters",
+      "day": "Day",
+      "team": "Team",
+      "court": "Court",
+      "stage": "Stage",
+      "all": "All",
+      "stageGroup": "Group stage",
+      "stageKo": "Knock-out",
+      "clear": "Clear filters",
+      "empty": "No matches fit these filters.",
+      "noSchedule": "No schedule yet.",
+      "unscheduled": "Time to be announced"
     }
   },
   "Admin": {
