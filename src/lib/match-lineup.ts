@@ -119,3 +119,49 @@ export function handicapPreview(
   const net = legs.reduce((sum, leg) => sum + leg.home[0] + leg.home[1] - leg.away[0] - leg.away[1], 0);
   return { kind: 'relay', start: relayHandicap(legs, settings.ko_handicap_cap), net };
 }
+
+/** What `lock_match_lineups` stores: each slot's players with its start points, and the relay start. */
+export type LockSnapshot = {
+  slots: {
+    slot_no: number;
+    home_p1: string | null;
+    home_p2: string | null;
+    away_p1: string | null;
+    away_p2: string | null;
+    handicap_home: number;
+    handicap_away: number;
+  }[];
+  /** Relay only: the start of leg 1. Undefined for a group match. */
+  relay?: Handicap;
+};
+
+/**
+ * The handicap snapshot taken at the lock (spec §4.2, §4.3): group start points per set, or the relay
+ * start for leg 1 with 0–0 per leg. Null while a pair is incomplete or has an unknown player.
+ */
+export function lockSnapshot(
+  stage: string,
+  slots: readonly LineupSlotPicks[],
+  skillOf: ReadonlyMap<string, number>,
+  settings: Pick<SeasonSettings, 'group_handicap_cap' | 'ko_handicap_cap'>,
+): LockSnapshot | null {
+  const preview = handicapPreview(stage, slots, skillOf, settings);
+  const ordered = [...slots].sort((a, b) => a.slotNo - b.slotNo);
+  if (preview.kind === 'relay' ? !preview.start : preview.slots.some((h) => h === null)) return null;
+
+  return {
+    slots: ordered.map((slot, i) => {
+      const start = preview.kind === 'group' ? preview.slots[i] : null;
+      return {
+        slot_no: slot.slotNo,
+        home_p1: slot.home[0],
+        home_p2: slot.home[1],
+        away_p1: slot.away[0],
+        away_p2: slot.away[1],
+        handicap_home: start?.home ?? 0,
+        handicap_away: start?.away ?? 0,
+      };
+    }),
+    relay: preview.kind === 'relay' && preview.start ? preview.start : undefined,
+  };
+}

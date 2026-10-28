@@ -4,6 +4,7 @@ import { DEFAULT_SEASON_SETTINGS } from '../domain/settings';
 import {
   handicapPreview,
   lineupEditable,
+  lockSnapshot,
   overridable,
   parseLineupForm,
   slotOptions,
@@ -181,5 +182,56 @@ describe('handicapPreview', () => {
       kind: 'group',
       slots: [null],
     });
+  });
+});
+
+describe('lockSnapshot', () => {
+  const skillOf = new Map([
+    ['h1', 33],
+    ['h2', 30],
+    ['h3', 20],
+    ['h4', 20],
+    ['a1', 30],
+    ['a2', 24],
+    ['a3', 25],
+    ['a4', 25],
+  ]);
+  const slot = (slotNo: number, home: [string | null, string | null], away: [string | null, string | null]) =>
+    ({ slotNo, slotType: 'open', home, away }) satisfies LineupSlotPicks;
+
+  it('stores the group start points with the players they were computed from', () => {
+    expect(
+      lockSnapshot(
+        'group',
+        [slot(2, ['h3', 'h4'], ['a3', 'a4']), slot(1, ['h1', 'h2'], ['a1', 'a2'])],
+        skillOf,
+        DEFAULT_SEASON_SETTINGS,
+      ),
+    ).toEqual({
+      slots: [
+        { slot_no: 1, home_p1: 'h1', home_p2: 'h2', away_p1: 'a1', away_p2: 'a2', handicap_home: 0, handicap_away: 9 },
+        { slot_no: 2, home_p1: 'h3', home_p2: 'h4', away_p1: 'a3', away_p2: 'a4', handicap_home: 10, handicap_away: 0 },
+      ],
+      relay: undefined,
+    });
+  });
+
+  it('stores the relay start once, with 0–0 per leg', () => {
+    const snapshot = lockSnapshot(
+      'semi_final',
+      [slot(1, ['h1', 'h2'], ['a1', 'a2']), slot(2, ['h3', 'h4'], ['a3', 'a4'])],
+      skillOf,
+      DEFAULT_SEASON_SETTINGS,
+    );
+    expect(snapshot?.relay).toEqual({ home: 1, away: 0 });
+    expect(snapshot?.slots.map((s) => [s.handicap_home, s.handicap_away])).toEqual([
+      [0, 0],
+      [0, 0],
+    ]);
+  });
+
+  it('is null while a pair is incomplete', () => {
+    expect(lockSnapshot('group', [slot(1, ['h1', null], ['a1', 'a2'])], skillOf, DEFAULT_SEASON_SETTINGS)).toBeNull();
+    expect(lockSnapshot('final', [slot(1, ['h1', 'h2'], [null, 'a2'])], skillOf, DEFAULT_SEASON_SETTINGS)).toBeNull();
   });
 });

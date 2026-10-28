@@ -725,6 +725,31 @@
           "reason": "Enter a reason to accept the violations.",
           "failed": "Could not save the lineup. Please try again."
         }
+      },
+      "lock": {
+        "hint": "Both lineups are ready. Locking takes the handicap snapshot and makes the lineups public.",
+        "notReady": "Save both lineups with no open violations to lock them.",
+        "lock": "Lock lineups",
+        "locking": "Locking…",
+        "errors": {
+          "locked": "The lineups are already locked. Reload the page.",
+          "invalid": "This match cannot be locked. Reload the page.",
+          "violations": "A lineup has violations the committee has not accepted. Reload the page.",
+          "incomplete": "Every set needs two players on each side.",
+          "changed": "A lineup changed in the meantime. Reload the page and try again.",
+          "failed": "Could not lock the lineups. Please try again."
+        },
+        "locked": "The lineups are locked and public. From now on, changes go through substitutions.",
+        "relayStart": "Start of leg 1",
+        "unlock": "Unlock lineups",
+        "unlocking": "Unlocking…",
+        "unlockHint": "Moves the match back to the lineup step and clears the handicaps. The audit log records who unlocked it.",
+        "unlockConfirm": "Unlock the lineups of {code}?",
+        "unlockErrors": {
+          "notLocked": "The lineups are no longer locked. Reload the page.",
+          "invalid": "Only the committee can unlock lineups.",
+          "failed": "Could not unlock the lineups. Please try again."
+        }
       }
     }
   },

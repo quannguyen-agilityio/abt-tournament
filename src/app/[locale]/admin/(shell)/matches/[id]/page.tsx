@@ -16,9 +16,12 @@ import { createClient } from '@/lib/supabase/server';
 import { cn } from '@/lib/utils';
 import { AttendanceForm, type AttendancePlayer } from './attendance-form';
 import { LineupStep, type LineupTeam } from './lineup-step';
+import { LockedLineups } from './locked-lineups';
 
 const STEPS = ['attendance', 'lineup', 'lock', 'scores', 'done'] as const;
 type Step = (typeof STEPS)[number];
+/** The lineups are locked from `lineup_locked` on; later steps only read them. */
+const LOCKED_STATUSES: readonly string[] = ['lineup_locked', 'in_progress', 'completed'];
 
 async function StaffMatch({ params, searchParams }: PageProps<'/[locale]/admin/matches/[id]'>) {
   const [{ locale, id }, query] = await Promise.all([params, searchParams]);
@@ -33,7 +36,7 @@ async function StaffMatch({ params, searchParams }: PageProps<'/[locale]/admin/m
   const { data: match, error } = await supabase
     .from('match')
     .select(
-      'id, code, stage, status, imported, scheduled_at, home_team_id, away_team_id, court:court_id (name), season:season_id (settings)',
+      'id, code, stage, status, imported, relay_handicap_home, relay_handicap_away, scheduled_at, home_team_id, away_team_id, court:court_id (name), season:season_id (settings)',
     )
     .eq('id', id)
     .maybeSingle();
@@ -55,7 +58,7 @@ async function StaffMatch({ params, searchParams }: PageProps<'/[locale]/admin/m
     supabase.from('match_attendance').select('team_id, season_player_id').eq('match_id', match.id),
     supabase
       .from('match_slot')
-      .select('slot_no, slot_type, home_p1, home_p2, away_p1, away_p2')
+      .select('slot_no, slot_type, home_p1, home_p2, away_p1, away_p2, handicap_home, handicap_away')
       .eq('match_id', match.id)
       .order('slot_no'),
     // Which rules the BTC overrode, without the reasons (lineup_override itself is BTC-only).
@@ -88,19 +91,30 @@ async function StaffMatch({ params, searchParams }: PageProps<'/[locale]/admin/m
     overridden: overridesResult.data.filter((o) => o.team_id === team.id).map((o) => o.rule_code),
   });
 
-  // Steps reachable now: attendance and lineups while the match is scheduled. The rest of the flow
-  // follows in later updates.
+  // Steps reachable now: attendance and lineups while the match is scheduled, the locked lineups once
+  // they are locked. The scores follow in a later update.
+  const locked = LOCKED_STATUSES.includes(match.status);
   const available: Step[] =
-    lineupEditable(match.status) && teams.length === 2 ? ['attendance', 'lineup'] : ['attendance'];
+    teams.length < 2
+      ? ['attendance']
+      : lineupEditable(match.status)
+        ? ['attendance', 'lineup']
+        : locked
+          ? ['attendance', 'lock']
+          : ['attendance'];
   const bothTicked =
     teams.length === 2 && teams.every((team) => attendanceResult.data.some((a) => a.team_id === team.id));
   const requested = STEPS.find((step) => step === query.step);
   const step: Step =
     requested && available.includes(requested)
       ? requested
-      : available.includes('lineup') && bothTicked
-        ? 'lineup'
-        : 'attendance';
+      : locked && available.includes('lock')
+        ? 'lock'
+        : available.includes('lineup') && bothTicked
+          ? 'lineup'
+          : 'attendance';
+  const nameOf = new Map(playersResult.data.map((p) => [p.id, p.person?.full_name ?? '']));
+  const namesOf = (...ids: (string | null)[]) => ids.filter((x) => x !== null).map((x) => nameOf.get(x) ?? '—');
   const current = STEPS.indexOf(step);
 
   return (
@@ -170,6 +184,31 @@ async function StaffMatch({ params, searchParams }: PageProps<'/[locale]/admin/m
         <p className="border-border bg-surface text-muted-foreground rounded-[10px] border p-8 text-center text-sm">
           {t('tbd')}
         </p>
+      ) : step === 'lock' ? (
+        <section aria-labelledby="lock-title" className="flex flex-col gap-3">
+          <h2 id="lock-title" className="font-display text-2xl font-bold uppercase">
+            {t('steps.lock')}
+          </h2>
+          <LockedLineups
+            matchId={match.id}
+            code={match.code}
+            relay={match.stage !== 'group'}
+            relayStart={
+              match.relay_handicap_home !== null && match.relay_handicap_away !== null
+                ? { home: match.relay_handicap_home, away: match.relay_handicap_away }
+                : null
+            }
+            teams={teams}
+            slots={slots.map((slot) => ({
+              slotNo: slot.slot_no,
+              slotType: slot.slot_type,
+              home: namesOf(slot.home_p1, slot.home_p2),
+              away: namesOf(slot.away_p1, slot.away_p2),
+              handicap: { home: slot.handicap_home, away: slot.handicap_away },
+            }))}
+            canUnlock={viewer.role === 'btc' && match.status === 'lineup_locked'}
+          />
+        </section>
       ) : step === 'lineup' ? (
         <section aria-labelledby="lineup-title" className="flex flex-col gap-3">
           <div>

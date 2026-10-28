@@ -725,6 +725,31 @@
           "reason": "Nhập lý do để chấp nhận các vi phạm.",
           "failed": "Không lưu được đội hình. Vui lòng thử lại."
         }
+      },
+      "lock": {
+        "hint": "Hai đội hình đã sẵn sàng. Khoá sẽ chốt điểm chấp và công khai đội hình.",
+        "notReady": "Lưu cả hai đội hình, không còn vi phạm chưa được chấp nhận, để khoá.",
+        "lock": "Khoá đội hình",
+        "locking": "Đang khoá…",
+        "errors": {
+          "locked": "Đội hình đã được khoá. Tải lại trang.",
+          "invalid": "Không khoá được trận này. Tải lại trang.",
+          "violations": "Còn đội hình có vi phạm chưa được BTC chấp nhận. Tải lại trang.",
+          "incomplete": "Mỗi set cần đủ hai VĐV mỗi bên.",
+          "changed": "Đội hình vừa bị thay đổi. Tải lại trang rồi thử lại.",
+          "failed": "Không khoá được đội hình. Vui lòng thử lại."
+        },
+        "locked": "Đội hình đã khoá và được công khai. Mọi thay đổi từ giờ phải qua thay người.",
+        "relayStart": "Điểm xuất phát lượt 1",
+        "unlock": "Mở khoá đội hình",
+        "unlocking": "Đang mở khoá…",
+        "unlockHint": "Đưa trận về bước đội hình và xoá điểm chấp đã chốt. Nhật ký ghi lại ai đã mở khoá.",
+        "unlockConfirm": "Mở khoá đội hình trận {code}?",
+        "unlockErrors": {
+          "notLocked": "Đội hình không còn bị khoá. Tải lại trang.",
+          "invalid": "Chỉ BTC mới mở khoá được đội hình.",
+          "failed": "Không mở khoá được đội hình. Vui lòng thử lại."
+        }
       }
     }
   },

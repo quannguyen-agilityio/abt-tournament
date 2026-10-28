@@ -21,7 +21,7 @@ import {
   type SlotPair,
 } from '@/lib/match-lineup';
 import { cn } from '@/lib/utils';
-import { saveLineup, type LineupState } from './actions';
+import { lockLineups, saveLineup, type LineupState, type LockState } from './actions';
 
 export type LineupTeam = {
   team: { id: string; name: string; color: string };
@@ -85,6 +85,13 @@ export function LineupStep({ matchId, stage, imported, slots, teams, settings, e
     return handicapPreview(stage, slotPicks, skillOf, settings);
   }, [stage, slotPicks, home.present, away.present, settings]);
 
+  // The saved lineup's overrides only cover it while it is unchanged.
+  const dirty = { home: !samePicks(picks.home, home.saved), away: !samePicks(picks.away, away.saved) };
+  const openOf = (team: LineupTeam) =>
+    dirty[team.side] ? violations[team.side] : unresolvedViolations(violations[team.side], new Set(team.overridden));
+  const open = { home: openOf(home), away: openOf(away) };
+  const lockable = !dirty.home && !dirty.away && open.home.length === 0 && open.away.length === 0;
+
   const setPick = (side: Side, slotIndex: number, position: 0 | 1, playerId: string | null) =>
     setPicks((prev) => ({
       ...prev,
@@ -129,6 +136,8 @@ export function LineupStep({ matchId, stage, imported, slots, teams, settings, e
             picks={picks[team.side]}
             starts={preview.kind === 'group' ? preview.slots.map((h) => (h ? h[team.side] : 0)) : slots.map(() => 0)}
             violations={violations[team.side]}
+            open={open[team.side]}
+            dirty={dirty[team.side]}
             settings={settings}
             editable={editable}
             isBtc={isBtc}
@@ -136,7 +145,31 @@ export function LineupStep({ matchId, stage, imported, slots, teams, settings, e
           />
         ))}
       </div>
+      {editable && <LockForm matchId={matchId} lockable={lockable} />}
     </div>
+  );
+}
+
+/** A5 step 3: lock both lineups once each is saved and valid or overridden. */
+function LockForm({ matchId, lockable }: { matchId: string; lockable: boolean }) {
+  const t = useTranslations('Admin.match.lock');
+  const [state, action, pending] = useActionState<LockState, FormData>(lockLineups, undefined);
+  return (
+    <form
+      action={action}
+      className="border-border bg-surface flex flex-wrap items-center justify-end gap-3 rounded-[10px] border p-4"
+    >
+      <input type="hidden" name="matchId" value={matchId} />
+      <p className="text-muted-foreground mr-auto max-w-prose text-sm">{lockable ? t('hint') : t('notReady')}</p>
+      {state?.error && (
+        <p role="alert" className="text-destructive text-sm">
+          {t(`errors.${state.error}`)}
+        </p>
+      )}
+      <Button type="submit" disabled={pending || !lockable}>
+        {pending ? t('locking') : t('lock')}
+      </Button>
+    </form>
   );
 }
 
@@ -149,6 +182,10 @@ type FormProps = {
   /** This side's group start points per slot. */
   starts: number[];
   violations: LineupViolation[];
+  /** The violations not covered by a BTC override. */
+  open: LineupViolation[];
+  /** The picks differ from the saved lineup. */
+  dirty: boolean;
   settings: LineupStepSettings;
   editable: boolean;
   isBtc: boolean;
@@ -163,6 +200,8 @@ function TeamLineupForm({
   picks,
   starts,
   violations,
+  open,
+  dirty,
   settings,
   editable,
   isBtc,
@@ -175,9 +214,6 @@ function TeamLineupForm({
   const headingId = `lineup-${team.team.id}`;
   const nameOf = new Map(team.present.map((p) => [p.id, p.name]));
 
-  const dirty = !samePicks(picks, team.saved);
-  // The saved lineup's overrides only cover it while it is unchanged.
-  const open = dirty ? violations : unresolvedViolations(violations, new Set(team.overridden));
   const accepted = !dirty && violations.length > 0 && open.length === 0;
   const canOverride = isBtc && overridable(violations);
   const blocked = violations.length > 0 && (!canOverride || reason.trim() === '');
