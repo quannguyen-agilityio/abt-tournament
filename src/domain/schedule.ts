@@ -39,3 +39,60 @@ export function generateRoundRobin<T extends string>(teamIds: readonly T[]): Rou
   const width = Math.max(2, String(pairings.length).length);
   return pairings.map((p, i) => ({ code: `V${String(i + 1).padStart(width, '0')}`, ...p }));
 }
+
+export interface ScheduledMatch {
+  id: string;
+  /** Start as a comparable key (an ISO timestamp); null while unscheduled. */
+  startsAt: string | null;
+  homeTeamId: string | null;
+  awayTeamId: string | null;
+  courtId: string | null;
+  refereeId: string | null;
+}
+
+export type ScheduleConflictKind = 'team' | 'referee' | 'court';
+
+export interface ScheduleConflict {
+  kind: ScheduleConflictKind;
+  startsAt: string;
+  /** The team, referee or court that is booked twice. */
+  subjectId: string;
+  /** The clashing matches, in input order. */
+  matchIds: string[];
+}
+
+/**
+ * Bookings that clash at the same start time (spec §6 A4): a team playing twice at once, a
+ * referee on two matches at once, or two matches on one court. Unscheduled matches and unset
+ * fields never clash. Conflicts come sorted by start, then kind, then first match.
+ */
+export function findScheduleConflicts(matches: readonly ScheduledMatch[]): ScheduleConflict[] {
+  const bookings = new Map<string, ScheduleConflict>();
+  const book = (kind: ScheduleConflictKind, startsAt: string, subjectId: string | null, matchId: string) => {
+    if (subjectId === null) return;
+    const key = `${startsAt}|${kind}|${subjectId}`;
+    const booking = bookings.get(key);
+    if (booking) {
+      if (!booking.matchIds.includes(matchId)) booking.matchIds.push(matchId);
+    } else bookings.set(key, { kind, startsAt, subjectId, matchIds: [matchId] });
+  };
+
+  for (const m of matches) {
+    if (m.startsAt === null) continue;
+    book('team', m.startsAt, m.homeTeamId, m.id);
+    book('team', m.startsAt, m.awayTeamId, m.id);
+    book('referee', m.startsAt, m.refereeId, m.id);
+    book('court', m.startsAt, m.courtId, m.id);
+  }
+
+  const kinds: ScheduleConflictKind[] = ['team', 'referee', 'court'];
+  const order = new Map(matches.map((m, i) => [m.id, i]));
+  return [...bookings.values()]
+    .filter((b) => b.matchIds.length > 1)
+    .sort(
+      (a, b) =>
+        a.startsAt.localeCompare(b.startsAt) ||
+        kinds.indexOf(a.kind) - kinds.indexOf(b.kind) ||
+        order.get(a.matchIds[0])! - order.get(b.matchIds[0])!,
+    );
+}

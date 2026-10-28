@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { generateRoundRobin, type RoundRobinMatch } from './schedule';
+import { findScheduleConflicts, generateRoundRobin, type RoundRobinMatch, type ScheduledMatch } from './schedule';
 
 const teams = (n: number) => Array.from({ length: n }, (_, i) => `T${i + 1}`);
 
@@ -76,5 +76,76 @@ describe('generateRoundRobin', () => {
     ['duplicate ids', ['T1', 'T2', 'T1']],
   ])('rejects %s', (_, ids) => {
     expect(() => generateRoundRobin(ids)).toThrow(RangeError);
+  });
+});
+
+describe('findScheduleConflicts', () => {
+  const at = '2027-01-09T01:00:00.000Z';
+  const later = '2027-01-09T02:00:00.000Z';
+  const match = (id: string, fields: Partial<ScheduledMatch>): ScheduledMatch => ({
+    id,
+    startsAt: at,
+    homeTeamId: null,
+    awayTeamId: null,
+    courtId: null,
+    refereeId: null,
+    ...fields,
+  });
+
+  it('finds nothing when every booking is distinct', () => {
+    expect(
+      findScheduleConflicts([
+        match('m1', { homeTeamId: 'A', awayTeamId: 'B', courtId: 'c1', refereeId: 'r1' }),
+        match('m2', { homeTeamId: 'C', awayTeamId: 'D', courtId: 'c2', refereeId: 'r2' }),
+        match('m3', { startsAt: later, homeTeamId: 'A', awayTeamId: 'C', courtId: 'c1', refereeId: 'r1' }),
+      ]),
+    ).toEqual([]);
+  });
+
+  it('flags a team playing twice at once, home or away', () => {
+    expect(
+      findScheduleConflicts([
+        match('m1', { homeTeamId: 'A', awayTeamId: 'B' }),
+        match('m2', { homeTeamId: 'C', awayTeamId: 'A' }),
+      ]),
+    ).toEqual([{ kind: 'team', startsAt: at, subjectId: 'A', matchIds: ['m1', 'm2'] }]);
+  });
+
+  it('flags a double-booked referee and court', () => {
+    expect(
+      findScheduleConflicts([
+        match('m1', { courtId: 'c1', refereeId: 'r1' }),
+        match('m2', { courtId: 'c1', refereeId: 'r1' }),
+        match('m3', { refereeId: 'r1' }),
+      ]),
+    ).toEqual([
+      { kind: 'referee', startsAt: at, subjectId: 'r1', matchIds: ['m1', 'm2', 'm3'] },
+      { kind: 'court', startsAt: at, subjectId: 'c1', matchIds: ['m1', 'm2'] },
+    ]);
+  });
+
+  it('ignores unscheduled matches and unset fields', () => {
+    expect(
+      findScheduleConflicts([
+        match('m1', { startsAt: null, homeTeamId: 'A', refereeId: 'r1' }),
+        match('m2', { homeTeamId: 'A', refereeId: 'r1' }),
+        match('m3', {}),
+        match('m4', {}),
+      ]),
+    ).toEqual([]);
+  });
+
+  it('sorts by start, then kind', () => {
+    const conflicts = findScheduleConflicts([
+      match('m1', { startsAt: later, homeTeamId: 'A', courtId: 'c1' }),
+      match('m2', { startsAt: later, homeTeamId: 'A', courtId: 'c1' }),
+      match('m3', { refereeId: 'r1' }),
+      match('m4', { refereeId: 'r1' }),
+    ]);
+    expect(conflicts.map((c) => [c.startsAt, c.kind])).toEqual([
+      [at, 'referee'],
+      [later, 'team'],
+      [later, 'court'],
+    ]);
   });
 });
