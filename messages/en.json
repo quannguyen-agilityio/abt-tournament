@@ -185,6 +185,56 @@
         "gender": "Gender"
       },
       "rank": "R{rank}"
+    },
+    "players": {
+      "subtitle": "{count, plural, one {# player} other {# players}}",
+      "filters": "Filters",
+      "team": "Team",
+      "rank": "Rank",
+      "gender": "Gender",
+      "all": "All",
+      "rankOption": "Rank {rank}",
+      "clear": "Clear filters",
+      "empty": "No players fit these filters.",
+      "noPlayers": "No players in this season yet.",
+      "noTeam": "No team yet",
+      "rankShort": "R{rank}",
+      "skillShort": "{skill} pts",
+      "rankSkillFull": "Rank {rank}, {skill} skill points",
+      "withdrawn": "Withdrawn"
+    },
+    "player": {
+      "back": "Players",
+      "avatar": "Photo of {name}",
+      "rank": "Rank {rank}",
+      "skill": "{skill} skill points",
+      "captain": "Captain",
+      "withdrawn": "Withdrawn",
+      "statsTitle": "Season stats",
+      "statsNote": "Group stage, completed matches only.",
+      "setsPlayed": "Sets played",
+      "setRecord": "Sets won–lost",
+      "points": "Points for–against",
+      "partner": "Most frequent partner",
+      "partnerSets": "× {sets}",
+      "partnerSetsFull": "{sets, plural, one {# set} other {# sets}} together",
+      "noPartner": "None yet",
+      "setsTitle": "Sets played",
+      "setsCaption": "Sets played by {name}",
+      "noSets": "No sets played yet.",
+      "cols": {
+        "match": "Match",
+        "set": "Set",
+        "partner": "Partner",
+        "opponents": "Opponents",
+        "score": "Score"
+      },
+      "set": "Set {no}",
+      "won": "Won",
+      "lost": "Lost",
+      "historyTitle": "History",
+      "historyRankSkill": "Rank {rank} · {skill} pts",
+      "noTeam": "No team"
     }
   },
   "MatchStatus": {

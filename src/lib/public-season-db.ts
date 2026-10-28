@@ -8,6 +8,7 @@ import type { Database } from '@/lib/database.types';
 import type { MatchDetailInput, MatchPlayer } from '@/lib/public-match';
 import type { ScheduleMatchInput } from '@/lib/public-matches';
 import type { PublicTeam } from '@/lib/public-standings';
+import type { ProfileMatch } from '@/lib/public-players';
 import type { PublicPlayer } from '@/lib/public-teams';
 import { createClient } from '@/lib/supabase/server';
 
@@ -108,6 +109,65 @@ export const getSeasonPlayers = cache(async (seasonId: string): Promise<PublicPl
     skill: p.skill_points,
     status: p.status,
   }));
+});
+
+/**
+ * Completed group matches with their slot players and substitutions: what the player stats count.
+ * Only these are read, to keep the P7 payload small.
+ */
+export const getProfileMatches = cache(async (seasonId: string): Promise<ProfileMatch[]> => {
+  await connection();
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from('match')
+    .select(
+      `id, code, stage, status, home_team_id, away_team_id, forfeit_team_id,
+      match_slot(slot_no, slot_type, home_p1, home_p2, away_p1, away_p2, score_home, score_away,
+        slot_substitution(side, replaced_id, substitute_id, created_at))`,
+    )
+    .eq('season_id', seasonId)
+    .eq('stage', 'group')
+    .eq('status', 'completed');
+  if (error) throw error;
+  return data.map(({ match_slot: slots, ...match }) => ({
+    ...match,
+    slots: slots.map(({ slot_substitution: subs, ...slot }) => ({
+      ...slot,
+      substitutions: [...subs]
+        .sort((a, b) => a.created_at.localeCompare(b.created_at))
+        .map(({ side, replaced_id, substitute_id }) => ({ side, replaced_id, substitute_id })),
+    })),
+  }));
+});
+
+export interface PlayerSeason {
+  year: number;
+  name: string;
+  team: { name: string; color: string } | null;
+  rank: number;
+  skill: number;
+  status: 'active' | 'withdrawn';
+}
+
+/** Every season a person played, newest first. RLS hides draft seasons, so `!inner` drops them. */
+export const getPersonHistory = cache(async (personId: string): Promise<PlayerSeason[]> => {
+  await connection();
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from('season_player')
+    .select('rank, skill_points, status, season!inner(year, name), team!season_player_team_id_fkey(name, color)')
+    .eq('person_id', personId);
+  if (error) throw error;
+  return data
+    .map((p) => ({
+      year: p.season.year,
+      name: p.season.name,
+      team: p.team,
+      rank: p.rank,
+      skill: p.skill_points,
+      status: p.status,
+    }))
+    .sort((a, b) => b.year - a.year);
 });
 
 /** The final team order fixed when the group closed, or null while it is open. */

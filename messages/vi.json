@@ -185,6 +185,56 @@
         "gender": "Giới tính"
       },
       "rank": "R{rank}"
+    },
+    "players": {
+      "subtitle": "{count} VĐV",
+      "filters": "Bộ lọc",
+      "team": "Đội",
+      "rank": "Hạng",
+      "gender": "Giới tính",
+      "all": "Tất cả",
+      "rankOption": "Rank {rank}",
+      "clear": "Xoá bộ lọc",
+      "empty": "Không có VĐV nào khớp bộ lọc.",
+      "noPlayers": "Mùa giải này chưa có VĐV.",
+      "noTeam": "Chưa có đội",
+      "rankShort": "R{rank}",
+      "skillShort": "{skill} điểm",
+      "rankSkillFull": "Rank {rank}, điểm kỹ năng {skill}",
+      "withdrawn": "Đã rút lui"
+    },
+    "player": {
+      "back": "VĐV",
+      "avatar": "Ảnh của {name}",
+      "rank": "Rank {rank}",
+      "skill": "{skill} điểm kỹ năng",
+      "captain": "Đội trưởng",
+      "withdrawn": "Đã rút lui",
+      "statsTitle": "Thống kê mùa giải",
+      "statsNote": "Vòng bảng, chỉ tính các trận đã kết thúc.",
+      "setsPlayed": "Số set đã đấu",
+      "setRecord": "Set thắng–thua",
+      "points": "Điểm ghi–mất",
+      "partner": "Đồng đội nhiều nhất",
+      "partnerSets": "× {sets}",
+      "partnerSetsFull": "{sets} set cùng nhau",
+      "noPartner": "Chưa có",
+      "setsTitle": "Các set đã đấu",
+      "setsCaption": "Các set {name} đã đấu",
+      "noSets": "Chưa đấu set nào.",
+      "cols": {
+        "match": "Trận",
+        "set": "Set",
+        "partner": "Đồng đội",
+        "opponents": "Đối thủ",
+        "score": "Tỉ số"
+      },
+      "set": "Set {no}",
+      "won": "Thắng",
+      "lost": "Thua",
+      "historyTitle": "Qua các mùa",
+      "historyRankSkill": "Rank {rank} · {skill} điểm",
+      "noTeam": "Chưa có đội"
     }
   },
   "MatchStatus": {
