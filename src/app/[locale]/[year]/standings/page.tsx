@@ -4,7 +4,7 @@ import { notFound } from 'next/navigation';
 import { Suspense } from 'react';
 import { TeamChip } from '@/components/team-chip';
 import { routing } from '@/i18n/routing';
-import { formatNumber } from '@/lib/format';
+import { signed } from '@/lib/format';
 import { buildStandingsView, type StandingsHint } from '@/lib/public-standings';
 import { getGroupClosure, getPublicSeason, getSeasonMatches, getSeasonTeams } from '@/lib/public-season-db';
 import { cn } from '@/lib/utils';
@@ -16,8 +16,6 @@ const CHIP_NEUTRAL = 'border-border bg-surface-2 text-muted-foreground';
 
 const TH = 'px-3 py-2.5 text-right text-xs font-semibold uppercase tracking-wide text-muted-foreground';
 const TD = 'px-3 py-2.5 text-right';
-
-const signed = (value: number, locale: 'vi' | 'en') => `${value > 0 ? '+' : ''}${formatNumber(value, locale)}`;
 
 function Abbr({ short, full }: { short: string; full: string }) {
   return (

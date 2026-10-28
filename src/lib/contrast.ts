@@ -16,3 +16,8 @@ export function contrastRatio(a: string, b: string): number {
   const [hi, lo] = [relativeLuminance(a), relativeLuminance(b)].sort((x, y) => y - x);
   return (hi + 0.05) / (lo + 0.05);
 }
+
+/** White or near-black, whichever reads better on `background` (#rrggbb). */
+export function readableTextOn(background: string): '#ffffff' | '#111827' {
+  return contrastRatio(background, '#ffffff') >= contrastRatio(background, '#111827') ? '#ffffff' : '#111827';
+}

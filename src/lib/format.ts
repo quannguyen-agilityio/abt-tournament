@@ -73,3 +73,8 @@ export function formatDay(day: string, locale: AppLocale) {
     new Date(`${day}T00:00:00Z`),
   );
 }
+
+/** A difference with its sign: "+4", "0", "-2". */
+export function signed(value: number, locale: AppLocale) {
+  return `${value > 0 ? '+' : ''}${formatNumber(value, locale)}`;
+}
