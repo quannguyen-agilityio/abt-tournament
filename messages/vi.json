@@ -109,6 +109,14 @@
       "empty": "Chưa có trận"
     }
   },
+  "MatchStatus": {
+    "scheduled": "Đã lên lịch",
+    "lineup_locked": "Đã khoá đội hình",
+    "in_progress": "Đang đấu",
+    "completed": "Đã kết thúc",
+    "forfeit": "Xử thua",
+    "annulled": "Đã huỷ"
+  },
   "Admin": {
     "title": "Quản trị",
     "comingSoon": "Sắp ra mắt",
@@ -368,14 +376,6 @@
       "tbd": "Chưa xác định",
       "save": "Lưu",
       "saving": "Đang lưu…",
-      "status": {
-        "scheduled": "Đã lên lịch",
-        "lineup_locked": "Đã khoá đội hình",
-        "in_progress": "Đang đấu",
-        "completed": "Đã kết thúc",
-        "forfeit": "Xử thua",
-        "annulled": "Đã huỷ"
-      },
       "conflicts": {
         "title": "Xung đột lịch",
         "none": "Không có xung đột.",

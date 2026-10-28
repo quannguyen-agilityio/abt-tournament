@@ -109,6 +109,14 @@
       "empty": "No match yet"
     }
   },
+  "MatchStatus": {
+    "scheduled": "Scheduled",
+    "lineup_locked": "Lineups locked",
+    "in_progress": "In progress",
+    "completed": "Completed",
+    "forfeit": "Forfeit",
+    "annulled": "Annulled"
+  },
   "Admin": {
     "title": "Admin",
     "comingSoon": "Coming soon",
@@ -368,14 +376,6 @@
       "tbd": "TBD",
       "save": "Save",
       "saving": "Saving…",
-      "status": {
-        "scheduled": "Scheduled",
-        "lineup_locked": "Lineups locked",
-        "in_progress": "In progress",
-        "completed": "Completed",
-        "forfeit": "Forfeit",
-        "annulled": "Annulled"
-      },
       "conflicts": {
         "title": "Schedule conflicts",
         "none": "No conflicts.",
