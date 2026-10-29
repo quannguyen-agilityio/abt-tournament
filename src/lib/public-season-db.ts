@@ -17,6 +17,7 @@ export interface PublicSeason {
   id: string;
   year: number;
   name: string;
+  venue: string;
   status: Database['public']['Enums']['season_status'];
   settings: SeasonSettings;
   matchDays: string[];
@@ -46,7 +47,7 @@ export const getPublicSeason = cache(async (year: number): Promise<PublicSeason 
   const supabase = await createClient();
   const { data, error } = await supabase
     .from('season')
-    .select('id, year, name, status, settings, match_days')
+    .select('id, year, name, venue, status, settings, match_days')
     .eq('year', year)
     .maybeSingle();
   if (error) throw error;
@@ -56,6 +57,7 @@ export const getPublicSeason = cache(async (year: number): Promise<PublicSeason 
     id: data.id,
     year: data.year,
     name: data.name,
+    venue: data.venue,
     status: data.status,
     settings: parsed.ok ? parsed.settings : DEFAULT_SEASON_SETTINGS,
     matchDays: data.match_days,

@@ -1,6 +1,6 @@
 import { expect, test } from '@playwright/test';
 
-test('home page shows the app title', async ({ page }) => {
+test('home page shows the current season', async ({ page }) => {
   await page.goto('/');
-  await expect(page.getByRole('heading', { name: 'ABT Tournament' })).toBeVisible();
+  await expect(page.getByRole('heading', { level: 1, name: /^ABT \d{4}$/ })).toBeVisible();
 });
