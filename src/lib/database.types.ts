@@ -962,6 +962,7 @@ export type Database = {
     };
     Functions: {
       clone_season: { Args: { p_name: string; p_source_id: string; p_venue: string; p_year: number }; Returns: string };
+      complete_match: { Args: { p_expected: Json; p_match_id: string; p_winner_team_id: string }; Returns: undefined };
       generate_group_schedule: {
         Args: { p_matches: Json; p_season_id: string; p_slot_types: Database['public']['Enums']['slot_type'][] };
         Returns: number;
@@ -979,6 +980,7 @@ export type Database = {
         Args: { p_match_id: string; p_relay_away?: number; p_relay_home?: number; p_slots: Json };
         Returns: undefined;
       };
+      reopen_match: { Args: { p_match_id: string }; Returns: undefined };
       save_lineup: {
         Args: {
           p_match_id: string;
@@ -987,6 +989,10 @@ export type Database = {
           p_slots: Json;
           p_team_id: string;
         };
+        Returns: undefined;
+      };
+      save_slot_score: {
+        Args: { p_expected: Json; p_match_id: string; p_score_away: number; p_score_home: number; p_slot_no: number };
         Returns: undefined;
       };
       set_current_season: { Args: { p_season_id: string }; Returns: undefined };

@@ -12,11 +12,14 @@ import { isUuid } from '@/lib/auth/users';
 import { formatDate, formatTime } from '@/lib/format';
 import { attendanceEditable } from '@/lib/match-attendance';
 import { lineupEditable, type SlotPair } from '@/lib/match-lineup';
+import { matchOutcome, scoreRules, scoresEditable } from '@/lib/match-scores';
 import { createClient } from '@/lib/supabase/server';
 import { cn } from '@/lib/utils';
 import { AttendanceForm, type AttendancePlayer } from './attendance-form';
+import { CompletedResult, CompleteForm } from './complete-form';
 import { LineupStep, type LineupTeam } from './lineup-step';
 import { LockedLineups } from './locked-lineups';
+import { ScoresStep } from './scores-step';
 
 const STEPS = ['attendance', 'lineup', 'lock', 'scores', 'done'] as const;
 type Step = (typeof STEPS)[number];
@@ -36,7 +39,7 @@ async function StaffMatch({ params, searchParams }: PageProps<'/[locale]/admin/m
   const { data: match, error } = await supabase
     .from('match')
     .select(
-      'id, code, stage, status, imported, relay_handicap_home, relay_handicap_away, scheduled_at, home_team_id, away_team_id, court:court_id (name), season:season_id (settings)',
+      'id, code, stage, status, imported, relay_handicap_home, relay_handicap_away, winner_team_id, scheduled_at, home_team_id, away_team_id, court:court_id (name), season:season_id (settings)',
     )
     .eq('id', id)
     .maybeSingle();
@@ -58,7 +61,9 @@ async function StaffMatch({ params, searchParams }: PageProps<'/[locale]/admin/m
     supabase.from('match_attendance').select('team_id, season_player_id').eq('match_id', match.id),
     supabase
       .from('match_slot')
-      .select('slot_no, slot_type, home_p1, home_p2, away_p1, away_p2, handicap_home, handicap_away')
+      .select(
+        'slot_no, slot_type, home_p1, home_p2, away_p1, away_p2, handicap_home, handicap_away, score_home, score_away',
+      )
       .eq('match_id', match.id)
       .order('slot_no'),
     // Which rules the BTC overrode, without the reasons (lineup_override itself is BTC-only).
@@ -91,8 +96,8 @@ async function StaffMatch({ params, searchParams }: PageProps<'/[locale]/admin/m
     overridden: overridesResult.data.filter((o) => o.team_id === team.id).map((o) => o.rule_code),
   });
 
-  // Steps reachable now: attendance and lineups while the match is scheduled, the locked lineups once
-  // they are locked. The scores follow in a later update.
+  // Steps reachable now: attendance and lineups while the match is scheduled, the locked lineups and the
+  // scores once they are locked, and the result once the match is completed.
   const locked = LOCKED_STATUSES.includes(match.status);
   const available: Step[] =
     teams.length < 2
@@ -100,7 +105,9 @@ async function StaffMatch({ params, searchParams }: PageProps<'/[locale]/admin/m
       : lineupEditable(match.status)
         ? ['attendance', 'lineup']
         : locked
-          ? ['attendance', 'lock']
+          ? match.status === 'completed'
+            ? ['attendance', 'lock', 'scores', 'done']
+            : ['attendance', 'lock', 'scores']
           : ['attendance'];
   const bothTicked =
     teams.length === 2 && teams.every((team) => attendanceResult.data.some((a) => a.team_id === team.id));
@@ -108,14 +115,35 @@ async function StaffMatch({ params, searchParams }: PageProps<'/[locale]/admin/m
   const step: Step =
     requested && available.includes(requested)
       ? requested
-      : locked && available.includes('lock')
-        ? 'lock'
-        : available.includes('lineup') && bothTicked
-          ? 'lineup'
-          : 'attendance';
+      : available.includes('done')
+        ? 'done'
+        : available.includes('scores')
+          ? 'scores'
+          : locked && available.includes('lock')
+            ? 'lock'
+            : available.includes('lineup') && bothTicked
+              ? 'lineup'
+              : 'attendance';
   const nameOf = new Map(playersResult.data.map((p) => [p.id, p.person?.full_name ?? '']));
   const namesOf = (...ids: (string | null)[]) => ids.filter((x) => x !== null).map((x) => nameOf.get(x) ?? '—');
   const current = STEPS.indexOf(step);
+
+  // The result from the saved scores; once completed, the stored winner.
+  const rules = scoreRules(match);
+  const outcome = matchOutcome(rules, slots, settings);
+  const sideOf = (teamId: string | null) =>
+    teamId === match.home_team_id ? 'home' : teamId === match.away_team_id ? 'away' : null;
+  const winnerSide = match.status === 'completed' ? sideOf(match.winner_team_id) : outcome.winner;
+  const winner = teams.length === 2 && winnerSide ? teams[winnerSide === 'home' ? 0 : 1] : null;
+  const scoreRows = slots.map((slot) => ({
+    slotNo: slot.slot_no,
+    slotType: slot.slot_type,
+    home: namesOf(slot.home_p1, slot.home_p2),
+    away: namesOf(slot.away_p1, slot.away_p2),
+    handicap: { home: slot.handicap_home, away: slot.handicap_away },
+    score:
+      slot.score_home !== null && slot.score_away !== null ? { home: slot.score_home, away: slot.score_away } : null,
+  }));
 
   return (
     <div className="flex flex-col gap-5">
@@ -184,6 +212,53 @@ async function StaffMatch({ params, searchParams }: PageProps<'/[locale]/admin/m
         <p className="border-border bg-surface text-muted-foreground rounded-[10px] border p-8 text-center text-sm">
           {t('tbd')}
         </p>
+      ) : step === 'scores' ? (
+        <section aria-labelledby="scores-title" className="flex flex-col gap-3">
+          <div>
+            <h2 id="scores-title" className="font-display text-2xl font-bold uppercase">
+              {t('steps.scores')}
+            </h2>
+            <p className="text-muted-foreground text-sm">
+              {!scoresEditable(match.status)
+                ? t('scores.readOnly')
+                : rules.relay
+                  ? t('scores.hintRelay', { milestone: settings.relay_milestones.at(-1) ?? 0 })
+                  : t('scores.hint', { target: settings.set_target })}
+            </p>
+          </div>
+          <ScoresStep
+            matchId={match.id}
+            teams={[teams[0], teams[1]]}
+            slots={scoreRows}
+            rules={rules}
+            settings={settings}
+            editable={scoresEditable(match.status)}
+          />
+          {match.status === 'in_progress' && (
+            <CompleteForm matchId={match.id} code={match.code} winner={winner} score={outcome.score} />
+          )}
+        </section>
+      ) : step === 'done' ? (
+        <section aria-labelledby="done-title" className="flex flex-col gap-3">
+          <h2 id="done-title" className="font-display text-2xl font-bold uppercase">
+            {t('steps.done')}
+          </h2>
+          <CompletedResult
+            matchId={match.id}
+            code={match.code}
+            winner={winner}
+            score={outcome.score}
+            canReopen={viewer.role === 'btc'}
+          />
+          <ScoresStep
+            matchId={match.id}
+            teams={[teams[0], teams[1]]}
+            slots={scoreRows}
+            rules={rules}
+            settings={settings}
+            editable={false}
+          />
+        </section>
       ) : step === 'lock' ? (
         <section aria-labelledby="lock-title" className="flex flex-col gap-3">
           <h2 id="lock-title" className="font-display text-2xl font-bold uppercase">

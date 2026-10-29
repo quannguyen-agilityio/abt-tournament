@@ -830,6 +830,53 @@
           "invalid": "Only the committee can unlock lineups.",
           "failed": "Could not unlock the lineups. Please try again."
         }
+      },
+      "scores": {
+        "hint": "Enter each set's final score and save the row. A pair with start points begins from them, and a set ends when one side reaches {target}.",
+        "hintRelay": "Enter the running score at the end of each leg, in order, and save it. Leg 1 starts from the start points, each leg ends when one side reaches its milestone, and the side that reaches {milestone} wins.",
+        "setsWon": "Sets won",
+        "relayScore": "Score",
+        "relayStart": "Start of leg 1",
+        "toMilestone": "to {milestone}",
+        "scoreLabel": "{slot}, {team} score",
+        "save": "Save",
+        "saving": "Saving…",
+        "retry": "Retry",
+        "saved": "Saved",
+        "unsaved": "Not saved",
+        "readOnly": "The match is completed, so its scores are read-only.",
+        "errors": {
+          "closed": "Scores can no longer change for this match. Reload the page.",
+          "invalid": "This score is not valid. Reload the page and try again.",
+          "violations": "This score breaks the rules and was not saved.",
+          "changed": "Another score was saved in the meantime and the page was updated. Check this row and save again.",
+          "failed": "Could not save the score. Please try again.",
+          "network": "No connection. The score is kept here: retry when you are back online."
+        }
+      },
+      "complete": {
+        "winner": "Winner",
+        "notReady": "Save every set with a valid score to complete the match.",
+        "complete": "Complete match",
+        "completing": "Completing…",
+        "confirm": "Complete {code}? {team} wins {score}. After this, only the committee can reopen the match.",
+        "errors": {
+          "notReady": "The saved scores do not decide the match yet. Reload the page.",
+          "closed": "This match cannot be completed now. Reload the page.",
+          "invalid": "This match cannot be completed. Reload the page.",
+          "changed": "A score changed in the meantime. Reload the page and try again.",
+          "failed": "Could not complete the match. Please try again."
+        },
+        "completed": "The match is completed.",
+        "reopen": "Reopen match",
+        "reopening": "Reopening…",
+        "reopenHint": "Moves the match back to score entry and clears the winner, so a score can be corrected. The audit log records who reopened it.",
+        "reopenConfirm": "Reopen {code}?",
+        "reopenErrors": {
+          "notCompleted": "The match is no longer completed. Reload the page.",
+          "invalid": "Only the committee can reopen a match.",
+          "failed": "Could not reopen the match. Please try again."
+        }
       }
     }
   },

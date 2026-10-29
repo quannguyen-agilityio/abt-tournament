@@ -8,6 +8,15 @@ import { requireStaff } from '@/lib/auth/session';
 import { isUuid } from '@/lib/auth/users';
 import { attendanceEditable, parseAttendanceForm } from '@/lib/match-attendance';
 import { lineupEditable, lockSnapshot, overridable, parseLineupForm, unresolvedViolations } from '@/lib/match-lineup';
+import {
+  matchOutcome,
+  parseScoreForm,
+  scoresEditable,
+  scoreState,
+  slotScoreViolations,
+  scoreRules,
+  withScore,
+} from '@/lib/match-scores';
 import { createClient } from '@/lib/supabase/server';
 
 export type AttendanceState = { ok: true; count: number } | { error: 'locked' | 'invalid' | 'failed' } | undefined;
@@ -237,6 +246,120 @@ export async function unlockLineups(_prev: UnlockState, formData: FormData): Pro
   const supabase = await createClient();
   const { error } = await supabase.rpc('unlock_match_lineups', { p_match_id: matchId });
   if (error) return { error: error.code === 'P0001' ? 'notLocked' : 'failed' };
+
+  refresh();
+  return undefined;
+}
+
+/** A match with both teams, how it is scored, its season settings and the scores and start points of its slots. */
+async function loadScoreMatch(supabase: Supabase, matchId: string) {
+  const [matchResult, slotsResult] = await Promise.all([
+    supabase
+      .from('match')
+      .select(
+        'stage, status, home_team_id, away_team_id, relay_handicap_home, relay_handicap_away, season:season_id (settings)',
+      )
+      .eq('id', matchId)
+      .maybeSingle(),
+    supabase
+      .from('match_slot')
+      .select('slot_no, score_home, score_away, handicap_home, handicap_away')
+      .eq('match_id', matchId)
+      .order('slot_no'),
+  ]);
+  if (matchResult.error) throw matchResult.error;
+  if (slotsResult.error) throw slotsResult.error;
+  const match = matchResult.data;
+  if (!match?.season || !match.home_team_id || !match.away_team_id) return null;
+  const parsedSettings = parseSeasonSettings(match.season.settings);
+  return {
+    match,
+    teams: { home: match.home_team_id, away: match.away_team_id },
+    rules: scoreRules(match),
+    settings: parsedSettings.ok ? parsedSettings.settings : DEFAULT_SEASON_SETTINGS,
+    slots: slotsResult.data,
+  };
+}
+
+export type ScoreState = { ok: true } | { error: 'closed' | 'invalid' | 'violations' | 'changed' | 'failed' };
+
+/**
+ * Saves one set's score, or one relay leg's cumulative score, on its own (A5 step 4), so a weak connection loses at most this row. The score
+ * is checked again here (spec §4.4) on the slots as they are saved; the first score starts the match.
+ * Called directly rather than as a form action, so the row keeps its input if the request fails.
+ */
+export async function saveSlotScore(formData: FormData): Promise<ScoreState> {
+  await requireStaff();
+  const input = parseScoreForm(formData);
+  if (!input) return { error: 'invalid' };
+  const { matchId, slotNo, score } = input;
+
+  const supabase = await createClient();
+  const loaded = await loadScoreMatch(supabase, matchId).catch(() => undefined);
+  if (loaded === undefined) return { error: 'failed' };
+  if (!loaded) return { error: 'invalid' };
+  const { match, rules, settings, slots } = loaded;
+  if (!scoresEditable(match.status)) return { error: 'closed' };
+  if (!slots.some((s) => s.slot_no === slotNo)) return { error: 'invalid' };
+  if (slotScoreViolations(rules, withScore(slots, slotNo, score), slotNo, settings).length > 0) {
+    return { error: 'violations' };
+  }
+
+  const { error } = await supabase.rpc('save_slot_score', {
+    p_match_id: matchId,
+    p_slot_no: slotNo,
+    p_score_home: score.home,
+    p_score_away: score.away,
+    p_expected: scoreState(slots),
+  });
+  if (error) return { error: error.code === 'P0001' ? 'closed' : error.code === '40001' ? 'changed' : 'failed' };
+
+  refresh();
+  return { ok: true };
+}
+
+export type CompleteState = { error: 'notReady' | 'closed' | 'invalid' | 'changed' | 'failed' } | undefined;
+
+/**
+ * Completes a match (A5 step 5): derives the winner from the saved scores (spec §4.4) and stores it.
+ * From then on only the BTC can change the match, by reopening it.
+ */
+export async function completeMatch(_prev: CompleteState, formData: FormData): Promise<CompleteState> {
+  await requireStaff();
+  const matchId = String(formData.get('matchId') ?? '');
+  if (!isUuid(matchId)) return { error: 'invalid' };
+
+  const supabase = await createClient();
+  const loaded = await loadScoreMatch(supabase, matchId).catch(() => undefined);
+  if (loaded === undefined) return { error: 'failed' };
+  if (!loaded) return { error: 'invalid' };
+  const { match, teams, rules, settings, slots } = loaded;
+  if (match.status !== 'in_progress') return { error: 'closed' };
+  const { winner } = matchOutcome(rules, slots, settings);
+  if (!winner) return { error: 'notReady' };
+
+  const { error } = await supabase.rpc('complete_match', {
+    p_match_id: matchId,
+    p_winner_team_id: teams[winner],
+    p_expected: scoreState(slots),
+  });
+  if (error) return { error: error.code === 'P0001' ? 'closed' : error.code === '40001' ? 'changed' : 'failed' };
+
+  refresh();
+  return undefined;
+}
+
+export type ReopenState = { error: 'notCompleted' | 'invalid' | 'failed' } | undefined;
+
+/** BTC only: moves a completed match back to score entry and clears the winner. The audit log records it. */
+export async function reopenMatch(_prev: ReopenState, formData: FormData): Promise<ReopenState> {
+  const viewer = await requireStaff();
+  const matchId = String(formData.get('matchId') ?? '');
+  if (viewer.role !== 'btc' || !isUuid(matchId)) return { error: 'invalid' };
+
+  const supabase = await createClient();
+  const { error } = await supabase.rpc('reopen_match', { p_match_id: matchId });
+  if (error) return { error: error.code === 'P0001' ? 'notCompleted' : 'failed' };
 
   refresh();
   return undefined;
