@@ -963,6 +963,10 @@ export type Database = {
     Functions: {
       clone_season: { Args: { p_name: string; p_source_id: string; p_venue: string; p_year: number }; Returns: string };
       complete_match: { Args: { p_expected: Json; p_match_id: string; p_winner_team_id: string }; Returns: undefined };
+      forfeit_match: {
+        Args: { p_forfeit_team_id: string; p_match_id: string; p_reason: string; p_slots: Json };
+        Returns: undefined;
+      };
       generate_group_schedule: {
         Args: { p_matches: Json; p_season_id: string; p_slot_types: Database['public']['Enums']['slot_type'][] };
         Returns: number;
