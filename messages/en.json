@@ -235,6 +235,47 @@
       "historyTitle": "History",
       "historyRankSkill": "Rank {rank} · {skill} pts",
       "noTeam": "No team"
+    },
+    "awards": {
+      "subtitle": "{count, plural, one {# side award} other {# side awards}}",
+      "empty": "No side awards yet.",
+      "sponsor": "Sponsor: {name}",
+      "winners": "Winners",
+      "pending": "To be announced",
+      "kind": {
+        "player": "Player",
+        "pair": "Pair",
+        "team": "Team"
+      },
+      "match": "Match {code}"
+    },
+    "rules": {
+      "subtitle": "A summary of the {season} rules. The numbers come from the season settings.",
+      "group": {
+        "title": "Group stage",
+        "format": "Single round-robin in one group. Each match is {sets} doubles sets to <b>{setTarget}</b>, no 2-point lead needed.",
+        "order": "Set order:",
+        "ranks": "Low-rank set: ranks <b>{lowMin}–{lowMax}</b> · High-rank set: ranks <b>{highMin}–{highMax}</b>.",
+        "sets": "Each player plays <b>{minSets}–{maxSets}</b> sets and never two in a row.",
+        "compensation": "Roster compensation: a team with fewer players present than its opponent and only one rank-{maxRank} player has that player play at least 2 sets.",
+        "points": "The team that wins more sets wins the match and gets 1 point in the standings."
+      },
+      "handicap": {
+        "title": "Handicap",
+        "group": "The pair with the lower total skill points starts with the difference, up to <b>{groupCap}</b> per set.",
+        "relay": "Knock-out: the signed differences of the {legs} legs are added up, capped at <b>{koCap}</b>, and given at the start of leg 1.",
+        "points": "Scoreboard points (handicap included) count toward point difference."
+      },
+      "ranking": {
+        "title": "Ranking",
+        "order": "Points → head-to-head (2 teams) or mini-table (3+ teams) → set difference → point difference → draw."
+      },
+      "knockout": {
+        "title": "Knock-out",
+        "seeds": "The top <b>{knockoutTeams}</b> teams reach the semi-finals: #1 v #4 and #2 v #3, then the third-place match and the final.",
+        "relay": "Relay of {legs} legs to <b>{finalMilestone}</b>, with milestones at {milestones}.",
+        "minPresent": "A team with fewer than <b>{minPresent}</b> players present is disqualified."
+      }
     }
   },
   "MatchStatus": {

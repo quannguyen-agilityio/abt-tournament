@@ -235,6 +235,47 @@
       "historyTitle": "Qua các mùa",
       "historyRankSkill": "Rank {rank} · {skill} điểm",
       "noTeam": "Chưa có đội"
+    },
+    "awards": {
+      "subtitle": "{count} giải phụ",
+      "empty": "Chưa có giải phụ nào.",
+      "sponsor": "Nhà tài trợ: {name}",
+      "winners": "Người đoạt giải",
+      "pending": "Chưa công bố",
+      "kind": {
+        "player": "VĐV",
+        "pair": "Cặp",
+        "team": "Đội"
+      },
+      "match": "Trận {code}"
+    },
+    "rules": {
+      "subtitle": "Tóm tắt luật thi đấu {season}. Các con số lấy từ cài đặt của mùa giải.",
+      "group": {
+        "title": "Vòng bảng",
+        "format": "Vòng tròn một lượt, 1 bảng. Mỗi trận {sets} set đôi, chạm <b>{setTarget}</b> điểm, không cần cách 2 điểm.",
+        "order": "Thứ tự set:",
+        "ranks": "Set Rank thấp: Rank <b>{lowMin}–{lowMax}</b> · Set Rank cao: Rank <b>{highMin}–{highMax}</b>.",
+        "sets": "Mỗi VĐV đánh <b>{minSets}–{maxSets}</b> set và không đánh 2 set liên tiếp.",
+        "compensation": "Bù đắp nhân sự: đội có ít VĐV có mặt hơn đối thủ và chỉ có một VĐV Rank {maxRank} thì VĐV đó đánh ít nhất 2 set.",
+        "points": "Đội thắng nhiều set hơn thắng trận và được 1 điểm trên bảng xếp hạng."
+      },
+      "handicap": {
+        "title": "Điểm chấp",
+        "group": "Cặp có tổng điểm kỹ năng thấp hơn được cộng sẵn phần chênh lệch, tối đa <b>{groupCap}</b> điểm mỗi set.",
+        "relay": "Knock-out: cộng có dấu phần chênh lệch của {legs} lượt, tối đa <b>{koCap}</b> điểm, cộng từ đầu lượt 1.",
+        "points": "Tỉ số trên bảng điểm (đã gồm điểm chấp) được tính vào hiệu số điểm."
+      },
+      "ranking": {
+        "title": "Xếp hạng",
+        "order": "Điểm → đối đầu (2 đội) hoặc bảng phụ (từ 3 đội) → hiệu số set → hiệu số điểm → bốc thăm."
+      },
+      "knockout": {
+        "title": "Knock-out",
+        "seeds": "<b>{knockoutTeams}</b> đội đứng đầu vào bán kết: #1 gặp #4, #2 gặp #3, sau đó là tranh hạng 3 và chung kết.",
+        "relay": "Đánh tiếp sức {legs} lượt đến <b>{finalMilestone}</b> điểm, các mốc {milestones}.",
+        "minPresent": "Đội có dưới <b>{minPresent}</b> VĐV có mặt bị loại khỏi giải."
+      }
     }
   },
   "MatchStatus": {
