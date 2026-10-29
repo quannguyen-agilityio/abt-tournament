@@ -12,6 +12,7 @@ import { requireStaff } from '@/lib/auth/session';
 import { isUuid } from '@/lib/auth/users';
 import { formatDate, formatTime } from '@/lib/format';
 import { attendanceEditable } from '@/lib/match-attendance';
+import { forfeitable } from '@/lib/match-forfeit';
 import { lineupEditable, type SlotPair } from '@/lib/match-lineup';
 import { matchOutcome, scoreRules, scoresEditable } from '@/lib/match-scores';
 import { substitutionsOpen } from '@/lib/match-substitution';
@@ -19,6 +20,7 @@ import { createClient } from '@/lib/supabase/server';
 import { cn } from '@/lib/utils';
 import { AttendanceForm, type AttendancePlayer } from './attendance-form';
 import { CompletedResult, CompleteForm } from './complete-form';
+import { ForfeitForm, ForfeitResult } from './forfeit-form';
 import { LineupStep, type LineupTeam } from './lineup-step';
 import { LockedLineups } from './locked-lineups';
 import { ScoresStep } from './scores-step';
@@ -43,7 +45,7 @@ async function StaffMatch({ params, searchParams }: PageProps<'/[locale]/admin/m
   const { data: match, error } = await supabase
     .from('match')
     .select(
-      'id, code, stage, status, imported, relay_handicap_home, relay_handicap_away, winner_team_id, scheduled_at, home_team_id, away_team_id, court:court_id (name), season:season_id (settings)',
+      'id, code, stage, status, imported, relay_handicap_home, relay_handicap_away, winner_team_id, forfeit_team_id, forfeit_reason, scheduled_at, home_team_id, away_team_id, court:court_id (name), season:season_id (settings)',
     )
     .eq('id', id)
     .maybeSingle();
@@ -182,6 +184,21 @@ async function StaffMatch({ params, searchParams }: PageProps<'/[locale]/admin/m
           },
         ]
       : [];
+  if (teams.length === 2 && forfeitable(match.status)) {
+    sideActions.push({
+      key: 'forfeit',
+      label: t('sideActions.forfeit'),
+      panel: (
+        <ForfeitForm
+          matchId={match.id}
+          code={match.code}
+          stage={match.stage}
+          teams={[teams[0], teams[1]]}
+          settings={settings}
+        />
+      ),
+    });
+  }
 
   return (
     <div className="flex flex-col gap-5">
@@ -251,6 +268,19 @@ async function StaffMatch({ params, searchParams }: PageProps<'/[locale]/admin/m
         <p className="border-border bg-surface text-muted-foreground rounded-[10px] border p-8 text-center text-sm">
           {t('tbd')}
         </p>
+      ) : match.status === 'forfeit' ? (
+        <section aria-labelledby="forfeit-result-title" className="flex flex-col gap-3">
+          <h2 id="forfeit-result-title" className="font-display text-2xl font-bold uppercase">
+            {t('forfeit.result.title')}
+          </h2>
+          <ForfeitResult
+            stage={match.stage}
+            side={sideOf(match.forfeit_team_id) ?? 'home'}
+            teams={[teams[0], teams[1]]}
+            reason={match.forfeit_reason ?? ''}
+            settings={settings}
+          />
+        </section>
       ) : step === 'scores' ? (
         <section aria-labelledby="scores-title" className="flex flex-col gap-3">
           <div>

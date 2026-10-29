@@ -7,6 +7,7 @@ import { DEFAULT_SEASON_SETTINGS, parseSeasonSettings } from '@/domain/settings'
 import { requireStaff } from '@/lib/auth/session';
 import { isUuid } from '@/lib/auth/users';
 import { attendanceEditable, parseAttendanceForm } from '@/lib/match-attendance';
+import { forfeitable, forfeitSlots, parseForfeitForm } from '@/lib/match-forfeit';
 import { lineupEditable, lockSnapshot, overridable, parseLineupForm, unresolvedViolations } from '@/lib/match-lineup';
 import {
   matchOutcome,
@@ -551,6 +552,64 @@ export async function substitutePlayer(_prev: SubstitutionState, formData: FormD
               : code === '42501'
                 ? 'violations'
                 : 'failed',
+    };
+  }
+
+  refresh();
+  return { ok: true };
+}
+
+export type ForfeitState =
+  { ok: true } | { error: 'closed' | 'invalid' | 'reason' | 'forbidden' | 'failed' } | undefined;
+
+/**
+ * Records a forfeit (spec §4.5, A5): the other team wins with every set 31–0 in a group match, or the
+ * relay recorded 125–0 in the knock-out, and advances. The reason is required and shown publicly.
+ * Staff only: a referee can forfeit a match that is still open.
+ */
+export async function forfeitMatch(_prev: ForfeitState, formData: FormData): Promise<ForfeitState> {
+  await requireStaff();
+  const input = parseForfeitForm(formData);
+  if (!input) return { error: 'invalid' };
+  const { matchId, teamId, reason } = input;
+  if (!reason) return { error: 'reason' };
+
+  const supabase = await createClient();
+  const [matchResult, slotsResult] = await Promise.all([
+    supabase
+      .from('match')
+      .select('stage, status, home_team_id, away_team_id, season:season_id (settings)')
+      .eq('id', matchId)
+      .maybeSingle(),
+    supabase.from('match_slot').select('slot_no').eq('match_id', matchId),
+  ]);
+  if (matchResult.error || slotsResult.error) return { error: 'failed' };
+  const match = matchResult.data;
+  if (!match?.season) return { error: 'invalid' };
+  if (!forfeitable(match.status)) return { error: 'closed' };
+  const side: Side | null = teamId === match.home_team_id ? 'home' : teamId === match.away_team_id ? 'away' : null;
+  if (!side) return { error: 'invalid' };
+
+  const parsedSettings = parseSeasonSettings(match.season.settings);
+  const settings = parsedSettings.ok ? parsedSettings.settings : DEFAULT_SEASON_SETTINGS;
+  const slots = forfeitSlots(
+    match.stage,
+    side,
+    settings,
+    slotsResult.data.map((s) => s.slot_no),
+  );
+  if (!slots) return { error: 'invalid' };
+
+  const { error } = await supabase.rpc('forfeit_match', {
+    p_match_id: matchId,
+    p_forfeit_team_id: teamId,
+    p_reason: reason,
+    p_slots: slots,
+  });
+  if (error) {
+    const code = error.code;
+    return {
+      error: code === '42501' ? 'forbidden' : code === 'P0001' ? 'closed' : code === '22023' ? 'invalid' : 'failed',
     };
   }
 

@@ -848,7 +848,8 @@
         }
       },
       "sideActions": {
-        "substitute": "Thay người"
+        "substitute": "Thay người",
+        "forfeit": "Xử thua"
       },
       "substitute": {
         "title": "Thay người",
@@ -946,6 +947,30 @@
           "notCompleted": "Trận không còn ở trạng thái hoàn tất. Tải lại trang.",
           "invalid": "Chỉ BTC mới mở lại được trận.",
           "failed": "Không mở lại được trận. Vui lòng thử lại."
+        }
+      },
+      "forfeit": {
+        "title": "Xử thua trận đấu",
+        "hint": "Ghi nhận xử thua cho đội không thể thi đấu. Đội hình và điểm chấp được bỏ qua. Lý do được hiển thị công khai.",
+        "team": "Đội bỏ cuộc",
+        "reason": "Lý do",
+        "reasonHint": "Hiển thị trên trang trận đấu công khai.",
+        "previewGroup": "{team} thắng {sets} ({target} mỗi set)",
+        "previewKo": "{team} thắng {score} và đi tiếp",
+        "confirm": "Xử thua trận {code}? {team} bị xử thua và {result}. Sau đó trận đấu sẽ đóng.",
+        "submit": "Ghi nhận xử thua",
+        "submitting": "Đang ghi nhận…",
+        "result": {
+          "title": "Đã xử thua",
+          "team": "bị xử thua",
+          "reason": "Lý do: {reason}"
+        },
+        "errors": {
+          "closed": "Không thể xử thua trận này nữa. Tải lại trang.",
+          "invalid": "Việc xử thua này không hợp lệ. Tải lại trang và thử lại.",
+          "reason": "Nhập lý do xử thua.",
+          "forbidden": "Bạn không thể xử thua trận này.",
+          "failed": "Không ghi nhận được xử thua. Vui lòng thử lại."
         }
       }
     }

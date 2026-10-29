@@ -848,7 +848,8 @@
         }
       },
       "sideActions": {
-        "substitute": "Substitute"
+        "substitute": "Substitute",
+        "forfeit": "Forfeit"
       },
       "substitute": {
         "title": "Substitute a player",
@@ -946,6 +947,30 @@
           "notCompleted": "The match is no longer completed. Reload the page.",
           "invalid": "Only the committee can reopen a match.",
           "failed": "Could not reopen the match. Please try again."
+        }
+      },
+      "forfeit": {
+        "title": "Forfeit the match",
+        "hint": "Records a forfeit for the team that cannot play. Lineups and handicaps are ignored. The reason is shown publicly.",
+        "team": "Team that forfeits",
+        "reason": "Reason",
+        "reasonHint": "Shown on the public match page.",
+        "previewGroup": "{team} wins {sets} ({target} every set)",
+        "previewKo": "{team} wins {score} and advances",
+        "confirm": "Forfeit {code}? {team} forfeits and {result}. After this, the match is closed.",
+        "submit": "Record forfeit",
+        "submitting": "Recording…",
+        "result": {
+          "title": "Forfeited",
+          "team": "forfeits",
+          "reason": "Reason: {reason}"
+        },
+        "errors": {
+          "closed": "This match can no longer be forfeited. Reload the page.",
+          "invalid": "This forfeit is not valid. Reload the page and try again.",
+          "reason": "Enter the reason for the forfeit.",
+          "forbidden": "You cannot forfeit this match.",
+          "failed": "Could not record the forfeit. Please try again."
         }
       }
     }
