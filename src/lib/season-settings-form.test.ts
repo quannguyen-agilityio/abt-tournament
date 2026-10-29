@@ -33,11 +33,13 @@ describe('settingsFromForm', () => {
     data.set(SETTINGS_FIELDS.setTarget, ' 21 ');
     data.set(SETTINGS_FIELDS.relayMilestones, '10, 20 30,40\n50');
     data.set(SETTINGS_FIELDS.feeIntern, '0');
+    data.set(SETTINGS_FIELDS.prizeChampion, '5000000');
     expect(settingsFromForm(data)).toMatchObject({
       set_target: 21,
       slot_types: ['open', 'low', 'open', 'high', 'open'],
       relay_milestones: [10, 20, 30, 40, 50],
       fees: { employee: 300_000, intern: 0, guest: 300_000 },
+      prizes: { champion: 5_000_000, runner_up: 0, third: 0 },
       knockout_teams: 4,
     });
   });
@@ -92,6 +94,7 @@ describe('settingsToFormValues', () => {
       high_rank_max: '3',
       relay_milestones: '25, 50, 75, 100, 125',
       fee_employee: '300000',
+      prize_champion: '0',
       timezone: 'Asia/Ho_Chi_Minh',
     });
   });
