@@ -126,6 +126,10 @@
       "nothingNext": "No match in progress or coming up.",
       "noResults": "No results yet."
     },
+    "refresh": {
+      "lastUpdated": "Updated at {time}",
+      "every": "refreshes every {seconds} s"
+    },
     "matches": {
       "subtitle": "{count, plural, one {# match} other {# matches}}",
       "filters": "Filters",

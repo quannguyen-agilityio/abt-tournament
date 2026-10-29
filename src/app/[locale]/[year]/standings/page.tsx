@@ -2,6 +2,7 @@ import { hasLocale } from 'next-intl';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { notFound } from 'next/navigation';
 import { Suspense } from 'react';
+import { SeasonRefresh } from '@/components/season-refresh';
 import { TeamChip } from '@/components/team-chip';
 import { routing } from '@/i18n/routing';
 import { signed } from '@/lib/format';
@@ -47,6 +48,7 @@ async function Standings({ params }: Pick<PageProps<'/[locale]/[year]/standings'
       <p className="text-muted-foreground mb-5">
         {t('subtitle', { teams: teams.length, played: view.groupPlayed, total: view.groupTotal })}
       </p>
+      <SeasonRefresh season={season} className="-mt-3 mb-5" />
 
       {teams.length === 0 ? (
         <p className="text-muted-foreground">{t('empty')}</p>

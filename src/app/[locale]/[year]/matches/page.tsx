@@ -3,6 +3,7 @@ import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { notFound } from 'next/navigation';
 import { Suspense } from 'react';
 import { MatchCard } from '@/components/match-card';
+import { SeasonRefresh } from '@/components/season-refresh';
 import { routing } from '@/i18n/routing';
 import { formatDay, formatTime } from '@/lib/format';
 import {
@@ -50,6 +51,7 @@ async function Matches({ params, searchParams }: PageProps<'/[locale]/[year]/mat
     <>
       <h1 className="font-display mb-1 text-4xl font-extrabold uppercase">{tn('matches')}</h1>
       <p className="text-muted-foreground mb-5">{t('subtitle', { count: view.count })}</p>
+      <SeasonRefresh season={season} className="-mt-3 mb-5" />
 
       <MatchFiltersForm
         filters={filters}

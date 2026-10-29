@@ -126,6 +126,10 @@
       "nothingNext": "Không có trận nào đang hoặc sắp diễn ra.",
       "noResults": "Chưa có kết quả nào."
     },
+    "refresh": {
+      "lastUpdated": "Cập nhật lúc {time}",
+      "every": "tự làm mới mỗi {seconds} giây"
+    },
     "matches": {
       "subtitle": "{count, plural, other {# trận}}",
       "filters": "Bộ lọc",

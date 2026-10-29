@@ -3,6 +3,7 @@ import { notFound } from 'next/navigation';
 import { hasLocale } from 'next-intl';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { MatchCard } from '@/components/match-card';
+import { SeasonRefresh } from '@/components/season-refresh';
 import { TeamChip } from '@/components/team-chip';
 import { Link } from '@/i18n/navigation';
 import { routing } from '@/i18n/routing';
@@ -104,6 +105,7 @@ async function SeasonHome({ params }: Pick<PageProps<'/[locale]/[year]'>, 'param
         <div className={cn(EYEBROW, 'mb-2')}>{[...dates, season.venue].filter(Boolean).join(' · ')}</div>
         <h1 className="font-display text-5xl leading-none font-extrabold uppercase sm:text-6xl">{season.name}</h1>
         <div className="border-border mt-5 h-1.5 max-w-md border-y" />
+        <SeasonRefresh season={season} className="mt-3" />
       </section>
 
       {podium.length > 0 && (

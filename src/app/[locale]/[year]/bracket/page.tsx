@@ -2,6 +2,7 @@ import { hasLocale } from 'next-intl';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { notFound } from 'next/navigation';
 import { Suspense } from 'react';
+import { SeasonRefresh } from '@/components/season-refresh';
 import { routing } from '@/i18n/routing';
 import { buildBracketView, type BracketCode } from '@/lib/public-bracket';
 import { getGroupClosure, getPublicSeason, getSeasonMatches, getSeasonTeams } from '@/lib/public-season-db';
@@ -36,6 +37,7 @@ async function Bracket({ params }: Pick<PageProps<'/[locale]/[year]/bracket'>, '
     <>
       <h1 className="font-display mb-1 text-4xl font-extrabold uppercase">{tn('bracket')}</h1>
       <p className="text-muted-foreground mb-6">{t('relayNote')}</p>
+      <SeasonRefresh season={season} className="-mt-4 mb-6" />
 
       {!view.closed && (
         <div className="border-border bg-surface mb-6 rounded-[10px] border p-4 text-sm">

@@ -3,6 +3,7 @@ import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { notFound } from 'next/navigation';
 import { Suspense } from 'react';
 import { MatchStatusChip, scoreTone, useStageLabel, type CardTeam } from '@/components/match-card';
+import { SeasonRefresh } from '@/components/season-refresh';
 import { TeamChip } from '@/components/team-chip';
 import type { SeasonSettings, Side } from '@/domain';
 import { Link } from '@/i18n/navigation';
@@ -317,6 +318,7 @@ async function MatchPage({ params }: Pick<PageProps<'/[locale]/[year]/matches/[c
         </div>
       )}
       <Body match={match} view={view} teams={teams} settings={season.settings} />
+      <SeasonRefresh season={season} className="mt-6" />
     </>
   );
 }
