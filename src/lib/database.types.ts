@@ -962,6 +962,10 @@ export type Database = {
     };
     Functions: {
       clone_season: { Args: { p_name: string; p_source_id: string; p_venue: string; p_year: number }; Returns: string };
+      close_group: {
+        Args: { p_bracket: Json; p_expected: Json; p_final_order: string[]; p_manual_draws: Json; p_season_id: string };
+        Returns: undefined;
+      };
       complete_match: { Args: { p_expected: Json; p_match_id: string; p_winner_team_id: string }; Returns: undefined };
       disqualify_team: {
         Args: { p_forfeit_slots?: Json; p_match_ids: string[]; p_reason: string; p_team_id: string };
@@ -989,6 +993,7 @@ export type Database = {
         Returns: undefined;
       };
       reinstate_team: { Args: { p_match_ids: string[]; p_team_id: string }; Returns: undefined };
+      reopen_group: { Args: { p_season_id: string }; Returns: undefined };
       reopen_match: { Args: { p_match_id: string }; Returns: undefined };
       save_lineup: {
         Args: {
