@@ -824,7 +824,6 @@
         "noPlayers": "This team has no players yet.",
         "belowMinimum": "Only {count} present (minimum {minimum}). The match cannot start.",
         "disqualify": "Disqualify team",
-        "disqualifySoon": "Disqualifying a team arrives in an upcoming update.",
         "save": "Save attendance",
         "saving": "Saving…",
         "saved": "Saved",
@@ -873,7 +872,8 @@
       },
       "sideActions": {
         "substitute": "Substitute",
-        "forfeit": "Forfeit"
+        "forfeit": "Forfeit",
+        "disqualify": "Disqualify team"
       },
       "substitute": {
         "title": "Substitute a player",
@@ -995,6 +995,46 @@
           "reason": "Enter the reason for the forfeit.",
           "forbidden": "You cannot forfeit this match.",
           "failed": "Could not record the forfeit. Please try again."
+        }
+      },
+      "disqualify": {
+        "title": "Disqualify a team",
+        "hint": "In the group stage, every group match of the team is annulled, played ones included, and the team leaves the standings. In the knock-out, its next match is forfeited and the opponent advances.",
+        "team": "Team to disqualify",
+        "reason": "Reason",
+        "reasonHint": "Shown on the public pages of the affected matches.",
+        "affectedGroup": "These group matches will be annulled:",
+        "affectedKo": "This knock-out match will be forfeited:",
+        "noMatches": "No match changes: every group match of this team is already annulled.",
+        "confirm": "Disqualify {team}? {count, plural, =0 {No match changes.} one {This match changes:} other {These # matches change:}}\n{matches}",
+        "submit": "Disqualify team",
+        "submitting": "Disqualifying…",
+        "errors": {
+          "invalid": "This disqualification is not valid. Reload the page and try again.",
+          "reason": "Enter the reason for the disqualification.",
+          "disqualified": "This team is already disqualified. Reload the page.",
+          "noNextMatch": "This team has no knock-out match left to forfeit.",
+          "changed": "The matches changed in the meantime. Reload the page and check the list again.",
+          "forbidden": "Only the Organizing Committee can disqualify a team.",
+          "failed": "Could not disqualify the team. Please try again."
+        }
+      },
+      "annulled": {
+        "title": "Annulled",
+        "hint": "This match does not count toward the standings or the player stats.",
+        "disqualified": "was disqualified",
+        "reason": "Reason: {reason}",
+        "restores": "Reinstating restores these matches:",
+        "reinstate": "Reinstate {team}",
+        "confirm": "Reinstate {team}? {count, plural, =0 {No match changes.} one {This match is restored:} other {These # matches are restored:}}\n{matches}",
+        "submitting": "Reinstating…",
+        "errors": {
+          "invalid": "This reinstatement is not valid. Reload the page and try again.",
+          "notDisqualified": "This team is not disqualified. Reload the page.",
+          "groupClosed": "The group stage is closed, so the team can no longer be reinstated.",
+          "changed": "The matches changed in the meantime. Reload the page and check the list again.",
+          "forbidden": "Only the Organizing Committee can reinstate a team.",
+          "failed": "Could not reinstate the team. Please try again."
         }
       }
     }

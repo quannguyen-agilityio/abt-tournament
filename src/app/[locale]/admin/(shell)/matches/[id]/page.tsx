@@ -12,14 +12,18 @@ import { requireStaff } from '@/lib/auth/session';
 import { isUuid } from '@/lib/auth/users';
 import { formatDate, formatTime } from '@/lib/format';
 import { attendanceEditable } from '@/lib/match-attendance';
+import { disqualificationPlan, reinstatementPlan } from '@/lib/match-disqualification';
+import { loadDisqualificationState } from '@/lib/match-disqualification-db';
 import { forfeitable } from '@/lib/match-forfeit';
 import { lineupEditable, type SlotPair } from '@/lib/match-lineup';
 import { matchOutcome, scoreRules, scoresEditable } from '@/lib/match-scores';
 import { substitutionsOpen } from '@/lib/match-substitution';
 import { createClient } from '@/lib/supabase/server';
 import { cn } from '@/lib/utils';
+import { AnnulledResult } from './annulled-result';
 import { AttendanceForm, type AttendancePlayer } from './attendance-form';
 import { CompletedResult, CompleteForm } from './complete-form';
+import { DisqualifyForm } from './disqualify-form';
 import { ForfeitForm, ForfeitResult } from './forfeit-form';
 import { LineupStep, type LineupTeam } from './lineup-step';
 import { LockedLineups } from './locked-lineups';
@@ -45,7 +49,7 @@ async function StaffMatch({ params, searchParams }: PageProps<'/[locale]/admin/m
   const { data: match, error } = await supabase
     .from('match')
     .select(
-      'id, code, stage, status, imported, relay_handicap_home, relay_handicap_away, winner_team_id, forfeit_team_id, forfeit_reason, scheduled_at, home_team_id, away_team_id, court:court_id (name), season:season_id (settings)',
+      'id, season_id, code, stage, status, imported, relay_handicap_home, relay_handicap_away, winner_team_id, forfeit_team_id, forfeit_reason, scheduled_at, home_team_id, away_team_id, court:court_id (name), season:season_id (settings)',
     )
     .eq('id', id)
     .maybeSingle();
@@ -57,7 +61,7 @@ async function StaffMatch({ params, searchParams }: PageProps<'/[locale]/admin/m
   const teamIds = [match.home_team_id, match.away_team_id].filter((x): x is string => x !== null);
 
   const [teamsResult, playersResult, attendanceResult, slotsResult, overridesResult] = await Promise.all([
-    supabase.from('team').select('id, name, color').in('id', teamIds),
+    supabase.from('team').select('id, name, color, disqualified_at, disqualified_reason').in('id', teamIds),
     supabase
       .from('season_player')
       .select('id, team_id, rank, skill_points, status, person:person_id (full_name)')
@@ -184,6 +188,13 @@ async function StaffMatch({ params, searchParams }: PageProps<'/[locale]/admin/m
           },
         ]
       : [];
+  // Disqualification (BTC): what disqualifying or reinstating each team of this match would change.
+  const isBtc = viewer.role === 'btc';
+  const disqualification =
+    isBtc && teams.length === 2 ? await loadDisqualificationState(supabase, match.season_id, teamIds) : null;
+  const eligible = disqualification ? teams.filter((team) => team.disqualified_at === null) : [];
+  // The attendance step links here with ?disqualify=<team> to open the panel for that team.
+  const disqualifyRequest = eligible.find((team) => team.id === query.disqualify)?.id;
   if (teams.length === 2 && forfeitable(match.status)) {
     sideActions.push({
       key: 'forfeit',
@@ -199,6 +210,26 @@ async function StaffMatch({ params, searchParams }: PageProps<'/[locale]/admin/m
       ),
     });
   }
+
+  if (disqualification && eligible.length > 0) {
+    sideActions.push({
+      key: 'disqualify',
+      label: t('sideActions.disqualify'),
+      panel: (
+        <DisqualifyForm
+          teams={eligible.map((team) => ({
+            id: team.id,
+            name: team.name,
+            color: team.color,
+            plan: disqualificationPlan(team.id, disqualification.matches, disqualification.groupClosed),
+          }))}
+          defaultTeamId={disqualifyRequest}
+        />
+      ),
+    });
+  }
+  const disqualifyHref = (teamId: string) =>
+    eligible.some((team) => team.id === teamId) ? `/admin/matches/${match.id}?disqualify=${teamId}` : null;
 
   return (
     <div className="flex flex-col gap-5">
@@ -218,7 +249,16 @@ async function StaffMatch({ params, searchParams }: PageProps<'/[locale]/admin/m
                 : t('unscheduled'),
             ].join(' · ')}
           </span>
-          <SideActions actions={sideActions} />
+          {/* Keyed so the panels close once a team is disqualified or reinstated, and the attendance
+              step's "Disqualify team" link opens the panel again. */}
+          <SideActions
+            key={[
+              disqualifyRequest,
+              ...teams.filter((team) => team.disqualified_at !== null).map((team) => team.id),
+            ].join()}
+            actions={sideActions}
+            initialKey={disqualifyRequest ? 'disqualify' : undefined}
+          />
         </div>
         {teams.length === 2 && (
           <div className="mt-3 flex flex-wrap items-center gap-3 text-lg">
@@ -268,6 +308,30 @@ async function StaffMatch({ params, searchParams }: PageProps<'/[locale]/admin/m
         <p className="border-border bg-surface text-muted-foreground rounded-[10px] border p-8 text-center text-sm">
           {t('tbd')}
         </p>
+      ) : match.status === 'annulled' ? (
+        <section aria-labelledby="annulled-title" className="flex flex-col gap-3">
+          <h2 id="annulled-title" className="font-display text-2xl font-bold uppercase">
+            {t('annulled.title')}
+          </h2>
+          <AnnulledResult
+            teams={teams
+              .filter((team) => team.disqualified_at !== null)
+              .map((team) => ({
+                id: team.id,
+                name: team.name,
+                color: team.color,
+                reason: team.disqualified_reason ?? '',
+                plan: disqualification
+                  ? reinstatementPlan(
+                      team.id,
+                      disqualification.matches,
+                      disqualification.groupClosed,
+                      disqualification.disqualifiedTeamIds,
+                    )
+                  : null,
+              }))}
+          />
+        </section>
       ) : match.status === 'forfeit' ? (
         <section aria-labelledby="forfeit-result-title" className="flex flex-col gap-3">
           <h2 id="forfeit-result-title" className="font-display text-2xl font-bold uppercase">
@@ -398,7 +462,7 @@ async function StaffMatch({ params, searchParams }: PageProps<'/[locale]/admin/m
                 present={attendanceResult.data.filter((a) => a.team_id === team.id).map((a) => a.season_player_id)}
                 minPresent={settings.min_players_present}
                 editable={editable}
-                isBtc={viewer.role === 'btc'}
+                disqualifyHref={disqualifyHref(team.id)}
               />
             ))}
           </div>
