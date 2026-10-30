@@ -22,6 +22,9 @@ export const SETTINGS_FIELDS = {
   feeEmployee: 'fee_employee',
   feeIntern: 'fee_intern',
   feeGuest: 'fee_guest',
+  prizeChampion: 'prize_champion',
+  prizeRunnerUp: 'prize_runner_up',
+  prizeThird: 'prize_third',
   timezone: 'timezone',
 } as const;
 
@@ -46,6 +49,9 @@ export const SETTINGS_FORM_PATHS = [
   'fees.employee',
   'fees.intern',
   'fees.guest',
+  'prizes.champion',
+  'prizes.runner_up',
+  'prizes.third',
   'timezone',
 ] as const;
 
@@ -88,6 +94,11 @@ export function settingsFromForm(formData: FormData): Record<string, unknown> {
       intern: num(formData, F.feeIntern),
       guest: num(formData, F.feeGuest),
     },
+    prizes: {
+      champion: num(formData, F.prizeChampion),
+      runner_up: num(formData, F.prizeRunnerUp),
+      third: num(formData, F.prizeThird),
+    },
     timezone: text(formData, F.timezone).trim(),
   };
 }
@@ -110,6 +121,9 @@ export interface SettingsFormValues {
   fee_employee: string;
   fee_intern: string;
   fee_guest: string;
+  prize_champion: string;
+  prize_runner_up: string;
+  prize_third: string;
   timezone: string;
 }
 
@@ -134,6 +148,7 @@ export function settingsToFormValues(stored: unknown): SettingsFormValues {
   const low = range('low_rank_range', DEFAULT_SEASON_SETTINGS.low_rank_range);
   const high = range('high_rank_range', DEFAULT_SEASON_SETTINGS.high_rank_range);
   const fees = isRecord(s.fees) ? s.fees : DEFAULT_SEASON_SETTINGS.fees;
+  const prizes = isRecord(s.prizes) ? s.prizes : DEFAULT_SEASON_SETTINGS.prizes;
   return {
     set_target: str(s.set_target),
     sets_per_match: str(s.sets_per_match),
@@ -152,6 +167,9 @@ export function settingsToFormValues(stored: unknown): SettingsFormValues {
     fee_employee: str(fees.employee),
     fee_intern: str(fees.intern),
     fee_guest: str(fees.guest),
+    prize_champion: str(prizes.champion),
+    prize_runner_up: str(prizes.runner_up),
+    prize_third: str(prizes.third),
     timezone: str(s.timezone),
   };
 }

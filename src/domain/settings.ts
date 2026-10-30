@@ -3,6 +3,7 @@ import { z } from 'zod';
 
 export type SlotType = 'open' | 'low' | 'high';
 export type MemberType = 'employee' | 'intern' | 'guest';
+export type Placing = 'champion' | 'runner_up' | 'third';
 
 export interface RankRange {
   min: number;
@@ -24,6 +25,8 @@ export interface SeasonSettings {
   min_players_present: number;
   knockout_teams: 4;
   fees: Record<MemberType, number>;
+  /** Placing prizes in VND (spec §5 P1); 0 means none is shown. */
+  prizes: Record<Placing, number>;
   timezone: string;
 }
 
@@ -43,6 +46,7 @@ export const DEFAULT_SEASON_SETTINGS: Readonly<SeasonSettings> = Object.freeze<S
   min_players_present: 5,
   knockout_teams: 4,
   fees: { employee: 300_000, intern: 150_000, guest: 300_000 },
+  prizes: { champion: 0, runner_up: 0, third: 0 },
   timezone: 'Asia/Ho_Chi_Minh',
 });
 
@@ -122,6 +126,9 @@ export const seasonSettingsSchema = z
     fees: z
       .strictObject({ employee: nonNegativeInt, intern: nonNegativeInt, guest: nonNegativeInt })
       .default(() => defaults().fees),
+    prizes: z
+      .strictObject({ champion: nonNegativeInt, runner_up: nonNegativeInt, third: nonNegativeInt })
+      .default(() => defaults().prizes),
     timezone: z
       .string()
       .refine(isTimeZone, { message: 'invalidTimezone' satisfies SettingsRuleCode })

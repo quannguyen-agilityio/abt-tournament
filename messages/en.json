@@ -8,9 +8,7 @@
   },
   "Home": {
     "title": "ABT Tournament",
-    "description": "Web app for running the Agility Badminton Tournament (ABT).",
-    "season": "Season {year}",
-    "comingSoon": "Coming soon"
+    "description": "Web app for running the Agility Badminton Tournament (ABT)."
   },
   "LocaleSwitcher": {
     "switchTo": "Switch to {language}",
@@ -111,6 +109,27 @@
     },
     "groupRound": "Group · Round {round}",
     "tbd": "TBD",
+    "home": {
+      "podium": "Final standings",
+      "placing": {
+        "champion": "Champion",
+        "runner_up": "Runner-up",
+        "third": "Third place"
+      },
+      "nowNext": "Now / Next",
+      "now": "Now playing",
+      "next": "Up next",
+      "latest": "Latest results",
+      "top": "Top {count}",
+      "seeAll": "See all",
+      "noSchedule": "The schedule has not been published yet.",
+      "nothingNext": "No match in progress or coming up.",
+      "noResults": "No results yet."
+    },
+    "refresh": {
+      "lastUpdated": "Updated at {time}",
+      "every": "refreshes every {seconds} s"
+    },
     "matches": {
       "subtitle": "{count, plural, one {# match} other {# matches}}",
       "filters": "Filters",
@@ -678,6 +697,11 @@
         "feeEmployee": "Employee",
         "feeIntern": "Intern",
         "feeGuest": "Guest",
+        "prizes": "Prizes (VND)",
+        "prizeChampion": "Champion",
+        "prizeRunnerUp": "Runner-up",
+        "prizeThird": "Third place",
+        "prizesHint": "Shown on the home page once the season is finished. Leave 0 for no prize.",
         "timezone": "Time zone",
         "knockoutTeams": "Knockout teams",
         "knockoutTeamsHint": "Fixed at 4 teams (semi-finals 1 v 4 and 2 v 3).",

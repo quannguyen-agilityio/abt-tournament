@@ -25,6 +25,7 @@ describe('DEFAULT_SEASON_SETTINGS', () => {
       min_players_present: 5,
       knockout_teams: 4,
       fees: { employee: 300_000, intern: 150_000, guest: 300_000 },
+      prizes: { champion: 0, runner_up: 0, third: 0 },
       timezone: 'Asia/Ho_Chi_Minh',
     });
   });
@@ -63,6 +64,13 @@ describe('parseSeasonSettings', () => {
       ['a zero max sets', { max_sets_per_player: 0 }, 'max_sets_per_player', 'tooSmall', { minimum: 1 }],
       ['a negative cap', { ko_handicap_cap: -1 }, 'ko_handicap_cap', 'tooSmall', { minimum: 0 }],
       ['a negative fee', { fees: { employee: -1, intern: 0, guest: 0 } }, 'fees.employee', 'tooSmall', { minimum: 0 }],
+      [
+        'a negative prize',
+        { prizes: { champion: 0, runner_up: -5, third: 0 } },
+        'prizes.runner_up',
+        'tooSmall',
+        { minimum: 0 },
+      ],
       [
         'an unknown slot type',
         { slot_types: ['open', 'mixed', 'open', 'high', 'open'] },

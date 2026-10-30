@@ -223,6 +223,18 @@ export function SeasonSettingsForm({ seasonId, stored }: { seasonId: string; sto
         </div>
       </fieldset>
 
+      <fieldset className="flex flex-col gap-1.5" aria-describedby={`${uid}-prizes-hint`}>
+        <legend className="mb-1 text-sm font-medium">{s('prizes')}</legend>
+        <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
+          {field(F.prizeChampion, 'prizes.champion', s('prizeChampion'))}
+          {field(F.prizeRunnerUp, 'prizes.runner_up', s('prizeRunnerUp'))}
+          {field(F.prizeThird, 'prizes.third', s('prizeThird'))}
+        </div>
+        <span id={`${uid}-prizes-hint`} className="text-muted-foreground text-xs">
+          {s('prizesHint')}
+        </span>
+      </fieldset>
+
       <div className="grid gap-3 sm:grid-cols-2">
         {field(F.timezone, 'timezone', s('timezone'), { type: 'text' })}
         <div className="flex min-w-0 flex-col gap-1.5">

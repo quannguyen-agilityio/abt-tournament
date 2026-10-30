@@ -8,9 +8,7 @@
   },
   "Home": {
     "title": "ABT Tournament",
-    "description": "Ứng dụng web quản lý giải cầu lông Agility Badminton Tournament (ABT).",
-    "season": "Mùa giải {year}",
-    "comingSoon": "Sắp ra mắt"
+    "description": "Ứng dụng web quản lý giải cầu lông Agility Badminton Tournament (ABT)."
   },
   "LocaleSwitcher": {
     "switchTo": "Chuyển sang {language}",
@@ -111,6 +109,27 @@
     },
     "groupRound": "Vòng bảng · Vòng {round}",
     "tbd": "Chưa xác định",
+    "home": {
+      "podium": "Kết quả chung cuộc",
+      "placing": {
+        "champion": "Vô địch",
+        "runner_up": "Á quân",
+        "third": "Hạng ba"
+      },
+      "nowNext": "Đang đấu / Tiếp theo",
+      "now": "Đang diễn ra",
+      "next": "Tiếp theo",
+      "latest": "Kết quả mới nhất",
+      "top": "Top {count}",
+      "seeAll": "Xem tất cả",
+      "noSchedule": "Lịch thi đấu chưa được công bố.",
+      "nothingNext": "Không có trận nào đang hoặc sắp diễn ra.",
+      "noResults": "Chưa có kết quả nào."
+    },
+    "refresh": {
+      "lastUpdated": "Cập nhật lúc {time}",
+      "every": "tự làm mới mỗi {seconds} giây"
+    },
     "matches": {
       "subtitle": "{count, plural, other {# trận}}",
       "filters": "Bộ lọc",
@@ -678,6 +697,11 @@
         "feeEmployee": "Nhân viên",
         "feeIntern": "Thực tập sinh",
         "feeGuest": "Khách",
+        "prizes": "Giải thưởng (VND)",
+        "prizeChampion": "Vô địch",
+        "prizeRunnerUp": "Á quân",
+        "prizeThird": "Hạng ba",
+        "prizesHint": "Hiện trên trang chủ khi mùa giải kết thúc. Để 0 nếu không có giải.",
         "timezone": "Múi giờ",
         "knockoutTeams": "Số đội vào knock-out",
         "knockoutTeamsHint": "Cố định 4 đội (bán kết 1–4 và 2–3).",

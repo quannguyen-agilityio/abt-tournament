@@ -48,6 +48,7 @@ Every rule number is a **season setting**, so a rule change next year is configu
 | `min_players_present` | 5                                          | Below this, the team is disqualified                       |
 | `knockout_teams`      | 4                                          | SF1 = 1 v 4, SF2 = 2 v 3                                   |
 | `fees`                | Employee 300k, Intern 150k, Guest 300k VND |                                                            |
+| `prizes`              | Champion, runner-up, 3rd: 0 VND            | Shown on P1 once the season is finished; 0 hides the prize |
 | `timezone`            | `Asia/Ho_Chi_Minh`                         | Times are shown in venue time with an "ICT" label          |
 
 ## 3. Data model
