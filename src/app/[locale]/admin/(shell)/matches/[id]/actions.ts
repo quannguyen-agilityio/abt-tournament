@@ -7,6 +7,14 @@ import { DEFAULT_SEASON_SETTINGS, parseSeasonSettings } from '@/domain/settings'
 import { requireStaff } from '@/lib/auth/session';
 import { isUuid } from '@/lib/auth/users';
 import { attendanceEditable, parseAttendanceForm } from '@/lib/match-attendance';
+import {
+  disqualificationPlan,
+  parseDisqualifyForm,
+  parseReinstateForm,
+  reinstatementPlan,
+  sameIds,
+} from '@/lib/match-disqualification';
+import { loadDisqualificationState } from '@/lib/match-disqualification-db';
 import { forfeitable, forfeitSlots, parseForfeitForm } from '@/lib/match-forfeit';
 import { lineupEditable, lockSnapshot, overridable, parseLineupForm, unresolvedViolations } from '@/lib/match-lineup';
 import {
@@ -610,6 +618,151 @@ export async function forfeitMatch(_prev: ForfeitState, formData: FormData): Pro
     const code = error.code;
     return {
       error: code === '42501' ? 'forbidden' : code === 'P0001' ? 'closed' : code === '22023' ? 'invalid' : 'failed',
+    };
+  }
+
+  refresh();
+  return { ok: true };
+}
+
+export type DisqualifyState =
+  | { ok: true }
+  | { error: 'invalid' | 'reason' | 'disqualified' | 'noNextMatch' | 'changed' | 'forbidden' | 'failed' }
+  | undefined;
+
+/**
+ * BTC only: disqualifies a team (spec §4.5, A4). In the group stage every group match of the team is
+ * annulled, played ones included; in the knock-out its next match becomes a forfeit (125–0) and the
+ * opponent advances. The form sends the matches its confirmation listed, so a page that is out of date
+ * changes nothing.
+ */
+export async function disqualifyTeam(_prev: DisqualifyState, formData: FormData): Promise<DisqualifyState> {
+  const viewer = await requireStaff();
+  if (viewer.role !== 'btc') return { error: 'forbidden' };
+  const input = parseDisqualifyForm(formData);
+  if (!input) return { error: 'invalid' };
+  const { teamId, reason, matchIds } = input;
+  if (!reason) return { error: 'reason' };
+
+  const supabase = await createClient();
+  const { data: team, error: teamError } = await supabase
+    .from('team')
+    .select('season_id, disqualified_at, season:season_id (settings)')
+    .eq('id', teamId)
+    .maybeSingle();
+  if (teamError) return { error: 'failed' };
+  if (!team?.season) return { error: 'invalid' };
+  if (team.disqualified_at) return { error: 'disqualified' };
+
+  const state = await loadDisqualificationState(supabase, team.season_id, [teamId]).catch(() => null);
+  if (!state) return { error: 'failed' };
+  const plan = disqualificationPlan(teamId, state.matches, state.groupClosed);
+  if (!plan.ok) return { error: plan.messageKey.endsWith('NO_NEXT_MATCH') ? 'noNextMatch' : 'invalid' };
+  if (
+    !sameIds(
+      plan.rows.map((r) => r.id),
+      matchIds,
+    )
+  )
+    return { error: 'changed' };
+
+  // Knock-out: the forfeit result of the next match, as a plain forfeit would record it.
+  let forfeitSlotScores: ReturnType<typeof forfeitSlots> = null;
+  if (plan.forfeit) {
+    const { matchId, side } = plan.forfeit;
+    const stage = state.matches.find((m) => m.id === matchId)?.stage ?? 'semi_final';
+    const { data: slots, error } = await supabase.from('match_slot').select('slot_no').eq('match_id', matchId);
+    if (error) return { error: 'failed' };
+    const parsedSettings = parseSeasonSettings(team.season.settings);
+    forfeitSlotScores = forfeitSlots(
+      stage,
+      side,
+      parsedSettings.ok ? parsedSettings.settings : DEFAULT_SEASON_SETTINGS,
+      slots.map((s) => s.slot_no),
+    );
+    if (!forfeitSlotScores) return { error: 'invalid' };
+  }
+
+  const { error } = await supabase.rpc('disqualify_team', {
+    p_team_id: teamId,
+    p_reason: reason,
+    p_match_ids: matchIds,
+    p_forfeit_slots: forfeitSlotScores ?? undefined,
+  });
+  if (error) {
+    const code = error.code;
+    return {
+      error:
+        code === '42501'
+          ? 'forbidden'
+          : code === 'P0001'
+            ? 'disqualified'
+            : code === '55000'
+              ? 'noNextMatch'
+              : code === '40001'
+                ? 'changed'
+                : code === '22023'
+                  ? 'invalid'
+                  : 'failed',
+    };
+  }
+
+  refresh();
+  return { ok: true };
+}
+
+export type ReinstateState =
+  | { ok: true }
+  | { error: 'invalid' | 'notDisqualified' | 'groupClosed' | 'changed' | 'forbidden' | 'failed' }
+  | undefined;
+
+/**
+ * BTC only: reinstates a disqualified team while the group is open (spec §4.5). Its annulled group
+ * matches go back to the status they had, except those against a team that is still disqualified.
+ */
+export async function reinstateTeam(_prev: ReinstateState, formData: FormData): Promise<ReinstateState> {
+  const viewer = await requireStaff();
+  if (viewer.role !== 'btc') return { error: 'forbidden' };
+  const input = parseReinstateForm(formData);
+  if (!input) return { error: 'invalid' };
+  const { teamId, matchIds } = input;
+
+  const supabase = await createClient();
+  const { data: team, error: teamError } = await supabase
+    .from('team')
+    .select('season_id, disqualified_at')
+    .eq('id', teamId)
+    .maybeSingle();
+  if (teamError) return { error: 'failed' };
+  if (!team) return { error: 'invalid' };
+  if (!team.disqualified_at) return { error: 'notDisqualified' };
+
+  const state = await loadDisqualificationState(supabase, team.season_id, [teamId]).catch(() => null);
+  if (!state) return { error: 'failed' };
+  const plan = reinstatementPlan(teamId, state.matches, state.groupClosed, state.disqualifiedTeamIds);
+  if (!plan.ok) return { error: plan.messageKey.endsWith('GROUP_CLOSED') ? 'groupClosed' : 'invalid' };
+  if (
+    !sameIds(
+      plan.rows.map((r) => r.id),
+      matchIds,
+    )
+  )
+    return { error: 'changed' };
+
+  const { error } = await supabase.rpc('reinstate_team', { p_team_id: teamId, p_match_ids: matchIds });
+  if (error) {
+    const code = error.code;
+    return {
+      error:
+        code === '42501'
+          ? 'forbidden'
+          : code === 'P0001'
+            ? 'notDisqualified'
+            : code === '55000'
+              ? 'groupClosed'
+              : code === '40001'
+                ? 'changed'
+                : 'failed',
     };
   }
 
