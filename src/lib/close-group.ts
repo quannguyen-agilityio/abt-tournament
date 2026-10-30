@@ -17,10 +17,10 @@ export type CloseGroupMatch = StandingsMatch & {
 type Settings = Pick<SeasonSettings, 'set_target' | 'sets_per_match' | 'knockout_teams'>;
 
 /** What `group_closure.manual_draws` stores: each drawn group in its drawn order, and the BTC's note. */
-export interface ManualDraws {
+export type ManualDraws = {
   groups: string[][];
   note?: string;
-}
+};
 
 export type CloseGroupError =
   /** A group match is still to be played. */
