@@ -871,6 +871,35 @@
           "failed": "Could not save the lineup. Please try again."
         }
       },
+      "sideActions": {
+        "substitute": "Substitute",
+        "forfeit": "Forfeit"
+      },
+      "substitute": {
+        "title": "Substitute a player",
+        "hint": "Replace a player in a set or leg that has no score yet. The substitute's rank must be within one of the player they replace, and the start points are recomputed.",
+        "team": "Team",
+        "slot": "Set or leg",
+        "pickSlot": "— Pick a set or leg —",
+        "pickPlayer": "— Pick a player —",
+        "out": "Player out",
+        "in": "Player in",
+        "reason": "Reason (optional)",
+        "overrideReason": "Override reason",
+        "refereeBlocked": "Referees cannot make this substitution. Ask the committee.",
+        "submit": "Substitute",
+        "submitting": "Substituting…",
+        "saved": "Substitution saved",
+        "errors": {
+          "closed": "Substitutions are closed for this match. Reload the page.",
+          "invalid": "This substitution is not valid. Reload the page and try again.",
+          "scored": "This set or leg already has a score, so its players cannot change.",
+          "violations": "This substitution breaks the lineup rules and cannot be made.",
+          "reason": "Enter a reason to accept the violations.",
+          "changed": "The match changed in the meantime. Reload the page and try again.",
+          "failed": "Could not save the substitution. Please try again."
+        }
+      },
       "lock": {
         "hint": "Both lineups are ready. Locking takes the handicap snapshot and makes the lineups public.",
         "notReady": "Save both lineups with no open violations to lock them.",
@@ -886,6 +915,7 @@
         },
         "locked": "The lineups are locked and public. From now on, changes go through substitutions.",
         "relayStart": "Start of leg 1",
+        "substitution": "Substitution",
         "unlock": "Unlock lineups",
         "unlocking": "Unlocking…",
         "unlockHint": "Moves the match back to the lineup step and clears the handicaps. The audit log records who unlocked it.",
@@ -941,6 +971,30 @@
           "notCompleted": "The match is no longer completed. Reload the page.",
           "invalid": "Only the committee can reopen a match.",
           "failed": "Could not reopen the match. Please try again."
+        }
+      },
+      "forfeit": {
+        "title": "Forfeit the match",
+        "hint": "Records a forfeit for the team that cannot play. Lineups and handicaps are ignored. The reason is shown publicly.",
+        "team": "Team that forfeits",
+        "reason": "Reason",
+        "reasonHint": "Shown on the public match page.",
+        "previewGroup": "{team} wins {sets} ({target} every set)",
+        "previewKo": "{team} wins {score} and advances",
+        "confirm": "Forfeit {code}? {team} forfeits and {result}. After this, the match is closed.",
+        "submit": "Record forfeit",
+        "submitting": "Recording…",
+        "result": {
+          "title": "Forfeited",
+          "team": "forfeits",
+          "reason": "Reason: {reason}"
+        },
+        "errors": {
+          "closed": "This match can no longer be forfeited. Reload the page.",
+          "invalid": "This forfeit is not valid. Reload the page and try again.",
+          "reason": "Enter the reason for the forfeit.",
+          "forbidden": "You cannot forfeit this match.",
+          "failed": "Could not record the forfeit. Please try again."
         }
       }
     }

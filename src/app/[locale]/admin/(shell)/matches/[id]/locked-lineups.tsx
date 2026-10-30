@@ -1,6 +1,7 @@
 import { useTranslations } from 'next-intl';
 import { TeamChip } from '@/components/team-chip';
 import type { Handicap } from '@/domain/handicap';
+import type { Side } from '@/domain/lineup';
 import type { SlotType } from '@/domain/settings';
 import { cn } from '@/lib/utils';
 import { UnlockForm } from './unlock-form';
@@ -12,6 +13,8 @@ export type LockedSlot = {
   away: string[];
   /** Group start points, as snapshot at the lock. */
   handicap: Handicap;
+  /** In the order they were made. */
+  substitutions: { side: Side; in: string; out: string; reason: string | null }[];
 };
 
 type Props = {
@@ -79,6 +82,18 @@ export function LockedLineups({ matchId, code, relay, relayStart, teams, slots, 
                     </span>
                   ))}
                   {!relay && <Start points={slot.handicap[side]} />}
+                  {slot.substitutions
+                    .filter((sub) => sub.side === side)
+                    .map((sub, i) => (
+                      <span
+                        key={i}
+                        className="border-warn/60 bg-warn/10 text-warn w-fit max-w-full rounded-full border px-2 py-0.5 text-xs"
+                      >
+                        <span className="sr-only">{t('substitution')}: </span>
+                        {sub.out} → {sub.in}
+                        {sub.reason && <span className="text-muted-foreground"> ({sub.reason})</span>}
+                      </span>
+                    ))}
                 </div>
               ))}
             </li>

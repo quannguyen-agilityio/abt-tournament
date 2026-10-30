@@ -4,6 +4,7 @@ import { notFound } from 'next/navigation';
 import { Suspense } from 'react';
 import { MatchStatusBadge } from '@/components/match-status-badge';
 import { TeamChip } from '@/components/team-chip';
+import { effectivePair } from '@/domain/lineup';
 import { DEFAULT_SEASON_SETTINGS, parseSeasonSettings } from '@/domain/settings';
 import { Link } from '@/i18n/navigation';
 import { routing } from '@/i18n/routing';
@@ -11,15 +12,20 @@ import { requireStaff } from '@/lib/auth/session';
 import { isUuid } from '@/lib/auth/users';
 import { formatDate, formatTime } from '@/lib/format';
 import { attendanceEditable } from '@/lib/match-attendance';
+import { forfeitable } from '@/lib/match-forfeit';
 import { lineupEditable, type SlotPair } from '@/lib/match-lineup';
 import { matchOutcome, scoreRules, scoresEditable } from '@/lib/match-scores';
+import { substitutionsOpen } from '@/lib/match-substitution';
 import { createClient } from '@/lib/supabase/server';
 import { cn } from '@/lib/utils';
 import { AttendanceForm, type AttendancePlayer } from './attendance-form';
 import { CompletedResult, CompleteForm } from './complete-form';
+import { ForfeitForm, ForfeitResult } from './forfeit-form';
 import { LineupStep, type LineupTeam } from './lineup-step';
 import { LockedLineups } from './locked-lineups';
 import { ScoresStep } from './scores-step';
+import { SideActions } from './side-actions';
+import { SubstituteForm } from './substitute-form';
 
 const STEPS = ['attendance', 'lineup', 'lock', 'scores', 'done'] as const;
 type Step = (typeof STEPS)[number];
@@ -39,7 +45,7 @@ async function StaffMatch({ params, searchParams }: PageProps<'/[locale]/admin/m
   const { data: match, error } = await supabase
     .from('match')
     .select(
-      'id, code, stage, status, imported, relay_handicap_home, relay_handicap_away, winner_team_id, scheduled_at, home_team_id, away_team_id, court:court_id (name), season:season_id (settings)',
+      'id, code, stage, status, imported, relay_handicap_home, relay_handicap_away, winner_team_id, forfeit_team_id, forfeit_reason, scheduled_at, home_team_id, away_team_id, court:court_id (name), season:season_id (settings)',
     )
     .eq('id', id)
     .maybeSingle();
@@ -62,7 +68,7 @@ async function StaffMatch({ params, searchParams }: PageProps<'/[locale]/admin/m
     supabase
       .from('match_slot')
       .select(
-        'slot_no, slot_type, home_p1, home_p2, away_p1, away_p2, handicap_home, handicap_away, score_home, score_away',
+        'slot_no, slot_type, home_p1, home_p2, away_p1, away_p2, handicap_home, handicap_away, score_home, score_away, slot_substitution (id, side, replaced_id, substitute_id, reason, created_at)',
       )
       .eq('match_id', match.id)
       .order('slot_no'),
@@ -87,7 +93,11 @@ async function StaffMatch({ params, searchParams }: PageProps<'/[locale]/admin/m
 
   const at = match.scheduled_at ? new Date(match.scheduled_at) : null;
   const editable = attendanceEditable(match.status);
-  const slots = slotsResult.data;
+  // Substitutions apply in the order they were made; everything after the lock reads the effective players.
+  const slots = slotsResult.data.map(({ slot_substitution, ...slot }) => ({
+    ...slot,
+    substitutions: [...slot_substitution].sort((a, b) => a.created_at.localeCompare(b.created_at)),
+  }));
   const lineupTeam = (team: (typeof teams)[number], side: 'home' | 'away'): LineupTeam => ({
     team,
     side,
@@ -138,12 +148,57 @@ async function StaffMatch({ params, searchParams }: PageProps<'/[locale]/admin/m
   const scoreRows = slots.map((slot) => ({
     slotNo: slot.slot_no,
     slotType: slot.slot_type,
-    home: namesOf(slot.home_p1, slot.home_p2),
-    away: namesOf(slot.away_p1, slot.away_p2),
+    home: namesOf(...effectivePair(slot, 'home')),
+    away: namesOf(...effectivePair(slot, 'away')),
     handicap: { home: slot.handicap_home, away: slot.handicap_away },
     score:
       slot.score_home !== null && slot.score_away !== null ? { home: slot.score_home, away: slot.score_away } : null,
   }));
+
+  // Side actions in the header: substitutions open from the lock until the match is completed.
+  const substituteTeam = (team: (typeof teams)[number], side: 'home' | 'away') => ({
+    team: { id: team.id, name: team.name },
+    side,
+    players: rosterOf(team.id).map((p) => ({ id: p.id, name: p.name, rank: p.rank, present: present.has(p.id) })),
+  });
+  const sideActions =
+    teams.length === 2 && !match.imported && substitutionsOpen(match.status)
+      ? [
+          {
+            key: 'substitute',
+            label: t('sideActions.substitute'),
+            panel: (
+              <SubstituteForm
+                matchId={match.id}
+                relay={match.stage !== 'group'}
+                slots={slots.map((slot) => ({
+                  slotNo: slot.slot_no,
+                  scored: slot.score_home !== null || slot.score_away !== null,
+                  home: effectivePair(slot, 'home'),
+                  away: effectivePair(slot, 'away'),
+                }))}
+                teams={[substituteTeam(teams[0], 'home'), substituteTeam(teams[1], 'away')]}
+                isBtc={viewer.role === 'btc'}
+              />
+            ),
+          },
+        ]
+      : [];
+  if (teams.length === 2 && forfeitable(match.status)) {
+    sideActions.push({
+      key: 'forfeit',
+      label: t('sideActions.forfeit'),
+      panel: (
+        <ForfeitForm
+          matchId={match.id}
+          code={match.code}
+          stage={match.stage}
+          teams={[teams[0], teams[1]]}
+          settings={settings}
+        />
+      ),
+    });
+  }
 
   return (
     <div className="flex flex-col gap-5">
@@ -163,6 +218,7 @@ async function StaffMatch({ params, searchParams }: PageProps<'/[locale]/admin/m
                 : t('unscheduled'),
             ].join(' · ')}
           </span>
+          <SideActions actions={sideActions} />
         </div>
         {teams.length === 2 && (
           <div className="mt-3 flex flex-wrap items-center gap-3 text-lg">
@@ -212,6 +268,19 @@ async function StaffMatch({ params, searchParams }: PageProps<'/[locale]/admin/m
         <p className="border-border bg-surface text-muted-foreground rounded-[10px] border p-8 text-center text-sm">
           {t('tbd')}
         </p>
+      ) : match.status === 'forfeit' ? (
+        <section aria-labelledby="forfeit-result-title" className="flex flex-col gap-3">
+          <h2 id="forfeit-result-title" className="font-display text-2xl font-bold uppercase">
+            {t('forfeit.result.title')}
+          </h2>
+          <ForfeitResult
+            stage={match.stage}
+            side={sideOf(match.forfeit_team_id) ?? 'home'}
+            teams={[teams[0], teams[1]]}
+            reason={match.forfeit_reason ?? ''}
+            settings={settings}
+          />
+        </section>
       ) : step === 'scores' ? (
         <section aria-labelledby="scores-title" className="flex flex-col gap-3">
           <div>
@@ -277,9 +346,15 @@ async function StaffMatch({ params, searchParams }: PageProps<'/[locale]/admin/m
             slots={slots.map((slot) => ({
               slotNo: slot.slot_no,
               slotType: slot.slot_type,
-              home: namesOf(slot.home_p1, slot.home_p2),
-              away: namesOf(slot.away_p1, slot.away_p2),
+              home: namesOf(...effectivePair(slot, 'home')),
+              away: namesOf(...effectivePair(slot, 'away')),
               handicap: { home: slot.handicap_home, away: slot.handicap_away },
+              substitutions: slot.substitutions.map((sub) => ({
+                side: sub.side,
+                in: nameOf.get(sub.substitute_id) ?? '—',
+                out: nameOf.get(sub.replaced_id) ?? '—',
+                reason: sub.reason,
+              })),
             }))}
             canUnlock={viewer.role === 'btc' && match.status === 'lineup_locked'}
           />

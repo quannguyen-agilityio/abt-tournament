@@ -871,6 +871,35 @@
           "failed": "Không lưu được đội hình. Vui lòng thử lại."
         }
       },
+      "sideActions": {
+        "substitute": "Thay người",
+        "forfeit": "Xử thua"
+      },
+      "substitute": {
+        "title": "Thay người",
+        "hint": "Thay một vận động viên trong set hoặc lượt chưa có điểm. Hạng của người vào phải chênh không quá một bậc so với người ra, và điểm xuất phát được tính lại.",
+        "team": "Đội",
+        "slot": "Set hoặc lượt",
+        "pickSlot": "— Chọn set hoặc lượt —",
+        "pickPlayer": "— Chọn vận động viên —",
+        "out": "Người ra",
+        "in": "Người vào",
+        "reason": "Lý do (không bắt buộc)",
+        "overrideReason": "Lý do chấp nhận vi phạm",
+        "refereeBlocked": "Trọng tài không thể thực hiện lần thay người này. Hãy hỏi BTC.",
+        "submit": "Thay người",
+        "submitting": "Đang thay…",
+        "saved": "Đã lưu lần thay người",
+        "errors": {
+          "closed": "Trận này không còn thay người được. Hãy tải lại trang.",
+          "invalid": "Lần thay người này không hợp lệ. Hãy tải lại trang và thử lại.",
+          "scored": "Set hoặc lượt này đã có điểm nên không đổi người được.",
+          "violations": "Lần thay người này vi phạm quy định đội hình nên không thực hiện được.",
+          "reason": "Hãy nhập lý do để chấp nhận các vi phạm.",
+          "changed": "Trận đấu vừa thay đổi. Hãy tải lại trang và thử lại.",
+          "failed": "Không lưu được lần thay người. Vui lòng thử lại."
+        }
+      },
       "lock": {
         "hint": "Hai đội hình đã sẵn sàng. Khoá sẽ chốt điểm chấp và công khai đội hình.",
         "notReady": "Lưu cả hai đội hình, không còn vi phạm chưa được chấp nhận, để khoá.",
@@ -886,6 +915,7 @@
         },
         "locked": "Đội hình đã khoá và được công khai. Mọi thay đổi từ giờ phải qua thay người.",
         "relayStart": "Điểm xuất phát lượt 1",
+        "substitution": "Thay người",
         "unlock": "Mở khoá đội hình",
         "unlocking": "Đang mở khoá…",
         "unlockHint": "Đưa trận về bước đội hình và xoá điểm chấp đã chốt. Nhật ký ghi lại ai đã mở khoá.",
@@ -941,6 +971,30 @@
           "notCompleted": "Trận không còn ở trạng thái hoàn tất. Tải lại trang.",
           "invalid": "Chỉ BTC mới mở lại được trận.",
           "failed": "Không mở lại được trận. Vui lòng thử lại."
+        }
+      },
+      "forfeit": {
+        "title": "Xử thua trận đấu",
+        "hint": "Ghi nhận xử thua cho đội không thể thi đấu. Đội hình và điểm chấp được bỏ qua. Lý do được hiển thị công khai.",
+        "team": "Đội bỏ cuộc",
+        "reason": "Lý do",
+        "reasonHint": "Hiển thị trên trang trận đấu công khai.",
+        "previewGroup": "{team} thắng {sets} ({target} mỗi set)",
+        "previewKo": "{team} thắng {score} và đi tiếp",
+        "confirm": "Xử thua trận {code}? {team} bị xử thua và {result}. Sau đó trận đấu sẽ đóng.",
+        "submit": "Ghi nhận xử thua",
+        "submitting": "Đang ghi nhận…",
+        "result": {
+          "title": "Đã xử thua",
+          "team": "bị xử thua",
+          "reason": "Lý do: {reason}"
+        },
+        "errors": {
+          "closed": "Không thể xử thua trận này nữa. Tải lại trang.",
+          "invalid": "Việc xử thua này không hợp lệ. Tải lại trang và thử lại.",
+          "reason": "Nhập lý do xử thua.",
+          "forbidden": "Bạn không thể xử thua trận này.",
+          "failed": "Không ghi nhận được xử thua. Vui lòng thử lại."
         }
       }
     }

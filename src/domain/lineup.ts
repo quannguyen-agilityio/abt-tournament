@@ -69,7 +69,7 @@ export type LineupSettings = Pick<
 const COMPENSATION_MIN_SLOTS = 2;
 
 /** A substitute may be at most this many ranks away from the player they replace. */
-const SUB_RANK_TOLERANCE = 1;
+export const SUB_RANK_TOLERANCE = 1;
 
 const MESSAGE_NAMESPACE = 'Lineup.violations';
 

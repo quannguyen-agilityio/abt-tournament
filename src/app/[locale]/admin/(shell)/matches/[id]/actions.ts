@@ -2,11 +2,12 @@
 
 import { refresh } from 'next/cache';
 
-import { validateLineup, type LineupAttendance, type LineupRuleCode, type Side } from '@/domain/lineup';
+import { effectivePair, validateLineup, type LineupAttendance, type LineupRuleCode, type Side } from '@/domain/lineup';
 import { DEFAULT_SEASON_SETTINGS, parseSeasonSettings } from '@/domain/settings';
 import { requireStaff } from '@/lib/auth/session';
 import { isUuid } from '@/lib/auth/users';
 import { attendanceEditable, parseAttendanceForm } from '@/lib/match-attendance';
+import { forfeitable, forfeitSlots, parseForfeitForm } from '@/lib/match-forfeit';
 import { lineupEditable, lockSnapshot, overridable, parseLineupForm, unresolvedViolations } from '@/lib/match-lineup';
 import {
   matchOutcome,
@@ -17,6 +18,13 @@ import {
   scoreRules,
   withScore,
 } from '@/lib/match-scores';
+import {
+  addedViolations,
+  parseSubstitutionForm,
+  substitutionHandicap,
+  substitutionsOpen,
+  substitutionState,
+} from '@/lib/match-substitution';
 import { createClient } from '@/lib/supabase/server';
 
 export type AttendanceState = { ok: true; count: number } | { error: 'locked' | 'invalid' | 'failed' } | undefined;
@@ -363,4 +371,248 @@ export async function reopenMatch(_prev: ReopenState, formData: FormData): Promi
 
   refresh();
   return undefined;
+}
+
+/**
+ * A match with both teams, its season settings, the present players of each side, the skills of every
+ * player of both teams and its slots with their scores, start points and substitutions.
+ */
+async function loadSubstitutionMatch(supabase: Supabase, matchId: string) {
+  const [matchResult, attendanceResult, slotsResult] = await Promise.all([
+    supabase
+      .from('match')
+      .select(
+        'season_id, stage, status, imported, home_team_id, away_team_id, relay_handicap_home, relay_handicap_away, season:season_id (settings)',
+      )
+      .eq('id', matchId)
+      .maybeSingle(),
+    supabase
+      .from('match_attendance')
+      .select('team_id, season_player:season_player_id (id, rank)')
+      .eq('match_id', matchId),
+    supabase
+      .from('match_slot')
+      .select(
+        'slot_no, slot_type, home_p1, home_p2, away_p1, away_p2, score_home, score_away, handicap_home, handicap_away, slot_substitution (id, side, replaced_id, substitute_id, created_at)',
+      )
+      .eq('match_id', matchId)
+      .order('slot_no'),
+  ]);
+  if (matchResult.error) throw matchResult.error;
+  if (attendanceResult.error) throw attendanceResult.error;
+  if (slotsResult.error) throw slotsResult.error;
+  const match = matchResult.data;
+  if (!match?.season || !match.home_team_id || !match.away_team_id) return null;
+  const teams = { home: match.home_team_id, away: match.away_team_id };
+
+  const playersResult = await supabase
+    .from('season_player')
+    .select('id, team_id, skill_points, status')
+    .eq('season_id', match.season_id)
+    .in('team_id', [teams.home, teams.away]);
+  if (playersResult.error) throw playersResult.error;
+
+  const present = attendanceResult.data.flatMap((row) =>
+    row.season_player ? [{ ...row.season_player, teamId: row.team_id }] : [],
+  );
+  const presentOf = (team: string) => present.filter((p) => p.teamId === team).map(({ id, rank }) => ({ id, rank }));
+  const attendance: LineupAttendance = { home: presentOf(teams.home), away: presentOf(teams.away) };
+  const parsedSettings = parseSeasonSettings(match.season.settings);
+
+  // Substitutions apply in the order they were made.
+  const slots = slotsResult.data.map(({ slot_substitution, ...slot }) => ({
+    ...slot,
+    substitutions: [...slot_substitution].sort((a, b) => a.created_at.localeCompare(b.created_at)),
+  }));
+
+  return {
+    match,
+    teams,
+    settings: parsedSettings.ok ? parsedSettings.settings : DEFAULT_SEASON_SETTINGS,
+    attendance,
+    players: playersResult.data,
+    skillOf: new Map(playersResult.data.map((p) => [p.id, p.skill_points])),
+    slots,
+  };
+}
+
+export type SubstitutionState =
+  | { ok: true }
+  | { error: 'closed' | 'invalid' | 'scored' | 'violations' | 'reason' | 'changed' | 'failed' }
+  | undefined;
+
+/**
+ * Substitutes one player of a set or leg that is not scored yet (spec §4.1). The rank rule and the
+ * other lineup rules are checked again here on the effective players: a referee cannot make a
+ * substitution that adds violations, the BTC can with a reason, which records one `lineup_override`
+ * per broken rule. The handicap is recomputed (D18).
+ */
+export async function substitutePlayer(_prev: SubstitutionState, formData: FormData): Promise<SubstitutionState> {
+  const viewer = await requireStaff();
+  const input = parseSubstitutionForm(formData);
+  if (!input) return { error: 'invalid' };
+  const { matchId, teamId, slotNo, replacedId, substituteId, reason, overrideReason } = input;
+
+  const supabase = await createClient();
+  const [loaded, overrides] = await Promise.all([
+    loadSubstitutionMatch(supabase, matchId).catch(() => undefined),
+    supabase.rpc('lineup_override_codes', { p_match_id: matchId }),
+  ]);
+  if (loaded === undefined || overrides.error) return { error: 'failed' };
+  if (!loaded) return { error: 'invalid' };
+  const { match, teams, settings, attendance, players, skillOf, slots } = loaded;
+  if (!substitutionsOpen(match.status)) return { error: 'closed' };
+  const side: Side | null = teamId === teams.home ? 'home' : teamId === teams.away ? 'away' : null;
+  if (!side) return { error: 'invalid' };
+
+  const slot = slots.find((s) => s.slot_no === slotNo);
+  if (!slot) return { error: 'invalid' };
+  if (slot.score_home !== null || slot.score_away !== null) return { error: 'scored' };
+  const pair = effectivePair(slot, side);
+  if (!pair.includes(replacedId) || pair.includes(substituteId)) return { error: 'invalid' };
+  // A form could be tampered with: an override may accept an absent player, never one from another
+  // team or season.
+  if (!players.some((p) => p.id === substituteId && p.team_id === teamId && p.status === 'active')) {
+    return { error: 'invalid' };
+  }
+
+  const toLineup = (substituted: boolean) =>
+    slots.map((s) => ({
+      ...s,
+      substitutions: [
+        ...s.substitutions,
+        ...(substituted && s.slot_no === slotNo
+          ? [{ side, replaced_id: replacedId, substitute_id: substituteId }]
+          : []),
+      ],
+    }));
+  const before = toLineup(false);
+  const after = toLineup(true);
+  const overridden = new Set<LineupRuleCode>(
+    overrides.data.filter((o) => o.team_id === teamId).map((o) => o.rule_code),
+  );
+  const added = unresolvedViolations(
+    addedViolations(
+      validateLineup({ imported: match.imported }, side, attendance, before, settings),
+      validateLineup({ imported: match.imported }, side, attendance, after, settings),
+    ),
+    overridden,
+  );
+  if (added.length > 0) {
+    if (viewer.role !== 'btc' || !overridable(added)) return { error: 'violations' };
+    if (!overrideReason) return { error: 'reason' };
+  }
+
+  const handicap = substitutionHandicap(
+    match.stage,
+    after.map((s) => ({
+      slotNo: s.slot_no,
+      slotType: s.slot_type,
+      home: effectivePair(s, 'home'),
+      away: effectivePair(s, 'away'),
+      scored: s.score_home !== null || s.score_away !== null,
+    })),
+    slotNo,
+    skillOf,
+    settings,
+    match.relay_handicap_home !== null && match.relay_handicap_away !== null
+      ? { home: match.relay_handicap_home, away: match.relay_handicap_away }
+      : null,
+  );
+  if (!handicap) return { error: 'invalid' };
+
+  const { error } = await supabase.rpc('substitute_player', {
+    p_match_id: matchId,
+    p_slot_no: slotNo,
+    p_side: side,
+    p_replaced_id: replacedId,
+    p_substitute_id: substituteId,
+    p_reason: reason,
+    p_expected: substitutionState(
+      slots,
+      slots.flatMap((s) => s.substitutions.map((sub) => sub.id)),
+    ),
+    p_handicap_home: handicap.kind === 'group' ? handicap.slot.home : undefined,
+    p_handicap_away: handicap.kind === 'group' ? handicap.slot.away : undefined,
+    p_relay_home: handicap.kind === 'relay' ? handicap.start.home : undefined,
+    p_relay_away: handicap.kind === 'relay' ? handicap.start.away : undefined,
+    p_override_codes: [...new Set(added.map((v) => v.code))],
+    p_override_reason: added.length > 0 ? overrideReason : '',
+  });
+  if (error) {
+    const code = error.code;
+    return {
+      error:
+        code === 'P0001'
+          ? 'closed'
+          : code === '22023'
+            ? 'scored'
+            : code === '40001'
+              ? 'changed'
+              : code === '42501'
+                ? 'violations'
+                : 'failed',
+    };
+  }
+
+  refresh();
+  return { ok: true };
+}
+
+export type ForfeitState =
+  { ok: true } | { error: 'closed' | 'invalid' | 'reason' | 'forbidden' | 'failed' } | undefined;
+
+/**
+ * Records a forfeit (spec §4.5, A5): the other team wins with every set 31–0 in a group match, or the
+ * relay recorded 125–0 in the knock-out, and advances. The reason is required and shown publicly.
+ * Staff only: a referee can forfeit a match that is still open.
+ */
+export async function forfeitMatch(_prev: ForfeitState, formData: FormData): Promise<ForfeitState> {
+  await requireStaff();
+  const input = parseForfeitForm(formData);
+  if (!input) return { error: 'invalid' };
+  const { matchId, teamId, reason } = input;
+  if (!reason) return { error: 'reason' };
+
+  const supabase = await createClient();
+  const [matchResult, slotsResult] = await Promise.all([
+    supabase
+      .from('match')
+      .select('stage, status, home_team_id, away_team_id, season:season_id (settings)')
+      .eq('id', matchId)
+      .maybeSingle(),
+    supabase.from('match_slot').select('slot_no').eq('match_id', matchId),
+  ]);
+  if (matchResult.error || slotsResult.error) return { error: 'failed' };
+  const match = matchResult.data;
+  if (!match?.season) return { error: 'invalid' };
+  if (!forfeitable(match.status)) return { error: 'closed' };
+  const side: Side | null = teamId === match.home_team_id ? 'home' : teamId === match.away_team_id ? 'away' : null;
+  if (!side) return { error: 'invalid' };
+
+  const parsedSettings = parseSeasonSettings(match.season.settings);
+  const settings = parsedSettings.ok ? parsedSettings.settings : DEFAULT_SEASON_SETTINGS;
+  const slots = forfeitSlots(
+    match.stage,
+    side,
+    settings,
+    slotsResult.data.map((s) => s.slot_no),
+  );
+  if (!slots) return { error: 'invalid' };
+
+  const { error } = await supabase.rpc('forfeit_match', {
+    p_match_id: matchId,
+    p_forfeit_team_id: teamId,
+    p_reason: reason,
+    p_slots: slots,
+  });
+  if (error) {
+    const code = error.code;
+    return {
+      error: code === '42501' ? 'forbidden' : code === 'P0001' ? 'closed' : code === '22023' ? 'invalid' : 'failed',
+    };
+  }
+
+  refresh();
+  return { ok: true };
 }

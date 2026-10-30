@@ -963,6 +963,10 @@ export type Database = {
     Functions: {
       clone_season: { Args: { p_name: string; p_source_id: string; p_venue: string; p_year: number }; Returns: string };
       complete_match: { Args: { p_expected: Json; p_match_id: string; p_winner_team_id: string }; Returns: undefined };
+      forfeit_match: {
+        Args: { p_forfeit_team_id: string; p_match_id: string; p_reason: string; p_slots: Json };
+        Returns: undefined;
+      };
       generate_group_schedule: {
         Args: { p_matches: Json; p_season_id: string; p_slot_types: Database['public']['Enums']['slot_type'][] };
         Returns: number;
@@ -996,6 +1000,24 @@ export type Database = {
         Returns: undefined;
       };
       set_current_season: { Args: { p_season_id: string }; Returns: undefined };
+      substitute_player: {
+        Args: {
+          p_expected: Json;
+          p_handicap_away?: number;
+          p_handicap_home?: number;
+          p_match_id: string;
+          p_override_codes?: Database['public']['Enums']['lineup_rule_code'][];
+          p_override_reason?: string;
+          p_reason: string;
+          p_relay_away?: number;
+          p_relay_home?: number;
+          p_replaced_id: string;
+          p_side: Database['public']['Enums']['match_side'];
+          p_slot_no: number;
+          p_substitute_id: string;
+        };
+        Returns: undefined;
+      };
       unlock_match_lineups: { Args: { p_match_id: string }; Returns: undefined };
     };
     Enums: {
