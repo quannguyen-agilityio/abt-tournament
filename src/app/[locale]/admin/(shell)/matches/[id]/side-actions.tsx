@@ -11,8 +11,8 @@ export type SideAction = {
 };
 
 /** The match header's side actions (substitute, ...): each button toggles its panel below the header. */
-export function SideActions({ actions }: { actions: SideAction[] }) {
-  const [openKey, setOpenKey] = useState<string | null>(null);
+export function SideActions({ actions, initialKey }: { actions: SideAction[]; initialKey?: string }) {
+  const [openKey, setOpenKey] = useState<string | null>(initialKey ?? null);
   const open = actions.find((a) => a.key === openKey);
   if (actions.length === 0) return null;
   return (

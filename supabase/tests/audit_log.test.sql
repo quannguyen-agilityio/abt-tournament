@@ -89,7 +89,7 @@ select ok(
   'a delete writes the old row'
 );
 
--- Every table spec §3.1 lists is audited.
+-- Every table spec §3.1 lists is audited, team included (disqualification, spec §4.5).
 select bag_eq(
   $$
     select c.relname::text
@@ -99,7 +99,7 @@ select bag_eq(
   $$,
   array[
     'match', 'match_slot', 'match_attendance', 'slot_substitution', 'lineup_override',
-    'group_closure', 'award_winner', 'season_player', 'season_player_private'
+    'group_closure', 'award_winner', 'season_player', 'season_player_private', 'team'
   ],
   'the audit trigger is on every table in spec §3.1'
 );

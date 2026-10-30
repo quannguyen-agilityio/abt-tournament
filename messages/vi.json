@@ -824,7 +824,6 @@
         "noPlayers": "Đội chưa có VĐV nào.",
         "belowMinimum": "Mới có {count} VĐV có mặt (tối thiểu {minimum}). Trận chưa thể bắt đầu.",
         "disqualify": "Loại đội",
-        "disqualifySoon": "Chức năng loại đội sẽ có trong bản cập nhật tới.",
         "save": "Lưu điểm danh",
         "saving": "Đang lưu…",
         "saved": "Đã lưu",
@@ -873,7 +872,8 @@
       },
       "sideActions": {
         "substitute": "Thay người",
-        "forfeit": "Xử thua"
+        "forfeit": "Xử thua",
+        "disqualify": "Loại đội"
       },
       "substitute": {
         "title": "Thay người",
@@ -995,6 +995,46 @@
           "reason": "Nhập lý do xử thua.",
           "forbidden": "Bạn không thể xử thua trận này.",
           "failed": "Không ghi nhận được xử thua. Vui lòng thử lại."
+        }
+      },
+      "disqualify": {
+        "title": "Loại đội",
+        "hint": "Ở vòng bảng, mọi trận vòng bảng của đội bị huỷ, kể cả các trận đã đấu, và đội bị đưa khỏi bảng xếp hạng. Ở vòng loại trực tiếp, trận tiếp theo của đội bị xử thua và đối thủ đi tiếp.",
+        "team": "Đội bị loại",
+        "reason": "Lý do",
+        "reasonHint": "Hiển thị trên trang công khai của các trận bị ảnh hưởng.",
+        "affectedGroup": "Các trận vòng bảng sau sẽ bị huỷ:",
+        "affectedKo": "Trận loại trực tiếp sau sẽ bị xử thua:",
+        "noMatches": "Không có trận nào thay đổi: mọi trận vòng bảng của đội đã bị huỷ.",
+        "confirm": "Loại {team}? {count, plural, =0 {Không có trận nào thay đổi.} other {# trận sau sẽ thay đổi:}}\n{matches}",
+        "submit": "Loại đội",
+        "submitting": "Đang loại đội…",
+        "errors": {
+          "invalid": "Việc loại đội này không hợp lệ. Tải lại trang và thử lại.",
+          "reason": "Nhập lý do loại đội.",
+          "disqualified": "Đội này đã bị loại. Tải lại trang.",
+          "noNextMatch": "Đội này không còn trận loại trực tiếp nào để xử thua.",
+          "changed": "Các trận đấu đã thay đổi. Tải lại trang và kiểm tra lại danh sách.",
+          "forbidden": "Chỉ Ban tổ chức mới có thể loại đội.",
+          "failed": "Không loại được đội. Vui lòng thử lại."
+        }
+      },
+      "annulled": {
+        "title": "Đã huỷ",
+        "hint": "Trận này không được tính vào bảng xếp hạng và thống kê VĐV.",
+        "disqualified": "bị loại",
+        "reason": "Lý do: {reason}",
+        "restores": "Khôi phục đội sẽ khôi phục các trận sau:",
+        "reinstate": "Khôi phục {team}",
+        "confirm": "Khôi phục {team}? {count, plural, =0 {Không có trận nào thay đổi.} other {# trận sau sẽ được khôi phục:}}\n{matches}",
+        "submitting": "Đang khôi phục…",
+        "errors": {
+          "invalid": "Việc khôi phục này không hợp lệ. Tải lại trang và thử lại.",
+          "notDisqualified": "Đội này không bị loại. Tải lại trang.",
+          "groupClosed": "Vòng bảng đã kết thúc nên không thể khôi phục đội nữa.",
+          "changed": "Các trận đấu đã thay đổi. Tải lại trang và kiểm tra lại danh sách.",
+          "forbidden": "Chỉ Ban tổ chức mới có thể khôi phục đội.",
+          "failed": "Không khôi phục được đội. Vui lòng thử lại."
         }
       }
     }

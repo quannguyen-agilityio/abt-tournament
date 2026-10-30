@@ -3,7 +3,8 @@
 import { useTranslations } from 'next-intl';
 import { startTransition, useActionState, useState } from 'react';
 import { TeamChip } from '@/components/team-chip';
-import { Button } from '@/components/ui/button';
+import { Button, buttonVariants } from '@/components/ui/button';
+import { Link } from '@/i18n/navigation';
 import { cn } from '@/lib/utils';
 import { saveAttendance, type AttendanceState } from './actions';
 
@@ -16,11 +17,12 @@ type Props = {
   present: string[];
   minPresent: number;
   editable: boolean;
-  isBtc: boolean;
+  /** BTC only: where "Disqualify team" leads (the match page with the disqualify panel open). */
+  disqualifyHref: string | null;
 };
 
 /** One team's attendance: tick the present players, with a live count (A5 step 1). */
-export function AttendanceForm({ matchId, team, players, present, minPresent, editable, isBtc }: Props) {
+export function AttendanceForm({ matchId, team, players, present, minPresent, editable, disqualifyHref }: Props) {
   const t = useTranslations('Admin.match.attendance');
   const [ticked, setTicked] = useState(() => new Set(present));
   const [state, action, pending] = useActionState<AttendanceState, FormData>(saveAttendance, undefined);
@@ -96,14 +98,13 @@ export function AttendanceForm({ matchId, team, players, present, minPresent, ed
       {below && (
         <div className="border-loss/40 bg-loss/10 mx-4 mb-4 flex flex-col gap-2 rounded-lg border p-3 text-sm">
           <p role="alert">{t('belowMinimum', { count, minimum: minPresent })}</p>
-          {isBtc && (
-            <div className="flex flex-wrap items-center gap-2">
-              {/* Wired up with the disqualification flow (spec §4.5). */}
-              <Button type="button" variant="destructive" size="sm" disabled>
-                {t('disqualify')}
-              </Button>
-              <span className="text-muted-foreground text-xs">{t('disqualifySoon')}</span>
-            </div>
+          {disqualifyHref && (
+            <Link
+              href={disqualifyHref}
+              className={cn(buttonVariants({ variant: 'destructive', size: 'sm' }), 'self-start')}
+            >
+              {t('disqualify')}
+            </Link>
           )}
         </div>
       )}

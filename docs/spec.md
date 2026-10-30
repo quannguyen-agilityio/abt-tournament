@@ -173,7 +173,7 @@ A slot's effective players are the registered ones with any substitutions applie
 
 **`profile`**: (`user_id` pk → `auth.users`, `display_name`, `role` = `btc` | `referee`, `must_change_password`, `is_active`).
 
-**`audit_log`**: (`actor_id`, `entity`, `entity_id`, `action`, `before jsonb`, `after jsonb`, `at`). It is written by DB triggers on `match`, `match_slot`, `match_attendance`, `slot_substitution`, `lineup_override`, `group_closure`, `award_winner`, `season_player` and `season_player_private`.
+**`audit_log`**: (`actor_id`, `entity`, `entity_id`, `action`, `before jsonb`, `after jsonb`, `at`). It is written by DB triggers on `match`, `match_slot`, `match_attendance`, `slot_substitution`, `lineup_override`, `group_closure`, `award_winner`, `season_player`, `season_player_private` and `team` (disqualification, §4.5).
 
 ### 3.2 Row Level Security
 
