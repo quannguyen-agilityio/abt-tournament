@@ -580,6 +580,61 @@
         "referee": "Choose an active account as referee."
       }
     },
+    "closeGroup": {
+      "back": "← Season",
+      "title": "Close group",
+      "subtitle": "{season} · {played} of {total} group matches played",
+      "provisional": "Provisional: group not closed yet",
+      "notGroup": "The group stage is not running ({status, select, draft {draft} published {published} knockout {knock-out} finished {finished} other {other}}), so there is nothing to close.",
+      "unfinished": "{count, plural, one {# group match is} other {# group matches are}} still to be played. The group closes once every group match is completed, forfeited or annulled.",
+      "draw": {
+        "title": "Draw",
+        "hint": "These teams are still level after every tie-break. Drag them, or use the arrows, into the order of the draw result.",
+        "none": "Every team is separated before the draw step.",
+        "group": "Tied group {n}",
+        "moveUp": "Move {team} up",
+        "moveDown": "Move {team} down",
+        "note": "Note",
+        "noteRequired": "Required: record how and when the draw was made.",
+        "noteOptional": "Optional."
+      },
+      "submit": "Close group & seed bracket",
+      "submitting": "Closing…",
+      "confirm": "Close the group? The order is locked, the season moves to the knock-out and the semi-finals are seeded:\n{bracket}",
+      "confirmBracket": "SF1: {s1} – {s4}\nSF2: {s2} – {s3}",
+      "errors": {
+        "unfinished": "A group match is still to be played.",
+        "teams": "The bracket needs more teams than the standings have.",
+        "note": "Enter a note about the draw.",
+        "changed": "The results changed since the page loaded. Reload the page and check the draw again.",
+        "status": "The season is not in the group stage, or the group is already closed. Reload the page.",
+        "bracketStarted": "A bracket match has already started.",
+        "failed": "The group could not be closed. Please try again."
+      },
+      "closed": {
+        "badge": "Group stage closed",
+        "at": "Closed {when} by {by}.",
+        "drawn": "Drawn by hand: {teams}.",
+        "note": "Note: {note}",
+        "locked": "The group can no longer be reopened because the bracket has started."
+      },
+      "reopen": {
+        "submit": "Reopen group",
+        "submitting": "Reopening…",
+        "hint": "Allowed while no bracket match has started.",
+        "confirm": "Reopen the group? The final order is removed, the season goes back to the group stage and the bracket teams are cleared.",
+        "errors": {
+          "status": "The group is not closed. Reload the page.",
+          "bracketStarted": "The group can no longer be reopened because the bracket has started.",
+          "failed": "The group could not be reopened. Please try again."
+        }
+      },
+      "bracket": {
+        "title": "Bracket",
+        "tbd": "To be decided",
+        "auto": "SF1 = #1 v #4, SF2 = #2 v #3, the higher seed at home. 3RD and F are filled automatically when both semi-finals finish."
+      }
+    },
     "seasons": {
       "title": "Seasons",
       "count": "{count, plural, one {# season} other {# seasons}}",

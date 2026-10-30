@@ -580,6 +580,61 @@
         "referee": "Chọn một tài khoản đang hoạt động làm trọng tài."
       }
     },
+    "closeGroup": {
+      "back": "← Mùa giải",
+      "title": "Chốt vòng bảng",
+      "subtitle": "{season} · đã đấu {played}/{total} trận vòng bảng",
+      "provisional": "Tạm tính, vòng bảng chưa chốt",
+      "notGroup": "Mùa giải không ở vòng bảng ({status, select, draft {nháp} published {đã công bố} knockout {knock-out} finished {đã kết thúc} other {khác}}), nên không có gì để chốt.",
+      "unfinished": "Còn {count} trận vòng bảng chưa đấu. Chỉ chốt được khi mọi trận vòng bảng đã kết thúc, xử thua hoặc bị hủy.",
+      "draw": {
+        "title": "Bốc thăm",
+        "hint": "Các đội này vẫn bằng nhau sau mọi tiêu chí phụ. Kéo thả, hoặc dùng mũi tên, để xếp theo kết quả bốc thăm.",
+        "none": "Mọi đội đã được phân định trước bước bốc thăm.",
+        "group": "Nhóm bằng điểm {n}",
+        "moveUp": "Đưa {team} lên",
+        "moveDown": "Đưa {team} xuống",
+        "note": "Ghi chú",
+        "noteRequired": "Bắt buộc: ghi lại cách thức và thời điểm bốc thăm.",
+        "noteOptional": "Không bắt buộc."
+      },
+      "submit": "Chốt vòng bảng & sinh bracket",
+      "submitting": "Đang chốt…",
+      "confirm": "Chốt vòng bảng? Thứ hạng sẽ bị khóa, mùa giải chuyển sang knock-out và bán kết được xếp cặp:\n{bracket}",
+      "confirmBracket": "SF1: {s1} – {s4}\nSF2: {s2} – {s3}",
+      "errors": {
+        "unfinished": "Vẫn còn trận vòng bảng chưa đấu.",
+        "teams": "Bracket cần nhiều đội hơn số đội trên bảng xếp hạng.",
+        "note": "Nhập ghi chú về việc bốc thăm.",
+        "changed": "Kết quả đã thay đổi từ lúc tải trang. Tải lại trang và kiểm tra lại thứ tự bốc thăm.",
+        "status": "Mùa giải không ở vòng bảng hoặc vòng bảng đã chốt. Tải lại trang.",
+        "bracketStarted": "Đã có trận knock-out bắt đầu.",
+        "failed": "Không chốt được vòng bảng. Vui lòng thử lại."
+      },
+      "closed": {
+        "badge": "Vòng bảng đã chốt",
+        "at": "Chốt lúc {when} bởi {by}.",
+        "drawn": "Xếp bằng bốc thăm: {teams}.",
+        "note": "Ghi chú: {note}",
+        "locked": "Vòng bảng đã chốt. Không mở lại được vì bracket đã bắt đầu."
+      },
+      "reopen": {
+        "submit": "Mở lại vòng bảng",
+        "submitting": "Đang mở lại…",
+        "hint": "Chỉ được khi chưa trận knock-out nào bắt đầu.",
+        "confirm": "Mở lại vòng bảng? Thứ hạng chốt sẽ bị xóa, mùa giải quay về vòng bảng và các đội trong bracket bị gỡ ra.",
+        "errors": {
+          "status": "Vòng bảng chưa chốt. Tải lại trang.",
+          "bracketStarted": "Vòng bảng đã chốt. Không mở lại được vì bracket đã bắt đầu.",
+          "failed": "Không mở lại được vòng bảng. Vui lòng thử lại."
+        }
+      },
+      "bracket": {
+        "title": "Bracket",
+        "tbd": "Chưa xác định",
+        "auto": "SF1 = hạng 1 gặp hạng 4, SF2 = hạng 2 gặp hạng 3, đội hạng cao hơn làm chủ nhà. Trận tranh hạng 3 và chung kết tự điền khi hai trận bán kết kết thúc."
+      }
+    },
     "seasons": {
       "title": "Mùa giải",
       "count": "{count} mùa giải",
