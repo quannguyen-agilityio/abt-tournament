@@ -1,8 +1,7 @@
 // Throwaway seasons for the E2E smoke tests (spec §11). Each test that writes data gets a season of its
 // own, far from the seed years, so it can run again on the same local database and never touches the
-// ABT 2025/2027 demo. The fixtures write straight to the tables as the seed BTC account, which RLS lets
-// do everything (the service role cannot run the triggers in the private schema); they skip the server
-// actions, as the seed does.
+// ABT 2025/2027 demo (supabase/seeds/e2e-demo.sql). The fixtures write straight to the tables as the
+// seed BTC account, which RLS lets do everything; they skip the server actions, as the demo does.
 
 import { createClient } from '@supabase/supabase-js';
 import type { Database } from '../../src/lib/database.types';

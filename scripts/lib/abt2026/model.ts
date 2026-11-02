@@ -16,8 +16,8 @@ export interface ImportPlayer {
   gender: Gender;
   rank: number;
   skill: number;
-  /** VND. */
-  fee: number;
+  /** VND. Absent in the committed JSON (private, spec: season_player_private): the sync then leaves a fee set in the admin alone. */
+  fee?: number;
   teamNumber: number;
 }
 

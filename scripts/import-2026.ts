@@ -1,15 +1,17 @@
-// ABT 2026 import (spec §9): pnpm import:2026 --file <xlsx> --env <local|staging|prod> [--dry-run] [--yes]
+// ABT 2026 import (spec §9): pnpm import:2026 --file <abt-2026.json|ABT_2026.xlsx> --env <local|staging|prod> [--dry-run] [--yes]
 import { execFileSync } from 'node:child_process';
 import { existsSync, readFileSync } from 'node:fs';
 import { parseArgs } from 'node:util';
 import { createClient } from '@supabase/supabase-js';
 import type { Database } from '../src/lib/database.types';
+import { parseImportJson } from './lib/abt2026/json';
 import { ImportError, parseWorkbook } from './lib/abt2026/parse';
+import { printRead, verifyAndPrint } from './lib/abt2026/report';
 import { syncImport, type Change } from './lib/abt2026/sync';
-import { computeGroupStandings, formatStandings, SHEET_ERRATA, verifyWithErrata } from './lib/abt2026/verify';
 import { readWorkbook } from './lib/abt2026/xlsx';
 
-const USAGE = 'Usage: pnpm import:2026 --file <ABT_2026.xlsx> --env <local|staging|prod> [--dry-run] [--yes]';
+const USAGE =
+  'Usage: pnpm import:2026 --file <abt-2026.json|ABT_2026.xlsx> --env <local|staging|prod> [--dry-run] [--yes]';
 
 function fail(message: string): never {
   console.error(message);
@@ -69,29 +71,22 @@ async function main() {
   const dryRun = values['dry-run'];
 
   // Parse and verify before anything is written.
-  let parsed;
+  let data;
   try {
-    parsed = parseWorkbook(await readWorkbook(values.file));
+    if (values.file.endsWith('.json')) {
+      data = parseImportJson(readFileSync(values.file, 'utf8'));
+      printRead(data);
+    } else {
+      const parsed = parseWorkbook(await readWorkbook(values.file));
+      data = parsed.data;
+      printRead(data, parsed.notes);
+    }
   } catch (e) {
     if (e instanceof ImportError) fail(e.message);
     throw e;
   }
-  const { data, notes } = parsed;
-  console.log(
-    `Read ${data.teams.length} teams, ${data.players.length} players, ${data.matches.length} matches, ${data.awards.length} awards.`,
-  );
-  if (notes.length > 0) console.log(`Fixes applied:\n${notes.map((n) => `  - ${n}`).join('\n')}`);
-  console.log(`\nComputed standings:\n${formatStandings(data, computeGroupStandings(data))}\n`);
-  const { failures, accepted } = verifyWithErrata(data, SHEET_ERRATA);
-  if (failures.length > 0)
-    fail(`Verification FAILED, nothing was written:\n${failures.map((d) => `  - ${d}`).join('\n')}`);
-  if (accepted.length > 0) {
-    const lines = accepted.map(
-      (e) => `  - ${e.source} team ${e.teamNumber} ${e.field}: sheet ${e.sheet}, computed ${e.expected} (${e.reason})`,
-    );
-    console.log(`Accepted errors in the sheet:\n${lines.join('\n')}`);
-  }
-  console.log('Verification passed: standings and team totals match the workbook.');
+  const failure = verifyAndPrint(data);
+  if (failure) fail(failure);
 
   // Connect.
   const { url, key } = credentials(target);

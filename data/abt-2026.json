@@ -1,0 +1,2536 @@
+{
+  "$comment": "Generated from ABT_2026.xlsx by `pnpm convert:2026`; fees are private and left out.",
+  "teams": [
+    {
+      "number": 1,
+      "name": "MÃ ĐÁO THÀNH CÔNG",
+      "color": "#e63946"
+    },
+    {
+      "number": 2,
+      "name": "PURPLE WARRIORS",
+      "color": "#f4a261"
+    },
+    {
+      "number": 3,
+      "name": "NGỰA SIÊU ĐẲNG",
+      "color": "#2a9d8f"
+    },
+    {
+      "number": 4,
+      "name": "NGỰA QUEN ĐƯỜNG CŨ",
+      "color": "#457b9d"
+    },
+    {
+      "number": 5,
+      "name": "NGỰA TROY",
+      "color": "#9b5de5"
+    },
+    {
+      "number": 6,
+      "name": "THIÊN MÃ",
+      "color": "#e9c46a"
+    },
+    {
+      "number": 7,
+      "name": "MÃ TẤU",
+      "color": "#6d6875"
+    }
+  ],
+  "players": [
+    {
+      "name": "Trung Ung",
+      "slug": "trung-ung",
+      "gender": "male",
+      "rank": 1,
+      "skill": 35,
+      "teamNumber": 1
+    },
+    {
+      "name": "Quốc Nguyễn",
+      "slug": "quoc-nguyen",
+      "gender": "male",
+      "rank": 2,
+      "skill": 28,
+      "teamNumber": 1
+    },
+    {
+      "name": "Thảo Thi",
+      "slug": "thao-thi",
+      "gender": "female",
+      "rank": 3,
+      "skill": 25,
+      "teamNumber": 1
+    },
+    {
+      "name": "Nhật Nguyễn",
+      "slug": "nhat-nguyen",
+      "gender": "male",
+      "rank": 4,
+      "skill": 20,
+      "teamNumber": 1
+    },
+    {
+      "name": "Nam Trần",
+      "slug": "nam-tran",
+      "gender": "male",
+      "rank": 5,
+      "skill": 18,
+      "teamNumber": 1
+    },
+    {
+      "name": "Hương Lê",
+      "slug": "huong-le",
+      "gender": "female",
+      "rank": 6,
+      "skill": 17,
+      "teamNumber": 1
+    },
+    {
+      "name": "Lin Trần",
+      "slug": "lin-tran",
+      "gender": "female",
+      "rank": 7,
+      "skill": 16,
+      "teamNumber": 1
+    },
+    {
+      "name": "Phong Nguyên",
+      "slug": "phong-nguyen",
+      "gender": "male",
+      "rank": 7,
+      "skill": 16,
+      "teamNumber": 1
+    },
+    {
+      "name": "Hiển Nguyễn",
+      "slug": "hien-nguyen",
+      "gender": "male",
+      "rank": 1,
+      "skill": 36,
+      "teamNumber": 2
+    },
+    {
+      "name": "Vinh Huỳnh",
+      "slug": "vinh-huynh",
+      "gender": "male",
+      "rank": 2,
+      "skill": 30,
+      "teamNumber": 2
+    },
+    {
+      "name": "Anh Trần",
+      "slug": "anh-tran",
+      "gender": "female",
+      "rank": 3,
+      "skill": 24,
+      "teamNumber": 2
+    },
+    {
+      "name": "Xuân Tạ",
+      "slug": "xuan-ta",
+      "gender": "female",
+      "rank": 4,
+      "skill": 20,
+      "teamNumber": 2
+    },
+    {
+      "name": "Bảo Nguyễn Phạm",
+      "slug": "bao-nguyen-pham",
+      "gender": "male",
+      "rank": 5,
+      "skill": 18,
+      "teamNumber": 2
+    },
+    {
+      "name": "Hà Nguyễn",
+      "slug": "ha-nguyen",
+      "gender": "female",
+      "rank": 6,
+      "skill": 17,
+      "teamNumber": 2
+    },
+    {
+      "name": "Thi Phạm",
+      "slug": "thi-pham",
+      "gender": "female",
+      "rank": 7,
+      "skill": 16,
+      "teamNumber": 2
+    },
+    {
+      "name": "Diệp Trần",
+      "slug": "diep-tran",
+      "gender": "female",
+      "rank": 7,
+      "skill": 16,
+      "teamNumber": 2
+    },
+    {
+      "name": "Tùng Nguyễn",
+      "slug": "tung-nguyen",
+      "gender": "male",
+      "rank": 1,
+      "skill": 34,
+      "teamNumber": 3
+    },
+    {
+      "name": "Toàn Nguyễn",
+      "slug": "toan-nguyen",
+      "gender": "male",
+      "rank": 2,
+      "skill": 28,
+      "teamNumber": 3
+    },
+    {
+      "name": "Khuê Nguyễn",
+      "slug": "khue-nguyen",
+      "gender": "male",
+      "rank": 3,
+      "skill": 22,
+      "teamNumber": 3
+    },
+    {
+      "name": "Nhân Lê",
+      "slug": "nhan-le",
+      "gender": "male",
+      "rank": 4,
+      "skill": 20,
+      "teamNumber": 3
+    },
+    {
+      "name": "Huy Năng",
+      "slug": "huy-nang",
+      "gender": "male",
+      "rank": 5,
+      "skill": 18,
+      "teamNumber": 3
+    },
+    {
+      "name": "Oanh Đỗ",
+      "slug": "oanh-do",
+      "gender": "female",
+      "rank": 6,
+      "skill": 17,
+      "teamNumber": 3
+    },
+    {
+      "name": "Nam Nguyễn",
+      "slug": "nam-nguyen",
+      "gender": "female",
+      "rank": 7,
+      "skill": 16,
+      "teamNumber": 3
+    },
+    {
+      "name": "Thành Nguyễn",
+      "slug": "thanh-nguyen",
+      "gender": "male",
+      "rank": 7,
+      "skill": 16,
+      "teamNumber": 3
+    },
+    {
+      "name": "Huy Phạm",
+      "slug": "huy-pham",
+      "gender": "male",
+      "rank": 1,
+      "skill": 40,
+      "teamNumber": 4
+    },
+    {
+      "name": "Hải Trần",
+      "slug": "hai-tran",
+      "gender": "male",
+      "rank": 2,
+      "skill": 30,
+      "teamNumber": 4
+    },
+    {
+      "name": "Hoàng Trần",
+      "slug": "hoang-tran",
+      "gender": "male",
+      "rank": 3,
+      "skill": 21,
+      "teamNumber": 4
+    },
+    {
+      "name": "Trâm Võ",
+      "slug": "tram-vo",
+      "gender": "female",
+      "rank": 4,
+      "skill": 20,
+      "teamNumber": 4
+    },
+    {
+      "name": "Thịnh Nguyễn",
+      "slug": "thinh-nguyen",
+      "gender": "male",
+      "rank": 5,
+      "skill": 18,
+      "teamNumber": 4
+    },
+    {
+      "name": "An Nguyễn",
+      "slug": "an-nguyen",
+      "gender": "female",
+      "rank": 6,
+      "skill": 17,
+      "teamNumber": 4
+    },
+    {
+      "name": "My Nguyễn",
+      "slug": "my-nguyen",
+      "gender": "female",
+      "rank": 7,
+      "skill": 16,
+      "teamNumber": 4
+    },
+    {
+      "name": "Long Nguyễn",
+      "slug": "long-nguyen",
+      "gender": "male",
+      "rank": 7,
+      "skill": 16,
+      "teamNumber": 4
+    },
+    {
+      "name": "Linh Cao",
+      "slug": "linh-cao",
+      "gender": "male",
+      "rank": 1,
+      "skill": 40,
+      "teamNumber": 5
+    },
+    {
+      "name": "Huy Châu",
+      "slug": "huy-chau",
+      "gender": "male",
+      "rank": 2,
+      "skill": 28,
+      "teamNumber": 5
+    },
+    {
+      "name": "Bảo Nguyễn",
+      "slug": "bao-nguyen",
+      "gender": "male",
+      "rank": 3,
+      "skill": 24,
+      "teamNumber": 5
+    },
+    {
+      "name": "Cư Đoàn",
+      "slug": "cu-doan",
+      "gender": "male",
+      "rank": 4,
+      "skill": 21,
+      "teamNumber": 5
+    },
+    {
+      "name": "Vũ Phan",
+      "slug": "vu-phan",
+      "gender": "male",
+      "rank": 5,
+      "skill": 18,
+      "teamNumber": 5
+    },
+    {
+      "name": "Châu Nguyễn",
+      "slug": "chau-nguyen",
+      "gender": "female",
+      "rank": 6,
+      "skill": 17,
+      "teamNumber": 5
+    },
+    {
+      "name": "Tuyết Như",
+      "slug": "tuyet-nhu",
+      "gender": "female",
+      "rank": 7,
+      "skill": 16,
+      "teamNumber": 5
+    },
+    {
+      "name": "Nhân Đoàn",
+      "slug": "nhan-doan",
+      "gender": "male",
+      "rank": 7,
+      "skill": 16,
+      "teamNumber": 5
+    },
+    {
+      "name": "Lâm Hà",
+      "slug": "lam-ha",
+      "gender": "male",
+      "rank": 1,
+      "skill": 35,
+      "teamNumber": 6
+    },
+    {
+      "name": "Tuấn Lê",
+      "slug": "tuan-le",
+      "gender": "male",
+      "rank": 2,
+      "skill": 33,
+      "teamNumber": 6
+    },
+    {
+      "name": "Tuấn Thái",
+      "slug": "tuan-thai",
+      "gender": "male",
+      "rank": 3,
+      "skill": 24,
+      "teamNumber": 6
+    },
+    {
+      "name": "Duy Đặng",
+      "slug": "duy-dang",
+      "gender": "male",
+      "rank": 4,
+      "skill": 20,
+      "teamNumber": 6
+    },
+    {
+      "name": "Nhật Dương",
+      "slug": "nhat-duong",
+      "gender": "male",
+      "rank": 5,
+      "skill": 18,
+      "teamNumber": 6
+    },
+    {
+      "name": "Ngân Đỗ",
+      "slug": "ngan-do",
+      "gender": "female",
+      "rank": 6,
+      "skill": 17,
+      "teamNumber": 6
+    },
+    {
+      "name": "Huyền Trương",
+      "slug": "huyen-truong",
+      "gender": "female",
+      "rank": 7,
+      "skill": 16,
+      "teamNumber": 6
+    },
+    {
+      "name": "Hiển Dương",
+      "slug": "hien-duong",
+      "gender": "male",
+      "rank": 7,
+      "skill": 16,
+      "teamNumber": 6
+    },
+    {
+      "name": "Thắng Hồ",
+      "slug": "thang-ho",
+      "gender": "male",
+      "rank": 1,
+      "skill": 40,
+      "teamNumber": 7
+    },
+    {
+      "name": "Tới Nguyễn",
+      "slug": "toi-nguyen",
+      "gender": "male",
+      "rank": 2,
+      "skill": 26,
+      "teamNumber": 7
+    },
+    {
+      "name": "Công Đặng",
+      "slug": "cong-dang",
+      "gender": "male",
+      "rank": 3,
+      "skill": 23,
+      "teamNumber": 7
+    },
+    {
+      "name": "Anh Nguyễn Kim",
+      "slug": "anh-nguyen-kim",
+      "gender": "female",
+      "rank": 4,
+      "skill": 20,
+      "teamNumber": 7
+    },
+    {
+      "name": "Hoàng Hồ",
+      "slug": "hoang-ho",
+      "gender": "male",
+      "rank": 5,
+      "skill": 18,
+      "teamNumber": 7
+    },
+    {
+      "name": "Thị Nụ",
+      "slug": "thi-nu",
+      "gender": "female",
+      "rank": 6,
+      "skill": 17,
+      "teamNumber": 7
+    },
+    {
+      "name": "Nhung Dương",
+      "slug": "nhung-duong",
+      "gender": "female",
+      "rank": 7,
+      "skill": 16,
+      "teamNumber": 7
+    },
+    {
+      "name": "Thương Bùi",
+      "slug": "thuong-bui",
+      "gender": "female",
+      "rank": 7,
+      "skill": 16,
+      "teamNumber": 7
+    }
+  ],
+  "courts": [
+    {
+      "name": "Sân 1",
+      "sort_order": 1
+    },
+    {
+      "name": "Sân 2",
+      "sort_order": 2
+    },
+    {
+      "name": "Sân 3",
+      "sort_order": 3
+    }
+  ],
+  "matches": [
+    {
+      "code": "V01",
+      "stage": "group",
+      "round": 1,
+      "homeTeam": 1,
+      "awayTeam": 2,
+      "court": 1,
+      "date": "2026-05-16",
+      "scheduledAt": "2026-05-16T08:30:00+07:00",
+      "refereeName": "NHÃ",
+      "slots": [
+        {
+          "slot_no": 1,
+          "slot_type": "open",
+          "home": ["trung-ung", "thao-thi"],
+          "away": ["hien-nguyen", "anh-tran"],
+          "handicap_home": 0,
+          "handicap_away": 0,
+          "score_home": 23,
+          "score_away": 31
+        },
+        {
+          "slot_no": 2,
+          "slot_type": "low",
+          "home": ["nhat-nguyen", "nam-tran"],
+          "away": ["xuan-ta", "bao-nguyen-pham"],
+          "handicap_home": 0,
+          "handicap_away": 0,
+          "score_home": 31,
+          "score_away": 24
+        },
+        {
+          "slot_no": 3,
+          "slot_type": "open",
+          "home": ["thao-thi", "huong-le"],
+          "away": ["hien-nguyen", "diep-tran"],
+          "handicap_home": 10,
+          "handicap_away": 0,
+          "score_home": 31,
+          "score_away": 29
+        },
+        {
+          "slot_no": 4,
+          "slot_type": "high",
+          "home": ["quoc-nguyen", "trung-ung"],
+          "away": ["anh-tran", "vinh-huynh"],
+          "handicap_home": 0,
+          "handicap_away": 9,
+          "score_home": 27,
+          "score_away": 31
+        },
+        {
+          "slot_no": 5,
+          "slot_type": "open",
+          "home": ["lin-tran", "phong-nguyen"],
+          "away": ["ha-nguyen", "thi-pham"],
+          "handicap_home": 1,
+          "handicap_away": 0,
+          "score_home": 13,
+          "score_away": 31
+        }
+      ],
+      "winner": "away"
+    },
+    {
+      "code": "V02",
+      "stage": "group",
+      "round": 1,
+      "homeTeam": 6,
+      "awayTeam": 3,
+      "court": 2,
+      "date": "2026-05-16",
+      "scheduledAt": "2026-05-16T08:30:00+07:00",
+      "refereeName": "NHẬT",
+      "slots": [
+        {
+          "slot_no": 1,
+          "slot_type": "open",
+          "home": ["lam-ha", "hien-duong"],
+          "away": ["toan-nguyen", "oanh-do"],
+          "handicap_home": 0,
+          "handicap_away": 6,
+          "score_home": 31,
+          "score_away": 27
+        },
+        {
+          "slot_no": 2,
+          "slot_type": "low",
+          "home": ["duy-dang", "ngan-do"],
+          "away": ["nhan-le", "huy-nang"],
+          "handicap_home": 1,
+          "handicap_away": 0,
+          "score_home": 31,
+          "score_away": 19
+        },
+        {
+          "slot_no": 3,
+          "slot_type": "open",
+          "home": ["tuan-le", "nhat-duong"],
+          "away": ["tung-nguyen", "thanh-nguyen"],
+          "handicap_home": 0,
+          "handicap_away": 1,
+          "score_home": 31,
+          "score_away": 24
+        },
+        {
+          "slot_no": 4,
+          "slot_type": "high",
+          "home": ["lam-ha", "tuan-thai"],
+          "away": ["toan-nguyen", "khue-nguyen"],
+          "handicap_home": 0,
+          "handicap_away": 9,
+          "score_home": 25,
+          "score_away": 31
+        },
+        {
+          "slot_no": 5,
+          "slot_type": "open",
+          "home": ["tuan-le", "huyen-truong"],
+          "away": ["nam-nguyen", "tung-nguyen"],
+          "handicap_home": 1,
+          "handicap_away": 0,
+          "score_home": 21,
+          "score_away": 31
+        }
+      ],
+      "winner": "home"
+    },
+    {
+      "code": "V03",
+      "stage": "group",
+      "round": 1,
+      "homeTeam": 5,
+      "awayTeam": 7,
+      "court": 3,
+      "date": "2026-05-16",
+      "scheduledAt": "2026-05-16T08:30:00+07:00",
+      "refereeName": "HẠ",
+      "slots": [
+        {
+          "slot_no": 1,
+          "slot_type": "open",
+          "home": ["huy-chau", "chau-nguyen"],
+          "away": ["toi-nguyen", "thuong-bui"],
+          "handicap_home": 0,
+          "handicap_away": 3,
+          "score_home": 31,
+          "score_away": 19
+        },
+        {
+          "slot_no": 2,
+          "slot_type": "low",
+          "home": ["cu-doan", "vu-phan"],
+          "away": ["hoang-ho", "anh-nguyen-kim"],
+          "handicap_home": 0,
+          "handicap_away": 1,
+          "score_home": 22,
+          "score_away": 31
+        },
+        {
+          "slot_no": 3,
+          "slot_type": "open",
+          "home": ["linh-cao", "chau-nguyen"],
+          "away": ["thang-ho", "nhung-duong"],
+          "handicap_home": 0,
+          "handicap_away": 1,
+          "score_home": 31,
+          "score_away": 12
+        },
+        {
+          "slot_no": 4,
+          "slot_type": "high",
+          "home": ["bao-nguyen", "huy-chau"],
+          "away": ["cong-dang", "toi-nguyen"],
+          "handicap_home": 0,
+          "handicap_away": 3,
+          "score_home": 31,
+          "score_away": 12
+        },
+        {
+          "slot_no": 5,
+          "slot_type": "open",
+          "home": ["linh-cao", "nhan-doan"],
+          "away": ["thang-ho", "thi-nu"],
+          "handicap_home": 1,
+          "handicap_away": 0,
+          "score_home": 30,
+          "score_away": 31
+        }
+      ],
+      "winner": "home"
+    },
+    {
+      "code": "V04",
+      "stage": "group",
+      "round": 2,
+      "homeTeam": 1,
+      "awayTeam": 6,
+      "court": 1,
+      "date": "2026-05-16",
+      "scheduledAt": "2026-05-16T09:40:00+07:00",
+      "refereeName": "NHÃ",
+      "slots": [
+        {
+          "slot_no": 1,
+          "slot_type": "open",
+          "home": ["trung-ung", "thao-thi"],
+          "away": ["tuan-le", "hien-duong"],
+          "handicap_home": 0,
+          "handicap_away": 11,
+          "score_home": 29,
+          "score_away": 31
+        },
+        {
+          "slot_no": 2,
+          "slot_type": "low",
+          "home": ["nam-tran", "nhat-nguyen"],
+          "away": ["duy-dang", "huyen-truong"],
+          "handicap_home": 0,
+          "handicap_away": 2,
+          "score_home": 31,
+          "score_away": 15
+        },
+        {
+          "slot_no": 3,
+          "slot_type": "open",
+          "home": ["lin-tran", "phong-nguyen"],
+          "away": ["lam-ha", "ngan-do"],
+          "handicap_home": 20,
+          "handicap_away": 0,
+          "score_home": 28,
+          "score_away": 31
+        },
+        {
+          "slot_no": 4,
+          "slot_type": "high",
+          "home": ["quoc-nguyen", "trung-ung"],
+          "away": ["tuan-le", "tuan-thai"],
+          "handicap_home": 0,
+          "handicap_away": 6,
+          "score_home": 26,
+          "score_away": 31
+        },
+        {
+          "slot_no": 5,
+          "slot_type": "open",
+          "home": ["huong-le", "thao-thi"],
+          "away": ["lam-ha", "nhat-duong"],
+          "handicap_home": 11,
+          "handicap_away": 0,
+          "score_home": 25,
+          "score_away": 31
+        }
+      ],
+      "winner": "away"
+    },
+    {
+      "code": "V05",
+      "stage": "group",
+      "round": 2,
+      "homeTeam": 5,
+      "awayTeam": 2,
+      "court": 2,
+      "date": "2026-05-16",
+      "scheduledAt": "2026-05-16T09:40:00+07:00",
+      "refereeName": "NHẬT",
+      "slots": [
+        {
+          "slot_no": 1,
+          "slot_type": "open",
+          "home": ["linh-cao", "chau-nguyen"],
+          "away": ["bao-nguyen-pham", "thi-pham"],
+          "handicap_home": 0,
+          "handicap_away": 20,
+          "score_home": 31,
+          "score_away": 25
+        },
+        {
+          "slot_no": 2,
+          "slot_type": "low",
+          "home": ["cu-doan", "vu-phan"],
+          "away": ["xuan-ta", "ha-nguyen"],
+          "handicap_home": 0,
+          "handicap_away": 2,
+          "score_home": 20,
+          "score_away": 31
+        },
+        {
+          "slot_no": 3,
+          "slot_type": "open",
+          "home": ["huy-chau", "nhan-doan"],
+          "away": ["anh-tran", "diep-tran"],
+          "handicap_home": 0,
+          "handicap_away": 4,
+          "score_home": 31,
+          "score_away": 26
+        },
+        {
+          "slot_no": 4,
+          "slot_type": "high",
+          "home": ["linh-cao", "bao-nguyen"],
+          "away": ["hien-nguyen", "vinh-huynh"],
+          "handicap_home": 2,
+          "handicap_away": 0,
+          "score_home": 31,
+          "score_away": 23
+        },
+        {
+          "slot_no": 5,
+          "slot_type": "open",
+          "home": ["huy-chau", "chau-nguyen"],
+          "away": ["xuan-ta", "anh-tran"],
+          "handicap_home": 0,
+          "handicap_away": 1,
+          "score_home": 31,
+          "score_away": 18
+        }
+      ],
+      "winner": "home"
+    },
+    {
+      "code": "V06",
+      "stage": "group",
+      "round": 2,
+      "homeTeam": 3,
+      "awayTeam": 4,
+      "court": 3,
+      "date": "2026-05-16",
+      "scheduledAt": "2026-05-16T09:40:00+07:00",
+      "refereeName": "HẠ",
+      "slots": [
+        {
+          "slot_no": 1,
+          "slot_type": "open",
+          "home": ["toan-nguyen", "oanh-do"],
+          "away": ["huy-pham", "my-nguyen"],
+          "handicap_home": 11,
+          "handicap_away": 0,
+          "score_home": 20,
+          "score_away": 31
+        },
+        {
+          "slot_no": 2,
+          "slot_type": "low",
+          "home": ["nhan-le", "huy-nang"],
+          "away": ["tram-vo", "an-nguyen"],
+          "handicap_home": 0,
+          "handicap_away": 1,
+          "score_home": 24,
+          "score_away": 31
+        },
+        {
+          "slot_no": 3,
+          "slot_type": "open",
+          "home": ["tung-nguyen", "nam-nguyen"],
+          "away": ["hai-tran", "long-nguyen"],
+          "handicap_home": 0,
+          "handicap_away": 4,
+          "score_home": 16,
+          "score_away": 31
+        },
+        {
+          "slot_no": 4,
+          "slot_type": "high",
+          "home": ["toan-nguyen", "khue-nguyen"],
+          "away": ["huy-pham", "hoang-tran"],
+          "handicap_home": 11,
+          "handicap_away": 0,
+          "score_home": 31,
+          "score_away": 16
+        },
+        {
+          "slot_no": 5,
+          "slot_type": "open",
+          "home": ["tung-nguyen", "thanh-nguyen"],
+          "away": ["hai-tran", "thinh-nguyen"],
+          "handicap_home": 0,
+          "handicap_away": 2,
+          "score_home": 22,
+          "score_away": 31
+        }
+      ],
+      "winner": "away"
+    },
+    {
+      "code": "V07",
+      "stage": "group",
+      "round": 3,
+      "homeTeam": 1,
+      "awayTeam": 3,
+      "court": 1,
+      "date": "2026-05-16",
+      "scheduledAt": "2026-05-16T13:30:00+07:00",
+      "refereeName": "NHÃ",
+      "slots": [
+        {
+          "slot_no": 1,
+          "slot_type": "open",
+          "home": ["trung-ung", "quoc-nguyen"],
+          "away": ["toan-nguyen", "tung-nguyen"],
+          "handicap_home": 0,
+          "handicap_away": 1,
+          "score_home": 28,
+          "score_away": 31
+        },
+        {
+          "slot_no": 2,
+          "slot_type": "low",
+          "home": ["huong-le", "nam-tran"],
+          "away": ["oanh-do", "nam-nguyen"],
+          "handicap_home": 0,
+          "handicap_away": 2,
+          "score_home": 31,
+          "score_away": 16
+        },
+        {
+          "slot_no": 3,
+          "slot_type": "open",
+          "home": ["nhat-nguyen", "quoc-nguyen"],
+          "away": ["tung-nguyen", "nhan-le"],
+          "handicap_home": 6,
+          "handicap_away": 0,
+          "score_home": 28,
+          "score_away": 31
+        },
+        {
+          "slot_no": 4,
+          "slot_type": "high",
+          "home": ["trung-ung", "thao-thi"],
+          "away": ["toan-nguyen", "khue-nguyen"],
+          "handicap_home": 0,
+          "handicap_away": 10,
+          "score_home": 22,
+          "score_away": 31
+        },
+        {
+          "slot_no": 5,
+          "slot_type": "open",
+          "home": ["lin-tran", "phong-nguyen"],
+          "away": ["thanh-nguyen", "huy-nang"],
+          "handicap_home": 2,
+          "handicap_away": 0,
+          "score_home": 23,
+          "score_away": 31
+        }
+      ],
+      "winner": "away"
+    },
+    {
+      "code": "V08",
+      "stage": "group",
+      "round": 3,
+      "homeTeam": 2,
+      "awayTeam": 7,
+      "court": 2,
+      "date": "2026-05-16",
+      "scheduledAt": "2026-05-16T13:30:00+07:00",
+      "refereeName": "NHẬT",
+      "slots": [
+        {
+          "slot_no": 1,
+          "slot_type": "open",
+          "home": ["hien-nguyen", "thi-pham"],
+          "away": ["thang-ho", "thi-nu"],
+          "handicap_home": 5,
+          "handicap_away": 0,
+          "score_home": 24,
+          "score_away": 31
+        },
+        {
+          "slot_no": 2,
+          "slot_type": "low",
+          "home": ["bao-nguyen-pham", "diep-tran"],
+          "away": ["hoang-ho", "anh-nguyen-kim"],
+          "handicap_home": 4,
+          "handicap_away": 0,
+          "score_home": 20,
+          "score_away": 31
+        },
+        {
+          "slot_no": 3,
+          "slot_type": "open",
+          "home": ["vinh-huynh", "xuan-ta"],
+          "away": ["toi-nguyen", "thuong-bui"],
+          "handicap_home": 0,
+          "handicap_away": 8,
+          "score_home": 31,
+          "score_away": 30
+        },
+        {
+          "slot_no": 4,
+          "slot_type": "high",
+          "home": ["hien-nguyen", "anh-tran"],
+          "away": ["cong-dang", "thang-ho"],
+          "handicap_home": 3,
+          "handicap_away": 0,
+          "score_home": 31,
+          "score_away": 28
+        },
+        {
+          "slot_no": 5,
+          "slot_type": "open",
+          "home": ["vinh-huynh", "ha-nguyen"],
+          "away": ["toi-nguyen", "nhung-duong"],
+          "handicap_home": 0,
+          "handicap_away": 5,
+          "score_home": 31,
+          "score_away": 28
+        }
+      ],
+      "winner": "home"
+    },
+    {
+      "code": "V09",
+      "stage": "group",
+      "round": 3,
+      "homeTeam": 6,
+      "awayTeam": 4,
+      "court": 3,
+      "date": "2026-05-16",
+      "scheduledAt": "2026-05-16T13:30:00+07:00",
+      "refereeName": "HẠ",
+      "slots": [
+        {
+          "slot_no": 1,
+          "slot_type": "open",
+          "home": ["tuan-le", "nhat-duong"],
+          "away": ["my-nguyen", "hai-tran"],
+          "handicap_home": 0,
+          "handicap_away": 5,
+          "score_home": 20,
+          "score_away": 31
+        },
+        {
+          "slot_no": 2,
+          "slot_type": "low",
+          "home": ["hien-duong", "huyen-truong"],
+          "away": ["tram-vo", "an-nguyen"],
+          "handicap_home": 5,
+          "handicap_away": 0,
+          "score_home": 13,
+          "score_away": 31
+        },
+        {
+          "slot_no": 3,
+          "slot_type": "open",
+          "home": ["lam-ha", "ngan-do"],
+          "away": ["long-nguyen", "huy-pham"],
+          "handicap_home": 4,
+          "handicap_away": 0,
+          "score_home": 27,
+          "score_away": 31
+        },
+        {
+          "slot_no": 4,
+          "slot_type": "high",
+          "home": ["tuan-le", "tuan-thai"],
+          "away": ["hai-tran", "hoang-tran"],
+          "handicap_home": 0,
+          "handicap_away": 6,
+          "score_home": 31,
+          "score_away": 26
+        },
+        {
+          "slot_no": 5,
+          "slot_type": "open",
+          "home": ["lam-ha", "duy-dang"],
+          "away": ["huy-pham", "thinh-nguyen"],
+          "handicap_home": 3,
+          "handicap_away": 0,
+          "score_home": 31,
+          "score_away": 19
+        }
+      ],
+      "winner": "away"
+    },
+    {
+      "code": "V10",
+      "stage": "group",
+      "round": 4,
+      "homeTeam": 1,
+      "awayTeam": 5,
+      "court": 1,
+      "date": "2026-05-16",
+      "scheduledAt": "2026-05-16T14:40:00+07:00",
+      "refereeName": "NHÃ",
+      "slots": [
+        {
+          "slot_no": 1,
+          "slot_type": "open",
+          "home": ["quoc-nguyen", "trung-ung"],
+          "away": ["linh-cao", "tuyet-nhu"],
+          "handicap_home": 0,
+          "handicap_away": 7,
+          "score_home": 19,
+          "score_away": 31
+        },
+        {
+          "slot_no": 2,
+          "slot_type": "low",
+          "home": ["nam-tran", "phong-nguyen"],
+          "away": ["cu-doan", "vu-phan"],
+          "handicap_home": 5,
+          "handicap_away": 0,
+          "score_home": 25,
+          "score_away": 31
+        },
+        {
+          "slot_no": 3,
+          "slot_type": "open",
+          "home": ["lin-tran", "huong-le"],
+          "away": ["huy-chau", "chau-nguyen"],
+          "handicap_home": 12,
+          "handicap_away": 0,
+          "score_home": 26,
+          "score_away": 31
+        },
+        {
+          "slot_no": 4,
+          "slot_type": "high",
+          "home": ["quoc-nguyen", "thao-thi"],
+          "away": ["linh-cao", "bao-nguyen"],
+          "handicap_home": 11,
+          "handicap_away": 0,
+          "score_home": 31,
+          "score_away": 27
+        },
+        {
+          "slot_no": 5,
+          "slot_type": "open",
+          "home": ["trung-ung", "nhat-nguyen"],
+          "away": ["huy-chau", "nhan-doan"],
+          "handicap_home": 0,
+          "handicap_away": 11,
+          "score_home": 26,
+          "score_away": 31
+        }
+      ],
+      "winner": "away"
+    },
+    {
+      "code": "V11",
+      "stage": "group",
+      "round": 4,
+      "homeTeam": 2,
+      "awayTeam": 4,
+      "court": 2,
+      "date": "2026-05-16",
+      "scheduledAt": "2026-05-16T14:40:00+07:00",
+      "refereeName": "NHẬT",
+      "slots": [
+        {
+          "slot_no": 1,
+          "slot_type": "open",
+          "home": ["hien-nguyen", "bao-nguyen-pham"],
+          "away": ["my-nguyen", "hai-tran"],
+          "handicap_home": 0,
+          "handicap_away": 8,
+          "score_home": 16,
+          "score_away": 31
+        },
+        {
+          "slot_no": 2,
+          "slot_type": "low",
+          "home": ["diep-tran", "thi-pham"],
+          "away": ["tram-vo", "an-nguyen"],
+          "handicap_home": 5,
+          "handicap_away": 0,
+          "score_home": 17,
+          "score_away": 31
+        },
+        {
+          "slot_no": 3,
+          "slot_type": "open",
+          "home": ["vinh-huynh", "xuan-ta"],
+          "away": ["huy-pham", "long-nguyen"],
+          "handicap_home": 6,
+          "handicap_away": 0,
+          "score_home": 21,
+          "score_away": 31
+        },
+        {
+          "slot_no": 4,
+          "slot_type": "high",
+          "home": ["hien-nguyen", "anh-tran"],
+          "away": ["hai-tran", "hoang-tran"],
+          "handicap_home": 0,
+          "handicap_away": 9,
+          "score_home": 29,
+          "score_away": 31
+        },
+        {
+          "slot_no": 5,
+          "slot_type": "open",
+          "home": ["vinh-huynh", "ha-nguyen"],
+          "away": ["huy-pham", "thinh-nguyen"],
+          "handicap_home": 11,
+          "handicap_away": 0,
+          "score_home": 29,
+          "score_away": 31
+        }
+      ],
+      "winner": "away"
+    },
+    {
+      "code": "V12",
+      "stage": "group",
+      "round": 4,
+      "homeTeam": 6,
+      "awayTeam": 7,
+      "court": 3,
+      "date": "2026-05-16",
+      "scheduledAt": "2026-05-16T14:40:00+07:00",
+      "refereeName": "HẠ",
+      "slots": [
+        {
+          "slot_no": 1,
+          "slot_type": "open",
+          "home": ["tuan-le", "duy-dang"],
+          "away": ["thang-ho", "thi-nu"],
+          "handicap_home": 4,
+          "handicap_away": 0,
+          "score_home": 27,
+          "score_away": 31
+        },
+        {
+          "slot_no": 2,
+          "slot_type": "low",
+          "home": ["ngan-do", "huyen-truong"],
+          "away": ["anh-nguyen-kim", "hoang-ho"],
+          "handicap_home": 5,
+          "handicap_away": 0,
+          "score_home": 16,
+          "score_away": 31
+        },
+        {
+          "slot_no": 3,
+          "slot_type": "open",
+          "home": ["lam-ha", "nhat-duong"],
+          "away": ["thuong-bui", "nhung-duong"],
+          "handicap_home": 0,
+          "handicap_away": 20,
+          "score_home": 31,
+          "score_away": 29
+        },
+        {
+          "slot_no": 4,
+          "slot_type": "high",
+          "home": ["tuan-le", "tuan-thai"],
+          "away": ["toi-nguyen", "cong-dang"],
+          "handicap_home": 0,
+          "handicap_away": 8,
+          "score_home": 23,
+          "score_away": 31
+        },
+        {
+          "slot_no": 5,
+          "slot_type": "open",
+          "home": ["lam-ha", "hien-duong"],
+          "away": ["thang-ho", "anh-nguyen-kim"],
+          "handicap_home": 9,
+          "handicap_away": 0,
+          "score_home": 29,
+          "score_away": 31
+        }
+      ],
+      "winner": "away"
+    },
+    {
+      "code": "V13",
+      "stage": "group",
+      "round": 5,
+      "homeTeam": 1,
+      "awayTeam": 7,
+      "court": 1,
+      "date": "2026-05-16",
+      "scheduledAt": "2026-05-16T15:50:00+07:00",
+      "refereeName": "NHÃ",
+      "slots": [
+        {
+          "slot_no": 1,
+          "slot_type": "open",
+          "home": ["trung-ung", "thao-thi"],
+          "away": ["thang-ho", "thi-nu"],
+          "handicap_home": 0,
+          "handicap_away": 3,
+          "score_home": 16,
+          "score_away": 31
+        },
+        {
+          "slot_no": 2,
+          "slot_type": "low",
+          "home": ["nam-tran", "nhat-nguyen"],
+          "away": ["anh-nguyen-kim", "hoang-ho"],
+          "handicap_home": 0,
+          "handicap_away": 0,
+          "score_home": 31,
+          "score_away": 28
+        },
+        {
+          "slot_no": 3,
+          "slot_type": "open",
+          "home": ["lin-tran", "phong-nguyen"],
+          "away": ["nhung-duong", "thuong-bui"],
+          "handicap_home": 0,
+          "handicap_away": 0,
+          "score_home": 29,
+          "score_away": 31
+        },
+        {
+          "slot_no": 4,
+          "slot_type": "high",
+          "home": ["quoc-nguyen", "thao-thi"],
+          "away": ["cong-dang", "toi-nguyen"],
+          "handicap_home": 0,
+          "handicap_away": 4,
+          "score_home": 31,
+          "score_away": 23
+        },
+        {
+          "slot_no": 5,
+          "slot_type": "open",
+          "home": ["trung-ung", "huong-le"],
+          "away": ["thang-ho", "anh-nguyen-kim"],
+          "handicap_home": 8,
+          "handicap_away": 0,
+          "score_home": 22,
+          "score_away": 31
+        }
+      ],
+      "winner": "away"
+    },
+    {
+      "code": "V14",
+      "stage": "group",
+      "round": 5,
+      "homeTeam": 2,
+      "awayTeam": 3,
+      "court": 2,
+      "date": "2026-05-16",
+      "scheduledAt": "2026-05-16T15:50:00+07:00",
+      "refereeName": "NHẬT",
+      "slots": [
+        {
+          "slot_no": 1,
+          "slot_type": "open",
+          "home": ["hien-nguyen", "anh-tran"],
+          "away": ["toan-nguyen", "tung-nguyen"],
+          "handicap_home": 2,
+          "handicap_away": 0,
+          "score_home": 30,
+          "score_away": 31
+        },
+        {
+          "slot_no": 2,
+          "slot_type": "low",
+          "home": ["xuan-ta", "ha-nguyen"],
+          "away": ["huy-nang", "thanh-nguyen"],
+          "handicap_home": 0,
+          "handicap_away": 3,
+          "score_home": 31,
+          "score_away": 21
+        },
+        {
+          "slot_no": 3,
+          "slot_type": "open",
+          "home": ["diep-tran", "hien-nguyen"],
+          "away": ["tung-nguyen", "nhan-le"],
+          "handicap_home": 2,
+          "handicap_away": 0,
+          "score_home": 27,
+          "score_away": 31
+        },
+        {
+          "slot_no": 4,
+          "slot_type": "high",
+          "home": ["vinh-huynh", "anh-tran"],
+          "away": ["khue-nguyen", "toan-nguyen"],
+          "handicap_home": 0,
+          "handicap_away": 4,
+          "score_home": 15,
+          "score_away": 31
+        },
+        {
+          "slot_no": 5,
+          "slot_type": "open",
+          "home": ["thi-pham", "bao-nguyen-pham"],
+          "away": ["nam-nguyen", "oanh-do"],
+          "handicap_home": 0,
+          "handicap_away": 1,
+          "score_home": 22,
+          "score_away": 31
+        }
+      ],
+      "winner": "away"
+    },
+    {
+      "code": "V15",
+      "stage": "group",
+      "round": 5,
+      "homeTeam": 5,
+      "awayTeam": 4,
+      "court": 3,
+      "date": "2026-05-16",
+      "scheduledAt": "2026-05-16T15:50:00+07:00",
+      "refereeName": "HẠ",
+      "slots": [
+        {
+          "slot_no": 1,
+          "slot_type": "open",
+          "home": ["huy-chau", "nhan-doan"],
+          "away": ["my-nguyen", "hai-tran"],
+          "handicap_home": 2,
+          "handicap_away": 0,
+          "score_home": 20,
+          "score_away": 31
+        },
+        {
+          "slot_no": 2,
+          "slot_type": "low",
+          "home": ["cu-doan", "vu-phan"],
+          "away": ["an-nguyen", "tram-vo"],
+          "handicap_home": 0,
+          "handicap_away": 2,
+          "score_home": 27,
+          "score_away": 31
+        },
+        {
+          "slot_no": 3,
+          "slot_type": "open",
+          "home": ["linh-cao", "tuyet-nhu"],
+          "away": ["huy-pham", "long-nguyen"],
+          "handicap_home": 0,
+          "handicap_away": 0,
+          "score_home": 28,
+          "score_away": 31
+        },
+        {
+          "slot_no": 4,
+          "slot_type": "high",
+          "home": ["huy-chau", "bao-nguyen"],
+          "away": ["hoang-tran", "hai-tran"],
+          "handicap_home": 0,
+          "handicap_away": 1,
+          "score_home": 22,
+          "score_away": 31
+        },
+        {
+          "slot_no": 5,
+          "slot_type": "open",
+          "home": ["linh-cao", "chau-nguyen"],
+          "away": ["huy-pham", "thinh-nguyen"],
+          "handicap_home": 1,
+          "handicap_away": 0,
+          "score_home": 31,
+          "score_away": 12
+        }
+      ],
+      "winner": "away"
+    },
+    {
+      "code": "V16",
+      "stage": "group",
+      "round": 6,
+      "homeTeam": 1,
+      "awayTeam": 4,
+      "court": 1,
+      "date": "2026-05-23",
+      "scheduledAt": "2026-05-23T07:20:00+07:00",
+      "refereeName": "NHÃ",
+      "slots": [
+        {
+          "slot_no": 1,
+          "slot_type": "open",
+          "home": ["thao-thi", "quoc-nguyen"],
+          "away": ["my-nguyen", "hai-tran"],
+          "handicap_home": 0,
+          "handicap_away": 7,
+          "score_home": 21,
+          "score_away": 31
+        },
+        {
+          "slot_no": 2,
+          "slot_type": "low",
+          "home": ["nhat-nguyen", "nam-tran"],
+          "away": ["an-nguyen", "tram-vo"],
+          "handicap_home": 0,
+          "handicap_away": 1,
+          "score_home": 18,
+          "score_away": 31
+        },
+        {
+          "slot_no": 3,
+          "slot_type": "open",
+          "home": ["phong-nguyen", "thao-thi"],
+          "away": ["long-nguyen", "huy-pham"],
+          "handicap_home": 15,
+          "handicap_away": 0,
+          "score_home": 28,
+          "score_away": 31
+        },
+        {
+          "slot_no": 4,
+          "slot_type": "high",
+          "home": ["quoc-nguyen", "trung-ung"],
+          "away": ["hoang-tran", "hai-tran"],
+          "handicap_home": 0,
+          "handicap_away": 12,
+          "score_home": 31,
+          "score_away": 29
+        },
+        {
+          "slot_no": 5,
+          "slot_type": "open",
+          "home": ["lin-tran", "huong-le"],
+          "away": ["tram-vo", "thinh-nguyen"],
+          "handicap_home": 5,
+          "handicap_away": 0,
+          "score_home": 22,
+          "score_away": 31
+        }
+      ],
+      "winner": "away"
+    },
+    {
+      "code": "V17",
+      "stage": "group",
+      "round": 6,
+      "homeTeam": 6,
+      "awayTeam": 5,
+      "court": 2,
+      "date": "2026-05-23",
+      "scheduledAt": "2026-05-23T07:20:00+07:00",
+      "refereeName": "NHẬT",
+      "slots": [
+        {
+          "slot_no": 1,
+          "slot_type": "open",
+          "home": ["lam-ha", "tuan-le"],
+          "away": ["linh-cao", "tuyet-nhu"],
+          "handicap_home": 0,
+          "handicap_away": 12,
+          "score_home": 31,
+          "score_away": 27
+        },
+        {
+          "slot_no": 2,
+          "slot_type": "low",
+          "home": ["duy-dang", "ngan-do"],
+          "away": ["cu-doan", "vu-phan"],
+          "handicap_home": 2,
+          "handicap_away": 0,
+          "score_home": 31,
+          "score_away": 22
+        },
+        {
+          "slot_no": 3,
+          "slot_type": "open",
+          "home": ["huyen-truong", "hien-duong"],
+          "away": ["huy-chau", "chau-nguyen"],
+          "handicap_home": 13,
+          "handicap_away": 0,
+          "score_home": 20,
+          "score_away": 31
+        },
+        {
+          "slot_no": 4,
+          "slot_type": "high",
+          "home": ["lam-ha", "tuan-thai"],
+          "away": ["bao-nguyen", "linh-cao"],
+          "handicap_home": 5,
+          "handicap_away": 0,
+          "score_home": 27,
+          "score_away": 31
+        },
+        {
+          "slot_no": 5,
+          "slot_type": "open",
+          "home": ["nhat-duong", "tuan-le"],
+          "away": ["huy-chau", "nhan-doan"],
+          "handicap_home": 0,
+          "handicap_away": 7,
+          "score_home": 31,
+          "score_away": 26
+        }
+      ],
+      "winner": "home"
+    },
+    {
+      "code": "V18",
+      "stage": "group",
+      "round": 6,
+      "homeTeam": 3,
+      "awayTeam": 7,
+      "court": 3,
+      "date": "2026-05-23",
+      "scheduledAt": "2026-05-23T07:20:00+07:00",
+      "refereeName": "HẠ",
+      "slots": [
+        {
+          "slot_no": 1,
+          "slot_type": "open",
+          "home": ["tung-nguyen", "toan-nguyen"],
+          "away": ["toi-nguyen", "nhung-duong"],
+          "handicap_home": 0,
+          "handicap_away": 20,
+          "score_home": 31,
+          "score_away": 30
+        },
+        {
+          "slot_no": 2,
+          "slot_type": "low",
+          "home": ["oanh-do", "nam-nguyen"],
+          "away": ["hoang-ho", "anh-nguyen-kim"],
+          "handicap_home": 5,
+          "handicap_away": 0,
+          "score_home": 26,
+          "score_away": 31
+        },
+        {
+          "slot_no": 3,
+          "slot_type": "open",
+          "home": ["thanh-nguyen", "huy-nang"],
+          "away": ["thang-ho", "thi-nu"],
+          "handicap_home": 20,
+          "handicap_away": 0,
+          "score_home": 31,
+          "score_away": 11
+        },
+        {
+          "slot_no": 4,
+          "slot_type": "high",
+          "home": ["toan-nguyen", "khue-nguyen"],
+          "away": ["cong-dang", "toi-nguyen"],
+          "handicap_home": 0,
+          "handicap_away": 1,
+          "score_home": 31,
+          "score_away": 21
+        },
+        {
+          "slot_no": 5,
+          "slot_type": "open",
+          "home": ["tung-nguyen", "nhan-le"],
+          "away": ["thang-ho", "thuong-bui"],
+          "handicap_home": 2,
+          "handicap_away": 0,
+          "score_home": 20,
+          "score_away": 31
+        }
+      ],
+      "winner": "home"
+    },
+    {
+      "code": "V19",
+      "stage": "group",
+      "round": 7,
+      "homeTeam": 2,
+      "awayTeam": 6,
+      "court": 1,
+      "date": "2026-05-23",
+      "scheduledAt": "2026-05-23T08:30:00+07:00",
+      "refereeName": "NHÃ",
+      "slots": [
+        {
+          "slot_no": 1,
+          "slot_type": "open",
+          "home": ["vinh-huynh", "hien-nguyen"],
+          "away": ["lam-ha", "ngan-do"],
+          "handicap_home": 0,
+          "handicap_away": 14,
+          "score_home": 21,
+          "score_away": 31
+        },
+        {
+          "slot_no": 2,
+          "slot_type": "low",
+          "home": ["ha-nguyen", "xuan-ta"],
+          "away": ["nhat-duong", "duy-dang"],
+          "handicap_home": 1,
+          "handicap_away": 0,
+          "score_home": 26,
+          "score_away": 31
+        },
+        {
+          "slot_no": 3,
+          "slot_type": "open",
+          "home": ["hien-nguyen", "diep-tran"],
+          "away": ["hien-duong", "huyen-truong"],
+          "handicap_home": 0,
+          "handicap_away": 20,
+          "score_home": 31,
+          "score_away": 24
+        },
+        {
+          "slot_no": 4,
+          "slot_type": "high",
+          "home": ["vinh-huynh", "anh-tran"],
+          "away": ["tuan-thai", "lam-ha"],
+          "handicap_home": 5,
+          "handicap_away": 0,
+          "score_home": 23,
+          "score_away": 31
+        },
+        {
+          "slot_no": 5,
+          "slot_type": "open",
+          "home": ["bao-nguyen-pham", "thi-pham"],
+          "away": ["tuan-le", "duy-dang"],
+          "handicap_home": 19,
+          "handicap_away": 0,
+          "score_home": 23,
+          "score_away": 31
+        }
+      ],
+      "winner": "away"
+    },
+    {
+      "code": "V20",
+      "stage": "group",
+      "round": 7,
+      "homeTeam": 3,
+      "awayTeam": 5,
+      "court": 2,
+      "date": "2026-05-23",
+      "scheduledAt": "2026-05-23T08:30:00+07:00",
+      "refereeName": "NHẬT",
+      "slots": [
+        {
+          "slot_no": 1,
+          "slot_type": "open",
+          "home": ["tung-nguyen", "toan-nguyen"],
+          "away": ["linh-cao", "tuyet-nhu"],
+          "handicap_home": 0,
+          "handicap_away": 6,
+          "score_home": 26,
+          "score_away": 31
+        },
+        {
+          "slot_no": 2,
+          "slot_type": "low",
+          "home": ["oanh-do", "nam-nguyen"],
+          "away": ["cu-doan", "vu-phan"],
+          "handicap_home": 6,
+          "handicap_away": 0,
+          "score_home": 22,
+          "score_away": 31
+        },
+        {
+          "slot_no": 3,
+          "slot_type": "open",
+          "home": ["nhan-le", "tung-nguyen"],
+          "away": ["chau-nguyen", "huy-chau"],
+          "handicap_home": 0,
+          "handicap_away": 9,
+          "score_home": 31,
+          "score_away": 28
+        },
+        {
+          "slot_no": 4,
+          "slot_type": "high",
+          "home": ["toan-nguyen", "khue-nguyen"],
+          "away": ["linh-cao", "bao-nguyen"],
+          "handicap_home": 14,
+          "handicap_away": 0,
+          "score_home": 31,
+          "score_away": 20
+        },
+        {
+          "slot_no": 5,
+          "slot_type": "open",
+          "home": ["thanh-nguyen", "huy-nang"],
+          "away": ["huy-chau", "nhan-doan"],
+          "handicap_home": 10,
+          "handicap_away": 0,
+          "score_home": 31,
+          "score_away": 20
+        }
+      ],
+      "winner": "home"
+    },
+    {
+      "code": "V21",
+      "stage": "group",
+      "round": 7,
+      "homeTeam": 7,
+      "awayTeam": 4,
+      "court": 3,
+      "date": "2026-05-23",
+      "scheduledAt": "2026-05-23T08:30:00+07:00",
+      "refereeName": "HẠ",
+      "slots": [
+        {
+          "slot_no": 1,
+          "slot_type": "open",
+          "home": ["toi-nguyen", "nhung-duong"],
+          "away": ["hoang-tran", "long-nguyen"],
+          "handicap_home": 0,
+          "handicap_away": 5,
+          "score_home": 19,
+          "score_away": 31
+        },
+        {
+          "slot_no": 2,
+          "slot_type": "low",
+          "home": ["anh-nguyen-kim", "hoang-ho"],
+          "away": ["tram-vo", "an-nguyen"],
+          "handicap_home": 0,
+          "handicap_away": 1,
+          "score_home": 26,
+          "score_away": 31
+        },
+        {
+          "slot_no": 3,
+          "slot_type": "open",
+          "home": ["thang-ho", "thi-nu"],
+          "away": ["huy-pham", "my-nguyen"],
+          "handicap_home": 0,
+          "handicap_away": 1,
+          "score_home": 31,
+          "score_away": 26
+        },
+        {
+          "slot_no": 4,
+          "slot_type": "high",
+          "home": ["toi-nguyen", "cong-dang"],
+          "away": ["hoang-tran", "hai-tran"],
+          "handicap_home": 2,
+          "handicap_away": 0,
+          "score_home": 31,
+          "score_away": 27
+        },
+        {
+          "slot_no": 5,
+          "slot_type": "open",
+          "home": ["thuong-bui", "thang-ho"],
+          "away": ["thinh-nguyen", "long-nguyen"],
+          "handicap_home": 0,
+          "handicap_away": 20,
+          "score_home": 31,
+          "score_away": 28
+        }
+      ],
+      "winner": "home"
+    },
+    {
+      "code": "SF1",
+      "stage": "semi_final",
+      "round": null,
+      "homeTeam": 4,
+      "awayTeam": 5,
+      "court": 1,
+      "date": "2026-05-23",
+      "scheduledAt": "2026-05-23T09:40:00+07:00",
+      "refereeName": "HẠ",
+      "slots": [
+        {
+          "slot_no": 1,
+          "slot_type": "open",
+          "home": ["hai-tran", "my-nguyen"],
+          "away": ["huy-chau", "vu-phan"],
+          "handicap_home": 0,
+          "handicap_away": 0,
+          "score_home": 17,
+          "score_away": 25
+        },
+        {
+          "slot_no": 2,
+          "slot_type": "low",
+          "home": ["an-nguyen", "tram-vo"],
+          "away": ["cu-doan", "nhan-doan"],
+          "handicap_home": 0,
+          "handicap_away": 0,
+          "score_home": 46,
+          "score_away": 50
+        },
+        {
+          "slot_no": 3,
+          "slot_type": "open",
+          "home": ["thinh-nguyen", "huy-pham"],
+          "away": ["linh-cao", "tuyet-nhu"],
+          "handicap_home": 0,
+          "handicap_away": 2,
+          "score_home": 62,
+          "score_away": 75
+        },
+        {
+          "slot_no": 4,
+          "slot_type": "high",
+          "home": ["hai-tran", "hoang-tran"],
+          "away": ["huy-chau", "bao-nguyen"],
+          "handicap_home": 1,
+          "handicap_away": 0,
+          "score_home": 100,
+          "score_away": 95
+        },
+        {
+          "slot_no": 5,
+          "slot_type": "open",
+          "home": ["huy-pham", "long-nguyen"],
+          "away": ["linh-cao", "chau-nguyen"],
+          "handicap_home": 1,
+          "handicap_away": 0,
+          "score_home": 125,
+          "score_away": 120
+        }
+      ],
+      "winner": "home"
+    },
+    {
+      "code": "SF2",
+      "stage": "semi_final",
+      "round": null,
+      "homeTeam": 6,
+      "awayTeam": 3,
+      "court": 2,
+      "date": "2026-05-23",
+      "scheduledAt": "2026-05-23T09:40:00+07:00",
+      "refereeName": "NHẬT",
+      "slots": [
+        {
+          "slot_no": 1,
+          "slot_type": "open",
+          "home": ["lam-ha", "huyen-truong"],
+          "away": ["toan-nguyen", "nam-nguyen"],
+          "handicap_home": 0,
+          "handicap_away": 7,
+          "score_home": 4,
+          "score_away": 25
+        },
+        {
+          "slot_no": 2,
+          "slot_type": "low",
+          "home": ["duy-dang", "ngan-do"],
+          "away": ["thanh-nguyen", "huy-nang"],
+          "handicap_home": 0,
+          "handicap_away": 3,
+          "score_home": 35,
+          "score_away": 50
+        },
+        {
+          "slot_no": 3,
+          "slot_type": "open",
+          "home": ["hien-duong", "tuan-le"],
+          "away": ["tung-nguyen", "oanh-do"],
+          "handicap_home": 2,
+          "handicap_away": 0,
+          "score_home": 60,
+          "score_away": 75
+        },
+        {
+          "slot_no": 4,
+          "slot_type": "high",
+          "home": ["lam-ha", "tuan-thai"],
+          "away": ["khue-nguyen", "toan-nguyen"],
+          "handicap_home": 0,
+          "handicap_away": 9,
+          "score_home": 90,
+          "score_away": 100
+        },
+        {
+          "slot_no": 5,
+          "slot_type": "open",
+          "home": ["nhat-duong", "tuan-le"],
+          "away": ["tung-nguyen", "nhan-le"],
+          "handicap_home": 3,
+          "handicap_away": 0,
+          "score_home": 125,
+          "score_away": 119
+        }
+      ],
+      "winner": "home"
+    },
+    {
+      "code": "3RD",
+      "stage": "third_place",
+      "round": null,
+      "homeTeam": 5,
+      "awayTeam": 3,
+      "court": 1,
+      "date": "2026-05-23",
+      "scheduledAt": "2026-05-23T14:00:00+07:00",
+      "refereeName": "NHẬT",
+      "slots": [
+        {
+          "slot_no": 1,
+          "slot_type": "open",
+          "home": ["huy-chau", "vu-phan"],
+          "away": ["toan-nguyen", "nam-nguyen"],
+          "handicap_home": 0,
+          "handicap_away": 2,
+          "score_home": 10,
+          "score_away": 25
+        },
+        {
+          "slot_no": 2,
+          "slot_type": "low",
+          "home": ["cu-doan", "nhan-doan"],
+          "away": ["huy-nang", "thanh-nguyen"],
+          "handicap_home": 0,
+          "handicap_away": 3,
+          "score_home": 44,
+          "score_away": 50
+        },
+        {
+          "slot_no": 3,
+          "slot_type": "open",
+          "home": ["linh-cao", "tuyet-nhu"],
+          "away": ["tung-nguyen", "oanh-do"],
+          "handicap_home": 0,
+          "handicap_away": 5,
+          "score_home": 75,
+          "score_away": 65
+        },
+        {
+          "slot_no": 4,
+          "slot_type": "high",
+          "home": ["huy-chau", "bao-nguyen"],
+          "away": ["toan-nguyen", "khue-nguyen"],
+          "handicap_home": 0,
+          "handicap_away": 2,
+          "score_home": 100,
+          "score_away": 94
+        },
+        {
+          "slot_no": 5,
+          "slot_type": "open",
+          "home": ["linh-cao", "chau-nguyen"],
+          "away": ["tung-nguyen", "nhan-le"],
+          "handicap_home": 0,
+          "handicap_away": 3,
+          "score_home": 125,
+          "score_away": 109
+        }
+      ],
+      "winner": "home"
+    },
+    {
+      "code": "F",
+      "stage": "final",
+      "round": null,
+      "homeTeam": 4,
+      "awayTeam": 6,
+      "court": 2,
+      "date": "2026-05-23",
+      "scheduledAt": "2026-05-23T15:10:00+07:00",
+      "refereeName": "NHẬT",
+      "slots": [
+        {
+          "slot_no": 1,
+          "slot_type": "open",
+          "home": ["hai-tran", "my-nguyen"],
+          "away": ["lam-ha", "huyen-truong"],
+          "handicap_home": 5,
+          "handicap_away": 0,
+          "score_home": 25,
+          "score_away": 24
+        },
+        {
+          "slot_no": 2,
+          "slot_type": "low",
+          "home": ["tram-vo", "an-nguyen"],
+          "away": ["duy-dang", "ngan-do"],
+          "handicap_home": 0,
+          "handicap_away": 0,
+          "score_home": 46,
+          "score_away": 50
+        },
+        {
+          "slot_no": 3,
+          "slot_type": "open",
+          "home": ["thinh-nguyen", "huy-pham"],
+          "away": ["hien-duong", "tuan-le"],
+          "handicap_home": 0,
+          "handicap_away": 9,
+          "score_home": 68,
+          "score_away": 75
+        },
+        {
+          "slot_no": 4,
+          "slot_type": "high",
+          "home": ["hai-tran", "hoang-tran"],
+          "away": ["lam-ha", "tuan-thai"],
+          "handicap_home": 8,
+          "handicap_away": 0,
+          "score_home": 91,
+          "score_away": 100
+        },
+        {
+          "slot_no": 5,
+          "slot_type": "open",
+          "home": ["huy-pham", "long-nguyen"],
+          "away": ["nhat-duong", "tuan-le"],
+          "handicap_home": 0,
+          "handicap_away": 5,
+          "score_home": 125,
+          "score_away": 124
+        }
+      ],
+      "winner": "home"
+    }
+  ],
+  "awards": [
+    {
+      "sortOrder": 1,
+      "nameVi": "Chuỗi bất tử",
+      "criteriaVi": "Cặp đôi có series điểm dài nhất",
+      "sponsor": "Tường Lê",
+      "valueVnd": 100000,
+      "note": null,
+      "winners": [
+        {
+          "kind": "pair",
+          "players": ["linh-cao", "chau-nguyen"],
+          "matchCode": "V05",
+          "note": "V05-1; 17"
+        }
+      ],
+      "unparsed": null
+    },
+    {
+      "sortOrder": 2,
+      "nameVi": "Chưa kịp nhớ tên nhau",
+      "criteriaVi": "Cặp đôi thua đậm nhất",
+      "sponsor": "Tường Lê",
+      "valueVnd": 100000,
+      "note": "V18-3 (11-31)",
+      "winners": [
+        {
+          "kind": "pair",
+          "players": ["thang-ho", "thi-nu"],
+          "matchCode": null,
+          "note": null
+        }
+      ],
+      "unparsed": null
+    },
+    {
+      "sortOrder": 3,
+      "nameVi": "Tưởng thua tới nơi",
+      "criteriaVi": "Team ngược dòng ngoạn mục nhất",
+      "sponsor": "Tường Lê",
+      "valueVnd": 200000,
+      "note": null,
+      "winners": [
+        {
+          "kind": "team",
+          "teamNumber": 2
+        }
+      ],
+      "unparsed": null
+    },
+    {
+      "sortOrder": 4,
+      "nameVi": "Sàn diễn di động",
+      "criteriaVi": "Team có trang phục ấn tượng nhất",
+      "sponsor": "Tường Lê",
+      "valueVnd": 200000,
+      "note": null,
+      "winners": [
+        {
+          "kind": "team",
+          "teamNumber": 7
+        }
+      ],
+      "unparsed": null
+    },
+    {
+      "sortOrder": 5,
+      "nameVi": "Còn non, xanh và chua lắm",
+      "criteriaVi": "Team thua nhiều nhất",
+      "sponsor": "Tường Lê",
+      "valueVnd": 200000,
+      "note": null,
+      "winners": [
+        {
+          "kind": "team",
+          "teamNumber": 1
+        }
+      ],
+      "unparsed": null
+    },
+    {
+      "sortOrder": 6,
+      "nameVi": "Badrathon",
+      "criteriaVi": "Từ bán kết, trận đấu có thời gian dài nhất",
+      "sponsor": "Đức Phạm",
+      "valueVnd": 300000,
+      "note": null,
+      "winners": [],
+      "unparsed": "Ngựa quen + Ngựa troy 1h16p"
+    },
+    {
+      "sortOrder": 7,
+      "nameVi": "Tư Mã ...",
+      "criteriaVi": "Đội thua trong trận tranh hạng 3",
+      "sponsor": "Quân Nguyễn",
+      "valueVnd": 300000,
+      "note": null,
+      "winners": [
+        {
+          "kind": "team",
+          "teamNumber": 3
+        }
+      ],
+      "unparsed": null
+    },
+    {
+      "sortOrder": 8,
+      "nameVi": "Đôi bạn cùng gánh",
+      "criteriaVi": "- 300k cho đôi nam nữ có set thua sát nút nhất vòng bảng\n- 300k cho đôi nam nữ có set thắng đậm nhất vòng bảng",
+      "sponsor": "Trung Trần",
+      "valueVnd": 600000,
+      "note": "- V08-3 vs V14-1 (31-30)\n- V03-3 (31-12)",
+      "winners": [],
+      "unparsed": "- Tới Nguyễn - Thương Bùi + Hiển Nguyễn - Anh Trần + Tới Nguyễn - Nhung Dương\n- Linh Cao - Châu Nguyễn"
+    },
+    {
+      "sortOrder": 9,
+      "nameVi": "Đầu cầu thương nhớ",
+      "criteriaVi": "Từ bán kết, VĐV bị cầu trúng người nhiều nhất",
+      "sponsor": "Vinh Huỳnh Quang",
+      "valueVnd": 300000,
+      "note": null,
+      "winners": [
+        {
+          "kind": "player",
+          "player": "bao-nguyen",
+          "note": "3 nhát"
+        }
+      ],
+      "unparsed": null
+    },
+    {
+      "sortOrder": 10,
+      "nameVi": "Hoa sắc Hoá",
+      "criteriaVi": "Dành cho trận knock-out cách biệt nhất: 300k cho đội thắng, 200k cho đội thua",
+      "sponsor": "Hoá Nguyễn",
+      "valueVnd": 500000,
+      "note": null,
+      "winners": [],
+      "unparsed": "Ngựa Troy 125-109 Ngựa siêu đẳng"
+    },
+    {
+      "sortOrder": 11,
+      "nameVi": "Suýt nữa thì",
+      "criteriaVi": "Đội hạng 5",
+      "sponsor": "Thương Đinh",
+      "valueVnd": 300000,
+      "note": null,
+      "winners": [
+        {
+          "kind": "team",
+          "teamNumber": 7
+        }
+      ],
+      "unparsed": null
+    },
+    {
+      "sortOrder": 12,
+      "nameVi": "Suýt nữa bét",
+      "criteriaVi": "Đội hạng 6",
+      "sponsor": "Linh Cao",
+      "valueVnd": 300000,
+      "note": null,
+      "winners": [
+        {
+          "kind": "team",
+          "teamNumber": 2
+        }
+      ],
+      "unparsed": null
+    },
+    {
+      "sortOrder": 13,
+      "nameVi": "Bét nhưng not bad",
+      "criteriaVi": "Cá nhân lần đầu tham gia giải có thành tích tệ nhất",
+      "sponsor": "Thọ Phạm",
+      "valueVnd": 200000,
+      "note": null,
+      "winners": [
+        {
+          "kind": "player",
+          "player": "huyen-truong",
+          "note": null
+        }
+      ],
+      "unparsed": null
+    },
+    {
+      "sortOrder": 14,
+      "nameVi": "Bét nhưng not bad",
+      "criteriaVi": "Tập thể có thành tích tệ nhất",
+      "sponsor": "Thọ Phạm",
+      "valueVnd": 500000,
+      "note": null,
+      "winners": [
+        {
+          "kind": "team",
+          "teamNumber": 1
+        }
+      ],
+      "unparsed": null
+    },
+    {
+      "sortOrder": 15,
+      "nameVi": "Bét nhưng not bad",
+      "criteriaVi": "Cặp đôi được đánh giá thấp nhưng kết quả bất ngờ nhất",
+      "sponsor": "Thọ Phạm",
+      "valueVnd": 300000,
+      "note": null,
+      "winners": [
+        {
+          "kind": "pair",
+          "players": ["huy-nang", "thanh-nguyen"],
+          "matchCode": null,
+          "note": "31-11 Thắng Hồ + Thị Nụ"
+        }
+      ],
+      "unparsed": null
+    },
+    {
+      "sortOrder": 16,
+      "nameVi": "Bông hồng thuỷ tinh",
+      "criteriaVi": "Đôi nữ thua nhiều nhất giải",
+      "sponsor": "Cợ Nguyễn",
+      "valueVnd": 200000,
+      "note": null,
+      "winners": [
+        {
+          "kind": "pair",
+          "players": ["oanh-do", "nam-nguyen"],
+          "matchCode": null,
+          "note": "thua 3, có thắng"
+        }
+      ],
+      "unparsed": null
+    },
+    {
+      "sortOrder": 17,
+      "nameVi": "Nắng vàng vẻ vang",
+      "criteriaVi": "Cặp đôi toàn thắng",
+      "sponsor": "Trung Ung",
+      "valueVnd": 300000,
+      "note": null,
+      "winners": [],
+      "unparsed": "Toàn Khuê + An Trâm"
+    },
+    {
+      "sortOrder": 18,
+      "nameVi": "Vào hang nhóm lửa",
+      "criteriaVi": "Cặp đôi toàn thua",
+      "sponsor": "Trung Ung",
+      "valueVnd": 300000,
+      "note": null,
+      "winners": [
+        {
+          "kind": "pair",
+          "players": ["huyen-truong", "hien-duong"],
+          "matchCode": null,
+          "note": "thua 3"
+        }
+      ],
+      "unparsed": null
+    }
+  ],
+  "summary": [
+    {
+      "teamNumber": 1,
+      "played": 6,
+      "won": 0,
+      "lost": 6,
+      "setsWon": 8,
+      "setsLost": 22,
+      "setDiff": -14,
+      "pointsFor": 772,
+      "pointsAgainst": 873,
+      "pointDiff": -101,
+      "points": 0,
+      "rank": 7
+    },
+    {
+      "teamNumber": 2,
+      "played": 6,
+      "won": 2,
+      "lost": 4,
+      "setsWon": 9,
+      "setsLost": 21,
+      "setDiff": -12,
+      "pointsFor": 767,
+      "pointsAgainst": 865,
+      "pointDiff": -98,
+      "points": 2,
+      "rank": 6
+    },
+    {
+      "teamNumber": 3,
+      "played": 6,
+      "won": 4,
+      "lost": 2,
+      "setsWon": 17,
+      "setsLost": 13,
+      "setDiff": 4,
+      "pointsFor": 810,
+      "pointsAgainst": 790,
+      "pointDiff": 20,
+      "points": 4,
+      "rank": 2
+    },
+    {
+      "teamNumber": 4,
+      "played": 6,
+      "won": 5,
+      "lost": 1,
+      "setsWon": 22,
+      "setsLost": 8,
+      "setDiff": 14,
+      "pointsFor": 832,
+      "pointsAgainst": 766,
+      "pointDiff": 66,
+      "points": 5,
+      "rank": 1
+    },
+    {
+      "teamNumber": 5,
+      "played": 6,
+      "won": 3,
+      "lost": 3,
+      "setsWon": 16,
+      "setsLost": 14,
+      "setDiff": 2,
+      "pointsFor": 835,
+      "pointsAgainst": 772,
+      "pointDiff": 63,
+      "points": 3,
+      "rank": 4
+    },
+    {
+      "teamNumber": 6,
+      "played": 6,
+      "won": 4,
+      "lost": 2,
+      "setsWon": 17,
+      "setsLost": 13,
+      "setDiff": 4,
+      "pointsFor": 814,
+      "pointsAgainst": 823,
+      "pointDiff": -9,
+      "points": 4,
+      "rank": 3
+    },
+    {
+      "teamNumber": 7,
+      "played": 6,
+      "won": 3,
+      "lost": 3,
+      "setsWon": 16,
+      "setsLost": 14,
+      "setDiff": 2,
+      "pointsFor": 812,
+      "pointsAgainst": 819,
+      "pointDiff": -7,
+      "points": 3,
+      "rank": 5
+    }
+  ],
+  "teamTotals": [
+    {
+      "teamNumber": 1,
+      "sets": 30,
+      "won": 8,
+      "lost": 22,
+      "pointsFor": 772,
+      "pointsAgainst": 873,
+      "diff": -101
+    },
+    {
+      "teamNumber": 2,
+      "sets": 30,
+      "won": 9,
+      "lost": 21,
+      "pointsFor": 767,
+      "pointsAgainst": 865,
+      "diff": -98
+    },
+    {
+      "teamNumber": 3,
+      "sets": 40,
+      "won": 23,
+      "lost": 17,
+      "pointsFor": 1522,
+      "pointsAgainst": 1458,
+      "diff": 64
+    },
+    {
+      "teamNumber": 4,
+      "sets": 40,
+      "won": 26,
+      "lost": 14,
+      "pointsFor": 1570,
+      "pointsAgainst": 1471,
+      "diff": 99
+    },
+    {
+      "teamNumber": 5,
+      "sets": 40,
+      "won": 22,
+      "lost": 18,
+      "pointsFor": 1554,
+      "pointsAgainst": 1465,
+      "diff": 89
+    },
+    {
+      "teamNumber": 6,
+      "sets": 40,
+      "won": 21,
+      "lost": 19,
+      "pointsFor": 1501,
+      "pointsAgainst": 1547,
+      "diff": -46
+    },
+    {
+      "teamNumber": 7,
+      "sets": 30,
+      "won": 16,
+      "lost": 14,
+      "pointsFor": 812,
+      "pointsAgainst": 819,
+      "diff": -7
+    }
+  ],
+  "matchDays": ["2026-05-16", "2026-05-23"]
+}

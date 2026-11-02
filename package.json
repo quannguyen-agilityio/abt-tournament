@@ -20,10 +20,13 @@
     "db:start": "supabase start",
     "db:stop": "supabase stop",
     "db:reset": "supabase db reset",
+    "db:seed:local": "supabase db reset && tsx scripts/import-2026.ts --env local --file data/abt-2026.json",
+    "db:seed:e2e": "psql postgresql://postgres:postgres@127.0.0.1:54322/postgres -v ON_ERROR_STOP=1 -q -f supabase/seeds/e2e-demo.sql",
     "db:test": "supabase test db",
     "db:types": "supabase gen types typescript --local --schema public > src/lib/database.types.ts && prettier --write src/lib/database.types.ts",
     "i18n:check": "node scripts/i18n-check.mjs",
-    "import:2026": "tsx scripts/import-2026.ts"
+    "import:2026": "tsx scripts/import-2026.ts",
+    "convert:2026": "tsx scripts/convert-2026.ts"
   },
   "dependencies": {
     "@base-ui/react": "^1.9.0",
