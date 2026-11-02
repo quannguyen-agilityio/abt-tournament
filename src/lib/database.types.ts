@@ -961,12 +961,25 @@ export type Database = {
       };
     };
     Functions: {
+      add_award_winner: {
+        Args: {
+          p_award_id: string;
+          p_kind: Database['public']['Enums']['award_winner_kind'];
+          p_match_id?: string;
+          p_members: string[];
+          p_note?: string;
+          p_team_id?: string;
+        };
+        Returns: string;
+      };
       clone_season: { Args: { p_name: string; p_source_id: string; p_venue: string; p_year: number }; Returns: string };
       close_group: {
         Args: { p_bracket: Json; p_expected: Json; p_final_order: string[]; p_manual_draws: Json; p_season_id: string };
         Returns: undefined;
       };
       complete_match: { Args: { p_expected: Json; p_match_id: string; p_winner_team_id: string }; Returns: undefined };
+      delete_award: { Args: { p_award_id: string }; Returns: undefined };
+      delete_award_winner: { Args: { p_winner_id: string }; Returns: undefined };
       disqualify_team: {
         Args: { p_forfeit_slots?: Json; p_match_ids: string[]; p_reason: string; p_team_id: string };
         Returns: undefined;
@@ -995,6 +1008,7 @@ export type Database = {
       reinstate_team: { Args: { p_match_ids: string[]; p_team_id: string }; Returns: undefined };
       reopen_group: { Args: { p_season_id: string }; Returns: undefined };
       reopen_match: { Args: { p_match_id: string }; Returns: undefined };
+      reorder_awards: { Args: { p_award_ids: string[]; p_season_id: string }; Returns: undefined };
       save_lineup: {
         Args: {
           p_match_id: string;
