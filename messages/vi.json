@@ -1,0 +1,1271 @@
+{
+  "Metadata": {
+    "title": "ABT Tournament",
+    "description": "Ứng dụng web quản lý giải cầu lông Agility Badminton Tournament (ABT)."
+  },
+  "Common": {
+    "language": "Ngôn ngữ"
+  },
+  "Home": {
+    "title": "ABT Tournament",
+    "description": "Ứng dụng web quản lý giải cầu lông Agility Badminton Tournament (ABT)."
+  },
+  "LocaleSwitcher": {
+    "switchTo": "Chuyển sang {language}",
+    "vi": "Tiếng Việt",
+    "en": "Tiếng Anh"
+  },
+  "Theme": {
+    "title": "Giao diện: {mode}",
+    "system": "Theo hệ thống",
+    "light": "Sáng",
+    "dark": "Tối"
+  },
+  "Nav": {
+    "primary": "Điều hướng chính",
+    "season": "Mùa giải",
+    "admin": "Quản trị",
+    "home": "Trang chủ",
+    "standings": "Bảng xếp hạng",
+    "matches": "Lịch & kết quả",
+    "bracket": "Knock-out",
+    "teams": "Đội",
+    "players": "VĐV",
+    "awards": "Giải phụ",
+    "rules": "Điều lệ"
+  },
+  "Public": {
+    "provisional": "Tạm tính, vòng bảng chưa chốt",
+    "closed": "Vòng bảng đã chốt",
+    "stage": {
+      "semi_final": "Bán kết",
+      "third_place": "Tranh hạng 3",
+      "final": "Chung kết",
+      "group": "Vòng bảng"
+    },
+    "matchStatus": {
+      "scheduled": "Sắp diễn ra",
+      "lineup_locked": "Đã khóa đội hình",
+      "in_progress": "Đang đấu",
+      "completed": "Kết thúc",
+      "forfeit": "Xử thua",
+      "annulled": "Đã hủy"
+    },
+    "standings": {
+      "title": "Bảng xếp hạng",
+      "subtitle": "Vòng bảng · {teams} đội · {played}/{total} trận",
+      "caption": "Bảng xếp hạng vòng bảng",
+      "empty": "Chưa có đội nào trong mùa giải này.",
+      "cols": {
+        "pos": "#",
+        "team": "Đội",
+        "played": "Tr",
+        "won": "T",
+        "lost": "B",
+        "points": "Điểm",
+        "sets": "Set",
+        "setDiff": "HS set",
+        "pointsFor": "Điểm số",
+        "pointDiff": "HS điểm",
+        "why": "Xếp nhờ"
+      },
+      "colsFull": {
+        "played": "Số trận",
+        "won": "Thắng",
+        "lost": "Thua",
+        "points": "Điểm (số trận thắng)",
+        "sets": "Set thắng–thua",
+        "setDiff": "Hiệu số set",
+        "pointsFor": "Điểm ghi–mất",
+        "pointDiff": "Hiệu số điểm"
+      },
+      "hint": {
+        "head_to_head": "đối đầu",
+        "mini_points": "mini-league: điểm",
+        "mini_set_diff": "mini-league: hiệu số set",
+        "mini_point_diff": "mini-league: hiệu số điểm",
+        "set_diff": "hiệu số set",
+        "point_diff": "hiệu số điểm",
+        "draw": "bốc thăm",
+        "draw_pending": "chờ bốc thăm"
+      },
+      "topCount": "Top {count} vào bán kết",
+      "disqualifiedTitle": "Bị loại",
+      "disqualifiedNote": "Các trận của đội bị loại ở vòng bảng bị hủy và không được tính.",
+      "noReason": "Không nêu lý do",
+      "tiebreakTitle": "Thứ tự xét",
+      "tiebreak": "Điểm → đối đầu (2 đội) hoặc mini-league (từ 3 đội: điểm, hiệu số set, hiệu số điểm giữa các đội đó) → hiệu số set toàn giải → hiệu số điểm toàn giải → bốc thăm."
+    },
+    "bracket": {
+      "title": "Knock-out",
+      "relayNote": "Đánh tiếp sức: 5 lượt, mốc 25/50/75/100/125. Chấp tổng được cộng từ đầu lượt 1.",
+      "pending": "Các đội được xác định khi vòng bảng chốt.",
+      "pendingSeeds": "SF1 = #1 v #4 · SF2 = #2 v #3",
+      "seed": "Hạt giống #{seed}",
+      "winnerOf": "Thắng {code}",
+      "loserOf": "Thua {code}",
+      "seedNumber": "#{seed}",
+      "empty": "Chưa có trận"
+    },
+    "groupRound": "Vòng bảng · Vòng {round}",
+    "tbd": "Chưa xác định",
+    "home": {
+      "podium": "Kết quả chung cuộc",
+      "placing": {
+        "champion": "Vô địch",
+        "runner_up": "Á quân",
+        "third": "Hạng ba"
+      },
+      "nowNext": "Đang đấu / Tiếp theo",
+      "now": "Đang diễn ra",
+      "next": "Tiếp theo",
+      "latest": "Kết quả mới nhất",
+      "top": "Top {count}",
+      "seeAll": "Xem tất cả",
+      "noSchedule": "Lịch thi đấu chưa được công bố.",
+      "nothingNext": "Không có trận nào đang hoặc sắp diễn ra.",
+      "noResults": "Chưa có kết quả nào."
+    },
+    "refresh": {
+      "lastUpdated": "Cập nhật lúc {time}",
+      "every": "tự làm mới mỗi {seconds} giây"
+    },
+    "matches": {
+      "subtitle": "{count, plural, other {# trận}}",
+      "filters": "Bộ lọc",
+      "day": "Ngày",
+      "team": "Đội",
+      "court": "Sân",
+      "stage": "Giai đoạn",
+      "all": "Tất cả",
+      "stageGroup": "Vòng bảng",
+      "stageKo": "Knock-out",
+      "clear": "Xóa bộ lọc",
+      "empty": "Không có trận nào khớp bộ lọc.",
+      "noSchedule": "Chưa có lịch thi đấu.",
+      "unscheduled": "Chưa xếp lịch"
+    },
+    "match": {
+      "referee": "Trọng tài: {name}",
+      "sets": "Các set",
+      "legs": "Các lượt",
+      "set": "Set {no}",
+      "leg": "Lượt {no}",
+      "slotType": {
+        "open": "Tự do",
+        "low": "Rank thấp",
+        "high": "Rank cao"
+      },
+      "rankSkill": "R{rank} · {skill}",
+      "rankSkillFull": "Rank {rank}, điểm kỹ năng {skill}",
+      "start": "+{points} chấp",
+      "toMilestone": "→ {milestone}",
+      "notPlayed": "Chưa đấu",
+      "winner": "Thắng",
+      "lineupHidden": "Đội hình được công bố khi trận đấu đã khóa đội hình.",
+      "substitution": "Thay người",
+      "forfeitTitle": "{team} bị xử thua",
+      "noReason": "Không ghi lý do",
+      "forfeitGroup": "Ghi nhận {sets}–0 về set, {target}–0 mỗi set.",
+      "forfeitKo": "Ghi nhận {target}–0, đội thắng đi tiếp.",
+      "annulledNote": "Trận đã hủy không tính vào bảng xếp hạng và thống kê VĐV.",
+      "annulledReason": "{team} bị loại: {reason}",
+      "relayStart": "Chấp đầu lượt 1",
+      "relayCap": "tối đa {cap}",
+      "relayNoStart": "Không có điểm chấp",
+      "progress": "Tiến độ tới {target}"
+    },
+    "gender": {
+      "male": "Nam",
+      "female": "Nữ"
+    },
+    "teams": {
+      "subtitle": "{count} đội",
+      "empty": "Chưa có đội nào trong mùa giải này.",
+      "captain": "Đội trưởng",
+      "captainOf": "Đội trưởng: {name}",
+      "noCaptain": "Chưa có đội trưởng",
+      "position": "#{position}",
+      "positionFull": "Hạng {position} trên bảng xếp hạng",
+      "record": "{won}–{lost}",
+      "recordFull": "{won} thắng, {lost} thua",
+      "disqualified": "Bị loại",
+      "back": "Đội",
+      "roster": "Danh sách VĐV",
+      "rosterCaption": "VĐV của {team}, xếp theo hạng",
+      "matches": "Trận đấu",
+      "noPlayers": "Đội chưa có VĐV.",
+      "noMatches": "Chưa có lịch thi đấu.",
+      "withdrawn": "Đã rút lui",
+      "cols": {
+        "rank": "Hạng",
+        "player": "VĐV",
+        "skill": "Điểm kỹ năng",
+        "gender": "Giới tính"
+      },
+      "rank": "R{rank}"
+    },
+    "players": {
+      "subtitle": "{count} VĐV",
+      "filters": "Bộ lọc",
+      "team": "Đội",
+      "rank": "Hạng",
+      "gender": "Giới tính",
+      "all": "Tất cả",
+      "rankOption": "Rank {rank}",
+      "clear": "Xoá bộ lọc",
+      "empty": "Không có VĐV nào khớp bộ lọc.",
+      "noPlayers": "Mùa giải này chưa có VĐV.",
+      "noTeam": "Chưa có đội",
+      "rankShort": "R{rank}",
+      "skillShort": "{skill} điểm",
+      "rankSkillFull": "Rank {rank}, điểm kỹ năng {skill}",
+      "withdrawn": "Đã rút lui"
+    },
+    "player": {
+      "back": "VĐV",
+      "avatar": "Ảnh của {name}",
+      "rank": "Rank {rank}",
+      "skill": "{skill} điểm kỹ năng",
+      "captain": "Đội trưởng",
+      "withdrawn": "Đã rút lui",
+      "statsTitle": "Thống kê mùa giải",
+      "statsNote": "Vòng bảng, chỉ tính các trận đã kết thúc.",
+      "setsPlayed": "Số set đã đấu",
+      "setRecord": "Set thắng–thua",
+      "points": "Điểm ghi–mất",
+      "partner": "Đồng đội nhiều nhất",
+      "partnerSets": "× {sets}",
+      "partnerSetsFull": "{sets} set cùng nhau",
+      "noPartner": "Chưa có",
+      "setsTitle": "Các set đã đấu",
+      "setsCaption": "Các set {name} đã đấu",
+      "noSets": "Chưa đấu set nào.",
+      "cols": {
+        "match": "Trận",
+        "set": "Set",
+        "partner": "Đồng đội",
+        "opponents": "Đối thủ",
+        "score": "Tỉ số"
+      },
+      "set": "Set {no}",
+      "won": "Thắng",
+      "lost": "Thua",
+      "historyTitle": "Qua các mùa",
+      "historyRankSkill": "Rank {rank} · {skill} điểm",
+      "noTeam": "Chưa có đội"
+    },
+    "awards": {
+      "subtitle": "{count} giải phụ",
+      "empty": "Chưa có giải phụ nào.",
+      "sponsor": "Nhà tài trợ: {name}",
+      "winners": "Người đoạt giải",
+      "pending": "Chưa công bố",
+      "kind": {
+        "player": "VĐV",
+        "pair": "Cặp",
+        "team": "Đội"
+      },
+      "match": "Trận {code}"
+    },
+    "rules": {
+      "subtitle": "Tóm tắt luật thi đấu {season}. Các con số lấy từ cài đặt của mùa giải.",
+      "group": {
+        "title": "Vòng bảng",
+        "format": "Vòng tròn một lượt, 1 bảng. Mỗi trận {sets} set đôi, chạm <b>{setTarget}</b> điểm, không cần cách 2 điểm.",
+        "order": "Thứ tự set:",
+        "ranks": "Set Rank thấp: Rank <b>{lowMin}–{lowMax}</b> · Set Rank cao: Rank <b>{highMin}–{highMax}</b>.",
+        "sets": "Mỗi VĐV đánh <b>{minSets}–{maxSets}</b> set và không đánh 2 set liên tiếp.",
+        "compensation": "Bù đắp nhân sự: đội có ít VĐV có mặt hơn đối thủ và chỉ có một VĐV Rank {maxRank} thì VĐV đó đánh ít nhất 2 set.",
+        "points": "Đội thắng nhiều set hơn thắng trận và được 1 điểm trên bảng xếp hạng."
+      },
+      "handicap": {
+        "title": "Điểm chấp",
+        "group": "Cặp có tổng điểm kỹ năng thấp hơn được cộng sẵn phần chênh lệch, tối đa <b>{groupCap}</b> điểm mỗi set.",
+        "relay": "Knock-out: cộng có dấu phần chênh lệch của {legs} lượt, tối đa <b>{koCap}</b> điểm, cộng từ đầu lượt 1.",
+        "points": "Tỉ số trên bảng điểm (đã gồm điểm chấp) được tính vào hiệu số điểm."
+      },
+      "ranking": {
+        "title": "Xếp hạng",
+        "order": "Điểm → đối đầu (2 đội) hoặc bảng phụ (từ 3 đội) → hiệu số set → hiệu số điểm → bốc thăm."
+      },
+      "knockout": {
+        "title": "Knock-out",
+        "seeds": "<b>{knockoutTeams}</b> đội đứng đầu vào bán kết: #1 gặp #4, #2 gặp #3, sau đó là tranh hạng 3 và chung kết.",
+        "relay": "Đánh tiếp sức {legs} lượt đến <b>{finalMilestone}</b> điểm, các mốc {milestones}.",
+        "minPresent": "Đội có dưới <b>{minPresent}</b> VĐV có mặt bị loại khỏi giải."
+      }
+    }
+  },
+  "MatchStatus": {
+    "scheduled": "Đã lên lịch",
+    "lineup_locked": "Đã khoá đội hình",
+    "in_progress": "Đang đấu",
+    "completed": "Đã kết thúc",
+    "forfeit": "Xử thua",
+    "annulled": "Đã huỷ"
+  },
+  "Admin": {
+    "title": "Quản trị",
+    "comingSoon": "Sắp ra mắt",
+    "badge": "Quản trị",
+    "role": "Vai trò",
+    "roleBtc": "BTC",
+    "roleReferee": "Trọng tài",
+    "navLabel": "Điều hướng quản trị",
+    "nav": {
+      "season": "Mùa giải",
+      "players": "VĐV & lệ phí",
+      "teams": "Đội",
+      "schedule": "Lịch thi đấu",
+      "matches": "Trận đấu",
+      "closeGroup": "Chốt vòng bảng",
+      "awards": "Giải phụ",
+      "users": "Người dùng"
+    },
+    "players": {
+      "title": "VĐV & lệ phí",
+      "subtitle": "{season} · {count, plural, other {# VĐV}}",
+      "back": "← Mùa giải",
+      "empty": "Mùa giải này chưa có VĐV nào.",
+      "summary": {
+        "collected": "Đã thu",
+        "expected": "Cần thu",
+        "paid": "Đã đóng",
+        "paidValue": "{paid}/{total}",
+        "unpaid": "Chưa đóng"
+      },
+      "tableLabel": "VĐV của mùa giải",
+      "columns": {
+        "player": "VĐV",
+        "gender": "Giới tính",
+        "rank": "Hạng",
+        "skill": "Điểm kỹ năng",
+        "team": "Đội",
+        "memberType": "Loại thành viên",
+        "fee": "Lệ phí",
+        "paid": "Đã đóng",
+        "actions": "Thao tác"
+      },
+      "gender": {
+        "male": "Nam",
+        "female": "Nữ"
+      },
+      "memberType": {
+        "employee": "Nhân viên",
+        "intern": "Thực tập sinh",
+        "guest": "Khách mời"
+      },
+      "noTeam": "Chưa có đội",
+      "withdrawn": "Đã rút lui",
+      "edit": "Sửa",
+      "save": "Lưu",
+      "saving": "Đang lưu…",
+      "cancel": "Hủy",
+      "withdraw": "Cho rút lui",
+      "reinstate": "Khôi phục",
+      "paidLabel": "Lệ phí của {name} đã đóng",
+      "aria": {
+        "name": "Tên của {name}",
+        "gender": "Giới tính của {name}",
+        "rank": "Hạng của {name}",
+        "skill": "Điểm kỹ năng của {name}",
+        "team": "Đội của {name}",
+        "memberType": "Loại thành viên của {name}",
+        "fee": "Lệ phí của {name}"
+      },
+      "errors": {
+        "fullName": "Nhập tên tối đa {max} ký tự.",
+        "gender": "Chọn giới tính.",
+        "rank": "Hạng phải là số nguyên từ 1 đến {maxRank}.",
+        "skillPoints": "Điểm kỹ năng phải là số nguyên từ 0 đến {max}.",
+        "team": "Chọn một đội của mùa giải này.",
+        "memberType": "Chọn loại thành viên.",
+        "feeAmount": "Lệ phí phải là số tiền nguyên từ 0 đến {max}.",
+        "failed": "Không thể cập nhật VĐV. Vui lòng thử lại sau."
+      },
+      "import": {
+        "open": "Nhập CSV",
+        "title": "Nhập danh sách VĐV từ CSV",
+        "hint": "Dòng tiêu đề bắt buộc: {header}. Các cột có thể đặt theo thứ tự bất kỳ. gender: male hoặc female. rank: số nguyên từ 1 đến {maxRank}. skill_points: số nguyên từ 0 đến {max}. member_type: employee, intern hoặc guest. Tối đa {rows} dòng. Tên trùng với người đã có sẽ cập nhật người đó.",
+        "file": "Tệp CSV",
+        "csv": "Nội dung CSV",
+        "csvPlaceholder": "Chọn tệp ở trên hoặc dán nội dung CSV vào đây",
+        "preview": "Xem trước",
+        "previewing": "Đang kiểm tra…",
+        "apply": "Áp dụng {count} dòng",
+        "applying": "Đang áp dụng…",
+        "counts": {
+          "new": "Mới",
+          "changed": "Thay đổi",
+          "unchanged": "Không đổi",
+          "invalid": "Không hợp lệ",
+          "ambiguous": "Cần chọn"
+        },
+        "columns": {
+          "line": "Dòng",
+          "name": "Tên",
+          "status": "Kết quả",
+          "details": "Chi tiết"
+        },
+        "kind": {
+          "new": "Mới",
+          "changed": "Thay đổi",
+          "unchanged": "Không đổi",
+          "invalid": "Không hợp lệ",
+          "ambiguous": "Cần chọn"
+        },
+        "newPerson": "Người mới",
+        "existingPerson": "Đã có trong hệ thống, mới vào mùa này",
+        "slug": "Slug: {slug}",
+        "unchangedNote": "Không có thay đổi",
+        "invalidNote": "Sẽ không được nhập",
+        "choose": "Chọn một người",
+        "chooseLabel": "Dòng {line} là ai?",
+        "createNew": "Tạo người mới",
+        "inSeason": "đã có trong mùa này",
+        "fields": {
+          "gender": "Giới tính",
+          "rank": "Hạng",
+          "skillPoints": "Điểm kỹ năng",
+          "memberType": "Loại thành viên"
+        },
+        "rowErrors": {
+          "fullName": "Tên phải dài 1 đến {max} ký tự và có ít nhất một chữ cái hoặc chữ số",
+          "gender": "Giới tính phải là male hoặc female",
+          "rank": "Hạng phải là số nguyên từ 1 đến {maxRank}",
+          "skillPoints": "Điểm kỹ năng phải là số nguyên từ 0 đến {max}",
+          "memberType": "Loại thành viên phải là employee, intern hoặc guest",
+          "duplicate": "Trùng người với một dòng phía trên"
+        },
+        "result": "Đã nhập {applied, plural, other {# VĐV}}, bỏ qua {skipped, plural, other {# dòng không hợp lệ}}.",
+        "errors": {
+          "failed": "Không đọc hoặc nhập được tệp. Vui lòng thử lại sau.",
+          "tooLarge": "Tệp quá lớn (tối đa 200 KB).",
+          "empty": "Tệp trống.",
+          "header": "Dòng tiêu đề phải có full_name, gender, rank, skill_points và member_type.",
+          "tooMany": "Quá nhiều dòng (tối đa 500).",
+          "unresolved": "Hãy chọn người cho mọi dòng cần chọn rồi thử lại.",
+          "conflict": "Có người khác vừa thay đổi danh sách. Hãy xem trước lại rồi áp dụng."
+        }
+      }
+    },
+    "teams": {
+      "title": "Đội",
+      "subtitle": "{season} · {count} đội · {players} VĐV",
+      "back": "← Mùa giải",
+      "empty": "Chưa có đội nào. Hãy thêm đội hoặc nhập kết quả bốc thăm.",
+      "dragHint": "Kéo VĐV giữa các đội, hoặc chọn đội ở menu trên mỗi dòng. Đội trưởng mặc định là VĐV Rank 1 của đội.",
+      "add": "Thêm đội",
+      "addTitle": "Đội mới",
+      "create": "Tạo",
+      "name": "Tên",
+      "color": "Màu",
+      "nameOf": "Tên đội {name}",
+      "colorOf": "Màu đội {name}",
+      "save": "Lưu",
+      "saving": "Đang lưu…",
+      "delete": "Xoá",
+      "captain": "Đội trưởng",
+      "makeCaptain": "Đội trưởng?",
+      "makeCaptainLabel": "Chọn {name} làm đội trưởng",
+      "moveLabel": "Đội của {name}",
+      "noTeam": "Chưa có đội",
+      "withdrawn": "Đã rút lui",
+      "unassigned": "Chưa có đội",
+      "emptyTeam": "Thả VĐV vào đây.",
+      "rosterCount": "{count} VĐV đang thi đấu",
+      "warnings": {
+        "title": "Kiểm tra các đội",
+        "missingRanks": "{team} chưa có VĐV {ranks}.",
+        "sizes": "Số VĐV các đội không bằng nhau: {sizes}.",
+        "unassigned": "{count} VĐV đang thi đấu chưa có đội."
+      },
+      "errors": {
+        "name": "Nhập tên tối đa {max} ký tự.",
+        "color": "Hãy chọn màu.",
+        "notEmpty": "Hãy chuyển hết VĐV ra trước khi xoá đội.",
+        "inUse": "Đội đã có trận đấu nên không xoá được.",
+        "failed": "Không lưu được thay đổi. Vui lòng thử lại sau."
+      },
+      "draw": {
+        "open": "Nhập bốc thăm",
+        "title": "Nhập kết quả bốc thăm từ CSV",
+        "hint": "Dòng tiêu đề bắt buộc: {header}. Các cột có thể theo thứ tự bất kỳ. Mỗi VĐV của mùa giải được khớp theo tên hoặc slug. Tên đội mà mùa giải chưa có sẽ tạo đội đó. VĐV không có trong tệp giữ nguyên đội. Tối đa {rows} dòng.",
+        "file": "Tệp CSV",
+        "csv": "Nội dung CSV",
+        "csvPlaceholder": "Chọn tệp ở trên hoặc dán nội dung CSV vào đây",
+        "preview": "Xem trước",
+        "previewing": "Đang kiểm tra…",
+        "apply": "Áp dụng {count} thay đổi",
+        "applying": "Đang áp dụng…",
+        "kind": {
+          "assign": "Chuyển đội",
+          "unchanged": "Không đổi",
+          "invalid": "Không hợp lệ"
+        },
+        "newTeams": "Đội mới: {names}",
+        "columns": {
+          "line": "Dòng",
+          "name": "VĐV",
+          "status": "Kết quả",
+          "details": "Chi tiết"
+        },
+        "noTeam": "Chưa có đội",
+        "newTeam": "đội mới",
+        "unchangedNote": "Đã ở {team}",
+        "invalidNote": "Sẽ không được nhập",
+        "rowErrors": {
+          "fullName": "Tên VĐV đang trống",
+          "teamName": "Tên đội phải từ 1 đến {max} ký tự",
+          "unknownPlayer": "Không có VĐV nào của mùa giải mang tên này",
+          "ambiguousPlayer": "Có nhiều VĐV của mùa giải trùng tên này; hãy dùng slug",
+          "duplicate": "Trùng VĐV với một dòng phía trên"
+        },
+        "result": "Đã xếp đội cho {applied} VĐV, bỏ qua {skipped} dòng không hợp lệ.",
+        "errors": {
+          "failed": "Không đọc hoặc nhập được tệp. Vui lòng thử lại sau.",
+          "tooLarge": "Tệp quá lớn (tối đa 100 KB).",
+          "empty": "Tệp trống.",
+          "header": "Dòng tiêu đề phải có full_name và team_name.",
+          "tooMany": "Quá nhiều dòng (tối đa 500)."
+        }
+      }
+    },
+    "schedule": {
+      "title": "Lịch thi đấu",
+      "back": "← Mùa giải",
+      "subtitle": "{season} · {count} trận · {teams} đội",
+      "regenerateHint": "Có thể tạo lại lịch cho tới khi một trận vòng bảng có đội hình hoặc tỉ số.",
+      "lockedHint": "Đã có trận vòng bảng có đội hình hoặc tỉ số nên không thể tạo lại lịch vòng tròn.",
+      "generate": "Tạo lịch vòng tròn",
+      "regenerate": "Tạo lại lịch vòng tròn",
+      "regenerateConfirm": "Thay toàn bộ trận vòng bảng? Ngày, giờ, sân và trọng tài sẽ bị xoá.",
+      "cancel": "Huỷ",
+      "generating": "Đang tạo…",
+      "generated": "Đã tạo {count} trận.",
+      "empty": "Chưa có trận nào. Hãy tạo lịch vòng tròn để bắt đầu.",
+      "needTeams": "Cần ít nhất 2 đội trước khi tạo lịch vòng tròn.",
+      "noMatchDays": "Mùa giải chưa có ngày thi đấu. <link>Thêm ngày ở trang mùa giải</link> để xếp trận.",
+      "dayEmpty": "Chưa có trận nào trong ngày này.",
+      "gridLabel": "Các trận ngày {day}",
+      "unscheduled": "Chưa xếp lịch · {count}",
+      "assign": "Xếp lịch",
+      "assignHint": "Chọn ngày, giờ ({timezone}), sân và trọng tài cho từng trận. Bỏ trống ngày và giờ để gỡ trận khỏi lịch.",
+      "slotOf": "Lịch của {code}",
+      "date": "Ngày",
+      "time": "Giờ",
+      "court": "Sân",
+      "referee": "Trọng tài",
+      "noDate": "Chưa chọn ngày",
+      "noCourt": "Chưa có sân",
+      "noReferee": "Chưa có trọng tài",
+      "refereeIs": "Trọng tài: {name}",
+      "tbd": "Chưa xác định",
+      "save": "Lưu",
+      "saving": "Đang lưu…",
+      "conflicts": {
+        "title": "Xung đột lịch",
+        "none": "Không có xung đột.",
+        "team": "{when}: {subject} thi đấu hai trận cùng lúc ({matches}).",
+        "referee": "{when}: trọng tài {subject} bị xếp hai trận ({matches}).",
+        "court": "{when}: {subject} có hai trận cùng lúc ({matches})."
+      },
+      "errors": {
+        "teams": "Cần có ít nhất 2 đội.",
+        "locked": "Đã có trận vòng bảng có đội hình hoặc tỉ số nên không thể tạo lại lịch.",
+        "failed": "Không lưu được thay đổi. Vui lòng thử lại sau.",
+        "dateTime": "Chọn cả ngày và giờ, hoặc bỏ trống cả hai.",
+        "court": "Chọn một sân của mùa giải này.",
+        "referee": "Chọn một tài khoản đang hoạt động làm trọng tài."
+      }
+    },
+    "closeGroup": {
+      "back": "← Mùa giải",
+      "title": "Chốt vòng bảng",
+      "subtitle": "{season} · đã đấu {played}/{total} trận vòng bảng",
+      "provisional": "Tạm tính, vòng bảng chưa chốt",
+      "notGroup": "Mùa giải không ở vòng bảng ({status, select, draft {nháp} published {đã công bố} knockout {knock-out} finished {đã kết thúc} other {khác}}), nên không có gì để chốt.",
+      "unfinished": "Còn {count} trận vòng bảng chưa đấu. Chỉ chốt được khi mọi trận vòng bảng đã kết thúc, xử thua hoặc bị hủy.",
+      "draw": {
+        "title": "Bốc thăm",
+        "hint": "Các đội này vẫn bằng nhau sau mọi tiêu chí phụ. Kéo thả, hoặc dùng mũi tên, để xếp theo kết quả bốc thăm.",
+        "none": "Mọi đội đã được phân định trước bước bốc thăm.",
+        "group": "Nhóm bằng điểm {n}",
+        "moveUp": "Đưa {team} lên",
+        "moveDown": "Đưa {team} xuống",
+        "note": "Ghi chú",
+        "noteRequired": "Bắt buộc: ghi lại cách thức và thời điểm bốc thăm.",
+        "noteOptional": "Không bắt buộc."
+      },
+      "submit": "Chốt vòng bảng & sinh bracket",
+      "submitting": "Đang chốt…",
+      "confirm": "Chốt vòng bảng? Thứ hạng sẽ bị khóa, mùa giải chuyển sang knock-out và bán kết được xếp cặp:\n{bracket}",
+      "confirmBracket": "SF1: {s1} – {s4}\nSF2: {s2} – {s3}",
+      "errors": {
+        "unfinished": "Vẫn còn trận vòng bảng chưa đấu.",
+        "teams": "Bracket cần nhiều đội hơn số đội trên bảng xếp hạng.",
+        "note": "Nhập ghi chú về việc bốc thăm.",
+        "changed": "Kết quả đã thay đổi từ lúc tải trang. Tải lại trang và kiểm tra lại thứ tự bốc thăm.",
+        "status": "Mùa giải không ở vòng bảng hoặc vòng bảng đã chốt. Tải lại trang.",
+        "bracketStarted": "Đã có trận knock-out bắt đầu.",
+        "failed": "Không chốt được vòng bảng. Vui lòng thử lại."
+      },
+      "closed": {
+        "badge": "Vòng bảng đã chốt",
+        "at": "Chốt lúc {when} bởi {by}.",
+        "drawn": "Xếp bằng bốc thăm: {teams}.",
+        "note": "Ghi chú: {note}",
+        "locked": "Vòng bảng đã chốt. Không mở lại được vì bracket đã bắt đầu."
+      },
+      "reopen": {
+        "submit": "Mở lại vòng bảng",
+        "submitting": "Đang mở lại…",
+        "hint": "Chỉ được khi chưa trận knock-out nào bắt đầu.",
+        "confirm": "Mở lại vòng bảng? Thứ hạng chốt sẽ bị xóa, mùa giải quay về vòng bảng và các đội trong bracket bị gỡ ra.",
+        "errors": {
+          "status": "Vòng bảng chưa chốt. Tải lại trang.",
+          "bracketStarted": "Vòng bảng đã chốt. Không mở lại được vì bracket đã bắt đầu.",
+          "failed": "Không mở lại được vòng bảng. Vui lòng thử lại."
+        }
+      },
+      "bracket": {
+        "title": "Bracket",
+        "tbd": "Chưa xác định",
+        "auto": "SF1 = hạng 1 gặp hạng 4, SF2 = hạng 2 gặp hạng 3, đội hạng cao hơn làm chủ nhà. Trận tranh hạng 3 và chung kết tự điền khi hai trận bán kết kết thúc."
+      }
+    },
+    "awards": {
+      "back": "← Mùa giải",
+      "title": "Giải phụ",
+      "subtitle": "{season} · {count} giải phụ",
+      "add": "+ Thêm giải",
+      "empty": "Chưa có giải phụ nào. Thêm giải đầu tiên ở bên cạnh.",
+      "list": {
+        "label": "Thứ tự giải phụ",
+        "hint": "Kéo thả, hoặc dùng mũi tên, để xếp thứ tự hiển thị trên trang công khai.",
+        "moveUp": "Đưa {name} lên",
+        "moveDown": "Đưa {name} xuống",
+        "pending": "Chưa trao",
+        "winners": "{count} đoạt giải",
+        "saving": "Đang lưu thứ tự…",
+        "errors": {
+          "changed": "Danh sách giải đã thay đổi từ lúc tải trang. Tải lại trang rồi thử lại.",
+          "failed": "Không lưu được thứ tự. Thử lại."
+        }
+      },
+      "form": {
+        "newTitle": "Giải mới",
+        "editTitle": "Sửa giải",
+        "nameVi": "Tên (VI)",
+        "nameEn": "Tên (EN)",
+        "criteriaVi": "Tiêu chí (VI)",
+        "criteriaEn": "Tiêu chí (EN)",
+        "enHint": "Không bắt buộc. Bỏ trống thì trang tiếng Anh dùng bản tiếng Việt.",
+        "sponsor": "Nhà tài trợ",
+        "value": "Giá trị (VND)",
+        "valueHint": "Không bắt buộc, ví dụ 1.000.000.",
+        "note": "Ghi chú",
+        "noteHint": "Không hiện trên trang công khai.",
+        "cancel": "Huỷ",
+        "save": "Lưu",
+        "create": "Tạo giải",
+        "saving": "Đang lưu…",
+        "saved": "Đã lưu.",
+        "delete": "Xoá giải",
+        "deleting": "Đang xoá…",
+        "deleteConfirm": "Xoá giải “{name}” cùng mọi người đoạt giải? Không thể hoàn tác.",
+        "errors": {
+          "name": "Nhập tên giải (VI).",
+          "value": "Giá trị phải là số tiền nguyên, không âm.",
+          "tooLong": "Có ô nhập quá dài.",
+          "failed": "Không lưu được giải. Thử lại."
+        },
+        "deleteFailed": "Không xoá được giải. Thử lại."
+      },
+      "winners": {
+        "title": "Người đoạt giải",
+        "empty": "Chưa có ai đoạt giải này.",
+        "saveFirst": "Lưu giải trước, rồi thêm người đoạt giải.",
+        "kind": "Loại",
+        "kinds": {
+          "player": "VĐV",
+          "pair": "Cặp",
+          "team": "Đội"
+        },
+        "player": "VĐV",
+        "player1": "VĐV 1",
+        "player2": "VĐV 2",
+        "team": "Đội",
+        "choose": "— Chọn —",
+        "noTeam": "Chưa có đội",
+        "match": "Trận liên quan",
+        "noMatch": "Không có",
+        "matchHint": "Không bắt buộc. Chỉ liệt kê các trận của đội đoạt giải.",
+        "matchCode": "Trận {code}",
+        "note": "Ghi chú",
+        "add": "+ Thêm người đoạt giải",
+        "adding": "Đang thêm…",
+        "remove": "Gỡ",
+        "removeLabel": "Gỡ {name}",
+        "removeConfirm": "Gỡ {name} khỏi giải này?",
+        "errors": {
+          "kind": "Chọn loại người đoạt giải.",
+          "members": "Chọn đủ VĐV: 1 cho VĐV, 2 người khác nhau cho cặp.",
+          "sameTeam": "Hai VĐV của một cặp phải cùng đội.",
+          "team": "Chọn một đội của mùa giải.",
+          "match": "Trận liên quan phải là trận của đội đoạt giải.",
+          "tooLong": "Ghi chú quá dài.",
+          "failed": "Không thực hiện được. Thử lại."
+        }
+      }
+    },
+    "seasons": {
+      "title": "Mùa giải",
+      "count": "{count} mùa giải",
+      "tableLabel": "Các mùa giải",
+      "year": "Năm",
+      "name": "Tên",
+      "venue": "Địa điểm",
+      "statusHeader": "Trạng thái",
+      "actions": "Thao tác",
+      "empty": "Chưa có mùa giải nào.",
+      "current": "Hiện tại",
+      "open": "Mở",
+      "status": {
+        "draft": "Nháp",
+        "published": "Đã công bố",
+        "group": "Vòng bảng",
+        "knockout": "Knock-out",
+        "finished": "Đã kết thúc"
+      },
+      "create": {
+        "title": "Tạo mùa giải",
+        "year": "Năm",
+        "name": "Tên mùa giải",
+        "namePlaceholder": "ABT {year}",
+        "nameHint": "Để trống để dùng tên mặc định.",
+        "venue": "Địa điểm (không bắt buộc)",
+        "source": "Bắt đầu từ",
+        "sourceNone": "Luật mặc định (mùa giải trống)",
+        "sourceClone": "Sao chép {name}",
+        "sourceHint": "Sao chép giữ lại thông số, sân và danh sách VĐV đang hoạt động, nhưng không có đội. Mùa giải mới ở trạng thái nháp.",
+        "submit": "Tạo mùa giải",
+        "saving": "Đang tạo…",
+        "errors": {
+          "year": "Nhập năm từ {min} đến {max}.",
+          "name": "Tên mùa giải tối đa {nameMax} ký tự.",
+          "venue": "Địa điểm tối đa {venueMax} ký tự.",
+          "source": "Chọn lại mùa giải để sao chép.",
+          "yearTaken": "Đã có mùa giải cho năm này.",
+          "failed": "Không thể tạo mùa giải. Vui lòng thử lại sau."
+        }
+      },
+      "detail": {
+        "back": "← Tất cả mùa giải",
+        "title": "Mùa giải",
+        "stepperLabel": "Trạng thái mùa giải",
+        "move": {
+          "published": "Chuyển sang Đã công bố",
+          "group": "Chuyển sang Vòng bảng",
+          "knockout": "Chuyển sang Knock-out",
+          "finished": "Chuyển sang Đã kết thúc",
+          "unpublish": "Hủy công bố (về Nháp)"
+        },
+        "blocked": {
+          "closeGroup": "Hãy chốt vòng bảng để bắt đầu knock-out.",
+          "current": "Mùa giải hiện tại phải luôn công khai nên không thể hủy công bố. Hãy chọn mùa giải khác làm hiện tại trước."
+        },
+        "finishedHint": "Mùa giải đã kết thúc.",
+        "statusErrors": {
+          "transition": "Không thể chuyển sang trạng thái này. Hãy tải lại trang và thử lại.",
+          "failed": "Không thể đổi trạng thái. Vui lòng thử lại sau."
+        },
+        "isCurrent": "Đây là mùa giải hiện tại",
+        "setCurrent": "Đặt làm mùa giải hiện tại",
+        "setCurrentHint": "Trang chủ sẽ chuyển thẳng tới mùa giải hiện tại.",
+        "setCurrentDraft": "Hãy công bố mùa giải trước khi đặt làm mùa giải hiện tại.",
+        "currentErrors": {
+          "draft": "Mùa giải nháp không thể là mùa giải hiện tại. Hãy công bố trước.",
+          "failed": "Không thể đặt mùa giải hiện tại. Vui lòng thử lại sau."
+        },
+        "year": "Năm",
+        "yearHint": "Năm là định danh của mùa giải nên không thể sửa.",
+        "name": "Tên mùa giải",
+        "venue": "Địa điểm",
+        "matchDays": "Ngày thi đấu",
+        "matchDay": "Ngày thi đấu {number}",
+        "matchDaysEmpty": "Chưa có ngày thi đấu nào.",
+        "addDay": "Thêm ngày",
+        "removeDay": "Xóa",
+        "save": "Lưu",
+        "saving": "Đang lưu…",
+        "saved": "Đã lưu.",
+        "errors": {
+          "name": "Nhập tên mùa giải, tối đa {nameMax} ký tự.",
+          "venue": "Địa điểm tối đa {venueMax} ký tự.",
+          "failed": "Không thể lưu. Vui lòng thử lại sau."
+        }
+      },
+      "settings": {
+        "title": "Thông số luật",
+        "setTarget": "Điểm chạm mỗi set",
+        "setsPerMatch": "Số set mỗi trận",
+        "maxRank": "Rank thấp nhất",
+        "groupHandicapCap": "Chấp tối đa vòng bảng",
+        "koHandicapCap": "Chấp tối đa knock-out",
+        "perSet": "mỗi set",
+        "perMatch": "mỗi trận",
+        "minPlayersPresent": "VĐV có mặt tối thiểu",
+        "minSetsPerPlayer": "Set tối thiểu mỗi VĐV",
+        "maxSetsPerPlayer": "Set tối đa mỗi VĐV",
+        "slotTypes": "Thứ tự set",
+        "slotLabel": "Set {number}",
+        "slot": {
+          "open": "Tự do",
+          "low": "Rank thấp",
+          "high": "Rank cao"
+        },
+        "slotHint": "Số set theo \"Số set mỗi trận\". Vòng bảng và tiếp sức dùng chung thứ tự này.",
+        "lowRange": "Rank của set Rank thấp",
+        "highRange": "Rank của set Rank cao",
+        "rangeMin": "Từ rank",
+        "rangeMax": "Đến rank",
+        "relayMilestones": "Mốc điểm tiếp sức",
+        "relayMilestonesHint": "Mỗi lượt một mốc, cách nhau bằng dấu phẩy hoặc khoảng trắng. Ví dụ: 25, 50, 75, 100, 125.",
+        "fees": "Lệ phí (VND)",
+        "feeEmployee": "Nhân viên",
+        "feeIntern": "Thực tập sinh",
+        "feeGuest": "Khách",
+        "prizes": "Giải thưởng (VND)",
+        "prizeChampion": "Vô địch",
+        "prizeRunnerUp": "Á quân",
+        "prizeThird": "Hạng ba",
+        "prizesHint": "Hiện trên trang chủ khi mùa giải kết thúc. Để 0 nếu không có giải.",
+        "timezone": "Múi giờ",
+        "knockoutTeams": "Số đội vào knock-out",
+        "knockoutTeamsHint": "Cố định 4 đội (bán kết 1–4 và 2–3).",
+        "appliesLater": "Thay đổi chỉ áp dụng cho các trận tạo sau đó: thứ tự set được sao chép vào trận khi trận được tạo.",
+        "fixErrors": "Còn {count} lỗi cần sửa trước khi lưu.",
+        "failed": "Không thể lưu thông số. Vui lòng thử lại sau.",
+        "saved": "Đã lưu thông số.",
+        "save": "Lưu thông số",
+        "saving": "Đang lưu…"
+      },
+      "courts": {
+        "title": "Sân",
+        "empty": "Chưa có sân nào.",
+        "listLabel": "Danh sách sân theo thứ tự",
+        "nameOf": "Tên sân {number}",
+        "rename": "Lưu tên",
+        "moveUp": "Đưa {name} lên",
+        "moveDown": "Đưa {name} xuống",
+        "delete": "Xóa",
+        "new": "Tên sân mới",
+        "newPlaceholder": "Tên sân mới",
+        "add": "Thêm sân",
+        "errors": {
+          "name": "Nhập tên sân, tối đa {max} ký tự.",
+          "inUse": "Sân này đang được dùng trong một trận đấu nên không thể xóa.",
+          "failed": "Không thể cập nhật sân. Vui lòng thử lại sau."
+        }
+      }
+    },
+    "users": {
+      "title": "Người dùng",
+      "count": "{count} tài khoản",
+      "tableLabel": "Tài khoản",
+      "name": "Tên",
+      "email": "Email",
+      "status": "Trạng thái",
+      "actions": "Thao tác",
+      "you": "(bạn)",
+      "statusActive": "Hoạt động",
+      "statusMustChange": "Phải đổi mật khẩu",
+      "statusInactive": "Đã khóa",
+      "deactivate": "Khóa",
+      "reactivate": "Mở khóa",
+      "resetPassword": "Đặt lại mật khẩu",
+      "empty": "Chưa có tài khoản nào.",
+      "create": {
+        "title": "Tạo tài khoản",
+        "displayName": "Tên hiển thị",
+        "email": "Email",
+        "role": "Vai trò",
+        "password": "Mật khẩu tạm",
+        "passwordHint": "Người dùng phải đổi mật khẩu ở lần đăng nhập đầu tiên. Tối thiểu {min} ký tự.",
+        "generate": "Tạo ngẫu nhiên",
+        "submit": "Tạo tài khoản",
+        "saving": "Đang tạo…",
+        "success": "Đã tạo tài khoản cho {email}. Hãy gửi mật khẩu tạm cho họ.",
+        "errors": {
+          "email": "Nhập địa chỉ email hợp lệ.",
+          "displayName": "Nhập tên hiển thị tối đa {max} ký tự.",
+          "role": "Chọn một vai trò.",
+          "tooShort": "Mật khẩu tạm cần ít nhất {min} ký tự.",
+          "emailTaken": "Đã có tài khoản dùng email này.",
+          "weak": "Mật khẩu này quá yếu. Hãy chọn mật khẩu khác.",
+          "failed": "Không thể tạo tài khoản. Vui lòng thử lại sau."
+        }
+      },
+      "reset": {
+        "newPassword": "Mật khẩu tạm mới",
+        "submit": "Đặt lại",
+        "saving": "Đang đặt lại…",
+        "success": "Đã đặt lại mật khẩu. Họ phải đổi mật khẩu ở lần đăng nhập tiếp theo.",
+        "errors": {
+          "tooShort": "Mật khẩu tạm cần ít nhất {min} ký tự.",
+          "weak": "Mật khẩu này quá yếu. Hãy chọn mật khẩu khác.",
+          "self": "Bạn không thể làm điều này với tài khoản của chính mình.",
+          "failed": "Không thể đặt lại mật khẩu. Vui lòng thử lại sau."
+        }
+      },
+      "toggleErrors": {
+        "self": "Bạn không thể khóa tài khoản của chính mình.",
+        "failed": "Không thể cập nhật tài khoản. Vui lòng thử lại sau."
+      }
+    },
+    "matches": {
+      "title": "Trận đấu",
+      "subtitle": "{season} · {count} trận",
+      "noSeason": "Chưa có mùa giải hiện tại.",
+      "empty": "Mùa giải chưa có trận nào. BTC tạo lịch thi đấu ở trang Lịch thi đấu.",
+      "unscheduled": "Chưa xếp giờ",
+      "noCourt": "Chưa xếp sân",
+      "tbd": "Chưa xác định",
+      "groups": {
+        "mine": "Trận của tôi · {count}",
+        "today": "Hôm nay · {count}",
+        "rest": "Các trận khác · {count}"
+      }
+    },
+    "match": {
+      "back": "← Trận đấu",
+      "stage": {
+        "group": "Vòng bảng",
+        "semi_final": "Bán kết",
+        "third_place": "Tranh hạng ba",
+        "final": "Chung kết"
+      },
+      "noCourt": "Chưa xếp sân",
+      "unscheduled": "Chưa xếp giờ",
+      "tbd": "Hai đội của trận này chưa được xác định.",
+      "stepsLabel": "Các bước của trận",
+      "steps": {
+        "attendance": "Điểm danh",
+        "lineup": "Đội hình",
+        "lock": "Khoá",
+        "scores": "Tỉ số",
+        "done": "Hoàn tất"
+      },
+      "attendance": {
+        "hint": "Tích các VĐV có mặt của mỗi đội rồi bấm Lưu. Mỗi đội cần ít nhất {minimum} VĐV có mặt.",
+        "count": "{count}/{total} có mặt",
+        "noPlayers": "Đội chưa có VĐV nào.",
+        "belowMinimum": "Mới có {count} VĐV có mặt (tối thiểu {minimum}). Trận chưa thể bắt đầu.",
+        "disqualify": "Loại đội",
+        "save": "Lưu điểm danh",
+        "saving": "Đang lưu…",
+        "saved": "Đã lưu",
+        "locked": "Đội hình đã khoá nên không sửa điểm danh được nữa.",
+        "errors": {
+          "locked": "Đội hình đã khoá nên không sửa điểm danh được nữa. Tải lại trang.",
+          "invalid": "Danh sách không hợp lệ. Tải lại trang rồi thử lại.",
+          "failed": "Không lưu được điểm danh. Vui lòng thử lại."
+        }
+      },
+      "lineup": {
+        "hint": "Chọn 2 VĐV cho mỗi set. Mỗi danh sách chỉ có các VĐV có mặt và đúng rank của set; luật được kiểm tra ngay khi chọn.",
+        "previewHandicap": "Chấp dự kiến",
+        "relayNet": "(chênh {net}, tối đa {cap})",
+        "relayPending": "Chọn đủ các lượt của cả hai đội để xem điểm chấp.",
+        "violationCount": "{count} vi phạm",
+        "accepted": "BTC đã chấp nhận",
+        "valid": "Đội hình hợp lệ",
+        "set": "Set {no}",
+        "leg": "Lượt {no}",
+        "slotType": {
+          "open": "Tự do",
+          "low": "Rank thấp",
+          "high": "Rank cao"
+        },
+        "pickLabel": "Set {slot}, VĐV {position}",
+        "pick": "— Chọn VĐV —",
+        "absent": "(không có mặt)",
+        "startHint": "Điểm chấp xuất phát của cặp này",
+        "violations": "Vi phạm",
+        "overrideReason": "Lý do chấp nhận",
+        "overrideHint": "Khi lưu, hệ thống ghi nhận BTC chấp nhận các vi phạm này với lý do trên.",
+        "notOverridable": "Đội không đủ số VĐV tối thiểu thì không thể chấp nhận. Hãy loại đội.",
+        "refereeBlocked": "Trọng tài không lưu được đội hình vi phạm. Hãy báo BTC.",
+        "save": "Lưu đội hình",
+        "saveOverride": "Lưu và chấp nhận",
+        "saving": "Đang lưu…",
+        "saved": "Đã lưu",
+        "errors": {
+          "locked": "Đội hình đã khoá. Tải lại trang.",
+          "invalid": "Đội hình không hợp lệ. Tải lại trang rồi thử lại.",
+          "violations": "Đội hình vi phạm luật nên không lưu được.",
+          "reason": "Nhập lý do để chấp nhận các vi phạm.",
+          "failed": "Không lưu được đội hình. Vui lòng thử lại."
+        }
+      },
+      "sideActions": {
+        "substitute": "Thay người",
+        "forfeit": "Xử thua",
+        "disqualify": "Loại đội"
+      },
+      "substitute": {
+        "title": "Thay người",
+        "hint": "Thay một vận động viên trong set hoặc lượt chưa có điểm. Hạng của người vào phải chênh không quá một bậc so với người ra, và điểm xuất phát được tính lại.",
+        "team": "Đội",
+        "slot": "Set hoặc lượt",
+        "pickSlot": "— Chọn set hoặc lượt —",
+        "pickPlayer": "— Chọn vận động viên —",
+        "out": "Người ra",
+        "in": "Người vào",
+        "reason": "Lý do (không bắt buộc)",
+        "overrideReason": "Lý do chấp nhận vi phạm",
+        "refereeBlocked": "Trọng tài không thể thực hiện lần thay người này. Hãy hỏi BTC.",
+        "submit": "Thay người",
+        "submitting": "Đang thay…",
+        "saved": "Đã lưu lần thay người",
+        "errors": {
+          "closed": "Trận này không còn thay người được. Hãy tải lại trang.",
+          "invalid": "Lần thay người này không hợp lệ. Hãy tải lại trang và thử lại.",
+          "scored": "Set hoặc lượt này đã có điểm nên không đổi người được.",
+          "violations": "Lần thay người này vi phạm quy định đội hình nên không thực hiện được.",
+          "reason": "Hãy nhập lý do để chấp nhận các vi phạm.",
+          "changed": "Trận đấu vừa thay đổi. Hãy tải lại trang và thử lại.",
+          "failed": "Không lưu được lần thay người. Vui lòng thử lại."
+        }
+      },
+      "lock": {
+        "hint": "Hai đội hình đã sẵn sàng. Khoá sẽ chốt điểm chấp và công khai đội hình.",
+        "notReady": "Lưu cả hai đội hình, không còn vi phạm chưa được chấp nhận, để khoá.",
+        "lock": "Khoá đội hình",
+        "locking": "Đang khoá…",
+        "errors": {
+          "locked": "Đội hình đã được khoá. Tải lại trang.",
+          "invalid": "Không khoá được trận này. Tải lại trang.",
+          "violations": "Còn đội hình có vi phạm chưa được BTC chấp nhận. Tải lại trang.",
+          "incomplete": "Mỗi set cần đủ hai VĐV mỗi bên.",
+          "changed": "Đội hình vừa bị thay đổi. Tải lại trang rồi thử lại.",
+          "failed": "Không khoá được đội hình. Vui lòng thử lại."
+        },
+        "locked": "Đội hình đã khoá và được công khai. Mọi thay đổi từ giờ phải qua thay người.",
+        "relayStart": "Điểm xuất phát lượt 1",
+        "substitution": "Thay người",
+        "unlock": "Mở khoá đội hình",
+        "unlocking": "Đang mở khoá…",
+        "unlockHint": "Đưa trận về bước đội hình và xoá điểm chấp đã chốt. Nhật ký ghi lại ai đã mở khoá.",
+        "unlockConfirm": "Mở khoá đội hình trận {code}?",
+        "unlockErrors": {
+          "notLocked": "Đội hình không còn bị khoá. Tải lại trang.",
+          "invalid": "Chỉ BTC mới mở khoá được đội hình.",
+          "failed": "Không mở khoá được đội hình. Vui lòng thử lại."
+        }
+      },
+      "scores": {
+        "hint": "Nhập tỉ số cuối của từng set rồi lưu dòng đó. Cặp được chấp xuất phát từ số điểm chấp, và set kết thúc khi một bên đạt {target} điểm.",
+        "hintRelay": "Nhập tỉ số cộng dồn khi kết thúc từng lượt, theo thứ tự, rồi lưu. Lượt 1 xuất phát từ điểm chấp, mỗi lượt kết thúc khi một bên chạm mốc của lượt, và bên chạm {milestone} trước thắng.",
+        "setsWon": "Số set thắng",
+        "relayScore": "Tỉ số",
+        "relayStart": "Điểm xuất phát lượt 1",
+        "toMilestone": "đến {milestone}",
+        "scoreLabel": "{slot}, điểm của {team}",
+        "save": "Lưu",
+        "saving": "Đang lưu…",
+        "retry": "Thử lại",
+        "saved": "Đã lưu",
+        "unsaved": "Chưa lưu",
+        "readOnly": "Trận đã hoàn tất nên tỉ số chỉ xem được.",
+        "errors": {
+          "closed": "Không thể thay đổi tỉ số của trận này nữa. Tải lại trang.",
+          "invalid": "Tỉ số không hợp lệ. Tải lại trang rồi thử lại.",
+          "violations": "Tỉ số vi phạm luật nên chưa được lưu.",
+          "changed": "Vừa có tỉ số khác được lưu và trang đã được cập nhật. Kiểm tra lại dòng này rồi lưu lại.",
+          "failed": "Không lưu được tỉ số. Vui lòng thử lại.",
+          "network": "Mất kết nối. Tỉ số vẫn được giữ ở đây: bấm thử lại khi có mạng."
+        }
+      },
+      "complete": {
+        "winner": "Thắng",
+        "notReady": "Lưu tỉ số hợp lệ cho mọi set để hoàn tất trận.",
+        "complete": "Hoàn tất trận",
+        "completing": "Đang hoàn tất…",
+        "confirm": "Hoàn tất trận {code}? {team} thắng {score}. Sau đó chỉ BTC mới mở lại được trận.",
+        "errors": {
+          "notReady": "Tỉ số đã lưu chưa phân định được trận. Tải lại trang.",
+          "closed": "Không thể hoàn tất trận lúc này. Tải lại trang.",
+          "invalid": "Không hoàn tất được trận này. Tải lại trang.",
+          "changed": "Tỉ số vừa bị thay đổi. Tải lại trang rồi thử lại.",
+          "failed": "Không hoàn tất được trận. Vui lòng thử lại."
+        },
+        "completed": "Trận đã hoàn tất.",
+        "reopen": "Mở lại trận",
+        "reopening": "Đang mở lại…",
+        "reopenHint": "Đưa trận về bước nhập tỉ số và xoá đội thắng để sửa tỉ số. Nhật ký ghi lại ai đã mở lại.",
+        "reopenConfirm": "Mở lại trận {code}?",
+        "reopenErrors": {
+          "notCompleted": "Trận không còn ở trạng thái hoàn tất. Tải lại trang.",
+          "invalid": "Chỉ BTC mới mở lại được trận.",
+          "failed": "Không mở lại được trận. Vui lòng thử lại."
+        }
+      },
+      "forfeit": {
+        "title": "Xử thua trận đấu",
+        "hint": "Ghi nhận xử thua cho đội không thể thi đấu. Đội hình và điểm chấp được bỏ qua. Lý do được hiển thị công khai.",
+        "team": "Đội bỏ cuộc",
+        "reason": "Lý do",
+        "reasonHint": "Hiển thị trên trang trận đấu công khai.",
+        "previewGroup": "{team} thắng {sets} ({target} mỗi set)",
+        "previewKo": "{team} thắng {score} và đi tiếp",
+        "confirm": "Xử thua trận {code}? {team} bị xử thua và {result}. Sau đó trận đấu sẽ đóng.",
+        "submit": "Ghi nhận xử thua",
+        "submitting": "Đang ghi nhận…",
+        "result": {
+          "title": "Đã xử thua",
+          "team": "bị xử thua",
+          "reason": "Lý do: {reason}"
+        },
+        "errors": {
+          "closed": "Không thể xử thua trận này nữa. Tải lại trang.",
+          "invalid": "Việc xử thua này không hợp lệ. Tải lại trang và thử lại.",
+          "reason": "Nhập lý do xử thua.",
+          "forbidden": "Bạn không thể xử thua trận này.",
+          "failed": "Không ghi nhận được xử thua. Vui lòng thử lại."
+        }
+      },
+      "disqualify": {
+        "title": "Loại đội",
+        "hint": "Ở vòng bảng, mọi trận vòng bảng của đội bị huỷ, kể cả các trận đã đấu, và đội bị đưa khỏi bảng xếp hạng. Ở vòng loại trực tiếp, trận tiếp theo của đội bị xử thua và đối thủ đi tiếp.",
+        "team": "Đội bị loại",
+        "reason": "Lý do",
+        "reasonHint": "Hiển thị trên trang công khai của các trận bị ảnh hưởng.",
+        "affectedGroup": "Các trận vòng bảng sau sẽ bị huỷ:",
+        "affectedKo": "Trận loại trực tiếp sau sẽ bị xử thua:",
+        "noMatches": "Không có trận nào thay đổi: mọi trận vòng bảng của đội đã bị huỷ.",
+        "confirm": "Loại {team}? {count, plural, =0 {Không có trận nào thay đổi.} other {# trận sau sẽ thay đổi:}}\n{matches}",
+        "submit": "Loại đội",
+        "submitting": "Đang loại đội…",
+        "errors": {
+          "invalid": "Việc loại đội này không hợp lệ. Tải lại trang và thử lại.",
+          "reason": "Nhập lý do loại đội.",
+          "disqualified": "Đội này đã bị loại. Tải lại trang.",
+          "noNextMatch": "Đội này không còn trận loại trực tiếp nào để xử thua.",
+          "changed": "Các trận đấu đã thay đổi. Tải lại trang và kiểm tra lại danh sách.",
+          "forbidden": "Chỉ Ban tổ chức mới có thể loại đội.",
+          "failed": "Không loại được đội. Vui lòng thử lại."
+        }
+      },
+      "annulled": {
+        "title": "Đã huỷ",
+        "hint": "Trận này không được tính vào bảng xếp hạng và thống kê VĐV.",
+        "disqualified": "bị loại",
+        "reason": "Lý do: {reason}",
+        "restores": "Khôi phục đội sẽ khôi phục các trận sau:",
+        "reinstate": "Khôi phục {team}",
+        "confirm": "Khôi phục {team}? {count, plural, =0 {Không có trận nào thay đổi.} other {# trận sau sẽ được khôi phục:}}\n{matches}",
+        "submitting": "Đang khôi phục…",
+        "errors": {
+          "invalid": "Việc khôi phục này không hợp lệ. Tải lại trang và thử lại.",
+          "notDisqualified": "Đội này không bị loại. Tải lại trang.",
+          "groupClosed": "Vòng bảng đã kết thúc nên không thể khôi phục đội nữa.",
+          "changed": "Các trận đấu đã thay đổi. Tải lại trang và kiểm tra lại danh sách.",
+          "forbidden": "Chỉ Ban tổ chức mới có thể khôi phục đội.",
+          "failed": "Không khôi phục được đội. Vui lòng thử lại."
+        }
+      }
+    }
+  },
+  "SeasonSettings": {
+    "errors": {
+      "invalid": "Giá trị không hợp lệ.",
+      "invalidType": "Giá trị sai kiểu dữ liệu.",
+      "notInteger": "Nhập một số nguyên.",
+      "tooSmall": "Phải lớn hơn hoặc bằng {minimum}.",
+      "tooBig": "Phải nhỏ hơn hoặc bằng {maximum}.",
+      "tooFewItems": "Cần ít nhất {minimum} mục.",
+      "invalidValue": "Chọn một trong: {values}.",
+      "unknownKeys": "Thông số không xác định: {keys}.",
+      "invalidTimezone": "Nhập múi giờ IANA hợp lệ, ví dụ Asia/Ho_Chi_Minh.",
+      "rankRangeReversed": "Rank đầu của khoảng không được lớn hơn rank cuối.",
+      "rankRangeAboveMaxRank": "Khoảng rank phải nằm trong 1–{maxRank}.",
+      "slotCountMismatch": "Cần đúng {count} loại set, mỗi set một loại.",
+      "milestoneCountMismatch": "Cần đúng {count} mốc tiếp sức, mỗi lượt một mốc.",
+      "milestonesNotIncreasing": "Mỗi mốc tiếp sức phải lớn hơn mốc trước đó.",
+      "setsPerPlayerReversed": "Số set tối thiểu mỗi VĐV không được lớn hơn số set tối đa.",
+      "groupHandicapTooLarge": "Mức chấp tối đa phải nhỏ hơn điểm kết thúc set ({target}).",
+      "koHandicapTooLarge": "Mức chấp tiếp sức tối đa phải nhỏ hơn mốc cuối ({target}).",
+      "minPlayersTooLow": "Cần ít nhất {minimum} VĐV để xếp đủ các set; hãy đặt từ {minimum} trở lên."
+    }
+  },
+  "Lineup": {
+    "violations": {
+      "SLOT_INCOMPLETE": "Chọn hai VĐV khác nhau cho set này.",
+      "NOT_PRESENT": "VĐV này chưa được điểm danh cho trận đấu.",
+      "MIN_SETS": "Mỗi VĐV có mặt phải đánh ít nhất {minimum} set.",
+      "MAX_SETS": "Mỗi VĐV chỉ được đánh tối đa {maximum} set.",
+      "CONSECUTIVE": "Một VĐV không được đánh hai set liên tiếp.",
+      "LOW_RANK_SLOT": "Cả hai VĐV trong set Rank thấp phải có rank {min}–{max}.",
+      "HIGH_RANK_SLOT": "Cả hai VĐV trong set Rank cao phải có rank {min}–{max}.",
+      "COMPENSATION": "Khi có mặt ít VĐV hơn đối thủ, VĐV rank {rank} duy nhất phải đánh ít nhất {minimum} set.",
+      "MIN_PRESENT": "Cần ít nhất {minimum} VĐV có mặt, nếu không đội có thể bị loại khỏi giải.",
+      "SUB_RANK": "VĐV thay người phải chênh tối đa {tolerance} rank so với VĐV được thay."
+    }
+  },
+  "Score": {
+    "violations": {
+      "SCORE_INVALID": "Nhập số nguyên từ 0 trở lên.",
+      "SCORE_INCOMPLETE": "Nhập điểm cho cả hai bên.",
+      "SET_TARGET": "Phải có đúng một bên đạt {target} điểm, bên còn lại dưới {target}.",
+      "BELOW_HANDICAP": "Điểm không được thấp hơn {handicap} điểm chấp.",
+      "LEG_MILESTONE": "Lượt này kết thúc khi một bên đạt {milestone} điểm.",
+      "LEG_DECREASING": "Điểm tiếp sức được cộng dồn, không được thấp hơn {previous}.",
+      "LEG_OUT_OF_ORDER": "Nhập lượt {leg} trước."
+    },
+    "warnings": {
+      "KO_CAP_REACHES_MILESTONE": "Mức chấp tối đa vòng loại trực tiếp ({cap}) đã chạm mốc đầu tiên ({milestone}), nên điểm chấp có thể quyết định lượt 1 trước khi bắt đầu."
+    }
+  },
+  "Disqualification": {
+    "errors": {
+      "NOT_IN_SEASON": "Đội này không có trận nào trong mùa giải.",
+      "NO_NEXT_MATCH": "Đội này không còn trận đấu loại trực tiếp nào để xử thua.",
+      "GROUP_CLOSED": "Vòng bảng đã chốt, không thể khôi phục đội này nữa."
+    }
+  },
+  "Auth": {
+    "signIn": "Đăng nhập",
+    "signingIn": "Đang đăng nhập…",
+    "email": "Email",
+    "password": "Mật khẩu",
+    "signInHint": "Tài khoản do BTC cấp. Quên mật khẩu, hãy nhờ BTC đặt lại.",
+    "signOut": "Đăng xuất",
+    "errors": {
+      "missing": "Nhập email và mật khẩu.",
+      "invalid": "Email hoặc mật khẩu không đúng.",
+      "inactive": "Tài khoản này đã bị vô hiệu hoá. Hãy liên hệ BTC.",
+      "failed": "Không đăng nhập được. Hãy thử lại sau."
+    },
+    "signedInAs": "Đăng nhập với {email}",
+    "changePassword": {
+      "title": "Đổi mật khẩu",
+      "mustChangeHint": "Bạn đang dùng mật khẩu tạm. Hãy đặt mật khẩu mới để tiếp tục.",
+      "hint": "Đặt mật khẩu mới cho tài khoản của bạn.",
+      "newPassword": "Mật khẩu mới",
+      "confirm": "Nhập lại mật khẩu mới",
+      "minLength": "Tối thiểu {min} ký tự.",
+      "submit": "Lưu mật khẩu",
+      "saving": "Đang lưu…",
+      "errors": {
+        "tooShort": "Mật khẩu mới phải có ít nhất {min} ký tự.",
+        "mismatch": "Hai mật khẩu không khớp.",
+        "samePassword": "Mật khẩu mới phải khác mật khẩu hiện tại.",
+        "weak": "Mật khẩu này quá yếu. Hãy chọn mật khẩu khác.",
+        "failed": "Không đổi được mật khẩu. Hãy thử lại sau."
+      }
+    }
+  }
+}

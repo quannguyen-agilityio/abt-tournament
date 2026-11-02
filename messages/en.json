@@ -1,0 +1,1271 @@
+{
+  "Metadata": {
+    "title": "ABT Tournament",
+    "description": "Web app for running the Agility Badminton Tournament (ABT)."
+  },
+  "Common": {
+    "language": "Language"
+  },
+  "Home": {
+    "title": "ABT Tournament",
+    "description": "Web app for running the Agility Badminton Tournament (ABT)."
+  },
+  "LocaleSwitcher": {
+    "switchTo": "Switch to {language}",
+    "vi": "Vietnamese",
+    "en": "English"
+  },
+  "Theme": {
+    "title": "Theme: {mode}",
+    "system": "System",
+    "light": "Light",
+    "dark": "Dark"
+  },
+  "Nav": {
+    "primary": "Main navigation",
+    "season": "Season",
+    "admin": "Admin",
+    "home": "Home",
+    "standings": "Standings",
+    "matches": "Schedule & results",
+    "bracket": "Knock-out",
+    "teams": "Teams",
+    "players": "Players",
+    "awards": "Side awards",
+    "rules": "Rules"
+  },
+  "Public": {
+    "provisional": "Provisional: group not closed yet",
+    "closed": "Group stage closed",
+    "stage": {
+      "semi_final": "Semi-final",
+      "third_place": "Third place",
+      "final": "Final",
+      "group": "Group stage"
+    },
+    "matchStatus": {
+      "scheduled": "Upcoming",
+      "lineup_locked": "Lineups locked",
+      "in_progress": "Live",
+      "completed": "Completed",
+      "forfeit": "Forfeit",
+      "annulled": "Annulled"
+    },
+    "standings": {
+      "title": "Standings",
+      "subtitle": "Group stage · {teams} teams · {played}/{total} matches",
+      "caption": "Group stage standings",
+      "empty": "No teams in this season yet.",
+      "cols": {
+        "pos": "#",
+        "team": "Team",
+        "played": "P",
+        "won": "W",
+        "lost": "L",
+        "points": "Pts",
+        "sets": "Sets",
+        "setDiff": "SD",
+        "pointsFor": "Points",
+        "pointDiff": "PD",
+        "why": "Decided by"
+      },
+      "colsFull": {
+        "played": "Played",
+        "won": "Won",
+        "lost": "Lost",
+        "points": "Points (matches won)",
+        "sets": "Sets won–lost",
+        "setDiff": "Set difference",
+        "pointsFor": "Points for–against",
+        "pointDiff": "Point difference"
+      },
+      "hint": {
+        "head_to_head": "head-to-head",
+        "mini_points": "mini-league: points",
+        "mini_set_diff": "mini-league: set difference",
+        "mini_point_diff": "mini-league: point difference",
+        "set_diff": "set difference",
+        "point_diff": "point difference",
+        "draw": "draw",
+        "draw_pending": "draw pending"
+      },
+      "topCount": "Top {count} go to the semi-finals",
+      "disqualifiedTitle": "Disqualified",
+      "disqualifiedNote": "Group matches of a disqualified team are annulled and do not count.",
+      "noReason": "No reason given",
+      "tiebreakTitle": "Tie-break order",
+      "tiebreak": "Points → head-to-head (2 teams) or mini-league (3+ teams: points, set difference, point difference among them) → overall set difference → overall point difference → draw."
+    },
+    "bracket": {
+      "title": "Knock-out",
+      "relayNote": "Relay: 5 legs to 25/50/75/100/125. The total handicap is added at the start of leg 1.",
+      "pending": "Teams are decided when the group stage closes.",
+      "pendingSeeds": "SF1 = #1 v #4 · SF2 = #2 v #3",
+      "seed": "Seed #{seed}",
+      "winnerOf": "Winner {code}",
+      "loserOf": "Loser {code}",
+      "seedNumber": "#{seed}",
+      "empty": "No match yet"
+    },
+    "groupRound": "Group · Round {round}",
+    "tbd": "TBD",
+    "home": {
+      "podium": "Final standings",
+      "placing": {
+        "champion": "Champion",
+        "runner_up": "Runner-up",
+        "third": "Third place"
+      },
+      "nowNext": "Now / Next",
+      "now": "Now playing",
+      "next": "Up next",
+      "latest": "Latest results",
+      "top": "Top {count}",
+      "seeAll": "See all",
+      "noSchedule": "The schedule has not been published yet.",
+      "nothingNext": "No match in progress or coming up.",
+      "noResults": "No results yet."
+    },
+    "refresh": {
+      "lastUpdated": "Updated at {time}",
+      "every": "refreshes every {seconds} s"
+    },
+    "matches": {
+      "subtitle": "{count, plural, one {# match} other {# matches}}",
+      "filters": "Filters",
+      "day": "Day",
+      "team": "Team",
+      "court": "Court",
+      "stage": "Stage",
+      "all": "All",
+      "stageGroup": "Group stage",
+      "stageKo": "Knock-out",
+      "clear": "Clear filters",
+      "empty": "No matches fit these filters.",
+      "noSchedule": "No schedule yet.",
+      "unscheduled": "Time to be announced"
+    },
+    "match": {
+      "referee": "Referee: {name}",
+      "sets": "Sets",
+      "legs": "Legs",
+      "set": "Set {no}",
+      "leg": "Leg {no}",
+      "slotType": {
+        "open": "Open",
+        "low": "Low-rank",
+        "high": "High-rank"
+      },
+      "rankSkill": "R{rank} · {skill}",
+      "rankSkillFull": "Rank {rank}, {skill} skill points",
+      "start": "+{points} start",
+      "toMilestone": "→ {milestone}",
+      "notPlayed": "Not played yet",
+      "winner": "Winner",
+      "lineupHidden": "Lineups are published once the match lineups are locked.",
+      "substitution": "Substitution",
+      "forfeitTitle": "{team} forfeits",
+      "noReason": "No reason given",
+      "forfeitGroup": "Recorded as {sets}–0 in sets and {target}–0 in every set.",
+      "forfeitKo": "Recorded as {target}–0; the winner advances.",
+      "annulledNote": "Annulled matches do not count toward the standings or player stats.",
+      "annulledReason": "{team} was disqualified: {reason}",
+      "relayStart": "Start handicap",
+      "relayCap": "cap {cap}",
+      "relayNoStart": "No start handicap",
+      "progress": "Progress to {target}"
+    },
+    "gender": {
+      "male": "Male",
+      "female": "Female"
+    },
+    "teams": {
+      "subtitle": "{count, plural, one {# team} other {# teams}}",
+      "empty": "No teams in this season yet.",
+      "captain": "Captain",
+      "captainOf": "Captain: {name}",
+      "noCaptain": "No captain yet",
+      "position": "#{position}",
+      "positionFull": "Position {position} in the standings",
+      "record": "{won}–{lost}",
+      "recordFull": "{won} won, {lost} lost",
+      "disqualified": "Disqualified",
+      "back": "Teams",
+      "roster": "Roster",
+      "rosterCaption": "Players of {team}, by rank",
+      "matches": "Matches",
+      "noPlayers": "No players in this team yet.",
+      "noMatches": "No matches scheduled yet.",
+      "withdrawn": "Withdrawn",
+      "cols": {
+        "rank": "Rank",
+        "player": "Player",
+        "skill": "Skill points",
+        "gender": "Gender"
+      },
+      "rank": "R{rank}"
+    },
+    "players": {
+      "subtitle": "{count, plural, one {# player} other {# players}}",
+      "filters": "Filters",
+      "team": "Team",
+      "rank": "Rank",
+      "gender": "Gender",
+      "all": "All",
+      "rankOption": "Rank {rank}",
+      "clear": "Clear filters",
+      "empty": "No players fit these filters.",
+      "noPlayers": "No players in this season yet.",
+      "noTeam": "No team yet",
+      "rankShort": "R{rank}",
+      "skillShort": "{skill} pts",
+      "rankSkillFull": "Rank {rank}, {skill} skill points",
+      "withdrawn": "Withdrawn"
+    },
+    "player": {
+      "back": "Players",
+      "avatar": "Photo of {name}",
+      "rank": "Rank {rank}",
+      "skill": "{skill} skill points",
+      "captain": "Captain",
+      "withdrawn": "Withdrawn",
+      "statsTitle": "Season stats",
+      "statsNote": "Group stage, completed matches only.",
+      "setsPlayed": "Sets played",
+      "setRecord": "Sets won–lost",
+      "points": "Points for–against",
+      "partner": "Most frequent partner",
+      "partnerSets": "× {sets}",
+      "partnerSetsFull": "{sets, plural, one {# set} other {# sets}} together",
+      "noPartner": "None yet",
+      "setsTitle": "Sets played",
+      "setsCaption": "Sets played by {name}",
+      "noSets": "No sets played yet.",
+      "cols": {
+        "match": "Match",
+        "set": "Set",
+        "partner": "Partner",
+        "opponents": "Opponents",
+        "score": "Score"
+      },
+      "set": "Set {no}",
+      "won": "Won",
+      "lost": "Lost",
+      "historyTitle": "History",
+      "historyRankSkill": "Rank {rank} · {skill} pts",
+      "noTeam": "No team"
+    },
+    "awards": {
+      "subtitle": "{count, plural, one {# side award} other {# side awards}}",
+      "empty": "No side awards yet.",
+      "sponsor": "Sponsor: {name}",
+      "winners": "Winners",
+      "pending": "To be announced",
+      "kind": {
+        "player": "Player",
+        "pair": "Pair",
+        "team": "Team"
+      },
+      "match": "Match {code}"
+    },
+    "rules": {
+      "subtitle": "A summary of the {season} rules. The numbers come from the season settings.",
+      "group": {
+        "title": "Group stage",
+        "format": "Single round-robin in one group. Each match is {sets} doubles sets to <b>{setTarget}</b>, no 2-point lead needed.",
+        "order": "Set order:",
+        "ranks": "Low-rank set: ranks <b>{lowMin}–{lowMax}</b> · High-rank set: ranks <b>{highMin}–{highMax}</b>.",
+        "sets": "Each player plays <b>{minSets}–{maxSets}</b> sets and never two in a row.",
+        "compensation": "Roster compensation: a team with fewer players present than its opponent and only one rank-{maxRank} player has that player play at least 2 sets.",
+        "points": "The team that wins more sets wins the match and gets 1 point in the standings."
+      },
+      "handicap": {
+        "title": "Handicap",
+        "group": "The pair with the lower total skill points starts with the difference, up to <b>{groupCap}</b> per set.",
+        "relay": "Knock-out: the signed differences of the {legs} legs are added up, capped at <b>{koCap}</b>, and given at the start of leg 1.",
+        "points": "Scoreboard points (handicap included) count toward point difference."
+      },
+      "ranking": {
+        "title": "Ranking",
+        "order": "Points → head-to-head (2 teams) or mini-table (3+ teams) → set difference → point difference → draw."
+      },
+      "knockout": {
+        "title": "Knock-out",
+        "seeds": "The top <b>{knockoutTeams}</b> teams reach the semi-finals: #1 v #4 and #2 v #3, then the third-place match and the final.",
+        "relay": "Relay of {legs} legs to <b>{finalMilestone}</b>, with milestones at {milestones}.",
+        "minPresent": "A team with fewer than <b>{minPresent}</b> players present is disqualified."
+      }
+    }
+  },
+  "MatchStatus": {
+    "scheduled": "Scheduled",
+    "lineup_locked": "Lineups locked",
+    "in_progress": "In progress",
+    "completed": "Completed",
+    "forfeit": "Forfeit",
+    "annulled": "Annulled"
+  },
+  "Admin": {
+    "title": "Admin",
+    "comingSoon": "Coming soon",
+    "badge": "Admin",
+    "role": "Role",
+    "roleBtc": "Organizing Committee",
+    "roleReferee": "Referee",
+    "navLabel": "Admin navigation",
+    "nav": {
+      "season": "Season",
+      "players": "Players & fees",
+      "teams": "Teams",
+      "schedule": "Schedule",
+      "matches": "Matches",
+      "closeGroup": "Close group",
+      "awards": "Side awards",
+      "users": "Users"
+    },
+    "players": {
+      "title": "Players & fees",
+      "subtitle": "{season} · {count, plural, one {# player} other {# players}}",
+      "back": "← Season",
+      "empty": "No players in this season yet.",
+      "summary": {
+        "collected": "Collected",
+        "expected": "Expected",
+        "paid": "Paid",
+        "paidValue": "{paid}/{total}",
+        "unpaid": "Unpaid"
+      },
+      "tableLabel": "Season players",
+      "columns": {
+        "player": "Player",
+        "gender": "Gender",
+        "rank": "Rank",
+        "skill": "Skill",
+        "team": "Team",
+        "memberType": "Member type",
+        "fee": "Fee",
+        "paid": "Paid",
+        "actions": "Actions"
+      },
+      "gender": {
+        "male": "Male",
+        "female": "Female"
+      },
+      "memberType": {
+        "employee": "Employee",
+        "intern": "Intern",
+        "guest": "Guest"
+      },
+      "noTeam": "No team",
+      "withdrawn": "Withdrawn",
+      "edit": "Edit",
+      "save": "Save",
+      "saving": "Saving…",
+      "cancel": "Cancel",
+      "withdraw": "Withdraw",
+      "reinstate": "Reinstate",
+      "paidLabel": "Fee paid by {name}",
+      "aria": {
+        "name": "Name of {name}",
+        "gender": "Gender of {name}",
+        "rank": "Rank of {name}",
+        "skill": "Skill points of {name}",
+        "team": "Team of {name}",
+        "memberType": "Member type of {name}",
+        "fee": "Fee of {name}"
+      },
+      "errors": {
+        "fullName": "Enter a name of at most {max} characters.",
+        "gender": "Choose a gender.",
+        "rank": "Rank must be a whole number from 1 to {maxRank}.",
+        "skillPoints": "Skill points must be a whole number from 0 to {max}.",
+        "team": "Choose a team of this season.",
+        "memberType": "Choose a member type.",
+        "feeAmount": "Fee must be a whole amount from 0 to {max}.",
+        "failed": "Could not update the player. Please try again later."
+      },
+      "import": {
+        "open": "Import CSV",
+        "title": "Import players from CSV",
+        "hint": "Required header: {header}. Columns can be in any order. gender: male or female. rank: a whole number from 1 to {maxRank}. skill_points: a whole number from 0 to {max}. member_type: employee, intern or guest. Up to {rows} rows. A name that matches an existing person updates that person.",
+        "file": "CSV file",
+        "csv": "CSV content",
+        "csvPlaceholder": "Choose a file above or paste the CSV here",
+        "preview": "Preview",
+        "previewing": "Checking…",
+        "apply": "Apply {count, plural, one {# row} other {# rows}}",
+        "applying": "Applying…",
+        "counts": {
+          "new": "New",
+          "changed": "Changed",
+          "unchanged": "Unchanged",
+          "invalid": "Invalid",
+          "ambiguous": "Needs a choice"
+        },
+        "columns": {
+          "line": "Line",
+          "name": "Name",
+          "status": "Result",
+          "details": "Details"
+        },
+        "kind": {
+          "new": "New",
+          "changed": "Changed",
+          "unchanged": "Unchanged",
+          "invalid": "Invalid",
+          "ambiguous": "Needs a choice"
+        },
+        "newPerson": "New person",
+        "existingPerson": "Existing person, new to this season",
+        "slug": "Slug: {slug}",
+        "unchangedNote": "No changes",
+        "invalidNote": "Will not be imported",
+        "choose": "Choose a person",
+        "chooseLabel": "Which person is line {line}?",
+        "createNew": "Create a new person",
+        "inSeason": "in this season",
+        "fields": {
+          "gender": "Gender",
+          "rank": "Rank",
+          "skillPoints": "Skill",
+          "memberType": "Member type"
+        },
+        "rowErrors": {
+          "fullName": "Name must be 1 to {max} characters with at least one letter or digit",
+          "gender": "Gender must be male or female",
+          "rank": "Rank must be a whole number from 1 to {maxRank}",
+          "skillPoints": "Skill points must be a whole number from 0 to {max}",
+          "memberType": "Member type must be employee, intern or guest",
+          "duplicate": "Same person as an earlier row"
+        },
+        "result": "Imported {applied, plural, one {# player} other {# players}}, skipped {skipped, plural, one {# invalid row} other {# invalid rows}}.",
+        "errors": {
+          "failed": "Could not read or import the file. Please try again later.",
+          "tooLarge": "The file is too large (200 KB at most).",
+          "empty": "The file is empty.",
+          "header": "The header must contain full_name, gender, rank, skill_points and member_type.",
+          "tooMany": "Too many rows (500 at most).",
+          "unresolved": "Choose a person for every row that needs a choice, then try again.",
+          "conflict": "Someone else changed the players meanwhile. Preview again before applying."
+        }
+      }
+    },
+    "teams": {
+      "title": "Teams",
+      "subtitle": "{season} · {count, plural, one {# team} other {# teams}} · {players, plural, one {# player} other {# players}}",
+      "back": "← Season",
+      "empty": "No teams yet. Add a team or import the draw.",
+      "dragHint": "Drag players between teams, or use the team menu on each row. The captain defaults to the team's Rank 1 player.",
+      "add": "Add team",
+      "addTitle": "New team",
+      "create": "Create",
+      "name": "Name",
+      "color": "Color",
+      "nameOf": "Name of {name}",
+      "colorOf": "Color of {name}",
+      "save": "Save",
+      "saving": "Saving…",
+      "delete": "Delete",
+      "captain": "Captain",
+      "makeCaptain": "Captain?",
+      "makeCaptainLabel": "Make {name} captain",
+      "moveLabel": "Team of {name}",
+      "noTeam": "No team",
+      "withdrawn": "Withdrawn",
+      "unassigned": "No team",
+      "emptyTeam": "Drop players here.",
+      "rosterCount": "{count, plural, one {# active player} other {# active players}}",
+      "warnings": {
+        "title": "Check the teams",
+        "missingRanks": "{team} has no {ranks} player.",
+        "sizes": "Team sizes differ: {sizes}.",
+        "unassigned": "{count, plural, one {# active player has} other {# active players have}} no team."
+      },
+      "errors": {
+        "name": "Enter a name of at most {max} characters.",
+        "color": "Choose a color.",
+        "notEmpty": "Move the players out before deleting the team.",
+        "inUse": "This team already has matches and cannot be deleted.",
+        "failed": "Could not save the change. Please try again later."
+      },
+      "draw": {
+        "open": "Import draw",
+        "title": "Import the draw from CSV",
+        "hint": "Required header: {header}. Columns can be in any order. Each player of this season is matched by name or slug. A team name the season does not have yet creates that team. Players the file does not list keep their team. Up to {rows} rows.",
+        "file": "CSV file",
+        "csv": "CSV content",
+        "csvPlaceholder": "Choose a file above or paste the CSV here",
+        "preview": "Preview",
+        "previewing": "Checking…",
+        "apply": "Apply {count, plural, one {# move} other {# moves}}",
+        "applying": "Applying…",
+        "kind": {
+          "assign": "Move",
+          "unchanged": "Unchanged",
+          "invalid": "Invalid"
+        },
+        "newTeams": "New teams: {names}",
+        "columns": {
+          "line": "Line",
+          "name": "Player",
+          "status": "Result",
+          "details": "Details"
+        },
+        "noTeam": "No team",
+        "newTeam": "new team",
+        "unchangedNote": "Already in {team}",
+        "invalidNote": "Will not be imported",
+        "rowErrors": {
+          "fullName": "The player name is empty",
+          "teamName": "Team name must be 1 to {max} characters",
+          "unknownPlayer": "No player of this season has this name",
+          "ambiguousPlayer": "Several players of this season have this name; use the slug instead",
+          "duplicate": "Same player as an earlier row"
+        },
+        "result": "Assigned {applied, plural, one {# player} other {# players}}, skipped {skipped, plural, one {# invalid row} other {# invalid rows}}.",
+        "errors": {
+          "failed": "Could not read or import the file. Please try again later.",
+          "tooLarge": "The file is too large (100 KB at most).",
+          "empty": "The file is empty.",
+          "header": "The header must contain full_name and team_name.",
+          "tooMany": "Too many rows (500 at most)."
+        }
+      }
+    },
+    "schedule": {
+      "title": "Schedule",
+      "back": "← Season",
+      "subtitle": "{season} · {count, plural, one {# match} other {# matches}} · {teams, plural, one {# team} other {# teams}}",
+      "regenerateHint": "Regenerating is allowed until a group match has a lineup or a score.",
+      "lockedHint": "A group match already has a lineup or a score, so the round-robin can no longer be regenerated.",
+      "generate": "Generate round-robin",
+      "regenerate": "Regenerate round-robin",
+      "regenerateConfirm": "Replace every group match? Dates, times, courts and referees are cleared.",
+      "cancel": "Cancel",
+      "generating": "Generating…",
+      "generated": "{count, plural, one {# match} other {# matches}} generated.",
+      "empty": "No matches yet. Generate the round-robin to start.",
+      "needTeams": "Add at least 2 teams before generating the round-robin.",
+      "noMatchDays": "The season has no match days yet. <link>Add them on the season page</link> to place matches.",
+      "dayEmpty": "No matches on this day yet.",
+      "gridLabel": "Matches on {day}",
+      "unscheduled": "Not scheduled · {count}",
+      "assign": "Assign slots",
+      "assignHint": "Pick a day, a time ({timezone}), a court and a referee for each match. Clearing the day and time unschedules the match.",
+      "slotOf": "Slot of {code}",
+      "date": "Day",
+      "time": "Time",
+      "court": "Court",
+      "referee": "Referee",
+      "noDate": "No day",
+      "noCourt": "No court",
+      "noReferee": "No referee",
+      "refereeIs": "Referee: {name}",
+      "tbd": "TBD",
+      "save": "Save",
+      "saving": "Saving…",
+      "conflicts": {
+        "title": "Schedule conflicts",
+        "none": "No conflicts.",
+        "team": "{when}: {subject} plays twice at once ({matches}).",
+        "referee": "{when}: referee {subject} is booked twice ({matches}).",
+        "court": "{when}: {subject} has two matches at once ({matches})."
+      },
+      "errors": {
+        "teams": "Add at least 2 teams first.",
+        "locked": "A group match already has a lineup or a score, so the schedule cannot be regenerated.",
+        "failed": "Could not save the change. Please try again later.",
+        "dateTime": "Pick both a day and a time, or clear both.",
+        "court": "Choose a court of this season.",
+        "referee": "Choose an active account as referee."
+      }
+    },
+    "closeGroup": {
+      "back": "← Season",
+      "title": "Close group",
+      "subtitle": "{season} · {played} of {total} group matches played",
+      "provisional": "Provisional: group not closed yet",
+      "notGroup": "The group stage is not running ({status, select, draft {draft} published {published} knockout {knock-out} finished {finished} other {other}}), so there is nothing to close.",
+      "unfinished": "{count, plural, one {# group match is} other {# group matches are}} still to be played. The group closes once every group match is completed, forfeited or annulled.",
+      "draw": {
+        "title": "Draw",
+        "hint": "These teams are still level after every tie-break. Drag them, or use the arrows, into the order of the draw result.",
+        "none": "Every team is separated before the draw step.",
+        "group": "Tied group {n}",
+        "moveUp": "Move {team} up",
+        "moveDown": "Move {team} down",
+        "note": "Note",
+        "noteRequired": "Required: record how and when the draw was made.",
+        "noteOptional": "Optional."
+      },
+      "submit": "Close group & seed bracket",
+      "submitting": "Closing…",
+      "confirm": "Close the group? The order is locked, the season moves to the knock-out and the semi-finals are seeded:\n{bracket}",
+      "confirmBracket": "SF1: {s1} – {s4}\nSF2: {s2} – {s3}",
+      "errors": {
+        "unfinished": "A group match is still to be played.",
+        "teams": "The bracket needs more teams than the standings have.",
+        "note": "Enter a note about the draw.",
+        "changed": "The results changed since the page loaded. Reload the page and check the draw again.",
+        "status": "The season is not in the group stage, or the group is already closed. Reload the page.",
+        "bracketStarted": "A bracket match has already started.",
+        "failed": "The group could not be closed. Please try again."
+      },
+      "closed": {
+        "badge": "Group stage closed",
+        "at": "Closed {when} by {by}.",
+        "drawn": "Drawn by hand: {teams}.",
+        "note": "Note: {note}",
+        "locked": "The group can no longer be reopened because the bracket has started."
+      },
+      "reopen": {
+        "submit": "Reopen group",
+        "submitting": "Reopening…",
+        "hint": "Allowed while no bracket match has started.",
+        "confirm": "Reopen the group? The final order is removed, the season goes back to the group stage and the bracket teams are cleared.",
+        "errors": {
+          "status": "The group is not closed. Reload the page.",
+          "bracketStarted": "The group can no longer be reopened because the bracket has started.",
+          "failed": "The group could not be reopened. Please try again."
+        }
+      },
+      "bracket": {
+        "title": "Bracket",
+        "tbd": "To be decided",
+        "auto": "SF1 = #1 v #4, SF2 = #2 v #3, the higher seed at home. 3RD and F are filled automatically when both semi-finals finish."
+      }
+    },
+    "awards": {
+      "back": "← Season",
+      "title": "Side awards",
+      "subtitle": "{season} · {count, plural, one {# side award} other {# side awards}}",
+      "add": "+ Add award",
+      "empty": "No side awards yet. Add the first one alongside.",
+      "list": {
+        "label": "Side award order",
+        "hint": "Drag, or use the arrows, to set the order on the public page.",
+        "moveUp": "Move {name} up",
+        "moveDown": "Move {name} down",
+        "pending": "Not awarded",
+        "winners": "{count, plural, one {# winner} other {# winners}}",
+        "saving": "Saving the order…",
+        "errors": {
+          "changed": "The award list changed since the page loaded. Reload the page and try again.",
+          "failed": "Could not save the order. Try again."
+        }
+      },
+      "form": {
+        "newTitle": "New award",
+        "editTitle": "Edit award",
+        "nameVi": "Name (VI)",
+        "nameEn": "Name (EN)",
+        "criteriaVi": "Criteria (VI)",
+        "criteriaEn": "Criteria (EN)",
+        "enHint": "Optional. When blank, the English page shows the Vietnamese text.",
+        "sponsor": "Sponsor",
+        "value": "Value (VND)",
+        "valueHint": "Optional, e.g. 1,000,000.",
+        "note": "Note",
+        "noteHint": "Not shown on the public page.",
+        "cancel": "Cancel",
+        "save": "Save",
+        "create": "Create award",
+        "saving": "Saving…",
+        "saved": "Saved.",
+        "delete": "Delete award",
+        "deleting": "Deleting…",
+        "deleteConfirm": "Delete the award “{name}” and all its winners? This cannot be undone.",
+        "errors": {
+          "name": "Enter the award name (VI).",
+          "value": "The value must be a whole, non-negative amount.",
+          "tooLong": "A field is too long.",
+          "failed": "Could not save the award. Try again."
+        },
+        "deleteFailed": "Could not delete the award. Try again."
+      },
+      "winners": {
+        "title": "Winners",
+        "empty": "Nobody has won this award yet.",
+        "saveFirst": "Save the award first, then add its winners.",
+        "kind": "Kind",
+        "kinds": {
+          "player": "Player",
+          "pair": "Pair",
+          "team": "Team"
+        },
+        "player": "Player",
+        "player1": "Player 1",
+        "player2": "Player 2",
+        "team": "Team",
+        "choose": "— Choose —",
+        "noTeam": "No team",
+        "match": "Related match",
+        "noMatch": "None",
+        "matchHint": "Optional. Only the winning team's matches are listed.",
+        "matchCode": "Match {code}",
+        "note": "Note",
+        "add": "+ Add winner",
+        "adding": "Adding…",
+        "remove": "Remove",
+        "removeLabel": "Remove {name}",
+        "removeConfirm": "Remove {name} from this award?",
+        "errors": {
+          "kind": "Choose the kind of winner.",
+          "members": "Choose the players: 1 for a player, 2 different ones for a pair.",
+          "sameTeam": "Both players of a pair must be on the same team.",
+          "team": "Choose a team of the season.",
+          "match": "The related match must be one of the winning team's matches.",
+          "tooLong": "The note is too long.",
+          "failed": "That did not work. Try again."
+        }
+      }
+    },
+    "seasons": {
+      "title": "Seasons",
+      "count": "{count, plural, one {# season} other {# seasons}}",
+      "tableLabel": "Seasons",
+      "year": "Year",
+      "name": "Name",
+      "venue": "Venue",
+      "statusHeader": "Status",
+      "actions": "Actions",
+      "empty": "No seasons yet.",
+      "current": "Current",
+      "open": "Open",
+      "status": {
+        "draft": "Draft",
+        "published": "Published",
+        "group": "Group stage",
+        "knockout": "Knockout",
+        "finished": "Finished"
+      },
+      "create": {
+        "title": "Create season",
+        "year": "Year",
+        "name": "Season name",
+        "namePlaceholder": "ABT {year}",
+        "nameHint": "Leave blank to use the default name.",
+        "venue": "Venue (optional)",
+        "source": "Start from",
+        "sourceNone": "Default rules (empty season)",
+        "sourceClone": "Clone {name}",
+        "sourceHint": "Cloning keeps the settings, courts and active players, but no teams. The new season starts as a draft.",
+        "submit": "Create season",
+        "saving": "Creating…",
+        "errors": {
+          "year": "Enter a year between {min} and {max}.",
+          "name": "The season name is at most {nameMax} characters.",
+          "venue": "The venue is at most {venueMax} characters.",
+          "source": "Pick the season to clone again.",
+          "yearTaken": "A season for this year already exists.",
+          "failed": "Could not create the season. Please try again later."
+        }
+      },
+      "detail": {
+        "back": "← All seasons",
+        "title": "Season",
+        "stepperLabel": "Season status",
+        "move": {
+          "published": "Move to Published",
+          "group": "Move to Group stage",
+          "knockout": "Move to Knockout",
+          "finished": "Move to Finished",
+          "unpublish": "Unpublish (back to draft)"
+        },
+        "blocked": {
+          "closeGroup": "Close the group stage to start the knock-out.",
+          "current": "The current season must stay public, so it cannot be unpublished. Set another season as current first."
+        },
+        "finishedHint": "This season is finished.",
+        "statusErrors": {
+          "transition": "This status change is not allowed. Reload the page and try again.",
+          "failed": "Could not change the status. Please try again later."
+        },
+        "isCurrent": "This is the current season",
+        "setCurrent": "Set as current season",
+        "setCurrentHint": "The home page redirects to the current season.",
+        "setCurrentDraft": "Publish the season before setting it as current.",
+        "currentErrors": {
+          "draft": "A draft season cannot be the current one. Publish it first.",
+          "failed": "Could not set the current season. Please try again later."
+        },
+        "year": "Year",
+        "yearHint": "The year identifies the season, so it cannot be changed.",
+        "name": "Season name",
+        "venue": "Venue",
+        "matchDays": "Match days",
+        "matchDay": "Match day {number}",
+        "matchDaysEmpty": "No match days yet.",
+        "addDay": "Add day",
+        "removeDay": "Remove",
+        "save": "Save",
+        "saving": "Saving…",
+        "saved": "Saved.",
+        "errors": {
+          "name": "Enter a season name of at most {nameMax} characters.",
+          "venue": "The venue is at most {venueMax} characters.",
+          "failed": "Could not save. Please try again later."
+        }
+      },
+      "settings": {
+        "title": "Rules parameters",
+        "setTarget": "Set target",
+        "setsPerMatch": "Sets per match",
+        "maxRank": "Lowest rank",
+        "groupHandicapCap": "Group handicap cap",
+        "koHandicapCap": "Knockout handicap cap",
+        "perSet": "per set",
+        "perMatch": "per match",
+        "minPlayersPresent": "Minimum players present",
+        "minSetsPerPlayer": "Minimum sets per player",
+        "maxSetsPerPlayer": "Maximum sets per player",
+        "slotTypes": "Set order",
+        "slotLabel": "Set {number}",
+        "slot": {
+          "open": "Open",
+          "low": "Low-rank",
+          "high": "High-rank"
+        },
+        "slotHint": "One per set, following \"Sets per match\". Group stage and relay use the same order.",
+        "lowRange": "Ranks for a Low-rank set",
+        "highRange": "Ranks for a High-rank set",
+        "rangeMin": "From rank",
+        "rangeMax": "To rank",
+        "relayMilestones": "Relay milestones",
+        "relayMilestonesHint": "One per leg, separated by commas or spaces. Example: 25, 50, 75, 100, 125.",
+        "fees": "Fees (VND)",
+        "feeEmployee": "Employee",
+        "feeIntern": "Intern",
+        "feeGuest": "Guest",
+        "prizes": "Prizes (VND)",
+        "prizeChampion": "Champion",
+        "prizeRunnerUp": "Runner-up",
+        "prizeThird": "Third place",
+        "prizesHint": "Shown on the home page once the season is finished. Leave 0 for no prize.",
+        "timezone": "Time zone",
+        "knockoutTeams": "Knockout teams",
+        "knockoutTeamsHint": "Fixed at 4 teams (semi-finals 1 v 4 and 2 v 3).",
+        "appliesLater": "Changes only apply to matches created afterwards: the set order is copied into a match when it is created.",
+        "fixErrors": "{count, plural, one {# error} other {# errors}} to fix before saving.",
+        "failed": "Could not save the parameters. Please try again later.",
+        "saved": "Parameters saved.",
+        "save": "Save parameters",
+        "saving": "Saving…"
+      },
+      "courts": {
+        "title": "Courts",
+        "empty": "No courts yet.",
+        "listLabel": "Courts in order",
+        "nameOf": "Name of court {number}",
+        "rename": "Save name",
+        "moveUp": "Move {name} up",
+        "moveDown": "Move {name} down",
+        "delete": "Delete",
+        "new": "New court name",
+        "newPlaceholder": "New court name",
+        "add": "Add court",
+        "errors": {
+          "name": "Enter a court name of at most {max} characters.",
+          "inUse": "This court is used by a match, so it cannot be deleted.",
+          "failed": "Could not update the courts. Please try again later."
+        }
+      }
+    },
+    "users": {
+      "title": "Users",
+      "count": "{count, plural, one {# account} other {# accounts}}",
+      "tableLabel": "Accounts",
+      "name": "Name",
+      "email": "Email",
+      "status": "Status",
+      "actions": "Actions",
+      "you": "(you)",
+      "statusActive": "Active",
+      "statusMustChange": "Must change password",
+      "statusInactive": "Deactivated",
+      "deactivate": "Deactivate",
+      "reactivate": "Reactivate",
+      "resetPassword": "Reset password",
+      "empty": "No accounts yet.",
+      "create": {
+        "title": "Create account",
+        "displayName": "Display name",
+        "email": "Email",
+        "role": "Role",
+        "password": "Temporary password",
+        "passwordHint": "The user must change it at first sign-in. At least {min} characters.",
+        "generate": "Generate",
+        "submit": "Create account",
+        "saving": "Creating…",
+        "success": "Account created for {email}. Give them the temporary password.",
+        "errors": {
+          "email": "Enter a valid email address.",
+          "displayName": "Enter a display name of up to {max} characters.",
+          "role": "Choose a role.",
+          "tooShort": "The temporary password needs at least {min} characters.",
+          "emailTaken": "An account with this email already exists.",
+          "weak": "This password is too weak. Choose another one.",
+          "failed": "Could not create the account. Try again later."
+        }
+      },
+      "reset": {
+        "newPassword": "New temporary password",
+        "submit": "Reset",
+        "saving": "Resetting…",
+        "success": "Password reset. They must change it at next sign-in.",
+        "errors": {
+          "tooShort": "The temporary password needs at least {min} characters.",
+          "weak": "This password is too weak. Choose another one.",
+          "self": "You cannot do this to your own account.",
+          "failed": "Could not reset the password. Try again later."
+        }
+      },
+      "toggleErrors": {
+        "self": "You cannot deactivate your own account.",
+        "failed": "Could not update the account. Try again later."
+      }
+    },
+    "matches": {
+      "title": "Matches",
+      "subtitle": "{season} · {count, plural, one {# match} other {# matches}}",
+      "noSeason": "There is no current season yet.",
+      "empty": "This season has no matches yet. The committee creates them on the Schedule page.",
+      "unscheduled": "No time yet",
+      "noCourt": "No court yet",
+      "tbd": "TBD",
+      "groups": {
+        "mine": "My matches · {count}",
+        "today": "Today · {count}",
+        "rest": "Other matches · {count}"
+      }
+    },
+    "match": {
+      "back": "← Matches",
+      "stage": {
+        "group": "Group stage",
+        "semi_final": "Semi-final",
+        "third_place": "Third place",
+        "final": "Final"
+      },
+      "noCourt": "No court yet",
+      "unscheduled": "No time yet",
+      "tbd": "The teams of this match are not decided yet.",
+      "stepsLabel": "Match steps",
+      "steps": {
+        "attendance": "Attendance",
+        "lineup": "Lineups",
+        "lock": "Lock",
+        "scores": "Scores",
+        "done": "Complete"
+      },
+      "attendance": {
+        "hint": "Tick the players present for each team, then save. Each team needs at least {minimum} present.",
+        "count": "{count}/{total} present",
+        "noPlayers": "This team has no players yet.",
+        "belowMinimum": "Only {count} present (minimum {minimum}). The match cannot start.",
+        "disqualify": "Disqualify team",
+        "save": "Save attendance",
+        "saving": "Saving…",
+        "saved": "Saved",
+        "locked": "The lineups are locked, so attendance can no longer change.",
+        "errors": {
+          "locked": "The lineups are locked, so attendance can no longer change. Reload the page.",
+          "invalid": "This list is not valid. Reload the page and try again.",
+          "failed": "Could not save the attendance. Please try again."
+        }
+      },
+      "lineup": {
+        "hint": "Pick two players per set. Each list shows only the present players whose rank fits the set, and the rules are checked as you pick.",
+        "previewHandicap": "Handicap preview",
+        "relayNet": "(net {net}, cap {cap})",
+        "relayPending": "Pick every leg for both teams to see the start points.",
+        "violationCount": "{count, plural, one {# violation} other {# violations}}",
+        "accepted": "Accepted by the committee",
+        "valid": "Lineup is valid",
+        "set": "Set {no}",
+        "leg": "Leg {no}",
+        "slotType": {
+          "open": "Open",
+          "low": "Low-rank",
+          "high": "High-rank"
+        },
+        "pickLabel": "Set {slot}, player {position}",
+        "pick": "— Pick a player —",
+        "absent": "(not present)",
+        "startHint": "Start points for this pair",
+        "violations": "Violations",
+        "overrideReason": "Override reason",
+        "overrideHint": "Saving records that the committee accepts these violations, with this reason.",
+        "notOverridable": "A team below the minimum present cannot be accepted. Disqualify the team instead.",
+        "refereeBlocked": "Referees cannot save a lineup with violations. Ask the committee.",
+        "save": "Save lineup",
+        "saveOverride": "Save with override",
+        "saving": "Saving…",
+        "saved": "Saved",
+        "errors": {
+          "locked": "The lineups are locked. Reload the page.",
+          "invalid": "This lineup is not valid. Reload the page and try again.",
+          "violations": "This lineup breaks the rules and cannot be saved.",
+          "reason": "Enter a reason to accept the violations.",
+          "failed": "Could not save the lineup. Please try again."
+        }
+      },
+      "sideActions": {
+        "substitute": "Substitute",
+        "forfeit": "Forfeit",
+        "disqualify": "Disqualify team"
+      },
+      "substitute": {
+        "title": "Substitute a player",
+        "hint": "Replace a player in a set or leg that has no score yet. The substitute's rank must be within one of the player they replace, and the start points are recomputed.",
+        "team": "Team",
+        "slot": "Set or leg",
+        "pickSlot": "— Pick a set or leg —",
+        "pickPlayer": "— Pick a player —",
+        "out": "Player out",
+        "in": "Player in",
+        "reason": "Reason (optional)",
+        "overrideReason": "Override reason",
+        "refereeBlocked": "Referees cannot make this substitution. Ask the committee.",
+        "submit": "Substitute",
+        "submitting": "Substituting…",
+        "saved": "Substitution saved",
+        "errors": {
+          "closed": "Substitutions are closed for this match. Reload the page.",
+          "invalid": "This substitution is not valid. Reload the page and try again.",
+          "scored": "This set or leg already has a score, so its players cannot change.",
+          "violations": "This substitution breaks the lineup rules and cannot be made.",
+          "reason": "Enter a reason to accept the violations.",
+          "changed": "The match changed in the meantime. Reload the page and try again.",
+          "failed": "Could not save the substitution. Please try again."
+        }
+      },
+      "lock": {
+        "hint": "Both lineups are ready. Locking takes the handicap snapshot and makes the lineups public.",
+        "notReady": "Save both lineups with no open violations to lock them.",
+        "lock": "Lock lineups",
+        "locking": "Locking…",
+        "errors": {
+          "locked": "The lineups are already locked. Reload the page.",
+          "invalid": "This match cannot be locked. Reload the page.",
+          "violations": "A lineup has violations the committee has not accepted. Reload the page.",
+          "incomplete": "Every set needs two players on each side.",
+          "changed": "A lineup changed in the meantime. Reload the page and try again.",
+          "failed": "Could not lock the lineups. Please try again."
+        },
+        "locked": "The lineups are locked and public. From now on, changes go through substitutions.",
+        "relayStart": "Start of leg 1",
+        "substitution": "Substitution",
+        "unlock": "Unlock lineups",
+        "unlocking": "Unlocking…",
+        "unlockHint": "Moves the match back to the lineup step and clears the handicaps. The audit log records who unlocked it.",
+        "unlockConfirm": "Unlock the lineups of {code}?",
+        "unlockErrors": {
+          "notLocked": "The lineups are no longer locked. Reload the page.",
+          "invalid": "Only the committee can unlock lineups.",
+          "failed": "Could not unlock the lineups. Please try again."
+        }
+      },
+      "scores": {
+        "hint": "Enter each set's final score and save the row. A pair with start points begins from them, and a set ends when one side reaches {target}.",
+        "hintRelay": "Enter the running score at the end of each leg, in order, and save it. Leg 1 starts from the start points, each leg ends when one side reaches its milestone, and the side that reaches {milestone} wins.",
+        "setsWon": "Sets won",
+        "relayScore": "Score",
+        "relayStart": "Start of leg 1",
+        "toMilestone": "to {milestone}",
+        "scoreLabel": "{slot}, {team} score",
+        "save": "Save",
+        "saving": "Saving…",
+        "retry": "Retry",
+        "saved": "Saved",
+        "unsaved": "Not saved",
+        "readOnly": "The match is completed, so its scores are read-only.",
+        "errors": {
+          "closed": "Scores can no longer change for this match. Reload the page.",
+          "invalid": "This score is not valid. Reload the page and try again.",
+          "violations": "This score breaks the rules and was not saved.",
+          "changed": "Another score was saved in the meantime and the page was updated. Check this row and save again.",
+          "failed": "Could not save the score. Please try again.",
+          "network": "No connection. The score is kept here: retry when you are back online."
+        }
+      },
+      "complete": {
+        "winner": "Winner",
+        "notReady": "Save every set with a valid score to complete the match.",
+        "complete": "Complete match",
+        "completing": "Completing…",
+        "confirm": "Complete {code}? {team} wins {score}. After this, only the committee can reopen the match.",
+        "errors": {
+          "notReady": "The saved scores do not decide the match yet. Reload the page.",
+          "closed": "This match cannot be completed now. Reload the page.",
+          "invalid": "This match cannot be completed. Reload the page.",
+          "changed": "A score changed in the meantime. Reload the page and try again.",
+          "failed": "Could not complete the match. Please try again."
+        },
+        "completed": "The match is completed.",
+        "reopen": "Reopen match",
+        "reopening": "Reopening…",
+        "reopenHint": "Moves the match back to score entry and clears the winner, so a score can be corrected. The audit log records who reopened it.",
+        "reopenConfirm": "Reopen {code}?",
+        "reopenErrors": {
+          "notCompleted": "The match is no longer completed. Reload the page.",
+          "invalid": "Only the committee can reopen a match.",
+          "failed": "Could not reopen the match. Please try again."
+        }
+      },
+      "forfeit": {
+        "title": "Forfeit the match",
+        "hint": "Records a forfeit for the team that cannot play. Lineups and handicaps are ignored. The reason is shown publicly.",
+        "team": "Team that forfeits",
+        "reason": "Reason",
+        "reasonHint": "Shown on the public match page.",
+        "previewGroup": "{team} wins {sets} ({target} every set)",
+        "previewKo": "{team} wins {score} and advances",
+        "confirm": "Forfeit {code}? {team} forfeits and {result}. After this, the match is closed.",
+        "submit": "Record forfeit",
+        "submitting": "Recording…",
+        "result": {
+          "title": "Forfeited",
+          "team": "forfeits",
+          "reason": "Reason: {reason}"
+        },
+        "errors": {
+          "closed": "This match can no longer be forfeited. Reload the page.",
+          "invalid": "This forfeit is not valid. Reload the page and try again.",
+          "reason": "Enter the reason for the forfeit.",
+          "forbidden": "You cannot forfeit this match.",
+          "failed": "Could not record the forfeit. Please try again."
+        }
+      },
+      "disqualify": {
+        "title": "Disqualify a team",
+        "hint": "In the group stage, every group match of the team is annulled, played ones included, and the team leaves the standings. In the knock-out, its next match is forfeited and the opponent advances.",
+        "team": "Team to disqualify",
+        "reason": "Reason",
+        "reasonHint": "Shown on the public pages of the affected matches.",
+        "affectedGroup": "These group matches will be annulled:",
+        "affectedKo": "This knock-out match will be forfeited:",
+        "noMatches": "No match changes: every group match of this team is already annulled.",
+        "confirm": "Disqualify {team}? {count, plural, =0 {No match changes.} one {This match changes:} other {These # matches change:}}\n{matches}",
+        "submit": "Disqualify team",
+        "submitting": "Disqualifying…",
+        "errors": {
+          "invalid": "This disqualification is not valid. Reload the page and try again.",
+          "reason": "Enter the reason for the disqualification.",
+          "disqualified": "This team is already disqualified. Reload the page.",
+          "noNextMatch": "This team has no knock-out match left to forfeit.",
+          "changed": "The matches changed in the meantime. Reload the page and check the list again.",
+          "forbidden": "Only the Organizing Committee can disqualify a team.",
+          "failed": "Could not disqualify the team. Please try again."
+        }
+      },
+      "annulled": {
+        "title": "Annulled",
+        "hint": "This match does not count toward the standings or the player stats.",
+        "disqualified": "was disqualified",
+        "reason": "Reason: {reason}",
+        "restores": "Reinstating restores these matches:",
+        "reinstate": "Reinstate {team}",
+        "confirm": "Reinstate {team}? {count, plural, =0 {No match changes.} one {This match is restored:} other {These # matches are restored:}}\n{matches}",
+        "submitting": "Reinstating…",
+        "errors": {
+          "invalid": "This reinstatement is not valid. Reload the page and try again.",
+          "notDisqualified": "This team is not disqualified. Reload the page.",
+          "groupClosed": "The group stage is closed, so the team can no longer be reinstated.",
+          "changed": "The matches changed in the meantime. Reload the page and check the list again.",
+          "forbidden": "Only the Organizing Committee can reinstate a team.",
+          "failed": "Could not reinstate the team. Please try again."
+        }
+      }
+    }
+  },
+  "SeasonSettings": {
+    "errors": {
+      "invalid": "This value is not valid.",
+      "invalidType": "This value has the wrong type.",
+      "notInteger": "Enter a whole number.",
+      "tooSmall": "Must be at least {minimum}.",
+      "tooBig": "Must be at most {maximum}.",
+      "tooFewItems": "Add at least {minimum} item(s).",
+      "invalidValue": "Choose one of: {values}.",
+      "unknownKeys": "Unknown setting(s): {keys}.",
+      "invalidTimezone": "Enter a valid IANA time zone, e.g. Asia/Ho_Chi_Minh.",
+      "rankRangeReversed": "The lowest rank in the range must not be greater than the highest.",
+      "rankRangeAboveMaxRank": "The range must stay within ranks 1–{maxRank}.",
+      "slotCountMismatch": "List exactly {count} set types, one per set.",
+      "milestoneCountMismatch": "List exactly {count} relay milestones, one per leg.",
+      "milestonesNotIncreasing": "Each relay milestone must be higher than the one before it.",
+      "setsPerPlayerReversed": "The minimum sets per player must not exceed the maximum.",
+      "groupHandicapTooLarge": "The handicap cap must be below the set target ({target}).",
+      "koHandicapTooLarge": "The relay handicap cap must be below the final milestone ({target}).",
+      "minPlayersTooLow": "At least {minimum} players are needed to fill every set; raise this to {minimum} or more."
+    }
+  },
+  "Lineup": {
+    "violations": {
+      "SLOT_INCOMPLETE": "Pick two different players for this set.",
+      "NOT_PRESENT": "This player is not checked in for this match.",
+      "MIN_SETS": "Every present player must play at least {minimum} set(s).",
+      "MAX_SETS": "A player may play at most {maximum} sets.",
+      "CONSECUTIVE": "A player cannot play two sets in a row.",
+      "LOW_RANK_SLOT": "Both players in a low-rank set must be rank {min}–{max}.",
+      "HIGH_RANK_SLOT": "Both players in a high-rank set must be rank {min}–{max}.",
+      "COMPENSATION": "With fewer players present than the opponent, the only rank-{rank} player must play at least {minimum} sets.",
+      "MIN_PRESENT": "At least {minimum} players must be present. Otherwise the team can be disqualified.",
+      "SUB_RANK": "A substitute must be within {tolerance} rank of the player they replace."
+    }
+  },
+  "Score": {
+    "violations": {
+      "SCORE_INVALID": "Enter a whole number of 0 or more.",
+      "SCORE_INCOMPLETE": "Enter the score for both sides.",
+      "SET_TARGET": "Exactly one side must reach {target} and the other must be below it.",
+      "BELOW_HANDICAP": "The score cannot be below the {handicap} start points.",
+      "LEG_MILESTONE": "This leg ends when one side reaches {milestone}.",
+      "LEG_DECREASING": "Relay scores are cumulative and cannot drop below {previous}.",
+      "LEG_OUT_OF_ORDER": "Enter leg {leg} first."
+    },
+    "warnings": {
+      "KO_CAP_REACHES_MILESTONE": "The knock-out handicap cap ({cap}) reaches the first milestone ({milestone}), so a leg-1 handicap can decide that leg before it starts."
+    }
+  },
+  "Disqualification": {
+    "errors": {
+      "NOT_IN_SEASON": "This team has no matches this season.",
+      "NO_NEXT_MATCH": "This team has no knock-out match left to forfeit.",
+      "GROUP_CLOSED": "The group stage is closed, so the team can no longer be reinstated."
+    }
+  },
+  "Auth": {
+    "signIn": "Sign in",
+    "signingIn": "Signing in…",
+    "email": "Email",
+    "password": "Password",
+    "signInHint": "Accounts are issued by the Organizing Committee. Ask them to reset a forgotten password.",
+    "signOut": "Sign out",
+    "errors": {
+      "missing": "Enter your email and password.",
+      "invalid": "Wrong email or password.",
+      "inactive": "This account has been deactivated. Contact the Organizing Committee.",
+      "failed": "Could not sign in. Try again later."
+    },
+    "signedInAs": "Signed in as {email}",
+    "changePassword": {
+      "title": "Change password",
+      "mustChangeHint": "You are using a temporary password. Set a new one to continue.",
+      "hint": "Set a new password for your account.",
+      "newPassword": "New password",
+      "confirm": "Repeat the new password",
+      "minLength": "At least {min} characters.",
+      "submit": "Save password",
+      "saving": "Saving…",
+      "errors": {
+        "tooShort": "The new password needs at least {min} characters.",
+        "mismatch": "The two passwords do not match.",
+        "samePassword": "The new password must differ from the current one.",
+        "weak": "This password is too weak. Choose another one.",
+        "failed": "Could not change the password. Try again later."
+      }
+    }
+  }
+}

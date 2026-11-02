@@ -1,0 +1,121 @@
+/* ABT mockups: design tokens + a few components Tailwind can't express cleanly.
+   Layout concept: a scoreboard on a court. Condensed numerals for scores,
+   thin double "court lines" as the only ornament, one court-blue accent. */
+:root {
+  /* RGB triplets so Tailwind can apply opacity (rgb(var(--x) / a)) */
+  --bg: 244 246 249;
+  --surface: 255 255 255;
+  --surface2: 236 240 245;
+  --fg: 14 22 36;
+  --muted: 88 100 120;
+  --line: 218 224 233;
+  --accent: 20 84 230;
+  --accent-fg: 255 255 255;
+  --accent-soft: 225 234 255;
+  --win: 18 124 70;
+  --loss: 190 38 38;
+  --warn: 176 92 0;
+  --shuttle: 236 178 12;
+  --font-display: 'Barlow Condensed', 'Arial Narrow', 'Roboto Condensed', sans-serif;
+  --font-body: 'Be Vietnam Pro', system-ui, -apple-system, 'Segoe UI', sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) {
+    --bg: 10 14 21; --surface: 17 23 33; --surface2: 25 32 45; --fg: 230 235 243; --muted: 146 158 178;
+    --line: 39 48 64; --accent: 106 148 255; --accent-fg: 8 14 30; --accent-soft: 25 38 72;
+    --win: 82 210 130; --loss: 248 118 118; --warn: 245 180 60; --shuttle: 250 204 70;
+    color-scheme: dark;
+  }
+}
+:root[data-theme='dark'] {
+  --bg: 10 14 21; --surface: 17 23 33; --surface2: 25 32 45; --fg: 230 235 243; --muted: 146 158 178;
+  --line: 39 48 64; --accent: 106 148 255; --accent-fg: 8 14 30; --accent-soft: 25 38 72;
+  --win: 82 210 130; --loss: 248 118 118; --warn: 245 180 60; --shuttle: 250 204 70;
+  color-scheme: dark;
+}
+
+html { -webkit-text-size-adjust: 100%; }
+body {
+  background: rgb(var(--bg)); color: rgb(var(--fg));
+  font-family: var(--font-body); font-size: 15px; line-height: 1.55;
+}
+h1, h2, h3 { text-wrap: balance; }
+.num { font-variant-numeric: tabular-nums; }
+.display { font-family: var(--font-display); letter-spacing: 0.01em; }
+.eyebrow { font-size: 11px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: rgb(var(--muted)); }
+.gutter { padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+:focus-visible { outline: 2px solid rgb(var(--accent)); outline-offset: 2px; border-radius: 4px; }
+
+/* Court lines: the one ornament. Two thin rules, like a doubles sideline. */
+.courtline { height: 6px; border-top: 1px solid rgb(var(--line)); border-bottom: 1px solid rgb(var(--line)); }
+.panel { background: rgb(var(--surface)); border: 1px solid rgb(var(--line)); border-radius: 10px; }
+
+/* Team chip: the team color is data, so it only ever appears as a small swatch. */
+.swatch { width: 10px; height: 10px; border-radius: 2px; display: inline-block; flex: none; }
+.chip { display: inline-flex; align-items: center; gap: 6px; padding: 2px 8px; border-radius: 999px; font-size: 12px; font-weight: 500; border: 1px solid rgb(var(--line)); background: rgb(var(--surface2)); white-space: nowrap; }
+.chip-accent { background: rgb(var(--accent-soft)); color: rgb(var(--accent)); border-color: transparent; }
+.chip-win { color: rgb(var(--win)); border-color: rgb(var(--win) / 0.35); background: rgb(var(--win) / 0.08); }
+.chip-loss { color: rgb(var(--loss)); border-color: rgb(var(--loss) / 0.35); background: rgb(var(--loss) / 0.08); }
+.chip-warn { color: rgb(var(--warn)); border-color: rgb(var(--warn) / 0.4); background: rgb(var(--warn) / 0.1); }
+.chip-live { color: rgb(var(--loss)); border-color: rgb(var(--loss) / 0.4); }
+.chip-live::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: currentColor; animation: pulse 1.4s infinite; }
+@keyframes pulse { 50% { opacity: 0.25; } }
+@media (prefers-reduced-motion: reduce) { .chip-live::before { animation: none; } }
+
+/* Handicap: shown as the start points a pair receives, in shuttle yellow. */
+.hc { font-family: var(--font-display); font-weight: 600; font-size: 13px; color: rgb(var(--warn)); background: rgb(var(--shuttle) / 0.16); border-radius: 4px; padding: 0 5px; }
+
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: 6px; height: 36px; padding: 0 14px; border-radius: 8px; font-weight: 600; font-size: 14px; border: 1px solid rgb(var(--line)); background: rgb(var(--surface)); color: rgb(var(--fg)); cursor: pointer; }
+.btn:hover { background: rgb(var(--surface2)); }
+.btn-primary { background: rgb(var(--accent)); color: rgb(var(--accent-fg)); border-color: transparent; }
+.btn-primary:hover { background: rgb(var(--accent) / 0.9); }
+.btn-danger { color: rgb(var(--loss)); }
+.btn-sm { height: 30px; padding: 0 10px; font-size: 13px; }
+
+.input, .select { height: 36px; width: 100%; padding: 0 10px; border-radius: 8px; border: 1px solid rgb(var(--line)); background: rgb(var(--surface)); color: rgb(var(--fg)); font: inherit; font-size: 14px; }
+.input:focus, .select:focus { outline: 2px solid rgb(var(--accent) / 0.5); outline-offset: 0; }
+.label { font-size: 13px; font-weight: 500; color: rgb(var(--muted)); }
+
+.scroll-x { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+.tbl { width: 100%; border-collapse: collapse; font-size: 14px; }
+.tbl th { text-align: left; font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: rgb(var(--muted)); padding: 10px 10px; border-bottom: 1px solid rgb(var(--line)); white-space: nowrap; }
+.tbl td { padding: 10px; border-bottom: 1px solid rgb(var(--line)); white-space: nowrap; }
+.tbl tr:last-child td { border-bottom: 0; }
+.tbl .r { text-align: right; }
+.tbl tr.cut td { border-bottom: 2px dashed rgb(var(--accent) / 0.5); }
+
+/* Scoreboard digits */
+.score { font-family: var(--font-display); font-weight: 700; font-variant-numeric: tabular-nums; line-height: 1; }
+.score .w { color: rgb(var(--fg)); }
+.score .l { color: rgb(var(--muted)); }
+
+/* Relay progress to 125 */
+.relay { position: relative; height: 8px; border-radius: 4px; background: rgb(var(--surface2)); overflow: hidden; }
+.relay > span { position: absolute; inset: 0 auto 0 0; border-radius: 4px; }
+.relay .tick { position: absolute; top: 0; bottom: 0; width: 1px; background: rgb(var(--bg)); }
+
+/* Header */
+.topbar { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 20; background: rgb(var(--surface) / 0.92); backdrop-filter: blur(8px); border-bottom: 1px solid rgb(var(--line)); }
+body::before { content: ''; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 30; background: rgb(var(--surface)); }
+.navlink { padding: 6px 10px; border-radius: 6px; font-size: 14px; font-weight: 500; color: rgb(var(--muted)); white-space: nowrap; }
+.navlink:hover { color: rgb(var(--fg)); background: rgb(var(--surface2)); }
+.navlink[aria-current='page'] { color: rgb(var(--accent)); background: rgb(var(--accent-soft)); }
+.wordmark { font-family: var(--font-display); font-weight: 800; font-size: 22px; letter-spacing: 0.04em; line-height: 1; }
+.wordmark i { font-style: normal; color: rgb(var(--accent)); }
+
+/* Mockup-only ribbon */
+.mock-ribbon { font-size: 12px; background: rgb(var(--shuttle) / 0.18); color: rgb(var(--fg)); border-bottom: 1px solid rgb(var(--shuttle) / 0.4); }
+
+/* Admin layout */
+.side a { display: flex; align-items: center; gap: 10px; padding: 8px 10px; border-radius: 8px; font-size: 14px; color: rgb(var(--muted)); }
+.side a:hover { background: rgb(var(--surface2)); color: rgb(var(--fg)); }
+.side a[aria-current='page'] { background: rgb(var(--accent-soft)); color: rgb(var(--accent)); font-weight: 600; }
+.side a.locked { opacity: 0.45; pointer-events: none; }
+
+.step { display: flex; align-items: center; gap: 8px; font-size: 13px; color: rgb(var(--muted)); white-space: nowrap; }
+.step b { width: 22px; height: 22px; border-radius: 50%; display: grid; place-items: center; font-size: 12px; border: 1px solid rgb(var(--line)); }
+.step.done b { background: rgb(var(--win)); color: rgb(var(--surface)); border-color: transparent; }
+.step.now { color: rgb(var(--fg)); font-weight: 600; }
+.step.now b { background: rgb(var(--accent)); color: rgb(var(--accent-fg)); border-color: transparent; }
+
+.cell-bad { background: rgb(var(--loss) / 0.08); box-shadow: inset 0 0 0 1px rgb(var(--loss) / 0.5); border-radius: 6px; }

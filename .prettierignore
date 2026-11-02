@@ -1,0 +1,10 @@
+pnpm-lock.yaml
+.next
+out
+coverage
+test-results
+playwright-report
+docs
+.claude
+.mcp.json
+supabase
