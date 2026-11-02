@@ -1,4 +1,9 @@
+import { existsSync } from 'node:fs';
 import { defineConfig, devices } from '@playwright/test';
+
+// The fixtures in e2e/support write to local Supabase as the seed BTC. Locally the URL and anon key
+// come from .env.local; in CI the workflow exports them.
+if (existsSync('.env.local')) process.loadEnvFile('.env.local');
 
 export default defineConfig({
   testDir: 'e2e',
