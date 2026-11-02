@@ -208,8 +208,14 @@ export async function syncImport(client: Client, data: Import2026, opts: { dryRu
     (r: Tables<'season_player_private'>) => r.season_player_id,
     data.players.map((p) => ({
       key: bySlug.get(p.slug)!,
-      compare: { fee_amount: p.fee },
-      insertOnly: { season_player_id: bySlug.get(p.slug)!, member_type: 'employee', note: '' },
+      // No fee in the JSON: never overwrite what the admin set.
+      compare: p.fee === undefined ? {} : { fee_amount: p.fee },
+      insertOnly: {
+        season_player_id: bySlug.get(p.slug)!,
+        member_type: 'employee',
+        note: '',
+        ...(p.fee === undefined ? { fee_amount: 0 } : {}),
+      },
     })),
   );
 

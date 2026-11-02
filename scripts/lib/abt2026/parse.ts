@@ -32,7 +32,7 @@ const FINAL_DATE_FIX = '2026-05-23';
 
 export class ImportError extends Error {
   constructor(readonly problems: string[]) {
-    super(`The workbook has ${problems.length} problem(s):\n- ${problems.join('\n- ')}`);
+    super(`The import data has ${problems.length} problem(s):\n- ${problems.join('\n- ')}`);
     this.name = 'ImportError';
   }
 }
