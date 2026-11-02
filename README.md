@@ -39,6 +39,8 @@ pnpm dev                        # http://localhost:3000
 | `pnpm i18n:check`  | Fail when `messages/vi.json` and `messages/en.json` differ in keys or have empty values |
 | `pnpm import:2026` | Import the ABT 2026 workbook ([below](#abt-2026-import))                                |
 
+E2E tests run against the local stack with the seed (`pnpm db:start`, `.env.local` filled in). They read the seed demo and create their own throwaway seasons (years 2091 and 2092, dropped afterwards), so they can run again without a `pnpm db:reset`. With `pnpm dev` already on port 3000 they reuse it; otherwise Playwright builds the app and serves it with `pnpm start`, as CI does.
+
 Layout: `src/app` (routes), `src/domain` (pure TypeScript, no `next`/`react`/`@supabase` imports, enforced by ESLint), `src/lib`, `src/components`, `messages/`, `supabase/` (config, migrations and pgTAP tests).
 
 ### Database
