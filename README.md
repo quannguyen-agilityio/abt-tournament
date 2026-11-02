@@ -22,22 +22,25 @@ pnpm dev                        # http://localhost:3000
 
 `pnpm exec supabase status` prints the URLs and keys again. Studio runs on http://127.0.0.1:54323 and the test mailbox (password-reset emails) on http://127.0.0.1:54324. Public sign-up is disabled (`supabase/config.toml`): create users in Studio or through the admin screens, or use the [seed accounts](#seed-data).
 
-| Script             | What it does                                                                            |
-| ------------------ | --------------------------------------------------------------------------------------- |
-| `pnpm dev`         | Dev server                                                                              |
-| `pnpm db:start`    | Start the local Supabase stack (`pnpm db:stop` to stop it)                              |
-| `pnpm db:reset`    | Recreate the local database from `supabase/migrations/` and the seed                    |
-| `pnpm db:types`    | Regenerate `src/lib/database.types.ts` from the local database                          |
-| `pnpm db:test`     | Database tests (pgTAP, `supabase/tests/`) against the local stack                       |
-| `pnpm build`       | Production build                                                                        |
-| `pnpm start`       | Serve the production build                                                              |
-| `pnpm lint`        | ESLint                                                                                  |
-| `pnpm typecheck`   | TypeScript check                                                                        |
-| `pnpm format`      | Format with Prettier (`pnpm format:check` to verify only)                               |
-| `pnpm test`        | Unit tests (Vitest)                                                                     |
-| `pnpm test:e2e`    | End-to-end tests (Playwright), run `pnpm exec playwright install chromium` once first   |
-| `pnpm i18n:check`  | Fail when `messages/vi.json` and `messages/en.json` differ in keys or have empty values |
-| `pnpm import:2026` | Import the ABT 2026 workbook ([below](#abt-2026-import))                                |
+| Script               | What it does                                                                            |
+| -------------------- | --------------------------------------------------------------------------------------- |
+| `pnpm dev`           | Dev server                                                                              |
+| `pnpm db:start`      | Start the local Supabase stack (`pnpm db:stop` to stop it)                              |
+| `pnpm db:reset`      | Recreate the local database from `supabase/migrations/` and the seed                    |
+| `pnpm db:seed:local` | Reset the local database and import ABT 2026 from `data/abt-2026.json`                  |
+| `pnpm db:seed:e2e`   | Add the fake E2E demo seasons (ABT 2025/2027) to the local database                     |
+| `pnpm db:types`      | Regenerate `src/lib/database.types.ts` from the local database                          |
+| `pnpm db:test`       | Database tests (pgTAP, `supabase/tests/`) against the local stack                       |
+| `pnpm build`         | Production build                                                                        |
+| `pnpm start`         | Serve the production build                                                              |
+| `pnpm lint`          | ESLint                                                                                  |
+| `pnpm typecheck`     | TypeScript check                                                                        |
+| `pnpm format`        | Format with Prettier (`pnpm format:check` to verify only)                               |
+| `pnpm test`          | Unit tests (Vitest)                                                                     |
+| `pnpm test:e2e`      | End-to-end tests (Playwright), run `pnpm exec playwright install chromium` once first   |
+| `pnpm i18n:check`    | Fail when `messages/vi.json` and `messages/en.json` differ in keys or have empty values |
+| `pnpm import:2026`   | Import ABT 2026 from `data/abt-2026.json` or the workbook ([below](#abt-2026-import))   |
+| `pnpm convert:2026`  | Regenerate `data/abt-2026.json` from the workbook ([below](#abt-2026-import))           |
 
 E2E tests run against the local stack with the seed (`pnpm db:start`, `.env.local` filled in). They read the seed demo and create their own throwaway seasons (years 2091 and 2092, dropped afterwards), so they can run again without a `pnpm db:reset`. With `pnpm dev` already on port 3000 they reuse it; otherwise Playwright builds the app and serves it with `pnpm start`, as CI does.
 
@@ -56,25 +59,28 @@ pnpm db:test                              # run the pgTAP tests in supabase/test
 
 ### Seed data
 
-`pnpm db:start` and `pnpm db:reset` load `supabase/seed.sql`: fake demo data, no real names (plan §7).
+`pnpm db:start` and `pnpm db:reset` load `supabase/seed.sql`: the seed accounts only, no seasons. The season data comes from:
 
-- **ABT 2025** (finished): 7 teams × 8 players, every group match played, group closed, knock-out and side awards.
-- **ABT 2027** (current, group stage): match days are relative to the day of the reset. Last week's rounds are completed. Today has a completed, an in-progress and a `lineup_locked` match, plus an unlocked lineup (V16) that only the BTC and referees can see. The knock-out is next week.
+- **ABT 2026** (real, finished): `pnpm db:seed:local` resets the local database and runs the [ABT 2026 import](#abt-2026-import) of `data/abt-2026.json` on it.
+- **E2E demo** (fake, plan §7): `pnpm db:seed:e2e` adds `supabase/seeds/e2e-demo.sql` on top, which CI loads before the Playwright tests. **ABT 2025** is finished: 7 teams × 8 players, every group match played, group closed, knock-out and side awards. **ABT 2027** is current, in the group stage, with match days relative to the day it is loaded. Last week's rounds are completed. Today has a completed, an in-progress and a `lineup_locked` match, plus an unlocked lineup (V16) that only the BTC and referees can see. The knock-out is next week. Run it before `pnpm test:e2e` locally.
 
 Seed accounts, for local use only:
 
-| Email                 | Password   | Role    |
-| --------------------- | ---------- | ------- |
-| `btc@example.com`     | `abt-demo` | BTC     |
-| `referee@example.com` | `abt-demo` | Referee |
+| Email                 | Password   | Role    | Notes                                                  |
+| --------------------- | ---------- | ------- | ------------------------------------------------------ |
+| `btc@example.com`     | `abt-demo` | BTC     |                                                        |
+| `referee@example.com` | `abt-demo` | Referee | E2E demo: assigned to every match on "Sân 1"           |
+| `nha@example.com`     | `abt-demo` | Referee | ABT 2026 referee "Nhã": the import assigns the matches |
+| `nhat@example.com`    | `abt-demo` | Referee | ABT 2026 referee "Nhật"                                |
+| `ha@example.com`      | `abt-demo` | Referee | ABT 2026 referee "Hạ"                                  |
 
-The referee is assigned to every match on "Sân 1".
+Staging and production get neither the seed nor these accounts. Create the BTC and the three ABT 2026 referees on the admin Users screen with their real emails and the display names Nhã, Nhật and Hạ (they change the temporary password on first sign-in), then run `pnpm import:2026 --file data/abt-2026.json --env staging --yes`, and the same with `--env prod`. The import maps the sheet's referee labels to profiles by display name.
 
 ### ABT 2026 import
 
-`pnpm import:2026 --file <ABT_2026.xlsx> --env <local|staging|prod> [--dry-run] [--yes]` loads the 2026 season (spec §9). The workbook holds real names, so it stays on your machine: never commit it.
+`pnpm import:2026 --file <data/abt-2026.json|ABT_2026.xlsx> --env <local|staging|prod> [--dry-run] [--yes]` loads the 2026 season (spec §9). `data/abt-2026.json` is the committed copy of the workbook: the import model after the sheet fixes, with the sheet's own summary for the check below. It holds the real names, teams, results and side awards, which the public site shows anyway, but not the fees (private, `season_player_private`): new players get 0 and an existing fee is never overwritten. The workbook itself stays on your machine: never commit it. If the sheet changes, regenerate the JSON with `pnpm convert:2026 --file ~/Downloads/ABT_2026.xlsx` (it runs the same check and writes nothing if it fails) and commit the diff.
 
-1. It parses the workbook and recomputes the group standings and team totals, then compares them with the sheet's own summary. Any difference is printed and the run stops before it writes anything.
+1. It reads the JSON or parses the workbook and recomputes the group standings and team totals, then compares them with the sheet's own summary. Any difference is printed and the run stops before it writes anything.
 2. It upserts by natural keys (season year, team name, person slug, match code, ...) and writes only what differs, so running it again changes nothing. It prints the changes per table and warnings, such as referees without a matching profile and awards whose winners must be added by hand in A7. Existing award winners are never touched.
 3. `--dry-run` reads the database and prints what would change without writing.
 

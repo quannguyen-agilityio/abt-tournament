@@ -75,6 +75,10 @@ jobs:
       - name: Start local Supabase
         run: pnpm exec supabase start -x studio,imgproxy,edge-runtime,logflare,vector,supavisor
 
+      # The fake ABT 2025/2027 seasons the E2E tests read (supabase/seeds/e2e-demo.sql).
+      - name: Load E2E demo data
+        run: pnpm db:seed:e2e
+
       # pgTAP tests in supabase/tests/: audit triggers and RLS policies (spec §3.2).
       - name: Database tests
         run: pnpm db:test
