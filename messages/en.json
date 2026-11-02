@@ -635,6 +635,91 @@
         "auto": "SF1 = #1 v #4, SF2 = #2 v #3, the higher seed at home. 3RD and F are filled automatically when both semi-finals finish."
       }
     },
+    "awards": {
+      "back": "← Season",
+      "title": "Side awards",
+      "subtitle": "{season} · {count, plural, one {# side award} other {# side awards}}",
+      "add": "+ Add award",
+      "empty": "No side awards yet. Add the first one alongside.",
+      "list": {
+        "label": "Side award order",
+        "hint": "Drag, or use the arrows, to set the order on the public page.",
+        "moveUp": "Move {name} up",
+        "moveDown": "Move {name} down",
+        "pending": "Not awarded",
+        "winners": "{count, plural, one {# winner} other {# winners}}",
+        "saving": "Saving the order…",
+        "errors": {
+          "changed": "The award list changed since the page loaded. Reload the page and try again.",
+          "failed": "Could not save the order. Try again."
+        }
+      },
+      "form": {
+        "newTitle": "New award",
+        "editTitle": "Edit award",
+        "nameVi": "Name (VI)",
+        "nameEn": "Name (EN)",
+        "criteriaVi": "Criteria (VI)",
+        "criteriaEn": "Criteria (EN)",
+        "enHint": "Optional. When blank, the English page shows the Vietnamese text.",
+        "sponsor": "Sponsor",
+        "value": "Value (VND)",
+        "valueHint": "Optional, e.g. 1,000,000.",
+        "note": "Note",
+        "noteHint": "Not shown on the public page.",
+        "cancel": "Cancel",
+        "save": "Save",
+        "create": "Create award",
+        "saving": "Saving…",
+        "saved": "Saved.",
+        "delete": "Delete award",
+        "deleting": "Deleting…",
+        "deleteConfirm": "Delete the award “{name}” and all its winners? This cannot be undone.",
+        "errors": {
+          "name": "Enter the award name (VI).",
+          "value": "The value must be a whole, non-negative amount.",
+          "tooLong": "A field is too long.",
+          "failed": "Could not save the award. Try again."
+        },
+        "deleteFailed": "Could not delete the award. Try again."
+      },
+      "winners": {
+        "title": "Winners",
+        "empty": "Nobody has won this award yet.",
+        "saveFirst": "Save the award first, then add its winners.",
+        "kind": "Kind",
+        "kinds": {
+          "player": "Player",
+          "pair": "Pair",
+          "team": "Team"
+        },
+        "player": "Player",
+        "player1": "Player 1",
+        "player2": "Player 2",
+        "team": "Team",
+        "choose": "— Choose —",
+        "noTeam": "No team",
+        "match": "Related match",
+        "noMatch": "None",
+        "matchHint": "Optional. Only the winning team's matches are listed.",
+        "matchCode": "Match {code}",
+        "note": "Note",
+        "add": "+ Add winner",
+        "adding": "Adding…",
+        "remove": "Remove",
+        "removeLabel": "Remove {name}",
+        "removeConfirm": "Remove {name} from this award?",
+        "errors": {
+          "kind": "Choose the kind of winner.",
+          "members": "Choose the players: 1 for a player, 2 different ones for a pair.",
+          "sameTeam": "Both players of a pair must be on the same team.",
+          "team": "Choose a team of the season.",
+          "match": "The related match must be one of the winning team's matches.",
+          "tooLong": "The note is too long.",
+          "failed": "That did not work. Try again."
+        }
+      }
+    },
     "seasons": {
       "title": "Seasons",
       "count": "{count, plural, one {# season} other {# seasons}}",
