@@ -7,6 +7,7 @@ Web app for running the Agility Badminton Tournament (ABT), AgilityIO's internal
 
 - [Project plan](docs/plan.md): scope, roadmap, environments, decisions
 - [Spec](docs/spec.md): data model, rules engine, screens, permissions
+- [UAT on staging](docs/uat.md): preparing staging and the BTC's replay of ABT 2026
 - [Design mockups](docs/design/index.html): static HTML of every screen with fake data (open `docs/design/index.html` in a browser)
 
 ## Local setup
