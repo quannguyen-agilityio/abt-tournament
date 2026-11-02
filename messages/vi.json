@@ -635,6 +635,91 @@
         "auto": "SF1 = hạng 1 gặp hạng 4, SF2 = hạng 2 gặp hạng 3, đội hạng cao hơn làm chủ nhà. Trận tranh hạng 3 và chung kết tự điền khi hai trận bán kết kết thúc."
       }
     },
+    "awards": {
+      "back": "← Mùa giải",
+      "title": "Giải phụ",
+      "subtitle": "{season} · {count} giải phụ",
+      "add": "+ Thêm giải",
+      "empty": "Chưa có giải phụ nào. Thêm giải đầu tiên ở bên cạnh.",
+      "list": {
+        "label": "Thứ tự giải phụ",
+        "hint": "Kéo thả, hoặc dùng mũi tên, để xếp thứ tự hiển thị trên trang công khai.",
+        "moveUp": "Đưa {name} lên",
+        "moveDown": "Đưa {name} xuống",
+        "pending": "Chưa trao",
+        "winners": "{count} đoạt giải",
+        "saving": "Đang lưu thứ tự…",
+        "errors": {
+          "changed": "Danh sách giải đã thay đổi từ lúc tải trang. Tải lại trang rồi thử lại.",
+          "failed": "Không lưu được thứ tự. Thử lại."
+        }
+      },
+      "form": {
+        "newTitle": "Giải mới",
+        "editTitle": "Sửa giải",
+        "nameVi": "Tên (VI)",
+        "nameEn": "Tên (EN)",
+        "criteriaVi": "Tiêu chí (VI)",
+        "criteriaEn": "Tiêu chí (EN)",
+        "enHint": "Không bắt buộc. Bỏ trống thì trang tiếng Anh dùng bản tiếng Việt.",
+        "sponsor": "Nhà tài trợ",
+        "value": "Giá trị (VND)",
+        "valueHint": "Không bắt buộc, ví dụ 1.000.000.",
+        "note": "Ghi chú",
+        "noteHint": "Không hiện trên trang công khai.",
+        "cancel": "Huỷ",
+        "save": "Lưu",
+        "create": "Tạo giải",
+        "saving": "Đang lưu…",
+        "saved": "Đã lưu.",
+        "delete": "Xoá giải",
+        "deleting": "Đang xoá…",
+        "deleteConfirm": "Xoá giải “{name}” cùng mọi người đoạt giải? Không thể hoàn tác.",
+        "errors": {
+          "name": "Nhập tên giải (VI).",
+          "value": "Giá trị phải là số tiền nguyên, không âm.",
+          "tooLong": "Có ô nhập quá dài.",
+          "failed": "Không lưu được giải. Thử lại."
+        },
+        "deleteFailed": "Không xoá được giải. Thử lại."
+      },
+      "winners": {
+        "title": "Người đoạt giải",
+        "empty": "Chưa có ai đoạt giải này.",
+        "saveFirst": "Lưu giải trước, rồi thêm người đoạt giải.",
+        "kind": "Loại",
+        "kinds": {
+          "player": "VĐV",
+          "pair": "Cặp",
+          "team": "Đội"
+        },
+        "player": "VĐV",
+        "player1": "VĐV 1",
+        "player2": "VĐV 2",
+        "team": "Đội",
+        "choose": "— Chọn —",
+        "noTeam": "Chưa có đội",
+        "match": "Trận liên quan",
+        "noMatch": "Không có",
+        "matchHint": "Không bắt buộc. Chỉ liệt kê các trận của đội đoạt giải.",
+        "matchCode": "Trận {code}",
+        "note": "Ghi chú",
+        "add": "+ Thêm người đoạt giải",
+        "adding": "Đang thêm…",
+        "remove": "Gỡ",
+        "removeLabel": "Gỡ {name}",
+        "removeConfirm": "Gỡ {name} khỏi giải này?",
+        "errors": {
+          "kind": "Chọn loại người đoạt giải.",
+          "members": "Chọn đủ VĐV: 1 cho VĐV, 2 người khác nhau cho cặp.",
+          "sameTeam": "Hai VĐV của một cặp phải cùng đội.",
+          "team": "Chọn một đội của mùa giải.",
+          "match": "Trận liên quan phải là trận của đội đoạt giải.",
+          "tooLong": "Ghi chú quá dài.",
+          "failed": "Không thực hiện được. Thử lại."
+        }
+      }
+    },
     "seasons": {
       "title": "Mùa giải",
       "count": "{count} mùa giải",
