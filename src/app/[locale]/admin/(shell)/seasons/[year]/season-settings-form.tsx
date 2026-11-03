@@ -269,7 +269,7 @@ export function SeasonSettingsForm({ seasonId, stored }: { seasonId: string; sto
         </p>
       )}
       <div>
-        <Button type="submit" disabled={pending}>
+        <Button type="submit" pending={pending}>
           {pending ? s('saving') : s('save')}
         </Button>
       </div>

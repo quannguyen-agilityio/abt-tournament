@@ -31,7 +31,7 @@ export function UserRowActions({
           <form action={toggleAction}>
             <input type="hidden" name="userId" value={userId} />
             <input type="hidden" name="active" value={String(!isActive)} />
-            <Button type="submit" size="sm" variant={isActive ? 'destructive' : 'outline'} disabled={toggling}>
+            <Button type="submit" size="sm" variant={isActive ? 'destructive' : 'outline'} pending={toggling}>
               {isActive ? t('deactivate') : t('reactivate')}
             </Button>
           </form>
@@ -54,7 +54,7 @@ export function UserRowActions({
               aria-invalid={resetError === 'tooShort' || resetError === 'weak' || undefined}
               className="h-7 w-44 font-mono"
             />
-            <Button type="submit" size="sm" disabled={resetting}>
+            <Button type="submit" size="sm" pending={resetting}>
               {resetting ? t('reset.saving') : t('reset.submit')}
             </Button>
           </form>

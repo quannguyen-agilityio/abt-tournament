@@ -166,7 +166,7 @@ function LockForm({ matchId, lockable }: { matchId: string; lockable: boolean })
           {t(`errors.${state.error}`)}
         </p>
       )}
-      <Button type="submit" disabled={pending || !lockable}>
+      <Button type="submit" pending={pending} disabled={!lockable}>
         {pending ? t('locking') : t('lock')}
       </Button>
     </form>
@@ -359,7 +359,7 @@ function TeamLineupForm({
               <span className="text-win font-semibold">✓</span> {t('saved')}
             </p>
           )}
-          <Button type="submit" disabled={pending || blocked || (!dirty && !reason)}>
+          <Button type="submit" pending={pending} disabled={blocked || (!dirty && !reason)}>
             {pending ? t('saving') : violations.length > 0 && canOverride ? t('saveOverride') : t('save')}
           </Button>
         </div>

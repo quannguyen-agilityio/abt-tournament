@@ -45,7 +45,7 @@ export function LoginForm({ next }: { next?: string }) {
           {t(`errors.${state.error}`)}
         </p>
       )}
-      <Button type="submit" size="lg" disabled={pending} className="w-full">
+      <Button type="submit" size="lg" pending={pending} className="w-full">
         {pending ? t('signingIn') : t('signIn')}
       </Button>
       <p className="text-muted-foreground text-xs">{t('signInHint')}</p>

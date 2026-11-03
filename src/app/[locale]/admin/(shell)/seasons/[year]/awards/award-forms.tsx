@@ -168,7 +168,7 @@ export function AwardForm({
             {t('cancel')}
           </Link>
         )}
-        <Button type="submit" disabled={pending}>
+        <Button type="submit" pending={pending}>
           {pending ? t('saving') : award ? t('save') : t('create')}
         </Button>
       </div>
@@ -193,7 +193,7 @@ export function DeleteAwardForm({ awardId, year, name }: { awardId: string; year
     >
       <input type="hidden" name="awardId" value={awardId} />
       <input type="hidden" name="year" value={year} />
-      <Button type="submit" variant="destructive" size="sm" disabled={pending}>
+      <Button type="submit" variant="destructive" size="sm" pending={pending}>
         {pending ? t('deleting') : t('delete')}
       </Button>
       {state && 'error' in state && (
@@ -244,7 +244,7 @@ export function WinnerRow({ winner }: { winner: WinnerItem }) {
         className="ml-auto"
       >
         <input type="hidden" name="winnerId" value={winner.id} />
-        <Button type="submit" size="sm" variant="outline" disabled={pending}>
+        <Button type="submit" size="sm" variant="outline" pending={pending}>
           {t('remove')}
           <span className="sr-only"> {label}</span>
         </Button>
@@ -423,7 +423,7 @@ export function AddWinnerForm({
             {t(`errors.${state.error}`)}
           </p>
         )}
-        <Button type="submit" size="sm" disabled={pending}>
+        <Button type="submit" size="sm" pending={pending}>
           {pending ? t('adding') : t('add')}
         </Button>
       </div>

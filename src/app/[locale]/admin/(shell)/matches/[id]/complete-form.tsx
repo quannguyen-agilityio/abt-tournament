@@ -45,7 +45,7 @@ export function CompleteForm({ matchId, code, winner, score }: Props) {
           {t(`errors.${state.error}`)}
         </p>
       )}
-      <Button type="submit" disabled={pending || !winner}>
+      <Button type="submit" pending={pending} disabled={!winner}>
         {pending ? t('completing') : t('complete')}
       </Button>
     </form>
@@ -87,7 +87,7 @@ export function CompletedResult({ matchId, code, winner, score, canReopen }: Pro
               {t(`reopenErrors.${state.error}`)}
             </p>
           )}
-          <Button type="submit" variant="outline" disabled={pending}>
+          <Button type="submit" variant="outline" pending={pending}>
             {pending ? t('reopening') : t('reopen')}
           </Button>
         </form>

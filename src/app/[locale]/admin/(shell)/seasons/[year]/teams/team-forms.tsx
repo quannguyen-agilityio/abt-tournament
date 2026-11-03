@@ -110,7 +110,7 @@ function TeamForm({
       {state && 'error' in state && <FailedAlert />}
       <DialogFooter>
         <DialogClose render={<Button type="button" variant="outline" disabled={pending} />}>{t('cancel')}</DialogClose>
-        <Button type="submit" disabled={pending}>
+        <Button type="submit" pending={pending}>
           {pending ? t('saving') : submitLabel}
         </Button>
       </DialogFooter>
@@ -190,7 +190,7 @@ function DeleteTeamForm({ seasonId, team, onDone }: { seasonId: string; team: Te
       )}
       <DialogFooter>
         <DialogClose render={<Button type="button" variant="outline" disabled={deleting} />}>{t('cancel')}</DialogClose>
-        <Button type="submit" variant="destructive" disabled={deleting}>
+        <Button type="submit" variant="destructive" pending={deleting}>
           {deleting ? t('deleting') : t('delete')}
         </Button>
       </DialogFooter>

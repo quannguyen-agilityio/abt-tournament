@@ -281,7 +281,12 @@ export function PlayerImport({ seasonId, maxRank }: { seasonId: string; maxRank:
               />
             </label>
             <div>
-              <Button type="button" disabled={pending || csv.trim() === ''} onClick={() => runPreview(csv, {}, {})}>
+              <Button
+                type="button"
+                pending={pending && !preview}
+                disabled={pending || csv.trim() === ''}
+                onClick={() => runPreview(csv, {}, {})}
+              >
                 {pending && !preview ? t('previewing') : t('preview')}
               </Button>
             </div>
@@ -344,7 +349,12 @@ export function PlayerImport({ seasonId, maxRank }: { seasonId: string; maxRank:
                 </table>
               </div>
               <div>
-                <Button type="button" disabled={pending || !preview.plan.canApply} onClick={apply}>
+                <Button
+                  type="button"
+                  pending={pending && preview.plan.canApply}
+                  disabled={pending || !preview.plan.canApply}
+                  onClick={apply}
+                >
                   {pending && preview.plan.canApply ? t('applying') : t('apply', { count: preview.plan.ops.length })}
                 </Button>
               </div>

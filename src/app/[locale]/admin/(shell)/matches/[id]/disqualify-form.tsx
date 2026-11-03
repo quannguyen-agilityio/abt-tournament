@@ -130,7 +130,7 @@ export function DisqualifyForm({ teams, defaultTeamId }: { teams: DisqualifyTeam
             {t(`errors.${state.error}`)}
           </p>
         )}
-        <Button type="submit" variant="destructive" disabled={pending || !ready}>
+        <Button type="submit" variant="destructive" pending={pending} disabled={!ready}>
           {pending ? t('submitting') : t('submit')}
         </Button>
       </div>
