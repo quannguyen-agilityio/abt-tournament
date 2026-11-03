@@ -30,6 +30,7 @@ import { LockedLineups } from './locked-lineups';
 import { ScoresStep } from './scores-step';
 import { SideActions } from './side-actions';
 import { SubstituteForm } from './substitute-form';
+import Loading from './loading';
 
 const STEPS = ['attendance', 'lineup', 'lock', 'scores', 'done'] as const;
 type Step = (typeof STEPS)[number];
@@ -474,7 +475,7 @@ async function StaffMatch({ params, searchParams }: PageProps<'/[locale]/admin/m
 
 export default function StaffMatchPage({ params, searchParams }: PageProps<'/[locale]/admin/matches/[id]'>) {
   return (
-    <Suspense>
+    <Suspense fallback={<Loading />}>
       <StaffMatch params={params} searchParams={searchParams} />
     </Suspense>
   );

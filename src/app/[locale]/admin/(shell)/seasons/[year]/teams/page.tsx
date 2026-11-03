@@ -11,6 +11,7 @@ import { nextTeamColors, teamWarnings } from '@/lib/teams';
 import { TeamBoard, type BoardPlayer, type BoardTeam } from './team-board';
 import { TeamDrawImport } from './team-draw-import';
 import { CreateTeamForm } from './team-forms';
+import Loading from './loading';
 
 async function SeasonTeams({ params }: Pick<PageProps<'/[locale]/admin/seasons/[year]/teams'>, 'params'>) {
   const { locale, year: yearParam } = await params;
@@ -129,7 +130,7 @@ async function SeasonTeams({ params }: Pick<PageProps<'/[locale]/admin/seasons/[
 
 export default function SeasonTeamsPage({ params }: PageProps<'/[locale]/admin/seasons/[year]/teams'>) {
   return (
-    <Suspense>
+    <Suspense fallback={<Loading />}>
       <SeasonTeams params={params} />
     </Suspense>
   );

@@ -14,6 +14,7 @@ import { getPublicSeason, getSeasonMatches, getSeasonTeams } from '@/lib/public-
 import { createClient } from '@/lib/supabase/server';
 import { cn } from '@/lib/utils';
 import { CloseGroupForm, ReopenGroupForm } from './close-group-forms';
+import Loading from './loading';
 
 const CHIP = 'inline-flex items-center rounded-full border px-2 py-0.5 text-xs font-medium whitespace-nowrap';
 const CHIP_WARN = 'border-warn/60 bg-warn/10 text-warn';
@@ -252,7 +253,7 @@ async function CloseGroup({ params }: Pick<PageProps<'/[locale]/admin/seasons/[y
 
 export default function CloseGroupPage({ params }: PageProps<'/[locale]/admin/seasons/[year]/close-group'>) {
   return (
-    <Suspense>
+    <Suspense fallback={<Loading />}>
       <CloseGroup params={params} />
     </Suspense>
   );
