@@ -1,7 +1,7 @@
 'use client';
 
 import { useLocale, useTranslations } from 'next-intl';
-import { startTransition, useActionState, useState } from 'react';
+import { startTransition, useActionState, useOptimistic, useState, type FormEvent } from 'react';
 import type { MemberType } from '@/domain/settings';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -53,6 +53,16 @@ function Hidden({ seasonId, playerId }: { seasonId: string; playerId: string }) 
   );
 }
 
+/**
+ * Submits a row form in a transition instead of through `action`: React resets a form after its action,
+ * which puts a controlled checkbox back to its initial state even after the server confirmed the change.
+ */
+function submitInTransition(e: FormEvent<HTMLFormElement>, run: (formData: FormData) => void) {
+  e.preventDefault();
+  const formData = new FormData(e.currentTarget);
+  startTransition(() => run(formData));
+}
+
 function TeamChip({ name, color }: { name: string | null; color: string | null }) {
   const t = useTranslations('Admin.players');
   if (!name) return <span className="text-muted-foreground">—</span>;
@@ -83,7 +93,12 @@ function ReadRow({
     setPlayerStatus,
     undefined,
   );
-  const withdrawn = player.status === 'withdrawn';
+  // Shown on the current frame; falls back to the server props when the action ends (reverted on failure).
+  const [optimistic, setOptimistic] = useOptimistic(
+    { paid: player.paid, status: player.status },
+    (current, update: Partial<Pick<PlayerRow, 'paid' | 'status'>>) => ({ ...current, ...update }),
+  );
+  const withdrawn = optimistic.status === 'withdrawn';
   const failed = (paidState && 'error' in paidState) || (statusState && 'error' in statusState);
 
   return (
@@ -110,13 +125,20 @@ function ReadRow({
           {player.feeAmount === null ? '—' : formatMoney(player.feeAmount, locale)}
         </td>
         <td className={CELL}>
-          <form action={paidAction}>
+          <form
+            onSubmit={(e) =>
+              submitInTransition(e, (formData) => {
+                setOptimistic({ paid: formData.get('paid') === 'true' });
+                paidAction(formData);
+              })
+            }
+          >
             <Hidden seasonId={seasonId} playerId={player.id} />
-            <input type="hidden" name="paid" value={String(!player.paid)} />
+            <input type="hidden" name="paid" value={String(!optimistic.paid)} />
             <input
               type="checkbox"
               className="size-4"
-              checked={player.paid}
+              checked={optimistic.paid}
               disabled={disabled || paidPending}
               aria-label={t('paidLabel', { name: player.fullName })}
               onChange={(e) => e.currentTarget.form?.requestSubmit()}
@@ -129,7 +151,14 @@ function ReadRow({
               {t('edit')}
               <span className="sr-only"> {player.fullName}</span>
             </Button>
-            <form action={statusAction}>
+            <form
+              onSubmit={(e) =>
+                submitInTransition(e, (formData) => {
+                  setOptimistic({ status: formData.get('status') === 'active' ? 'active' : 'withdrawn' });
+                  statusAction(formData);
+                })
+              }
+            >
               <Hidden seasonId={seasonId} playerId={player.id} />
               <input type="hidden" name="status" value={withdrawn ? 'active' : 'withdrawn'} />
               <Button
@@ -323,11 +352,7 @@ function EditRow({
           <form
             id={formId}
             // Not `action`: React resets a form after its action, which would drop a failed edit.
-            onSubmit={(e) => {
-              e.preventDefault();
-              const formData = new FormData(e.currentTarget);
-              startTransition(() => action(formData));
-            }}
+            onSubmit={(e) => submitInTransition(e, action)}
             className="flex items-center gap-2"
           >
             <Hidden seasonId={seasonId} playerId={player.id} />
