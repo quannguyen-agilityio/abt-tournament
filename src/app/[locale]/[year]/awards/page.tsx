@@ -9,6 +9,7 @@ import { buildAwardCards } from '@/lib/public-awards';
 import { getPublicSeason, getSeasonAwards } from '@/lib/public-season-db';
 import { formatMoney } from '@/lib/format';
 import { cn } from '@/lib/utils';
+import Loading from './loading';
 
 const CHIP = 'inline-flex items-center rounded-full border px-2 py-0.5 text-xs font-medium whitespace-nowrap';
 
@@ -114,7 +115,7 @@ async function Awards({ params }: Pick<PageProps<'/[locale]/[year]/awards'>, 'pa
 
 export default function AwardsPage({ params }: PageProps<'/[locale]/[year]/awards'>) {
   return (
-    <Suspense>
+    <Suspense fallback={<Loading />}>
       <Awards params={params} />
     </Suspense>
   );

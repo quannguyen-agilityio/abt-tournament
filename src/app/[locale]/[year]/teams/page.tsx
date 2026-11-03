@@ -16,6 +16,7 @@ import {
 } from '@/lib/public-season-db';
 import { buildTeamCards } from '@/lib/public-teams';
 import { cn } from '@/lib/utils';
+import Loading from './loading';
 
 const CHIP = 'inline-flex items-center rounded-full border px-2 py-0.5 text-xs font-medium whitespace-nowrap';
 
@@ -107,7 +108,7 @@ async function Teams({ params }: Pick<PageProps<'/[locale]/[year]/teams'>, 'para
 
 export default function TeamsPage({ params }: PageProps<'/[locale]/[year]/teams'>) {
   return (
-    <Suspense>
+    <Suspense fallback={<Loading />}>
       <Teams params={params} />
     </Suspense>
   );

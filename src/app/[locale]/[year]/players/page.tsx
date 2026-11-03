@@ -9,6 +9,7 @@ import { filterPlayers, parsePlayerFilters } from '@/lib/public-players';
 import { getPublicSeason, getSeasonPlayers, getSeasonTeams } from '@/lib/public-season-db';
 import { cn } from '@/lib/utils';
 import { PlayerFiltersForm } from './player-filters';
+import Loading from './loading';
 
 async function Players({ params, searchParams }: PageProps<'/[locale]/[year]/players'>) {
   const { locale, year } = await params;
@@ -100,7 +101,7 @@ async function Players({ params, searchParams }: PageProps<'/[locale]/[year]/pla
 
 export default function PlayersPage(props: PageProps<'/[locale]/[year]/players'>) {
   return (
-    <Suspense>
+    <Suspense fallback={<Loading />}>
       <Players {...props} />
     </Suspense>
   );
