@@ -4,6 +4,7 @@ import { useTranslations } from 'next-intl';
 import { useRef, useState, useTransition } from 'react';
 import { IMPORT_FILE_ACCEPT, ImportTemplateLink, readImportFile } from '@/components/import-file';
 import { Button } from '@/components/ui/button';
+import { NativeSelect } from '@/components/ui/native-select';
 import {
   MAX_IMPORT_ROWS,
   REQUIRED_COLUMNS,
@@ -22,8 +23,7 @@ import {
   type ImportPreviewState,
 } from './import-actions';
 
-const SELECT_CLASS =
-  'border-input focus-visible:border-ring focus-visible:ring-ring/50 aria-invalid:border-destructive dark:bg-input/30 h-8 w-full min-w-48 rounded-lg border bg-transparent px-2 py-1 text-sm outline-none focus-visible:ring-3';
+const SELECT_CLASS = 'min-w-48';
 
 const KIND_CHIP: Record<PlanKind, string> = {
   new: 'bg-primary/10 text-primary',
@@ -78,7 +78,7 @@ function ChoiceSelect({
 }) {
   const t = useTranslations('Admin.players.import');
   return (
-    <select
+    <NativeSelect
       required
       value={value}
       disabled={disabled}
@@ -96,7 +96,7 @@ function ChoiceSelect({
         </option>
       ))}
       <option value="new">{t('createNew')}</option>
-    </select>
+    </NativeSelect>
   );
 }
 

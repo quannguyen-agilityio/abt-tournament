@@ -5,12 +5,6 @@ const TZ = 'Asia/Ho_Chi_Minh';
 const COURT = '11111111-1111-4111-8111-111111111111';
 const REFEREE = '22222222-2222-4222-8222-222222222222';
 
-function form(values: Record<string, string>): FormData {
-  const formData = new FormData();
-  for (const [key, value] of Object.entries(values)) formData.set(key, value);
-  return formData;
-}
-
 describe('zonedToUtc and utcToZoned', () => {
   it('converts a Vietnam wall-clock time (UTC+7)', () => {
     expect(zonedToUtc('2027-01-09', '08:30', TZ).toISOString()).toBe('2027-01-09T01:30:00.000Z');
@@ -31,32 +25,30 @@ describe('zonedToUtc and utcToZoned', () => {
 
 describe('parseMatchSlot', () => {
   it('reads a full slot', () => {
-    expect(parseMatchSlot(form({ date: '2027-01-09', time: '08:30', courtId: COURT, refereeId: REFEREE }), TZ)).toEqual(
-      {
-        ok: true,
-        value: { scheduledAt: new Date('2027-01-09T01:30:00Z'), courtId: COURT, refereeId: REFEREE },
-      },
-    );
+    expect(parseMatchSlot({ date: '2027-01-09', time: '08:30', courtId: COURT, refereeId: REFEREE }, TZ)).toEqual({
+      ok: true,
+      value: { scheduledAt: new Date('2027-01-09T01:30:00Z'), courtId: COURT, refereeId: REFEREE },
+    });
   });
 
   it('treats blanks as cleared', () => {
-    expect(parseMatchSlot(form({ date: '', time: ' ', courtId: '', refereeId: '' }), TZ)).toEqual({
+    expect(parseMatchSlot({ date: '', time: ' ', courtId: '', refereeId: '' }, TZ)).toEqual({
       ok: true,
       value: { scheduledAt: null, courtId: null, refereeId: null },
     });
-    expect(parseMatchSlot(new FormData(), TZ)).toEqual({
+    expect(parseMatchSlot({}, TZ)).toEqual({
       ok: true,
       value: { scheduledAt: null, courtId: null, refereeId: null },
     });
   });
 
   it('needs date and time together', () => {
-    expect(parseMatchSlot(form({ date: '2027-01-09' }), TZ)).toEqual({ ok: false, errors: ['dateTime'] });
-    expect(parseMatchSlot(form({ time: '08:30' }), TZ)).toEqual({ ok: false, errors: ['dateTime'] });
+    expect(parseMatchSlot({ date: '2027-01-09' }, TZ)).toEqual({ ok: false, errors: ['dateTime'] });
+    expect(parseMatchSlot({ time: '08:30' }, TZ)).toEqual({ ok: false, errors: ['dateTime'] });
   });
 
   it('collects every error', () => {
-    expect(parseMatchSlot(form({ date: '2027-02-30', time: '24:00', courtId: 'x', refereeId: 'y' }), TZ)).toEqual({
+    expect(parseMatchSlot({ date: '2027-02-30', time: '24:00', courtId: 'x', refereeId: 'y' }, TZ)).toEqual({
       ok: false,
       errors: ['dateTime', 'court', 'referee'],
     });

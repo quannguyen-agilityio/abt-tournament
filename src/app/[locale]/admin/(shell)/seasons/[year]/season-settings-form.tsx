@@ -5,6 +5,7 @@ import { useActionState, useId, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { NativeSelect } from '@/components/ui/native-select';
 import { parseSeasonSettings, type SettingsError } from '@/domain/settings';
 import {
   SETTINGS_FIELDS as F,
@@ -160,7 +161,7 @@ export function SeasonSettingsForm({ seasonId, stored }: { seasonId: string; sto
               <Label htmlFor={`${uid}-slot-${i}`} className="text-muted-foreground text-xs">
                 {s('slotLabel', { number: i + 1 })}
               </Label>
-              <select
+              <NativeSelect
                 id={`${uid}-slot-${i}`}
                 name={F.slotTypes}
                 value={type}
@@ -171,14 +172,14 @@ export function SeasonSettingsForm({ seasonId, stored }: { seasonId: string; sto
                   )
                 }
                 aria-invalid={slotInvalid || undefined}
-                className="border-input focus-visible:border-ring focus-visible:ring-ring/50 dark:bg-input/30 h-9 rounded-lg border bg-transparent px-2.5 text-base outline-none focus-visible:ring-3 md:text-sm"
+                className="h-9 w-auto px-2.5 text-base md:text-sm"
               >
                 {SLOT_TYPES.map((o) => (
                   <option key={o} value={o}>
                     {s(`slot.${o}`)}
                   </option>
                 ))}
-              </select>
+              </NativeSelect>
             </div>
           ))}
         </div>

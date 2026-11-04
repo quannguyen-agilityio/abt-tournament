@@ -103,7 +103,18 @@ Supabase clients live in `src/lib/supabase/`:
 | ----------- | ----------------------------------------- | ------------------------------------------------------------------------------------------------ |
 | `client.ts` | Client Components                         | anon (RLS applies)                                                                               |
 | `server.ts` | Server Components, Server Actions, routes | anon + the user's session cookie (RLS applies)                                                   |
+| `public.ts` | Cached public reads (`'use cache'`)       | anon, no cookies (RLS applies as for a visitor)                                                  |
 | `admin.ts`  | Server Actions only, after a `btc` check  | service role (bypasses RLS). Imports `server-only`, so a Client Component import fails the build |
+
+### Caching
+
+The public reads in `src/lib/public-season-db.ts` and `src/lib/seasons-db.ts` are kept in the server cache (`'use cache'`) for anonymous visitors, through the cookie-less `public.ts` client. A request with a Supabase session cookie (a BTC member or referee) reads through its session and is not cached, because RLS shows staff drafts and lineups before the lock.
+
+| Cache tag     | Tagged reads                                                   | Lifetime                                                                                    | Invalidated by                                                                                       |
+| ------------- | -------------------------------------------------------------- | ------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------- |
+| `public-data` | every cached read in `public-season-db.ts` and `seasons-db.ts` | 10 s for match data (schedule, matches, match detail, player stats), `minutes` for the rest | every admin Server Action that writes, through `invalidatePublicData()` in `src/lib/public-cache.ts` |
+
+A new admin action that writes data must call `invalidatePublicData()` (it replaces `refresh()`: it also re-renders the current page). Admin pages read through the session and are not cached on the server. In the browser, `experimental.staleTimes.dynamic` (30 s, `next.config.ts`) keeps a page just visited, and every admin action clears that cache.
 
 ## Deployments
 

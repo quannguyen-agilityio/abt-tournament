@@ -1,9 +1,8 @@
 'use server';
 
-import { refresh } from 'next/cache';
-
 import { requireBtc } from '@/lib/auth/session';
 import { isUuid } from '@/lib/auth/users';
+import { invalidatePublicData } from '@/lib/public-cache';
 import { parseBoardChanges, type BoardChanges } from '@/lib/team-board';
 import { parseTeamForm, type TeamFormError } from '@/lib/teams';
 import { createClient } from '@/lib/supabase/server';
@@ -31,7 +30,7 @@ export async function createTeam(_prev: TeamFormState, formData: FormData): Prom
   const { error } = await supabase.from('team').insert({ season_id: seasonId, ...parsed.value });
   if (error) return { error: 'failed' };
 
-  refresh();
+  invalidatePublicData();
   return { ok: true };
 }
 
@@ -52,7 +51,7 @@ export async function updateTeam(_prev: TeamFormState, formData: FormData): Prom
     .select('id');
   if (error || data.length === 0) return { error: 'failed' };
 
-  refresh();
+  invalidatePublicData();
   return { ok: true };
 }
 
@@ -75,7 +74,7 @@ export async function deleteTeam(_prev: TeamActionState, formData: FormData): Pr
   const { error } = await supabase.from('team').delete().eq('id', teamId);
   if (error) return { error: error.code === '23503' ? 'inUse' : 'failed' };
 
-  refresh();
+  invalidatePublicData();
   return { ok: true };
 }
 
@@ -97,6 +96,6 @@ export async function saveTeamBoard(seasonId: string, changes: BoardChanges): Pr
   });
   if (error) return { error: 'failed' };
 
-  refresh();
+  invalidatePublicData();
   return { ok: true };
 }
