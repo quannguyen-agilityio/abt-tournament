@@ -578,7 +578,7 @@
       "gridLabel": "Các trận ngày {day}",
       "unscheduled": "Chưa xếp lịch · {count}",
       "assign": "Xếp lịch",
-      "assignHint": "Chọn ngày, giờ ({timezone}), sân và trọng tài cho từng trận. Bỏ trống ngày và giờ để gỡ trận khỏi lịch.",
+      "assignHint": "Chọn ngày, giờ ({timezone}), sân và trọng tài cho từng trận, rồi lưu tất cả cùng lúc. Bỏ trống ngày và giờ để gỡ trận khỏi lịch.",
       "slotOf": "Lịch của {code}",
       "date": "Ngày",
       "time": "Giờ",
@@ -604,8 +604,16 @@
         "failed": "Không lưu được thay đổi. Vui lòng thử lại sau.",
         "dateTime": "Chọn cả ngày và giờ, hoặc bỏ trống cả hai.",
         "court": "Chọn một sân của mùa giải này.",
-        "referee": "Chọn một tài khoản đang hoạt động làm trọng tài."
-      }
+        "referee": "Chọn một tài khoản đang hoạt động làm trọng tài.",
+        "saveFailed": "Không lưu được nên chưa có gì thay đổi. Các chỉnh sửa vẫn còn đây, vui lòng thử lại.",
+        "invalid": "Có lịch không lưu được nên chưa có gì thay đổi. Hãy sửa các dòng được đánh dấu bên dưới.",
+        "slotsLocked": "Có trận trong bản nháp đã bắt đầu hoặc kết thúc, hoặc vòng bảng đã xong, nên chưa có gì thay đổi."
+      },
+      "unsaved": "{count} thay đổi chưa lưu",
+      "discard": "Bỏ thay đổi",
+      "leaveConfirm": "Lịch thi đấu có thay đổi chưa lưu. Rời trang mà không lưu?",
+      "changed": "Đã sửa",
+      "rowLocked": "Trận đã bắt đầu hoặc kết thúc: không thể đổi lịch nữa."
     },
     "closeGroup": {
       "back": "← Mùa giải",

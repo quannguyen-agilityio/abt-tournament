@@ -5,11 +5,13 @@ import { DEFAULT_SEASON_SETTINGS, parseSeasonSettings } from '@/domain/settings'
 import { requireBtc } from '@/lib/auth/session';
 import { isUuid } from '@/lib/auth/users';
 import { invalidatePublicData } from '@/lib/public-cache';
-import { parseMatchSlot, type MatchSlotError } from '@/lib/schedule';
+import { parseMatchSlot, type MatchSlotError, type MatchSlotInput } from '@/lib/schedule';
+import { parseSlotChanges, type SlotChange } from '@/lib/schedule-draft';
 import { createClient } from '@/lib/supabase/server';
 
 export type GenerateScheduleState = { ok: true; count: number } | { error: 'teams' | 'locked' | 'failed' } | undefined;
-export type MatchSlotState = { ok: true } | { ok: false; errors: MatchSlotError[] } | { error: 'failed' } | undefined;
+export type MatchSlotsState =
+  { ok: true } | { ok: false; errors: Record<string, MatchSlotError[]> } | { error: 'locked' | 'failed' };
 
 type Supabase = Awaited<ReturnType<typeof createClient>>;
 
@@ -63,47 +65,71 @@ export async function generateSchedule(
   return { ok: true, count: data };
 }
 
-/** Sets the date, time, court and referee of one match; blanks clear them. */
-export async function updateMatchSlot(_prev: MatchSlotState, formData: FormData): Promise<MatchSlotState> {
+/**
+ * Saves the slots of a schedule draft in one transaction (save_match_slots): date, time, court and
+ * referee of each changed match. Slots that cannot be saved come back by match id, and nothing is
+ * written. `locked`: a match has started or ended, or the season is past the group stage.
+ */
+export async function saveMatchSlots(seasonId: string, changes: SlotChange[]): Promise<MatchSlotsState> {
   await requireBtc();
-  const seasonId = String(formData.get('seasonId') ?? '');
-  const matchId = String(formData.get('matchId') ?? '');
-  if (!isUuid(seasonId) || !isUuid(matchId)) return { error: 'failed' };
+  // Arguments come from the client as they are: check them again.
+  const parsed = parseSlotChanges(changes);
+  if (typeof seasonId !== 'string' || !isUuid(seasonId) || !parsed) return { error: 'failed' };
+  if (parsed.length === 0) return { ok: true };
 
   const supabase = await createClient();
   const settings = await seasonSettings(supabase, seasonId);
   if (!settings) return { error: 'failed' };
-  const parsed = parseMatchSlot(Object.fromEntries(formData), settings.timezone);
-  if (!parsed.ok) return parsed;
-  const { scheduledAt, courtId, refereeId } = parsed.value;
 
-  // A form could be tampered with: the court must be the season's, the referee an active account.
-  if (courtId) {
-    const { data } = await supabase
-      .from('court')
-      .select('id')
-      .eq('id', courtId)
+  const errors: Record<string, MatchSlotError[]> = {};
+  const slots: { matchId: string; value: MatchSlotInput }[] = [];
+  for (const change of parsed) {
+    const slot = parseMatchSlot(change, settings.timezone);
+    if (slot.ok) slots.push({ matchId: change.matchId, value: slot.value });
+    else errors[change.matchId] = slot.errors;
+  }
+
+  // save_match_slots checks these too; checking here first tells which rows are wrong. The court must
+  // be the season's, and a newly chosen referee an active account.
+  const courtIds = [...new Set(slots.flatMap((s) => s.value.courtId ?? []))];
+  const refereeIds = [...new Set(slots.flatMap((s) => s.value.refereeId ?? []))];
+  const [courts, referees, matches] = await Promise.all([
+    supabase.from('court').select('id').eq('season_id', seasonId).in('id', courtIds),
+    supabase.from('profile').select('user_id').eq('is_active', true).in('user_id', refereeIds),
+    supabase
+      .from('match')
+      .select('id, referee_id')
       .eq('season_id', seasonId)
-      .maybeSingle();
-    if (!data) return { ok: false, errors: ['court'] };
+      .in(
+        'id',
+        slots.map((s) => s.matchId),
+      ),
+  ]);
+  if (courts.error || referees.error || matches.error) return { error: 'failed' };
+  const seasonCourts = new Set(courts.data.map((c) => c.id));
+  const activeReferees = new Set(referees.data.map((p) => p.user_id));
+  const savedReferee = new Map(matches.data.map((m) => [m.id, m.referee_id]));
+  for (const { matchId, value } of slots) {
+    if (!savedReferee.has(matchId)) return { error: 'failed' };
+    const slotErrors: MatchSlotError[] = [];
+    if (value.courtId && !seasonCourts.has(value.courtId)) slotErrors.push('court');
+    if (value.refereeId && value.refereeId !== savedReferee.get(matchId) && !activeReferees.has(value.refereeId)) {
+      slotErrors.push('referee');
+    }
+    if (slotErrors.length > 0) errors[matchId] = slotErrors;
   }
-  if (refereeId) {
-    const { data } = await supabase
-      .from('profile')
-      .select('user_id')
-      .eq('user_id', refereeId)
-      .eq('is_active', true)
-      .maybeSingle();
-    if (!data) return { ok: false, errors: ['referee'] };
-  }
+  if (Object.keys(errors).length > 0) return { ok: false, errors };
 
-  const { data, error } = await supabase
-    .from('match')
-    .update({ scheduled_at: scheduledAt?.toISOString() ?? null, court_id: courtId, referee_id: refereeId })
-    .eq('id', matchId)
-    .eq('season_id', seasonId)
-    .select('id');
-  if (error || data.length === 0) return { error: 'failed' };
+  const { error } = await supabase.rpc('save_match_slots', {
+    p_season_id: seasonId,
+    p_slots: slots.map(({ matchId, value }) => ({
+      match_id: matchId,
+      scheduled_at: value.scheduledAt?.toISOString() ?? null,
+      court_id: value.courtId,
+      referee_id: value.refereeId,
+    })),
+  });
+  if (error) return { error: error.code === 'P0001' ? 'locked' : 'failed' };
 
   invalidatePublicData();
   return { ok: true };

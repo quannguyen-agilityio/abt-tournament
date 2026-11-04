@@ -578,7 +578,7 @@
       "gridLabel": "Matches on {day}",
       "unscheduled": "Not scheduled · {count}",
       "assign": "Assign slots",
-      "assignHint": "Pick a day, a time ({timezone}), a court and a referee for each match. Clearing the day and time unschedules the match.",
+      "assignHint": "Pick a day, a time ({timezone}), a court and a referee for each match, then save all changes at once. Clearing the day and time unschedules the match.",
       "slotOf": "Slot of {code}",
       "date": "Day",
       "time": "Time",
@@ -604,8 +604,16 @@
         "failed": "Could not save the change. Please try again later.",
         "dateTime": "Pick both a day and a time, or clear both.",
         "court": "Choose a court of this season.",
-        "referee": "Choose an active account as referee."
-      }
+        "referee": "Choose an active account as referee.",
+        "saveFailed": "Could not save the changes, so nothing was changed. Your edits are still here: please try again.",
+        "invalid": "Some slots cannot be saved, so nothing was changed. Fix the rows marked below.",
+        "slotsLocked": "A match in the draft has started or finished, or the group stage is over, so nothing was changed."
+      },
+      "unsaved": "{count, plural, one {# unsaved change} other {# unsaved changes}}",
+      "discard": "Discard",
+      "leaveConfirm": "The schedule has unsaved changes. Leave without saving?",
+      "changed": "Changed",
+      "rowLocked": "Started or finished: this slot can no longer change."
     },
     "closeGroup": {
       "back": "← Season",
