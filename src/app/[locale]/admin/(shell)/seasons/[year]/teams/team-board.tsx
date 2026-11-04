@@ -4,6 +4,7 @@ import { GripVertical } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { useEffect, useState, useTransition } from 'react';
 import { Button } from '@/components/ui/button';
+import { NativeSelect } from '@/components/ui/native-select';
 import {
   EMPTY_DRAFT,
   applyDraft,
@@ -20,8 +21,7 @@ import { sortRoster } from '@/lib/teams';
 import { saveTeamBoard } from './actions';
 import { TeamHeader } from './team-forms';
 
-const SELECT_CLASS =
-  'border-input focus-visible:border-ring focus-visible:ring-ring/50 dark:bg-input/30 h-7 w-32 min-w-0 rounded-lg border bg-transparent px-1.5 text-xs outline-none focus-visible:ring-3';
+const SELECT_CLASS = 'h-7 w-32 px-1.5 text-xs';
 
 /** Drop target key for players without a team. */
 const NO_TEAM = '';
@@ -111,7 +111,7 @@ function PlayerItem({
             </Button>
           )
         ))}
-      <select
+      <NativeSelect
         value={player.teamId ?? NO_TEAM}
         disabled={disabled}
         aria-label={t('moveLabel', { name: player.fullName })}
@@ -124,7 +124,7 @@ function PlayerItem({
           </option>
         ))}
         <option value={NO_TEAM}>{t('noTeam')}</option>
-      </select>
+      </NativeSelect>
     </li>
   );
 }

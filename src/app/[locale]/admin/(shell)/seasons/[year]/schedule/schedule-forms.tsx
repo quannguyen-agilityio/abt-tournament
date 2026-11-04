@@ -4,10 +4,10 @@ import { useTranslations } from 'next-intl';
 import { useActionState, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { NativeSelect } from '@/components/ui/native-select';
 import { generateSchedule, updateMatchSlot, type GenerateScheduleState, type MatchSlotState } from './actions';
 
-const SELECT =
-  'border-input focus-visible:border-ring focus-visible:ring-ring/50 dark:bg-input/30 h-8 min-w-0 rounded-lg border bg-transparent px-2 text-sm outline-none focus-visible:ring-3';
+const SELECT = 'w-auto';
 
 /**
  * "Generate round-robin". With matches already in place it asks first, since regenerating drops
@@ -108,7 +108,7 @@ export function MatchSlotForm({
       <input type="hidden" name="matchId" value={match.id} />
       <span className="font-display w-12 font-bold">{match.code}</span>
       <span className="min-w-40 flex-1 truncate text-sm">{match.label}</span>
-      <select
+      <NativeSelect
         key={`d-${key}`}
         name="date"
         defaultValue={match.date}
@@ -122,7 +122,7 @@ export function MatchSlotForm({
             {day.label}
           </option>
         ))}
-      </select>
+      </NativeSelect>
       <Input
         key={`t-${key}`}
         type="time"
@@ -133,7 +133,7 @@ export function MatchSlotForm({
         aria-invalid={errors.includes('dateTime') || undefined}
         className="h-8 w-28"
       />
-      <select
+      <NativeSelect
         key={`c-${key}`}
         name="courtId"
         defaultValue={match.courtId}
@@ -147,8 +147,8 @@ export function MatchSlotForm({
             {court.name}
           </option>
         ))}
-      </select>
-      <select
+      </NativeSelect>
+      <NativeSelect
         key={`r-${key}`}
         name="refereeId"
         defaultValue={match.refereeId}
@@ -162,7 +162,7 @@ export function MatchSlotForm({
             {referee.name}
           </option>
         ))}
-      </select>
+      </NativeSelect>
       <Button type="submit" size="sm" variant="outline" pending={saving}>
         {saving ? t('saving') : t('save')}
         <span className="sr-only"> {match.code}</span>

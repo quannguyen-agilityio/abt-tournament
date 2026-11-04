@@ -14,6 +14,7 @@ import {
   DialogTrigger,
 } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
+import { NativeSelect } from '@/components/ui/native-select';
 import { MAX_FEE_AMOUNT, MAX_PLAYER_NAME_LENGTH, MAX_SKILL_POINTS } from '@/lib/season-players';
 import {
   createSeasonPlayer,
@@ -27,9 +28,6 @@ import type { PlayerRow } from './players-table';
 export type Team = { id: string; name: string; color: string };
 
 const MEMBER_TYPES: MemberType[] = ['employee', 'intern', 'guest'];
-
-const SELECT_CLASS =
-  'border-input focus-visible:border-ring focus-visible:ring-ring/50 aria-invalid:border-destructive aria-invalid:ring-destructive/20 dark:bg-input/30 h-8 w-full min-w-0 rounded-lg border bg-transparent px-2 py-1 text-sm outline-none focus-visible:ring-3 aria-invalid:ring-3';
 
 type FormProps = {
   seasonId: string;
@@ -173,27 +171,25 @@ function PlayerForm({
       {matches && <PersonChoice matches={matches} />}
       <Field label={t('fields.gender')} error={errorOf('gender')}>
         {(describedBy) => (
-          <select
+          <NativeSelect
             {...field('gender')}
             aria-invalid={errors.includes('gender') || undefined}
             aria-describedby={describedBy}
-            className={SELECT_CLASS}
           >
             {(['male', 'female'] as const).map((g) => (
               <option key={g} value={g}>
                 {t(`gender.${g}`)}
               </option>
             ))}
-          </select>
+          </NativeSelect>
         )}
       </Field>
       <Field label={t('fields.team')} error={errorOf('team')}>
         {(describedBy) => (
-          <select
+          <NativeSelect
             {...field('teamId')}
             aria-invalid={errors.includes('team') || undefined}
             aria-describedby={describedBy}
-            className={SELECT_CLASS}
           >
             <option value="">{t('noTeam')}</option>
             {teams.map((team) => (
@@ -201,7 +197,7 @@ function PlayerForm({
                 {team.name}
               </option>
             ))}
-          </select>
+          </NativeSelect>
         )}
       </Field>
       <Field label={t('fields.rank', { maxRank })} error={errorOf('rank')}>
@@ -236,12 +232,11 @@ function PlayerForm({
       </Field>
       <Field label={t('fields.memberType')} error={errorOf('memberType')}>
         {(describedBy) => (
-          <select
+          <NativeSelect
             name="memberType"
             value={values.memberType}
             aria-invalid={errors.includes('memberType') || undefined}
             aria-describedby={describedBy}
-            className={SELECT_CLASS}
             // The fee follows the member type: start from the season's default for that type.
             onChange={(e) => {
               const memberType = e.currentTarget.value as MemberType;
@@ -253,7 +248,7 @@ function PlayerForm({
                 {t(`memberType.${type}`)}
               </option>
             ))}
-          </select>
+          </NativeSelect>
         )}
       </Field>
       <Field label={t('fields.feeAmount')} error={errorOf('feeAmount')}>

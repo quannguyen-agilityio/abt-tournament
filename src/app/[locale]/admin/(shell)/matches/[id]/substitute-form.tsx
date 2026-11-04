@@ -3,6 +3,7 @@
 import { useTranslations } from 'next-intl';
 import { startTransition, useActionState, useState } from 'react';
 import { Button } from '@/components/ui/button';
+import { NativeSelect } from '@/components/ui/native-select';
 import { SUB_RANK_TOLERANCE, type Side } from '@/domain/lineup';
 import type { SlotPair } from '@/lib/match-lineup';
 import { substitutePlayer, type SubstitutionState } from './actions';
@@ -33,8 +34,7 @@ type Props = {
   isBtc: boolean;
 };
 
-const SELECT =
-  'border-input focus-visible:border-ring focus-visible:ring-ring/50 dark:bg-input/30 h-9 w-full min-w-0 rounded-lg border bg-transparent px-2 text-sm outline-none focus-visible:ring-3 disabled:opacity-70';
+const SELECT = 'h-9 disabled:opacity-70';
 const INPUT =
   'border-input focus-visible:border-ring focus-visible:ring-ring/50 dark:bg-input/30 h-9 w-full min-w-0 rounded-lg border bg-transparent px-2.5 text-sm font-normal outline-none focus-visible:ring-3';
 
@@ -87,7 +87,7 @@ export function SubstituteForm({ matchId, relay, slots, teams, isBtc }: Props) {
       <div className="grid gap-3 sm:grid-cols-2">
         <label className="flex flex-col gap-1 text-sm font-medium">
           {t('team')}
-          <select
+          <NativeSelect
             name="teamId"
             value={team.team.id}
             onChange={(e) => setPicked({ teamId: e.target.value, slotNo: 0, out: '', in: '' })}
@@ -98,11 +98,11 @@ export function SubstituteForm({ matchId, relay, slots, teams, isBtc }: Props) {
                 {x.team.name}
               </option>
             ))}
-          </select>
+          </NativeSelect>
         </label>
         <label className="flex flex-col gap-1 text-sm font-medium">
           {t('slot')}
-          <select
+          <NativeSelect
             name="slotNo"
             value={slot ? slot.slotNo : ''}
             onChange={(e) => setPicked({ ...picked, slotNo: Number(e.target.value), out: '', in: '' })}
@@ -114,11 +114,11 @@ export function SubstituteForm({ matchId, relay, slots, teams, isBtc }: Props) {
                 {tl(relay ? 'leg' : 'set', { no: s.slotNo })}
               </option>
             ))}
-          </select>
+          </NativeSelect>
         </label>
         <label className="flex flex-col gap-1 text-sm font-medium">
           {t('out')}
-          <select
+          <NativeSelect
             name="replacedId"
             value={out}
             disabled={!slot}
@@ -131,11 +131,11 @@ export function SubstituteForm({ matchId, relay, slots, teams, isBtc }: Props) {
                 {playerOf(id) ? `R${playerOf(id)!.rank} · ${playerOf(id)!.name}` : '—'}
               </option>
             ))}
-          </select>
+          </NativeSelect>
         </label>
         <label className="flex flex-col gap-1 text-sm font-medium">
           {t('in')}
-          <select
+          <NativeSelect
             name="substituteId"
             value={incoming}
             disabled={!slot}
@@ -149,7 +149,7 @@ export function SubstituteForm({ matchId, relay, slots, teams, isBtc }: Props) {
                 {p.present ? '' : ` ${tl('absent')}`}
               </option>
             ))}
-          </select>
+          </NativeSelect>
         </label>
         <label className="flex flex-col gap-1 text-sm font-medium sm:col-span-2">
           {t('reason')}
