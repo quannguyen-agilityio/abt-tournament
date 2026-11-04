@@ -1,12 +1,11 @@
 'use server';
 
-import { refresh } from 'next/cache';
-
 import { DEFAULT_SEASON_SETTINGS, parseSeasonSettings } from '@/domain/settings';
 import { requireBtc } from '@/lib/auth/session';
 import { isUuid } from '@/lib/auth/users';
 import { loadPersons } from '@/lib/persons-db';
 import { findNameMatches, freeSlug, normalizeName, slugify } from '@/lib/player-import';
+import { invalidatePublicData } from '@/lib/public-cache';
 import { parsePlayerEdit, type PlayerEditError } from '@/lib/season-players';
 import { createClient } from '@/lib/supabase/server';
 
@@ -91,7 +90,7 @@ export async function updateSeasonPlayer(_prev: PlayerEditState, formData: FormD
     );
   if (privateError) return { error: 'failed' };
 
-  refresh();
+  invalidatePublicData();
   return { ok: true };
 }
 
@@ -180,7 +179,7 @@ export async function createSeasonPlayer(_prev: PlayerCreateState, formData: For
     return { error: 'failed' };
   }
 
-  refresh();
+  invalidatePublicData();
   return { ok: true };
 }
 
@@ -205,7 +204,7 @@ export async function setPlayerFeePaid(_prev: PlayerActionState, formData: FormD
     .select('id');
   if (error || data.length === 0) return { error: 'failed' };
 
-  refresh();
+  invalidatePublicData();
   return { ok: true };
 }
 
@@ -225,6 +224,6 @@ export async function setPlayerStatus(_prev: PlayerActionState, formData: FormDa
   const { error } = await supabase.from('season_player').update({ status }).eq('id', player.id);
   if (error) return { error: 'failed' };
 
-  refresh();
+  invalidatePublicData();
   return { ok: true };
 }

@@ -6,6 +6,7 @@ import { redirect } from '@/i18n/navigation';
 import { requireBtc } from '@/lib/auth/session';
 import type { Json } from '@/lib/database.types';
 import { DEFAULT_SEASON_SETTINGS } from '@/domain/settings';
+import { invalidatePublicData } from '@/lib/public-cache';
 import { parseNewSeason, type NewSeasonError } from '@/lib/season-admin';
 import { createClient } from '@/lib/supabase/server';
 
@@ -39,5 +40,6 @@ export async function createSeason(_prev: CreateSeasonState, formData: FormData)
         .insert({ year, name, venue, settings: { ...DEFAULT_SEASON_SETTINGS } as unknown as NonNullable<Json> });
   if (error) return { error: error.code === UNIQUE_VIOLATION ? 'yearTaken' : 'failed', fields };
 
+  invalidatePublicData();
   return redirect({ href: `/admin/seasons/${year}`, locale: await getLocale() });
 }

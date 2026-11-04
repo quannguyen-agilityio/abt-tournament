@@ -1,7 +1,5 @@
 'use server';
 
-import { refresh } from 'next/cache';
-
 import { effectivePair, validateLineup, type LineupAttendance, type LineupRuleCode, type Side } from '@/domain/lineup';
 import { DEFAULT_SEASON_SETTINGS, parseSeasonSettings } from '@/domain/settings';
 import { requireStaff } from '@/lib/auth/session';
@@ -33,6 +31,7 @@ import {
   substitutionsOpen,
   substitutionState,
 } from '@/lib/match-substitution';
+import { invalidatePublicData } from '@/lib/public-cache';
 import { createClient } from '@/lib/supabase/server';
 
 export type AttendanceState = { ok: true; count: number } | { error: 'locked' | 'invalid' | 'failed' } | undefined;
@@ -80,7 +79,7 @@ export async function saveAttendance(_prev: AttendanceState, formData: FormData)
     if (insertError) return { error: 'failed' };
   }
 
-  refresh();
+  invalidatePublicData();
   return { ok: true, count: playerIds.length };
 }
 
@@ -190,7 +189,7 @@ export async function saveLineup(_prev: LineupState, formData: FormData): Promis
   });
   if (error) return { error: error.code === 'P0001' ? 'locked' : error.code === '42501' ? 'violations' : 'failed' };
 
-  refresh();
+  invalidatePublicData();
   return { ok: true };
 }
 
@@ -247,7 +246,7 @@ export async function lockLineups(_prev: LockState, formData: FormData): Promise
     return { error: error.code === 'P0001' ? 'locked' : error.code === '40001' ? 'changed' : 'failed' };
   }
 
-  refresh();
+  invalidatePublicData();
   return undefined;
 }
 
@@ -263,7 +262,7 @@ export async function unlockLineups(_prev: UnlockState, formData: FormData): Pro
   const { error } = await supabase.rpc('unlock_match_lineups', { p_match_id: matchId });
   if (error) return { error: error.code === 'P0001' ? 'notLocked' : 'failed' };
 
-  refresh();
+  invalidatePublicData();
   return undefined;
 }
 
@@ -330,7 +329,7 @@ export async function saveSlotScore(formData: FormData): Promise<ScoreState> {
   });
   if (error) return { error: error.code === 'P0001' ? 'closed' : error.code === '40001' ? 'changed' : 'failed' };
 
-  refresh();
+  invalidatePublicData();
   return { ok: true };
 }
 
@@ -361,7 +360,7 @@ export async function completeMatch(_prev: CompleteState, formData: FormData): P
   });
   if (error) return { error: error.code === 'P0001' ? 'closed' : error.code === '40001' ? 'changed' : 'failed' };
 
-  refresh();
+  invalidatePublicData();
   return undefined;
 }
 
@@ -377,7 +376,7 @@ export async function reopenMatch(_prev: ReopenState, formData: FormData): Promi
   const { error } = await supabase.rpc('reopen_match', { p_match_id: matchId });
   if (error) return { error: error.code === 'P0001' ? 'notCompleted' : 'failed' };
 
-  refresh();
+  invalidatePublicData();
   return undefined;
 }
 
@@ -563,7 +562,7 @@ export async function substitutePlayer(_prev: SubstitutionState, formData: FormD
     };
   }
 
-  refresh();
+  invalidatePublicData();
   return { ok: true };
 }
 
@@ -621,7 +620,7 @@ export async function forfeitMatch(_prev: ForfeitState, formData: FormData): Pro
     };
   }
 
-  refresh();
+  invalidatePublicData();
   return { ok: true };
 }
 
@@ -707,7 +706,7 @@ export async function disqualifyTeam(_prev: DisqualifyState, formData: FormData)
     };
   }
 
-  refresh();
+  invalidatePublicData();
   return { ok: true };
 }
 
@@ -766,6 +765,6 @@ export async function reinstateTeam(_prev: ReinstateState, formData: FormData): 
     };
   }
 
-  refresh();
+  invalidatePublicData();
   return { ok: true };
 }

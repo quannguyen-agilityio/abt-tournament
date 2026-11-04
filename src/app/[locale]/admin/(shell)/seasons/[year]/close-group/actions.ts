@@ -1,10 +1,9 @@
 'use server';
 
-import { refresh } from 'next/cache';
-
 import { requireBtc } from '@/lib/auth/session';
 import { isUuid } from '@/lib/auth/users';
 import { groupResultState, planGroupClosure, type CloseGroupError } from '@/lib/close-group';
+import { invalidatePublicData } from '@/lib/public-cache';
 import { getPublicSeason, getSeasonMatches, getSeasonTeams } from '@/lib/public-season-db';
 import { createClient } from '@/lib/supabase/server';
 
@@ -54,7 +53,7 @@ export async function closeGroup(_prev: CloseGroupState, formData: FormData): Pr
     return { error: 'failed' };
   }
 
-  refresh();
+  invalidatePublicData();
   return { ok: true };
 }
 
@@ -72,6 +71,6 @@ export async function reopenGroup(_prev: ReopenGroupState, formData: FormData): 
     return { error: 'failed' };
   }
 
-  refresh();
+  invalidatePublicData();
   return { ok: true };
 }

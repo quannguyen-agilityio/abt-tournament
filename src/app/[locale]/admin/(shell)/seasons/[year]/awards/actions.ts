@@ -1,13 +1,13 @@
 'use server';
 
 import { getLocale } from 'next-intl/server';
-import { refresh } from 'next/cache';
 
 import { redirect } from '@/i18n/navigation';
 import { parseAwardForm, parseWinnerForm, type AwardFieldError, type WinnerError } from '@/lib/award-admin';
 import { loadWinnerContext } from '@/lib/award-admin-db';
 import { requireBtc } from '@/lib/auth/session';
 import { isUuid } from '@/lib/auth/users';
+import { invalidatePublicData } from '@/lib/public-cache';
 import { createClient } from '@/lib/supabase/server';
 
 /** The award form as typed, so a failed save can refill it (React resets the form after an action). */
@@ -49,7 +49,7 @@ export async function saveAward(_prev: SaveAwardState, formData: FormData): Prom
   if (awardId) {
     const { error } = await supabase.from('award').update(parsed.value).eq('id', awardId).eq('season_id', seasonId);
     if (error) return { error: 'failed', fields };
-    refresh();
+    invalidatePublicData();
     return { ok: true };
   }
 
@@ -68,6 +68,7 @@ export async function saveAward(_prev: SaveAwardState, formData: FormData): Prom
     .single();
   if (error) return { error: 'failed', fields };
 
+  invalidatePublicData();
   return redirect({ href: `${awardsPath(year)}?award=${data.id}`, locale: await getLocale() });
 }
 
@@ -82,6 +83,7 @@ export async function deleteAward(_prev: AwardActionState, formData: FormData): 
   const { error } = await supabase.rpc('delete_award', { p_award_id: awardId });
   if (error) return { error: 'failed' };
 
+  invalidatePublicData();
   return redirect({ href: awardsPath(year), locale: await getLocale() });
 }
 
@@ -111,7 +113,7 @@ export async function addAwardWinner(_prev: AddWinnerState, formData: FormData):
   });
   if (error) return { error: 'failed' };
 
-  refresh();
+  invalidatePublicData();
   return { ok: true };
 }
 
@@ -124,7 +126,7 @@ export async function removeAwardWinner(_prev: AwardActionState, formData: FormD
   const { error } = await supabase.rpc('delete_award_winner', { p_winner_id: winnerId });
   if (error) return { error: 'failed' };
 
-  refresh();
+  invalidatePublicData();
   return { ok: true };
 }
 
@@ -137,6 +139,6 @@ export async function reorderAwards(seasonId: string, awardIds: string[]): Promi
   const { error } = await supabase.rpc('reorder_awards', { p_season_id: seasonId, p_award_ids: awardIds });
   if (error) return { error: error.code === '40001' ? 'changed' : 'failed' };
 
-  refresh();
+  invalidatePublicData();
   return { ok: true };
 }
