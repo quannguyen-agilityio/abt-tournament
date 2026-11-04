@@ -360,20 +360,34 @@
       "noTeam": "Chưa có đội",
       "withdrawn": "Đã rút lui",
       "edit": "Sửa",
+      "add": "Thêm VĐV",
+      "addTitle": "VĐV mới",
+      "editTitle": "Sửa VĐV",
+      "create": "Thêm",
+      "close": "Đóng",
       "save": "Lưu",
       "saving": "Đang lưu…",
       "cancel": "Hủy",
       "withdraw": "Cho rút lui",
       "reinstate": "Khôi phục",
       "paidLabel": "Lệ phí của {name} đã đóng",
-      "aria": {
-        "name": "Tên của {name}",
-        "gender": "Giới tính của {name}",
-        "rank": "Hạng của {name}",
-        "skill": "Điểm kỹ năng của {name}",
-        "team": "Đội của {name}",
-        "memberType": "Loại thành viên của {name}",
-        "fee": "Lệ phí của {name}"
+      "fields": {
+        "fullName": "Họ và tên",
+        "gender": "Giới tính",
+        "team": "Đội",
+        "rank": "Hạng (1–{maxRank})",
+        "skillPoints": "Điểm kỹ năng",
+        "memberType": "Loại thành viên",
+        "feeAmount": "Lệ phí (VND)",
+        "paid": "Đã đóng lệ phí"
+      },
+      "match": {
+        "title": "Đây có phải người đã có trong hệ thống?",
+        "hint": "Đã có người trùng tên này. Chọn người đó để giữ lịch sử thi đấu, hoặc tạo người mới.",
+        "played": "Đã thi đấu: {years}",
+        "noSeasons": "Chưa thi đấu mùa nào",
+        "inSeason": "Đã có trong mùa giải này",
+        "new": "Không, tạo người mới"
       },
       "errors": {
         "fullName": "Nhập tên tối đa {max} ký tự.",
@@ -383,7 +397,8 @@
         "team": "Chọn một đội của mùa giải này.",
         "memberType": "Chọn loại thành viên.",
         "feeAmount": "Lệ phí phải là số tiền nguyên từ 0 đến {max}.",
-        "failed": "Không thể cập nhật VĐV. Vui lòng thử lại sau."
+        "failed": "Không thể lưu VĐV. Vui lòng thử lại sau.",
+        "inSeason": "VĐV này đã có trong mùa giải."
       },
       "import": {
         "open": "Nhập CSV",
