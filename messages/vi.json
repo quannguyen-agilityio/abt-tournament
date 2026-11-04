@@ -472,7 +472,7 @@
       "subtitle": "{season} · {count} đội · {players} VĐV",
       "back": "← Mùa giải",
       "empty": "Chưa có đội nào. Hãy thêm đội hoặc nhập kết quả bốc thăm.",
-      "dragHint": "Kéo VĐV giữa các đội, hoặc chọn đội ở menu trên mỗi dòng. Đội trưởng mặc định là VĐV Rank 1 của đội.",
+      "dragHint": "Kéo VĐV giữa các đội, hoặc chọn đội ở menu trên mỗi dòng, rồi bấm Lưu. Đội trưởng mặc định là VĐV Rank 1 của đội.",
       "add": "Thêm đội",
       "addTitle": "Đội mới",
       "create": "Tạo",
@@ -496,6 +496,9 @@
       "withdrawn": "Đã rút lui",
       "unassigned": "Chưa có đội",
       "emptyTeam": "Thả VĐV vào đây.",
+      "unsaved": "{count} thay đổi chưa lưu",
+      "discard": "Bỏ thay đổi",
+      "leaveConfirm": "Các đội có thay đổi chưa lưu. Rời trang mà không lưu?",
       "rosterCount": "{count} VĐV đang thi đấu",
       "warnings": {
         "title": "Kiểm tra các đội",
@@ -508,6 +511,7 @@
         "color": "Hãy chọn màu.",
         "notEmpty": "Hãy chuyển hết VĐV ra trước khi xoá đội.",
         "inUse": "Đội đã có trận đấu nên không xoá được.",
+        "saveFailed": "Không lưu được nên chưa có gì thay đổi. Các chỉnh sửa vẫn còn đây, vui lòng thử lại.",
         "failed": "Không lưu được thay đổi. Vui lòng thử lại sau."
       },
       "draw": {
