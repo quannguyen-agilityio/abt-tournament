@@ -13,6 +13,7 @@ import { buildMatchDetail, type MatchDetailView, type MatchPlayer, type SlotView
 import type { MatchScore } from '@/lib/public-matches';
 import { getMatchDetail, getPublicSeason, getSeasonTeams, type MatchDetail } from '@/lib/public-season-db';
 import { cn } from '@/lib/utils';
+import Loading from './loading';
 
 const CODE = /^(V\d{2}|SF[12]|3RD|F)$/;
 const PANEL = 'border-border bg-surface rounded-[10px] border';
@@ -325,7 +326,7 @@ async function MatchPage({ params }: Pick<PageProps<'/[locale]/[year]/matches/[c
 
 export default function MatchDetailPage({ params }: PageProps<'/[locale]/[year]/matches/[code]'>) {
   return (
-    <Suspense>
+    <Suspense fallback={<Loading />}>
       <MatchPage params={params} />
     </Suspense>
   );

@@ -52,7 +52,7 @@ export function ChangePasswordForm({ email, mustChange }: { email: string; mustC
           {t(`errors.${state.error}`, { min: MIN_PASSWORD_LENGTH })}
         </p>
       )}
-      <Button type="submit" size="lg" disabled={pending} className="w-full">
+      <Button type="submit" size="lg" pending={pending} className="w-full">
         {pending ? t('saving') : t('submit')}
       </Button>
     </form>

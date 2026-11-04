@@ -972,6 +972,22 @@ export type Database = {
         };
         Returns: string;
       };
+      add_season_player: {
+        Args: {
+          p_fee_amount: number;
+          p_full_name: string;
+          p_gender: Database['public']['Enums']['gender'];
+          p_member_type: Database['public']['Enums']['member_type'];
+          p_paid: boolean;
+          p_person_id?: string;
+          p_rank: number;
+          p_season_id: string;
+          p_skill_points: number;
+          p_slug: string;
+          p_team_id?: string;
+        };
+        Returns: string;
+      };
       clone_season: { Args: { p_name: string; p_source_id: string; p_venue: string; p_year: number }; Returns: string };
       close_group: {
         Args: { p_bracket: Json; p_expected: Json; p_final_order: string[]; p_manual_draws: Json; p_season_id: string };
@@ -1023,6 +1039,7 @@ export type Database = {
         Args: { p_expected: Json; p_match_id: string; p_score_away: number; p_score_home: number; p_slot_no: number };
         Returns: undefined;
       };
+      save_team_board: { Args: { p_captains: Json; p_moves: Json; p_season_id: string }; Returns: number };
       set_current_season: { Args: { p_season_id: string }; Returns: undefined };
       substitute_player: {
         Args: {

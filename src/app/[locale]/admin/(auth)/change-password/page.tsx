@@ -2,7 +2,7 @@ import { hasLocale } from 'next-intl';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { notFound } from 'next/navigation';
 import { Suspense } from 'react';
-import { Button } from '@/components/ui/button';
+import { SignOutButton } from '@/components/sign-out-button';
 import { routing } from '@/i18n/routing';
 import { signOut } from '@/lib/auth/actions';
 import { requireSignedIn } from '@/lib/auth/session';
@@ -22,9 +22,7 @@ async function ChangePassword({ params }: Pick<PageProps<'/[locale]/admin/change
       <div className="text-muted-foreground flex items-center justify-between gap-2 text-sm">
         <span className="min-w-0 break-all">{t('signedInAs', { email: staff.email })}</span>
         <form action={signOut}>
-          <Button type="submit" variant="outline" size="sm">
-            {t('signOut')}
-          </Button>
+          <SignOutButton>{t('signOut')}</SignOutButton>
         </form>
       </div>
     </div>

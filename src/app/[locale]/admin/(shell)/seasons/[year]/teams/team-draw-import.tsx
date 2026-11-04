@@ -2,8 +2,9 @@
 
 import { useTranslations } from 'next-intl';
 import { useRef, useState, useTransition } from 'react';
+import { IMPORT_FILE_ACCEPT, ImportTemplateLink, readImportFile } from '@/components/import-file';
 import { Button } from '@/components/ui/button';
-import { DRAW_COLUMNS, MAX_DRAW_ROWS, type DrawPlanKind, type DrawPlanRow } from '@/lib/team-draw';
+import { DRAW_COLUMNS, MAX_DRAW_ROWS, teamDrawTemplate, type DrawPlanKind, type DrawPlanRow } from '@/lib/team-draw';
 import { MAX_TEAM_NAME_LENGTH } from '@/lib/teams';
 import {
   applyTeamDraw,
@@ -59,7 +60,8 @@ function Details({ row }: { row: DrawPlanRow }) {
   }
 }
 
-export function TeamDrawImport({ seasonId }: { seasonId: string }) {
+/** `players` and `teams` are the season's names, offered as dropdowns in the template. */
+export function TeamDrawImport({ seasonId, players, teams }: { seasonId: string; players: string[]; teams: string[] }) {
   const t = useTranslations('Admin.teams.draw');
   const [open, setOpen] = useState(false);
   const [csv, setCsv] = useState('');
@@ -108,8 +110,14 @@ export function TeamDrawImport({ seasonId }: { seasonId: string }) {
 
   async function onFile(file: File | undefined) {
     if (!file) return;
-    setCsv(await file.text());
     setPreview(null);
+    try {
+      setCsv(await readImportFile(file));
+      setError(null);
+    } catch {
+      setCsv('');
+      setError('failed');
+    }
   }
 
   return (
@@ -127,12 +135,15 @@ export function TeamDrawImport({ seasonId }: { seasonId: string }) {
             {t('hint', { header: DRAW_COLUMNS.join(','), rows: MAX_DRAW_ROWS })}
           </p>
           <div className="flex flex-col gap-3">
+            <ImportTemplateLink template={teamDrawTemplate({ players, teams })} filename="team-draw-template.xlsx">
+              {t('template')}
+            </ImportTemplateLink>
             <label className="flex flex-col gap-1 text-sm font-medium">
               {t('file')}
               <input
                 ref={fileInput}
                 type="file"
-                accept=".csv,text/csv"
+                accept={IMPORT_FILE_ACCEPT}
                 className="text-sm font-normal"
                 onChange={(e) => void onFile(e.target.files?.[0])}
               />
@@ -152,7 +163,12 @@ export function TeamDrawImport({ seasonId }: { seasonId: string }) {
               />
             </label>
             <div>
-              <Button type="button" disabled={pending || csv.trim() === ''} onClick={runPreview}>
+              <Button
+                type="button"
+                pending={pending && !preview}
+                disabled={pending || csv.trim() === ''}
+                onClick={runPreview}
+              >
                 {pending && !preview ? t('previewing') : t('preview')}
               </Button>
             </div>
@@ -215,7 +231,12 @@ export function TeamDrawImport({ seasonId }: { seasonId: string }) {
                 </table>
               </div>
               <div>
-                <Button type="button" disabled={pending || !preview.plan.canApply} onClick={apply}>
+                <Button
+                  type="button"
+                  pending={pending && preview.plan.canApply}
+                  disabled={pending || !preview.plan.canApply}
+                  onClick={apply}
+                >
                   {pending && preview.plan.canApply
                     ? t('applying')
                     : t('apply', { count: preview.plan.assignments.length })}

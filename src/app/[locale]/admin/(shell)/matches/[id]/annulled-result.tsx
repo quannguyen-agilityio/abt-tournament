@@ -50,7 +50,7 @@ function ReinstateForm({ team }: { team: AnnulledTeam & { plan: Disqualification
             {t(`errors.${state.error}`)}
           </p>
         )}
-        <Button type="submit" variant="outline" size="sm" disabled={pending}>
+        <Button type="submit" variant="outline" size="sm" pending={pending}>
           {pending ? t('submitting') : t('reinstate', { team: team.name })}
         </Button>
       </div>

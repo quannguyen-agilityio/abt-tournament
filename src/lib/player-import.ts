@@ -1,6 +1,7 @@
 // Players CSV import (spec §6, A2): parse the file, validate each row and plan what applying it does.
 // Pure on purpose: the server action recomputes the plan from the database on every preview and apply.
 import type { MemberType } from '@/domain/settings';
+import type { ImportTemplate, TemplateColumn } from './import-workbook';
 import { MAX_PLAYER_NAME_LENGTH, MAX_SKILL_POINTS, wholeNumber } from './season-players';
 
 export const MAX_IMPORT_ROWS = 500;
@@ -10,6 +11,8 @@ export const MAX_IMPORT_BYTES = 200 * 1024;
 export const REQUIRED_COLUMNS = ['full_name', 'gender', 'rank', 'skill_points', 'member_type'] as const;
 
 export type Gender = 'male' | 'female';
+const GENDERS: readonly Gender[] = ['male', 'female'];
+const MEMBER_TYPES: readonly MemberType[] = ['employee', 'intern', 'guest'];
 export type ImportField = 'fullName' | 'gender' | 'rank' | 'skillPoints' | 'memberType';
 export type RowError = ImportField | 'duplicate';
 
@@ -88,6 +91,35 @@ export function parseCsv(input: string): CsvRecord[] {
   }
   if (cell !== '' || cells.length > 0 || wasQuoted) endRecord();
   return records;
+}
+
+/** CSV text of `rows`, one line each, cells quoted where needed. */
+export function toCsv(rows: readonly (readonly (string | number)[])[]): string {
+  const quote = (value: string | number) => {
+    const text = String(value);
+    return /[",;\r\n]/.test(text) ? `"${text.replace(/"/g, '""')}"` : text;
+  };
+  return rows.map((row) => row.map(quote).join(',')).join('\n');
+}
+
+/** Ready-to-fill import file: the parser's own header, dropdowns for the enum fields, and example rows. */
+export function playerImportTemplate({ maxRank }: { maxRank: number }): ImportTemplate {
+  const rules: Record<(typeof REQUIRED_COLUMNS)[number], Omit<TemplateColumn, 'header'>> = {
+    full_name: {},
+    gender: { list: { values: GENDERS, strict: true } },
+    rank: { whole: { min: 1, max: maxRank } },
+    skill_points: { whole: { min: 0, max: MAX_SKILL_POINTS } },
+    member_type: { list: { values: MEMBER_TYPES, strict: true } },
+  };
+  const examples: Record<(typeof REQUIRED_COLUMNS)[number], string | number>[] = [
+    { full_name: 'Nguyễn Văn Ân', gender: 'male', rank: 1, skill_points: 0, member_type: 'employee' },
+    { full_name: 'Trần Thị Bình', gender: 'female', rank: maxRank, skill_points: 10, member_type: 'intern' },
+  ];
+  return {
+    columns: REQUIRED_COLUMNS.map((header) => ({ header, ...rules[header] })),
+    rows: examples.map((row) => REQUIRED_COLUMNS.map((column) => row[column])),
+    maxRows: MAX_IMPORT_ROWS,
+  };
 }
 
 export type PlayerValues = {
@@ -211,6 +243,27 @@ export type PlanInput = {
   resolutions: Record<number, string>;
 };
 
+/** `base`, or `base-2`, `base-3`… : the first one not in `taken`. */
+export function freeSlug(base: string, taken: ReadonlySet<string>): string {
+  let slug = base;
+  for (let n = 2; taken.has(slug); n++) slug = `${base}-${n}`;
+  return slug;
+}
+
+/**
+ * Persons a name may be about: the same name (spacing and case aside), or else the same slug family
+ * ("nguyen-van-an", "nguyen-van-an-2"), which catches the name written without diacritics.
+ */
+export function findNameMatches<P extends { fullName: string; slug: string }>(fullName: string, persons: P[]): P[] {
+  const wanted = normalizeName(fullName);
+  const byName = persons.filter((p) => normalizeName(p.fullName) === wanted);
+  if (byName.length > 0) return byName;
+  const base = slugify(fullName);
+  if (!base) return [];
+  const family = new RegExp(`^${base}(-\\d+)?$`);
+  return persons.filter((p) => family.test(p.slug));
+}
+
 export function planPlayerImport({ rows, persons, seasonPlayers, fees, resolutions }: PlanInput): ImportPlan {
   const personBySlug = new Map(persons.map((p) => [p.slug, p]));
   const personById = new Map(persons.map((p) => [p.id, p]));
@@ -219,8 +272,7 @@ export function planPlayerImport({ rows, persons, seasonPlayers, fees, resolutio
   const seenKeys = new Set<string>();
 
   const uniqueSlug = (base: string): string => {
-    let slug = base;
-    for (let n = 2; takenSlugs.has(slug); n++) slug = `${base}-${n}`;
+    const slug = freeSlug(base, takenSlugs);
     takenSlugs.add(slug);
     return slug;
   };
@@ -242,12 +294,7 @@ export function planPlayerImport({ rows, persons, seasonPlayers, fees, resolutio
     if (bySlug) {
       target = { id: bySlug.id };
     } else {
-      const wanted = normalizeName(v.fullName);
-      let candidates = persons.filter((p) => normalizeName(p.fullName) === wanted);
-      if (candidates.length === 0) {
-        const family = new RegExp(`^${base.replace(/[^a-z0-9-]/g, '')}(-\\d+)?$`);
-        candidates = persons.filter((p) => family.test(p.slug));
-      }
+      const candidates = findNameMatches(v.fullName, persons);
       if (candidates.length === 0) target = { id: null };
       else if (candidates.length === 1) target = { id: candidates[0].id };
       else {

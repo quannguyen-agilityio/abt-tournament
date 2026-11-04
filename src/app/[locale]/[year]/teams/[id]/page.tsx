@@ -19,6 +19,7 @@ import {
 } from '@/lib/public-season-db';
 import { buildTeamCards, buildTeamDetail } from '@/lib/public-teams';
 import { cn } from '@/lib/utils';
+import Loading from './loading';
 
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 const CHIP = 'inline-flex items-center rounded-full border px-2 py-0.5 text-xs font-medium whitespace-nowrap';
@@ -197,7 +198,7 @@ async function TeamPage({ params }: Pick<PageProps<'/[locale]/[year]/teams/[id]'
 
 export default function TeamDetailPage({ params }: PageProps<'/[locale]/[year]/teams/[id]'>) {
   return (
-    <Suspense>
+    <Suspense fallback={<Loading />}>
       <TeamPage params={params} />
     </Suspense>
   );

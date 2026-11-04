@@ -9,19 +9,16 @@ import {
   MAX_IMPORT_BYTES,
   parsePlayerCsv,
   planPlayerImport,
-  type ImportPerson,
   type ImportPlan,
   type ImportSeasonPlayer,
 } from '@/lib/player-import';
+import { loadPersons } from '@/lib/persons-db';
 import { createClient } from '@/lib/supabase/server';
 
 export type ImportError = 'failed' | 'tooLarge' | 'empty' | 'header' | 'tooMany' | 'unresolved' | 'conflict';
 
 export type ImportPreviewState = { ok: true; csv: string; plan: ImportPlan } | { error: ImportError } | undefined;
 export type ImportApplyState = { ok: true; applied: number; skipped: number } | { error: ImportError } | undefined;
-
-/** PostgREST returns at most 1000 rows per request. */
-const PAGE_SIZE = 1000;
 
 /** Keys must be CSV line numbers and values a person id or 'new'; anything else is ignored. */
 function parseResolutions(value: FormDataEntryValue | null): Record<number, string> {
@@ -43,20 +40,6 @@ function parseResolutions(value: FormDataEntryValue | null): Record<number, stri
 }
 
 type Supabase = Awaited<ReturnType<typeof createClient>>;
-
-async function loadPersons(supabase: Supabase): Promise<ImportPerson[] | null> {
-  const persons: ImportPerson[] = [];
-  for (let from = 0; ; from += PAGE_SIZE) {
-    const { data, error } = await supabase
-      .from('person')
-      .select('id, full_name, slug, gender')
-      .order('id')
-      .range(from, from + PAGE_SIZE - 1);
-    if (error) return null;
-    for (const p of data) persons.push({ id: p.id, fullName: p.full_name, slug: p.slug, gender: p.gender });
-    if (data.length < PAGE_SIZE) return persons;
-  }
-}
 
 /** Reads the database and recomputes the plan: the client is never trusted with the plan itself. */
 async function buildPlan(

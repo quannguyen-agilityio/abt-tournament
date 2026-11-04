@@ -111,7 +111,7 @@ export function SeasonDetailsForm({
         </p>
       )}
       <div>
-        <Button type="submit" disabled={pending}>
+        <Button type="submit" pending={pending}>
           {pending ? t('saving') : t('save')}
         </Button>
       </div>

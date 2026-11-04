@@ -8,6 +8,7 @@ import { joinUsers } from '@/lib/auth/users';
 import { createAdminClient } from '@/lib/supabase/admin';
 import { CreateUserForm } from './create-user-form';
 import { UserRowActions } from './user-row-actions';
+import Loading from './loading';
 
 async function Users({ params }: Pick<PageProps<'/[locale]/admin/users'>, 'params'>) {
   const { locale } = await params;
@@ -115,7 +116,7 @@ async function Users({ params }: Pick<PageProps<'/[locale]/admin/users'>, 'param
 
 export default function UsersPage({ params }: PageProps<'/[locale]/admin/users'>) {
   return (
-    <Suspense>
+    <Suspense fallback={<Loading />}>
       <Users params={params} />
     </Suspense>
   );

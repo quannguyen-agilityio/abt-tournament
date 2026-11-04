@@ -1,5 +1,14 @@
 import { describe, expect, it } from 'vitest';
-import { MAX_DRAW_ROWS, parseDrawCsv, planDrawImport, type DrawPlayer, type DrawRow, type DrawTeam } from './team-draw';
+import {
+  DRAW_COLUMNS,
+  MAX_DRAW_ROWS,
+  parseDrawCsv,
+  planDrawImport,
+  teamDrawTemplate,
+  type DrawPlayer,
+  type DrawRow,
+  type DrawTeam,
+} from './team-draw';
 import { MAX_TEAM_NAME_LENGTH, TEAM_COLORS } from './teams';
 
 const HEADER = 'full_name,team_name';
@@ -99,5 +108,19 @@ describe('planDrawImport', () => {
     const result = plan('Trần Thị Bình,Đội Đỏ');
     expect(result.canApply).toBe(false);
     expect(result.newTeams).toEqual([]);
+  });
+});
+
+describe('teamDrawTemplate', () => {
+  it('uses the parser header and offers the sorted, unique season names as dropdowns', () => {
+    const template = teamDrawTemplate({
+      players: ['Trần Thị Bình', 'Nguyễn Văn Ân', 'Trần Thị Bình', ''],
+      teams: ['Đội Xanh', 'Đội Đỏ'],
+    });
+    expect(template.columns).toEqual([
+      { header: DRAW_COLUMNS[0], list: { values: ['Nguyễn Văn Ân', 'Trần Thị Bình'], strict: true } },
+      { header: DRAW_COLUMNS[1], list: { values: ['Đội Đỏ', 'Đội Xanh'], strict: false } },
+    ]);
+    expect(template.rows).toEqual([]);
   });
 });

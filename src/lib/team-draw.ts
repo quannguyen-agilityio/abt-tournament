@@ -1,6 +1,7 @@
 // Draw CSV import (spec §6 A3, plan D7): the draw happens outside the app and arrives as
 // `full_name, team_name`. Pure on purpose: the server action recomputes the plan from the database on
 // every preview and apply.
+import type { ImportTemplate, TemplateColumn } from './import-workbook';
 import { normalizeName, parseCsv, slugify } from './player-import';
 import { MAX_TEAM_NAME_LENGTH, nextTeamColors } from './teams';
 
@@ -39,6 +40,23 @@ export function parseDrawCsv(text: string): DrawParseResult {
       fullName: cell(r.cells, 'full_name'),
       teamName: cell(r.cells, 'team_name'),
     })),
+  };
+}
+
+/**
+ * Ready-to-fill draw file: the parser's own header, the season's players as the full_name dropdown and
+ * its teams as team_name suggestions (a new name still creates that team).
+ */
+export function teamDrawTemplate({ players, teams }: { players: string[]; teams: string[] }): ImportTemplate {
+  const sorted = (names: string[]) => [...new Set(names.filter(Boolean))].sort((a, b) => a.localeCompare(b, 'vi'));
+  const rules: Record<(typeof DRAW_COLUMNS)[number], Omit<TemplateColumn, 'header'>> = {
+    full_name: { list: { values: sorted(players), strict: true } },
+    team_name: { list: { values: sorted(teams), strict: false } },
+  };
+  return {
+    columns: DRAW_COLUMNS.map((header) => ({ header, ...rules[header] })),
+    rows: [],
+    maxRows: MAX_DRAW_ROWS,
   };
 }
 

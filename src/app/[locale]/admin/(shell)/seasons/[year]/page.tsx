@@ -10,6 +10,7 @@ import { CourtsEditor } from './courts-editor';
 import { SeasonDetailsForm } from './season-details-form';
 import { SeasonSettingsForm } from './season-settings-form';
 import { SeasonStatusPanel } from './season-status-panel';
+import Loading from './loading';
 
 async function SeasonDetail({ params }: Pick<PageProps<'/[locale]/admin/seasons/[year]'>, 'params'>) {
   const { locale, year: yearParam } = await params;
@@ -83,7 +84,7 @@ async function SeasonDetail({ params }: Pick<PageProps<'/[locale]/admin/seasons/
 
 export default function SeasonDetailPage({ params }: PageProps<'/[locale]/admin/seasons/[year]'>) {
   return (
-    <Suspense>
+    <Suspense fallback={<Loading />}>
       <SeasonDetail params={params} />
     </Suspense>
   );

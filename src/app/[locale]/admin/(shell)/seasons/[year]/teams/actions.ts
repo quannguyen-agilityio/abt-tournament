@@ -4,6 +4,7 @@ import { refresh } from 'next/cache';
 
 import { requireBtc } from '@/lib/auth/session';
 import { isUuid } from '@/lib/auth/users';
+import { parseBoardChanges, type BoardChanges } from '@/lib/team-board';
 import { parseTeamForm, type TeamFormError } from '@/lib/teams';
 import { createClient } from '@/lib/supabase/server';
 
@@ -78,53 +79,22 @@ export async function deleteTeam(_prev: TeamActionState, formData: FormData): Pr
   return { ok: true };
 }
 
-/** Moves a player to a team of the same season, or out of every team when `teamId` is empty. */
-export async function moveTeamPlayer(_prev: TeamActionState, formData: FormData): Promise<TeamActionState> {
+/**
+ * Saves the team board draft: every move and chosen captain in one request and one transaction
+ * (save_team_board), so a failure changes nothing and the board keeps the draft.
+ */
+export async function saveTeamBoard(seasonId: string, changes: BoardChanges): Promise<TeamActionState> {
   await requireBtc();
-  const seasonId = String(formData.get('seasonId') ?? '');
-  const seasonPlayerId = String(formData.get('seasonPlayerId') ?? '');
-  const teamId = String(formData.get('teamId') ?? '');
-  if (!isUuid(seasonId) || !isUuid(seasonPlayerId) || (teamId !== '' && !isUuid(teamId))) return { error: 'failed' };
+  // Arguments come from the client as they are: check them again.
+  const parsed = parseBoardChanges(changes);
+  if (typeof seasonId !== 'string' || !isUuid(seasonId) || !parsed) return { error: 'failed' };
 
   const supabase = await createClient();
-  if (teamId && !(await teamInSeason(supabase, teamId, seasonId))) return { error: 'failed' };
-  // Captains follow from the season_player trigger.
-  const { data, error } = await supabase
-    .from('season_player')
-    .update({ team_id: teamId || null })
-    .eq('id', seasonPlayerId)
-    .eq('season_id', seasonId)
-    .select('id');
-  if (error || data.length === 0) return { error: 'failed' };
-
-  refresh();
-  return { ok: true };
-}
-
-/** Makes an active member of the team its captain; it then stays until they leave the team. */
-export async function setTeamCaptain(_prev: TeamActionState, formData: FormData): Promise<TeamActionState> {
-  await requireBtc();
-  const seasonId = String(formData.get('seasonId') ?? '');
-  const teamId = String(formData.get('teamId') ?? '');
-  const seasonPlayerId = String(formData.get('seasonPlayerId') ?? '');
-  if (!isUuid(seasonId) || !isUuid(teamId) || !isUuid(seasonPlayerId)) return { error: 'failed' };
-
-  const supabase = await createClient();
-  const { data: player } = await supabase
-    .from('season_player')
-    .select('id')
-    .eq('id', seasonPlayerId)
-    .eq('team_id', teamId)
-    .eq('season_id', seasonId)
-    .eq('status', 'active')
-    .maybeSingle();
-  if (!player) return { error: 'failed' };
-
-  const { error } = await supabase
-    .from('team')
-    .update({ captain_id: player.id, captain_chosen: true })
-    .eq('id', teamId)
-    .eq('season_id', seasonId);
+  const { error } = await supabase.rpc('save_team_board', {
+    p_season_id: seasonId,
+    p_moves: parsed.moves.map((m) => ({ season_player_id: m.seasonPlayerId, team_id: m.teamId })),
+    p_captains: parsed.captains.map((c) => ({ team_id: c.teamId, season_player_id: c.seasonPlayerId })),
+  });
   if (error) return { error: 'failed' };
 
   refresh();

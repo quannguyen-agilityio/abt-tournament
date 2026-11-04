@@ -84,7 +84,7 @@ export function SeasonStatusPanel({
         ) : canSetCurrent(status) ? (
           <form action={currentAction}>
             <input type="hidden" name="seasonId" value={seasonId} />
-            <Button type="submit" size="sm" variant="outline" disabled={settingCurrent}>
+            <Button type="submit" size="sm" variant="outline" pending={settingCurrent}>
               {t('detail.setCurrent')}
             </Button>
           </form>

@@ -17,6 +17,7 @@ import {
 } from '@/lib/public-season-db';
 import type { PublicPlayer } from '@/lib/public-teams';
 import { cn } from '@/lib/utils';
+import Loading from './loading';
 
 const PANEL = 'border-border bg-surface rounded-[10px] border';
 const CHIP = 'inline-flex items-center rounded-full border px-2 py-0.5 text-xs font-medium whitespace-nowrap';
@@ -249,7 +250,7 @@ async function PlayerPage({ params }: Pick<PageProps<'/[locale]/[year]/players/[
 
 export default function PlayerProfilePage({ params }: PageProps<'/[locale]/[year]/players/[slug]'>) {
   return (
-    <Suspense>
+    <Suspense fallback={<Loading />}>
       <PlayerPage params={params} />
     </Suspense>
   );

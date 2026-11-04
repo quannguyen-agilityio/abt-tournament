@@ -12,6 +12,7 @@ import { formatDay } from '@/lib/format';
 import { scheduleGrid, utcToZoned } from '@/lib/schedule';
 import { createClient } from '@/lib/supabase/server';
 import { GenerateSchedule, MatchSlotForm } from './schedule-forms';
+import Loading from './loading';
 
 const CELL = 'px-3 py-2 align-top';
 
@@ -304,7 +305,7 @@ async function SeasonSchedule({ params }: Pick<PageProps<'/[locale]/admin/season
 
 export default function SeasonSchedulePage({ params }: PageProps<'/[locale]/admin/seasons/[year]/schedule'>) {
   return (
-    <Suspense>
+    <Suspense fallback={<Loading />}>
       <SeasonSchedule params={params} />
     </Suspense>
   );

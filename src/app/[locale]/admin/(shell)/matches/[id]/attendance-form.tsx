@@ -121,7 +121,7 @@ export function AttendanceForm({ matchId, team, players, present, minPresent, ed
               <span className="text-win font-semibold">✓</span> {t('saved')}
             </p>
           )}
-          <Button type="submit" disabled={pending || players.length === 0}>
+          <Button type="submit" pending={pending} disabled={players.length === 0}>
             {pending ? t('saving') : t('save')}
           </Button>
         </div>

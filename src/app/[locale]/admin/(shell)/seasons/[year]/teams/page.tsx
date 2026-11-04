@@ -7,10 +7,12 @@ import { Link } from '@/i18n/navigation';
 import { routing } from '@/i18n/routing';
 import { requireBtc } from '@/lib/auth/session';
 import { createClient } from '@/lib/supabase/server';
+import { type BoardPlayer, type BoardTeam } from '@/lib/team-board';
 import { nextTeamColors, teamWarnings } from '@/lib/teams';
-import { TeamBoard, type BoardPlayer, type BoardTeam } from './team-board';
+import { TeamBoard } from './team-board';
 import { TeamDrawImport } from './team-draw-import';
 import { CreateTeamForm } from './team-forms';
+import Loading from './loading';
 
 async function SeasonTeams({ params }: Pick<PageProps<'/[locale]/admin/seasons/[year]/teams'>, 'params'>) {
   const { locale, year: yearParam } = await params;
@@ -32,7 +34,7 @@ async function SeasonTeams({ params }: Pick<PageProps<'/[locale]/admin/seasons/[
 
   const { data: teamRows, error: teamsError } = await supabase
     .from('team')
-    .select('id, name, color, captain_id')
+    .select('id, name, color, captain_id, captain_chosen')
     .eq('season_id', season.id)
     .order('name');
   if (teamsError) throw teamsError;
@@ -51,6 +53,7 @@ async function SeasonTeams({ params }: Pick<PageProps<'/[locale]/admin/seasons/[
     name: team.name,
     color: team.color,
     captainId: team.captain_id,
+    captainChosen: team.captain_chosen,
   }));
   const players: BoardPlayer[] = seasonPlayers.map((sp) => ({
     id: sp.id,
@@ -96,7 +99,11 @@ async function SeasonTeams({ params }: Pick<PageProps<'/[locale]/admin/seasons/[
           </p>
         </div>
         <div className="flex flex-wrap items-center gap-2">
-          <TeamDrawImport seasonId={season.id} />
+          <TeamDrawImport
+            seasonId={season.id}
+            players={players.map((p) => p.fullName)}
+            teams={teams.map((team) => team.name)}
+          />
           <CreateTeamForm
             seasonId={season.id}
             defaultColor={
@@ -129,7 +136,7 @@ async function SeasonTeams({ params }: Pick<PageProps<'/[locale]/admin/seasons/[
 
 export default function SeasonTeamsPage({ params }: PageProps<'/[locale]/admin/seasons/[year]/teams'>) {
   return (
-    <Suspense>
+    <Suspense fallback={<Loading />}>
       <SeasonTeams params={params} />
     </Suspense>
   );

@@ -1,5 +1,6 @@
 import { Button as ButtonPrimitive } from '@base-ui/react/button';
 import { cva, type VariantProps } from 'class-variance-authority';
+import { Loader2Icon } from 'lucide-react';
 import { cn } from 'cn';
 
 const buttonVariants = cva(
@@ -41,9 +42,23 @@ function Button({
   className,
   variant = 'default',
   size = 'default',
+  pending = false,
+  disabled,
+  children,
   ...props
-}: ButtonPrimitive.Props & VariantProps<typeof buttonVariants>) {
-  return <ButtonPrimitive data-slot="button" className={cn(buttonVariants({ variant, size, className }))} {...props} />;
+}: ButtonPrimitive.Props & VariantProps<typeof buttonVariants> & { pending?: boolean }) {
+  return (
+    <ButtonPrimitive
+      data-slot="button"
+      className={cn(buttonVariants({ variant, size, className }))}
+      disabled={pending || disabled}
+      aria-busy={pending || undefined}
+      {...props}
+    >
+      {pending && <Loader2Icon data-icon="inline-start" className="animate-spin" aria-hidden />}
+      {children}
+    </ButtonPrimitive>
+  );
 }
 
 export { Button, buttonVariants };

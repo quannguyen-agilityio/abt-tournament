@@ -1,5 +1,6 @@
 import { Suspense } from 'react';
 import { AdminBadge } from '@/components/admin-badge';
+import { AdminSidebarSkeleton, AdminPageSkeleton } from '@/components/admin-skeletons';
 import { AdminSidebar } from '@/components/admin-sidebar';
 import { LocaleSwitcher } from '@/components/locale-switcher';
 import { ThemeToggle } from '@/components/theme-toggle';
@@ -21,6 +22,17 @@ async function AdminBody({ children }: { children: React.ReactNode }) {
   );
 }
 
+function AdminBodyFallback() {
+  return (
+    <div className="mx-auto grid w-full max-w-7xl flex-1 content-start gap-6 px-4 py-6 lg:grid-cols-[220px_minmax(0,1fr)]">
+      <AdminSidebarSkeleton />
+      <main className="min-w-0">
+        <AdminPageSkeleton />
+      </main>
+    </div>
+  );
+}
+
 export default function AdminLayout({ children }: LayoutProps<'/[locale]/admin'>) {
   return (
     <>
@@ -36,7 +48,7 @@ export default function AdminLayout({ children }: LayoutProps<'/[locale]/admin'>
           </div>
         </div>
       </header>
-      <Suspense>
+      <Suspense fallback={<AdminBodyFallback />}>
         <AdminBody>{children}</AdminBody>
       </Suspense>
     </>
