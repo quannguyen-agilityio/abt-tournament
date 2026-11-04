@@ -97,7 +97,11 @@ async function SeasonTeams({ params }: Pick<PageProps<'/[locale]/admin/seasons/[
           </p>
         </div>
         <div className="flex flex-wrap items-center gap-2">
-          <TeamDrawImport seasonId={season.id} />
+          <TeamDrawImport
+            seasonId={season.id}
+            players={players.map((p) => p.fullName)}
+            teams={teams.map((team) => team.name)}
+          />
           <CreateTeamForm
             seasonId={season.id}
             defaultColor={

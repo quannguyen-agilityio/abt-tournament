@@ -2,7 +2,7 @@
 
 import { useTranslations } from 'next-intl';
 import { useRef, useState, useTransition } from 'react';
-import { CsvTemplateLink } from '@/components/csv-template-link';
+import { IMPORT_FILE_ACCEPT, ImportTemplateLink, readImportFile } from '@/components/import-file';
 import { Button } from '@/components/ui/button';
 import {
   MAX_IMPORT_ROWS,
@@ -234,8 +234,14 @@ export function PlayerImport({ seasonId, maxRank }: { seasonId: string; maxRank:
 
   async function onFile(file: File | undefined) {
     if (!file) return;
-    setCsv(await file.text());
     setPreview(null);
+    try {
+      setCsv(await readImportFile(file));
+      setError(null);
+    } catch {
+      setCsv('');
+      setError('failed');
+    }
   }
 
   return (
@@ -258,15 +264,15 @@ export function PlayerImport({ seasonId, maxRank }: { seasonId: string; maxRank:
             })}
           </p>
           <div className="flex flex-col gap-3">
-            <CsvTemplateLink csv={playerImportTemplate({ maxRank })} filename="players-template.csv">
+            <ImportTemplateLink template={playerImportTemplate({ maxRank })} filename="players-template.xlsx">
               {t('template')}
-            </CsvTemplateLink>
+            </ImportTemplateLink>
             <label className="flex flex-col gap-1 text-sm font-medium">
               {t('file')}
               <input
                 ref={fileInput}
                 type="file"
-                accept=".csv,text/csv"
+                accept={IMPORT_FILE_ACCEPT}
                 className="text-sm font-normal"
                 onChange={(e) => void onFile(e.target.files?.[0])}
               />
