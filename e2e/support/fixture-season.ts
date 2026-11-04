@@ -114,6 +114,11 @@ export async function dropFixtureSeason(year: number, client?: Client) {
     check(await db.from('group_closure').delete().eq('season_id', season.id), 'closure');
     check(await db.from('match').delete().eq('season_id', season.id), 'matches');
     check(await db.from('team').update({ captain_id: null }).eq('season_id', season.id), 'captains');
+    const playerIds = row(await db.from('season_player').select('id').eq('season_id', season.id), 'list players').map(
+      (p) => p.id,
+    );
+    if (playerIds.length)
+      check(await db.from('season_player_private').delete().in('season_player_id', playerIds), 'fees');
     check(await db.from('season_player').delete().eq('season_id', season.id), 'players');
     check(await db.from('team').delete().eq('season_id', season.id), 'teams');
     check(await db.from('court').delete().eq('season_id', season.id), 'courts');
