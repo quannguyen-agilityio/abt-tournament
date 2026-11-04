@@ -5,6 +5,7 @@ import { useActionState, useRef } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { NativeSelect } from '@/components/ui/native-select';
 import { MIN_PASSWORD_LENGTH } from '@/lib/auth/password';
 import { MAX_DISPLAY_NAME_LENGTH } from '@/lib/auth/users';
 import { createUser } from './actions';
@@ -62,16 +63,16 @@ export function CreateUserForm() {
       </div>
       <div className="flex flex-col gap-1.5">
         <Label htmlFor="user-role">{t('role')}</Label>
-        <select
+        <NativeSelect
           id="user-role"
           name="role"
           defaultValue={fields?.role === 'btc' ? 'btc' : 'referee'}
           aria-invalid={error === 'role' || undefined}
-          className="border-input focus-visible:border-ring focus-visible:ring-ring/50 dark:bg-input/30 h-9 w-full rounded-lg border bg-transparent px-2.5 text-base outline-none focus-visible:ring-3 md:text-sm"
+          className="h-9 px-2.5 text-base md:text-sm"
         >
           <option value="referee">{tRole('roleReferee')}</option>
           <option value="btc">{tRole('roleBtc')}</option>
-        </select>
+        </NativeSelect>
       </div>
       <div className="flex flex-col gap-1.5">
         <Label htmlFor="user-password">{t('password')}</Label>

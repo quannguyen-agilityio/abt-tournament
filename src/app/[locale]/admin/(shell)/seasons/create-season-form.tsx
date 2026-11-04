@@ -5,6 +5,7 @@ import { useActionState, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { NativeSelect } from '@/components/ui/native-select';
 import { MAX_SEASON_NAME_LENGTH, MAX_SEASON_VENUE_LENGTH, MAX_SEASON_YEAR, MIN_SEASON_YEAR } from '@/lib/season-admin';
 import { createSeason } from './actions';
 
@@ -70,13 +71,13 @@ export function CreateSeasonForm({ sources }: { sources: { id: string; name: str
       </div>
       <div className="flex flex-col gap-1.5">
         <Label htmlFor="new-season-source">{t('source')}</Label>
-        <select
+        <NativeSelect
           id="new-season-source"
           name="source"
           defaultValue={fields?.source ?? sources[0]?.id ?? ''}
           aria-describedby="new-season-source-hint"
           aria-invalid={error === 'source' || undefined}
-          className="border-input focus-visible:border-ring focus-visible:ring-ring/50 dark:bg-input/30 h-9 w-full rounded-lg border bg-transparent px-2.5 text-base outline-none focus-visible:ring-3 md:text-sm"
+          className="h-9 px-2.5 text-base md:text-sm"
         >
           <option value="">{t('sourceNone')}</option>
           {sources.map((s) => (
@@ -84,7 +85,7 @@ export function CreateSeasonForm({ sources }: { sources: { id: string; name: str
               {t('sourceClone', { name: s.name })}
             </option>
           ))}
-        </select>
+        </NativeSelect>
         <span id="new-season-source-hint" className="text-muted-foreground text-xs">
           {t('sourceHint')}
         </span>

@@ -6,6 +6,7 @@ import { TeamChip } from '@/components/team-chip';
 import { Button, buttonVariants } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { NativeSelect } from '@/components/ui/native-select';
 import { Link } from '@/i18n/navigation';
 import {
   AWARD_WINNER_KINDS,
@@ -17,8 +18,7 @@ import {
 import type { AwardWinnerKind } from '@/lib/public-awards';
 import { addAwardWinner, deleteAward, removeAwardWinner, saveAward, type AwardFormFields } from './actions';
 
-const SELECT =
-  'border-input focus-visible:border-ring focus-visible:ring-ring/50 dark:bg-input/30 h-9 w-full min-w-0 rounded-lg border bg-transparent px-2 text-sm outline-none focus-visible:ring-3 disabled:opacity-70';
+const SELECT = 'h-9 disabled:opacity-70';
 const TEXTAREA =
   'border-input focus-visible:border-ring focus-visible:ring-ring/50 aria-invalid:border-destructive dark:bg-input/30 min-h-16 w-full min-w-0 rounded-lg border bg-transparent px-2.5 py-1.5 text-sm outline-none focus-visible:ring-3';
 const CHIP = 'inline-flex items-center rounded-full border px-2 py-0.5 text-xs font-medium whitespace-nowrap';
@@ -320,7 +320,7 @@ export function AddWinnerForm({
       <div className="grid gap-3 sm:grid-cols-3">
         <div className="flex flex-col gap-1.5">
           <Label htmlFor="winner-kind">{t('kind')}</Label>
-          <select
+          <NativeSelect
             id="winner-kind"
             name="kind"
             value={kind}
@@ -332,13 +332,13 @@ export function AddWinnerForm({
                 {t(`kinds.${k}`)}
               </option>
             ))}
-          </select>
+          </NativeSelect>
         </div>
 
         {kind === 'team' ? (
           <div className="flex flex-col gap-1.5 sm:col-span-2">
             <Label htmlFor="winner-team">{t('team')}</Label>
-            <select
+            <NativeSelect
               id="winner-team"
               name="team"
               value={team}
@@ -352,13 +352,13 @@ export function AddWinnerForm({
                   {x.name}
                 </option>
               ))}
-            </select>
+            </NativeSelect>
           </div>
         ) : (
           <>
             <div className={`flex flex-col gap-1.5 ${kind === 'player' ? 'sm:col-span-2' : ''}`}>
               <Label htmlFor="winner-member-1">{kind === 'pair' ? t('player1') : t('player')}</Label>
-              <select
+              <NativeSelect
                 id="winner-member-1"
                 name="member"
                 value={first}
@@ -368,12 +368,12 @@ export function AddWinnerForm({
               >
                 <option value="">{t('choose')}</option>
                 <PlayerOptions players={players} teams={teams} noTeam={t('noTeam')} />
-              </select>
+              </NativeSelect>
             </div>
             {kind === 'pair' && (
               <div className="flex flex-col gap-1.5">
                 <Label htmlFor="winner-member-2">{t('player2')}</Label>
-                <select
+                <NativeSelect
                   id="winner-member-2"
                   name="member"
                   value={secondValue}
@@ -383,7 +383,7 @@ export function AddWinnerForm({
                 >
                   <option value="">{t('choose')}</option>
                   <PlayerOptions players={partners} teams={teams} noTeam={t('noTeam')} />
-                </select>
+                </NativeSelect>
               </div>
             )}
           </>
@@ -391,7 +391,7 @@ export function AddWinnerForm({
 
         <div className="flex flex-col gap-1.5">
           <Label htmlFor="winner-match">{t('match')}</Label>
-          <select
+          <NativeSelect
             id="winner-match"
             name="match"
             value={matchValue}
@@ -407,7 +407,7 @@ export function AddWinnerForm({
                   : m.code}
               </option>
             ))}
-          </select>
+          </NativeSelect>
         </div>
         <div className="flex flex-col gap-1.5 sm:col-span-2">
           <Label htmlFor="winner-note">{t('note')}</Label>

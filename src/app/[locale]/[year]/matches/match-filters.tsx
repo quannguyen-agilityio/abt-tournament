@@ -4,9 +4,9 @@ import { useTranslations } from 'next-intl';
 import { useTransition } from 'react';
 import { usePathname, useRouter } from '@/i18n/navigation';
 import { filtersToQuery, type MatchFilters } from '@/lib/public-matches';
+import { NativeSelect } from '@/components/ui/native-select';
 
-const SELECT =
-  'border-input focus-visible:border-ring focus-visible:ring-ring/50 dark:bg-input/30 bg-surface h-9 w-full min-w-0 rounded-lg border px-2 text-sm outline-none focus-visible:ring-3';
+const SELECT = 'bg-surface h-9';
 
 type Option = { value: string; label: string };
 
@@ -36,14 +36,14 @@ export function MatchFiltersForm({
   const field = (key: keyof MatchFilters, label: string, options: Option[]) => (
     <label className="flex min-w-0 flex-col gap-1">
       <span className="text-muted-foreground text-xs font-semibold tracking-wider uppercase">{label}</span>
-      <select className={SELECT} value={filters[key] ?? ''} onChange={(e) => set(key, e.target.value)}>
+      <NativeSelect className={SELECT} value={filters[key] ?? ''} onChange={(e) => set(key, e.target.value)}>
         <option value="">{t('all')}</option>
         {options.map((o) => (
           <option key={o.value} value={o.value}>
             {o.label}
           </option>
         ))}
-      </select>
+      </NativeSelect>
     </label>
   );
 

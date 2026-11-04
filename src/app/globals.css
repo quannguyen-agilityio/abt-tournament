@@ -220,4 +220,10 @@
   label:has(input:where([type='checkbox'], [type='radio']):not(:disabled)) {
     cursor: pointer;
   }
+  /* Native option popups don't inherit a theme background; pin them to the popover colours. */
+  select option,
+  select optgroup {
+    background-color: var(--popover);
+    color: var(--popover-foreground);
+  }
 }
