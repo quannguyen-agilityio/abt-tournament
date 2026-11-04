@@ -9,7 +9,6 @@ import {
   type DrawRow,
   type DrawTeam,
 } from './team-draw';
-import { parseCsv } from './player-import';
 import { MAX_TEAM_NAME_LENGTH, TEAM_COLORS } from './teams';
 
 const HEADER = 'full_name,team_name';
@@ -113,15 +112,15 @@ describe('planDrawImport', () => {
 });
 
 describe('teamDrawTemplate', () => {
-  it('uses the parser header and example rows that parse cleanly', () => {
-    const template = teamDrawTemplate();
-    expect(parseCsv(template)[0].cells).toEqual([...DRAW_COLUMNS]);
-    expect(parseDrawCsv(template)).toEqual({
-      ok: true,
-      rows: [
-        { line: 2, fullName: 'Nguyễn Văn Ân', teamName: 'Đội Đỏ' },
-        { line: 3, fullName: 'Trần Thị Bình', teamName: 'Đội Xanh' },
-      ],
+  it('uses the parser header and offers the sorted, unique season names as dropdowns', () => {
+    const template = teamDrawTemplate({
+      players: ['Trần Thị Bình', 'Nguyễn Văn Ân', 'Trần Thị Bình', ''],
+      teams: ['Đội Xanh', 'Đội Đỏ'],
     });
+    expect(template.columns).toEqual([
+      { header: DRAW_COLUMNS[0], list: { values: ['Nguyễn Văn Ân', 'Trần Thị Bình'], strict: true } },
+      { header: DRAW_COLUMNS[1], list: { values: ['Đội Đỏ', 'Đội Xanh'], strict: false } },
+    ]);
+    expect(template.rows).toEqual([]);
   });
 });
