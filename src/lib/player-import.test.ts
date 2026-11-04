@@ -1,5 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import {
+  findNameMatches,
+  freeSlug,
   MAX_IMPORT_ROWS,
   normalizeName,
   parseCsv,
@@ -50,6 +52,24 @@ describe('slugify / normalizeName', () => {
   it('keeps diacritics but folds case and whitespace', () => {
     expect(normalizeName('  Nguyễn   VĂN  Ân ')).toBe('nguyễn văn ân');
     expect(normalizeName('Nguyen Van An')).not.toBe(normalizeName('Nguyễn Văn Ân'));
+  });
+});
+
+describe('freeSlug / findNameMatches', () => {
+  it('numbers the slug from 2 until it is free', () => {
+    expect(freeSlug('nguyen-van-an', new Set())).toBe('nguyen-van-an');
+    expect(freeSlug('nguyen-van-an', new Set(['nguyen-van-an', 'nguyen-van-an-2']))).toBe('nguyen-van-an-3');
+  });
+  it('matches the same name first, ignoring case and spacing', () => {
+    expect(findNameMatches('  nguyễn  VĂN ân', [P1, P2])).toEqual([P1]);
+  });
+  it('falls back to the slug family for a name without diacritics', () => {
+    const P3: ImportPerson = { id: 'p3', fullName: 'Nguyễn Văn An', slug: 'nguyen-van-an-2', gender: 'male' };
+    expect(findNameMatches('Nguyen Van An', [P1, P2, P3])).toEqual([P1, P3]);
+    expect(findNameMatches('Nguyen Van', [P1, P2, P3])).toEqual([]);
+  });
+  it('matches nothing for a name with no slug', () => {
+    expect(findNameMatches('!!!', [P1])).toEqual([]);
   });
 });
 

@@ -211,6 +211,27 @@ export type PlanInput = {
   resolutions: Record<number, string>;
 };
 
+/** `base`, or `base-2`, `base-3`… : the first one not in `taken`. */
+export function freeSlug(base: string, taken: ReadonlySet<string>): string {
+  let slug = base;
+  for (let n = 2; taken.has(slug); n++) slug = `${base}-${n}`;
+  return slug;
+}
+
+/**
+ * Persons a name may be about: the same name (spacing and case aside), or else the same slug family
+ * ("nguyen-van-an", "nguyen-van-an-2"), which catches the name written without diacritics.
+ */
+export function findNameMatches<P extends { fullName: string; slug: string }>(fullName: string, persons: P[]): P[] {
+  const wanted = normalizeName(fullName);
+  const byName = persons.filter((p) => normalizeName(p.fullName) === wanted);
+  if (byName.length > 0) return byName;
+  const base = slugify(fullName);
+  if (!base) return [];
+  const family = new RegExp(`^${base}(-\\d+)?$`);
+  return persons.filter((p) => family.test(p.slug));
+}
+
 export function planPlayerImport({ rows, persons, seasonPlayers, fees, resolutions }: PlanInput): ImportPlan {
   const personBySlug = new Map(persons.map((p) => [p.slug, p]));
   const personById = new Map(persons.map((p) => [p.id, p]));
@@ -219,8 +240,7 @@ export function planPlayerImport({ rows, persons, seasonPlayers, fees, resolutio
   const seenKeys = new Set<string>();
 
   const uniqueSlug = (base: string): string => {
-    let slug = base;
-    for (let n = 2; takenSlugs.has(slug); n++) slug = `${base}-${n}`;
+    const slug = freeSlug(base, takenSlugs);
     takenSlugs.add(slug);
     return slug;
   };
@@ -242,12 +262,7 @@ export function planPlayerImport({ rows, persons, seasonPlayers, fees, resolutio
     if (bySlug) {
       target = { id: bySlug.id };
     } else {
-      const wanted = normalizeName(v.fullName);
-      let candidates = persons.filter((p) => normalizeName(p.fullName) === wanted);
-      if (candidates.length === 0) {
-        const family = new RegExp(`^${base.replace(/[^a-z0-9-]/g, '')}(-\\d+)?$`);
-        candidates = persons.filter((p) => family.test(p.slug));
-      }
+      const candidates = findNameMatches(v.fullName, persons);
       if (candidates.length === 0) target = { id: null };
       else if (candidates.length === 1) target = { id: candidates[0].id };
       else {
