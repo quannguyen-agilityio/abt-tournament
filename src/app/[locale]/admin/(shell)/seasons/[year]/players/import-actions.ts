@@ -1,7 +1,5 @@
 'use server';
 
-import { refresh } from 'next/cache';
-
 import { DEFAULT_SEASON_SETTINGS, parseSeasonSettings } from '@/domain/settings';
 import { requireBtc } from '@/lib/auth/session';
 import { isUuid } from '@/lib/auth/users';
@@ -13,6 +11,7 @@ import {
   type ImportSeasonPlayer,
 } from '@/lib/player-import';
 import { loadPersons } from '@/lib/persons-db';
+import { invalidatePublicData } from '@/lib/public-cache';
 import { createClient } from '@/lib/supabase/server';
 
 export type ImportError = 'failed' | 'tooLarge' | 'empty' | 'header' | 'tooMany' | 'unresolved' | 'conflict';
@@ -105,6 +104,6 @@ export async function applyPlayerImport(_prev: ImportApplyState, formData: FormD
   const { data, error } = await supabase.rpc('import_season_players', { p_season_id: seasonId, p_rows: plan.ops });
   if (error) return { error: error.code === '23505' ? 'conflict' : 'failed' };
 
-  refresh();
+  invalidatePublicData();
   return { ok: true, applied: data, skipped: plan.counts.invalid };
 }

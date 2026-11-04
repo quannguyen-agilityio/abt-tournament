@@ -1,5 +1,7 @@
 import 'server-only';
 
+import type { SupabaseClient } from '@supabase/supabase-js';
+import { cacheLife, cacheTag } from 'next/cache';
 import { connection } from 'next/server';
 import { cache } from 'react';
 
@@ -10,8 +12,12 @@ import type { MatchDetailInput, MatchPlayer } from '@/lib/public-match';
 import type { ScheduleMatchInput } from '@/lib/public-matches';
 import type { PublicTeam } from '@/lib/public-standings';
 import type { ProfileMatch } from '@/lib/public-players';
+import { PUBLIC_DATA_TAG } from '@/lib/public-cache';
 import type { PublicPlayer } from '@/lib/public-teams';
-import { createClient } from '@/lib/supabase/server';
+import { createPublicClient } from '@/lib/supabase/public';
+import { createClient, hasSessionCookie } from '@/lib/supabase/server';
+
+type Supabase = SupabaseClient<Database>;
 
 export interface PublicSeason {
   id: string;
@@ -39,12 +45,10 @@ export interface SeasonMatch {
   slots: { slot_no: number; score_home: number | null; score_away: number | null }[];
 }
 
-// Each reads the session cookies, which is request-time data under cacheComponents.
+// The readers: each queries through the client it is given, so RLS decides what it returns.
 
 /** The season of `year`, or null when it does not exist or RLS hides it (a draft). */
-export const getPublicSeason = cache(async (year: number): Promise<PublicSeason | null> => {
-  await connection();
-  const supabase = await createClient();
+async function readPublicSeason(supabase: Supabase, year: number): Promise<PublicSeason | null> {
   const { data, error } = await supabase
     .from('season')
     .select('id, year, name, venue, status, settings, match_days')
@@ -62,11 +66,9 @@ export const getPublicSeason = cache(async (year: number): Promise<PublicSeason 
     settings: parsed.ok ? parsed.settings : DEFAULT_SEASON_SETTINGS,
     matchDays: data.match_days,
   };
-});
+}
 
-export const getSeasonTeams = cache(async (seasonId: string): Promise<PublicTeam[]> => {
-  await connection();
-  const supabase = await createClient();
+async function readSeasonTeams(supabase: Supabase, seasonId: string): Promise<PublicTeam[]> {
   const { data, error } = await supabase
     .from('team')
     .select('id, name, color, disqualified_at, disqualified_reason')
@@ -80,21 +82,17 @@ export const getSeasonTeams = cache(async (seasonId: string): Promise<PublicTeam
     disqualified: t.disqualified_at !== null,
     disqualifiedReason: t.disqualified_reason,
   }));
-});
+}
 
 /** Each team's captain (a `season_player` id), by team id. */
-export const getTeamCaptains = cache(async (seasonId: string): Promise<Map<string, string | null>> => {
-  await connection();
-  const supabase = await createClient();
+async function readTeamCaptains(supabase: Supabase, seasonId: string): Promise<Map<string, string | null>> {
   const { data, error } = await supabase.from('team').select('id, captain_id').eq('season_id', seasonId);
   if (error) throw error;
   return new Map(data.map((t) => [t.id, t.captain_id]));
-});
+}
 
 /** Every player registered in the season, withdrawn ones included, with their person. */
-export const getSeasonPlayers = cache(async (seasonId: string): Promise<PublicPlayer[]> => {
-  await connection();
-  const supabase = await createClient();
+async function readSeasonPlayers(supabase: Supabase, seasonId: string): Promise<PublicPlayer[]> {
   const { data, error } = await supabase
     .from('season_player')
     .select('id, person_id, team_id, rank, skill_points, status, person(full_name, slug, gender, avatar_url)')
@@ -112,15 +110,13 @@ export const getSeasonPlayers = cache(async (seasonId: string): Promise<PublicPl
     skill: p.skill_points,
     status: p.status,
   }));
-});
+}
 
 /**
  * Completed group matches with their slot players and substitutions: what the player stats count.
  * Only these are read, to keep the P7 payload small.
  */
-export const getProfileMatches = cache(async (seasonId: string): Promise<ProfileMatch[]> => {
-  await connection();
-  const supabase = await createClient();
+async function readProfileMatches(supabase: Supabase, seasonId: string): Promise<ProfileMatch[]> {
   const { data, error } = await supabase
     .from('match')
     .select(
@@ -141,7 +137,7 @@ export const getProfileMatches = cache(async (seasonId: string): Promise<Profile
         .map(({ side, replaced_id, substitute_id }) => ({ side, replaced_id, substitute_id })),
     })),
   }));
-});
+}
 
 export interface PlayerSeason {
   year: number;
@@ -153,9 +149,7 @@ export interface PlayerSeason {
 }
 
 /** Every season a person played, newest first. RLS hides draft seasons, so `!inner` drops them. */
-export const getPersonHistory = cache(async (personId: string): Promise<PlayerSeason[]> => {
-  await connection();
-  const supabase = await createClient();
+async function readPersonHistory(supabase: Supabase, personId: string): Promise<PlayerSeason[]> {
   const { data, error } = await supabase
     .from('season_player')
     .select('rank, skill_points, status, season!inner(year, name), team!season_player_team_id_fkey(name, color)')
@@ -171,12 +165,10 @@ export const getPersonHistory = cache(async (personId: string): Promise<PlayerSe
       status: p.status,
     }))
     .sort((a, b) => b.year - a.year);
-});
+}
 
 /** The final team order fixed when the group closed, or null while it is open. */
-export const getGroupClosure = cache(async (seasonId: string): Promise<string[] | null> => {
-  await connection();
-  const supabase = await createClient();
+async function readGroupClosure(supabase: Supabase, seasonId: string): Promise<string[] | null> {
   const { data, error } = await supabase
     .from('group_closure')
     .select('final_order')
@@ -184,12 +176,14 @@ export const getGroupClosure = cache(async (seasonId: string): Promise<string[] 
     .maybeSingle();
   if (error) throw error;
   return data ? data.final_order : null;
-});
+}
 
 /** Group matches, or every knock-out match (semi-finals, third place, final). */
-export const getSeasonMatches = cache(async (seasonId: string, stage: 'group' | 'knockout'): Promise<SeasonMatch[]> => {
-  await connection();
-  const supabase = await createClient();
+async function readSeasonMatches(
+  supabase: Supabase,
+  seasonId: string,
+  stage: 'group' | 'knockout',
+): Promise<SeasonMatch[]> {
   const query = supabase
     .from('match')
     .select(
@@ -203,20 +197,16 @@ export const getSeasonMatches = cache(async (seasonId: string, stage: 'group' | 
     court: court?.name ?? null,
     slots: [...slots].sort((a, b) => a.slot_no - b.slot_no),
   }));
-});
+}
 
-export const getSeasonCourts = cache(async (seasonId: string): Promise<{ id: string; name: string }[]> => {
-  await connection();
-  const supabase = await createClient();
+async function readSeasonCourts(supabase: Supabase, seasonId: string): Promise<{ id: string; name: string }[]> {
   const { data, error } = await supabase.from('court').select('id, name').eq('season_id', seasonId).order('sort_order');
   if (error) throw error;
   return data;
-});
+}
 
 /** Every match of the season with only what a schedule card needs, to keep the P3 payload small. */
-export const getSeasonSchedule = cache(async (seasonId: string): Promise<ScheduleMatchInput[]> => {
-  await connection();
-  const supabase = await createClient();
+async function readSeasonSchedule(supabase: Supabase, seasonId: string): Promise<ScheduleMatchInput[]> {
   const { data, error } = await supabase
     .from('match')
     .select(
@@ -225,7 +215,7 @@ export const getSeasonSchedule = cache(async (seasonId: string): Promise<Schedul
     .eq('season_id', seasonId);
   if (error) throw error;
   return data.map(({ match_slot: slots, ...match }) => ({ ...match, slots }));
-});
+}
 
 export interface MatchDetail extends MatchDetailInput {
   court: string | null;
@@ -237,9 +227,7 @@ export interface MatchDetail extends MatchDetailInput {
  * One match of the season by code, with its slots, substitutions, the players they name and the
  * referee's display name. RLS returns no slots until the lineup is public (A6).
  */
-export const getMatchDetail = cache(async (seasonId: string, code: string): Promise<MatchDetail | null> => {
-  await connection();
-  const supabase = await createClient();
+async function readMatchDetail(supabase: Supabase, seasonId: string, code: string): Promise<MatchDetail | null> {
   const { data, error } = await supabase
     .from('match')
     .select(
@@ -297,12 +285,10 @@ export const getMatchDetail = cache(async (seasonId: string, code: string): Prom
       ]),
     ),
   };
-});
+}
 
 /** The season's side awards with their winners, the players they name and the related match. */
-export const getSeasonAwards = cache(async (seasonId: string): Promise<AwardInput[]> => {
-  await connection();
-  const supabase = await createClient();
+async function readSeasonAwards(supabase: Supabase, seasonId: string): Promise<AwardInput[]> {
   const { data, error } = await supabase
     .from('award')
     .select(
@@ -319,4 +305,83 @@ export const getSeasonAwards = cache(async (seasonId: string): Promise<AwardInpu
       members: members.map(({ season_player: p }) => ({ id: p.id, name: p.person.full_name, slug: p.person.slug })),
     })),
   }));
-});
+}
+
+const readers = {
+  publicSeason: readPublicSeason,
+  seasonTeams: readSeasonTeams,
+  teamCaptains: readTeamCaptains,
+  seasonPlayers: readSeasonPlayers,
+  profileMatches: readProfileMatches,
+  personHistory: readPersonHistory,
+  groupClosure: readGroupClosure,
+  seasonMatches: readSeasonMatches,
+  seasonCourts: readSeasonCourts,
+  seasonSchedule: readSeasonSchedule,
+  matchDetail: readMatchDetail,
+  seasonAwards: readSeasonAwards,
+};
+
+type Readers = typeof readers;
+type ReaderKey = keyof Readers;
+type ReaderArgs<K extends ReaderKey> = Parameters<Readers[K]> extends [Supabase, ...infer A] ? A : never;
+type ReaderResult<K extends ReaderKey> = Awaited<ReturnType<Readers[K]>>;
+
+// TypeScript cannot narrow `readers[key]` to the one reader `key` names, hence the cast.
+function reader<K extends ReaderKey>(key: K) {
+  return readers[key] as unknown as (supabase: Supabase, ...args: ReaderArgs<K>) => Promise<ReaderResult<K>>;
+}
+
+/** What referees write during a match: scores, lineups, substitutions, results. */
+const LIVE_READERS: ReadonlySet<ReaderKey> = new Set([
+  'profileMatches',
+  'seasonMatches',
+  'seasonSchedule',
+  'matchDetail',
+]);
+
+/**
+ * Live data is kept 10 s before a refresh in the background, everything else a minute. Admin actions
+ * expire the tag (`invalidatePublicData()`), so these lifetimes only bound how stale a server instance
+ * that did not run the action can be. Under 5 minutes, so pages never prerender this data.
+ */
+const LIVE_LIFE = { stale: 30, revalidate: 10, expire: 60 };
+
+/** Reads as anon and keeps the result in the server cache, shared by every anonymous visitor. */
+async function cachedRead<K extends ReaderKey>(key: K, ...args: ReaderArgs<K>): Promise<ReaderResult<K>> {
+  'use cache';
+  cacheTag(PUBLIC_DATA_TAG);
+  if (LIVE_READERS.has(key)) cacheLife(LIVE_LIFE);
+  else cacheLife('minutes');
+  return reader(key)(createPublicClient(), ...args);
+}
+
+/**
+ * A signed-in BTC member or referee may see more than the public (draft seasons, lineups before the
+ * lock), so their reads go through their session and are not cached. Everyone else shares the cache.
+ */
+async function read<K extends ReaderKey>(key: K, ...args: ReaderArgs<K>): Promise<ReaderResult<K>> {
+  if (await hasSessionCookie()) {
+    // Supabase auth reads the clock, which is request-time data under cacheComponents (runtime
+    // prefetches can read cookies, so cookies() alone is not enough).
+    await connection();
+    return reader(key)(await createClient(), ...args);
+  }
+  return cachedRead(key, ...args);
+}
+
+// React's cache() also shares a read between a layout and its page within one request.
+export const getPublicSeason = cache((year: number) => read('publicSeason', year));
+export const getSeasonTeams = cache((seasonId: string) => read('seasonTeams', seasonId));
+export const getTeamCaptains = cache((seasonId: string) => read('teamCaptains', seasonId));
+export const getSeasonPlayers = cache((seasonId: string) => read('seasonPlayers', seasonId));
+export const getProfileMatches = cache((seasonId: string) => read('profileMatches', seasonId));
+export const getPersonHistory = cache((personId: string) => read('personHistory', personId));
+export const getGroupClosure = cache((seasonId: string) => read('groupClosure', seasonId));
+export const getSeasonMatches = cache((seasonId: string, stage: 'group' | 'knockout') =>
+  read('seasonMatches', seasonId, stage),
+);
+export const getSeasonCourts = cache((seasonId: string) => read('seasonCourts', seasonId));
+export const getSeasonSchedule = cache((seasonId: string) => read('seasonSchedule', seasonId));
+export const getMatchDetail = cache((seasonId: string, code: string) => read('matchDetail', seasonId, code));
+export const getSeasonAwards = cache((seasonId: string) => read('seasonAwards', seasonId));

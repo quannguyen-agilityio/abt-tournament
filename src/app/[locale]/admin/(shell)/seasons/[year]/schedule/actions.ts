@@ -1,11 +1,10 @@
 'use server';
 
-import { refresh } from 'next/cache';
-
 import { generateRoundRobin } from '@/domain/schedule';
 import { DEFAULT_SEASON_SETTINGS, parseSeasonSettings } from '@/domain/settings';
 import { requireBtc } from '@/lib/auth/session';
 import { isUuid } from '@/lib/auth/users';
+import { invalidatePublicData } from '@/lib/public-cache';
 import { parseMatchSlot, type MatchSlotError } from '@/lib/schedule';
 import { createClient } from '@/lib/supabase/server';
 
@@ -60,7 +59,7 @@ export async function generateSchedule(
   });
   if (error) return { error: error.code === 'P0001' ? 'locked' : 'failed' };
 
-  refresh();
+  invalidatePublicData();
   return { ok: true, count: data };
 }
 
@@ -106,6 +105,6 @@ export async function updateMatchSlot(_prev: MatchSlotState, formData: FormData)
     .select('id');
   if (error || data.length === 0) return { error: 'failed' };
 
-  refresh();
+  invalidatePublicData();
   return { ok: true };
 }
