@@ -9,6 +9,7 @@ import { requireBtc } from '@/lib/auth/session';
 import { formatMoney } from '@/lib/format';
 import { sortSeasonPlayers, summarizeFees } from '@/lib/season-players';
 import { createClient } from '@/lib/supabase/server';
+import { AddPlayerDialog } from './player-form';
 import { PlayerImport } from './player-import';
 import { PlayersTable, type PlayerRow } from './players-table';
 import Loading from './loading';
@@ -71,6 +72,7 @@ async function SeasonPlayers({ params }: Pick<PageProps<'/[locale]/admin/seasons
     }),
   );
   const summary = summarizeFees(rows);
+  const teamOptions = (teams ?? []).map(({ id, name, color }) => ({ id, name, color }));
 
   const stats = [
     { label: t('summary.collected'), value: formatMoney(summary.collected, locale) },
@@ -89,7 +91,15 @@ async function SeasonPlayers({ params }: Pick<PageProps<'/[locale]/admin/seasons
           <h1 className="font-display mt-1 text-3xl font-bold">{t('title')}</h1>
           <p className="text-muted-foreground text-sm">{t('subtitle', { season: season.name, count: rows.length })}</p>
         </div>
-        <PlayerImport seasonId={season.id} maxRank={settings.max_rank} />
+        <div className="flex flex-wrap items-center gap-2">
+          <PlayerImport seasonId={season.id} maxRank={settings.max_rank} />
+          <AddPlayerDialog
+            seasonId={season.id}
+            teams={teamOptions}
+            maxRank={settings.max_rank}
+            defaultFees={settings.fees}
+          />
+        </div>
       </div>
       <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
         {stats.map((stat) => (
@@ -102,7 +112,7 @@ async function SeasonPlayers({ params }: Pick<PageProps<'/[locale]/admin/seasons
       <PlayersTable
         seasonId={season.id}
         players={rows}
-        teams={(teams ?? []).map(({ id, name, color }) => ({ id, name, color }))}
+        teams={teamOptions}
         maxRank={settings.max_rank}
         defaultFees={settings.fees}
       />

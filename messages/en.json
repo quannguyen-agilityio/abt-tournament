@@ -360,20 +360,34 @@
       "noTeam": "No team",
       "withdrawn": "Withdrawn",
       "edit": "Edit",
+      "add": "Add player",
+      "addTitle": "New player",
+      "editTitle": "Edit player",
+      "create": "Add",
+      "close": "Close",
       "save": "Save",
       "saving": "Saving…",
       "cancel": "Cancel",
       "withdraw": "Withdraw",
       "reinstate": "Reinstate",
       "paidLabel": "Fee paid by {name}",
-      "aria": {
-        "name": "Name of {name}",
-        "gender": "Gender of {name}",
-        "rank": "Rank of {name}",
-        "skill": "Skill points of {name}",
-        "team": "Team of {name}",
-        "memberType": "Member type of {name}",
-        "fee": "Fee of {name}"
+      "fields": {
+        "fullName": "Full name",
+        "gender": "Gender",
+        "team": "Team",
+        "rank": "Rank (1–{maxRank})",
+        "skillPoints": "Skill points",
+        "memberType": "Member type",
+        "feeAmount": "Fee (VND)",
+        "paid": "Fee already paid"
+      },
+      "match": {
+        "title": "Is this an existing person?",
+        "hint": "A person with this name is already on record. Pick them to keep their history, or create a new person.",
+        "played": "Played: {years}",
+        "noSeasons": "No seasons yet",
+        "inSeason": "Already in this season",
+        "new": "No, create a new person"
       },
       "errors": {
         "fullName": "Enter a name of at most {max} characters.",
@@ -383,7 +397,8 @@
         "team": "Choose a team of this season.",
         "memberType": "Choose a member type.",
         "feeAmount": "Fee must be a whole amount from 0 to {max}.",
-        "failed": "Could not update the player. Please try again later."
+        "failed": "Could not save the player. Please try again later.",
+        "inSeason": "This player is already in the season."
       },
       "import": {
         "open": "Import CSV",

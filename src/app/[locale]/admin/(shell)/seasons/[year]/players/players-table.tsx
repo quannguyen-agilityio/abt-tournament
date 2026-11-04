@@ -1,19 +1,12 @@
 'use client';
 
 import { useLocale, useTranslations } from 'next-intl';
-import { startTransition, useActionState, useOptimistic, useState, type FormEvent } from 'react';
+import { startTransition, useActionState, useOptimistic, type FormEvent } from 'react';
 import type { MemberType } from '@/domain/settings';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
 import { formatMoney } from '@/lib/format';
-import { MAX_FEE_AMOUNT, MAX_PLAYER_NAME_LENGTH, MAX_SKILL_POINTS, type PlayerEditError } from '@/lib/season-players';
-import {
-  setPlayerFeePaid,
-  setPlayerStatus,
-  updateSeasonPlayer,
-  type PlayerActionState,
-  type PlayerEditState,
-} from './actions';
+import { setPlayerFeePaid, setPlayerStatus, type PlayerActionState } from './actions';
+import { EditPlayerDialog, type Team } from './player-form';
 
 export type PlayerRow = {
   id: string;
@@ -31,18 +24,7 @@ export type PlayerRow = {
   paid: boolean;
 };
 
-type Team = { id: string; name: string; color: string };
-
-const MEMBER_TYPES: MemberType[] = ['employee', 'intern', 'guest'];
-
-const SELECT_CLASS =
-  'border-input focus-visible:border-ring focus-visible:ring-ring/50 aria-invalid:border-destructive aria-invalid:ring-destructive/20 dark:bg-input/30 h-8 w-full min-w-0 rounded-lg border bg-transparent px-2 py-1 text-sm outline-none focus-visible:ring-3 aria-invalid:ring-3';
-
 const CELL = 'px-3 py-2 align-middle';
-
-function errorsOf(state: PlayerEditState): PlayerEditError[] {
-  return state && 'errors' in state ? state.errors : [];
-}
 
 function Hidden({ seasonId, playerId }: { seasonId: string; playerId: string }) {
   return (
@@ -75,16 +57,18 @@ function TeamChip({ name, color }: { name: string | null; color: string | null }
   );
 }
 
-function ReadRow({
+function PlayerTableRow({
   seasonId,
   player,
-  disabled,
-  onEdit,
+  teams,
+  maxRank,
+  defaultFees,
 }: {
   seasonId: string;
   player: PlayerRow;
-  disabled: boolean;
-  onEdit: () => void;
+  teams: Team[];
+  maxRank: number;
+  defaultFees: Record<MemberType, number>;
 }) {
   const t = useTranslations('Admin.players');
   const locale = useLocale() as 'vi' | 'en';
@@ -139,7 +123,7 @@ function ReadRow({
               type="checkbox"
               className="size-4"
               checked={optimistic.paid}
-              disabled={disabled || paidPending}
+              disabled={paidPending}
               aria-label={t('paidLabel', { name: player.fullName })}
               onChange={(e) => e.currentTarget.form?.requestSubmit()}
             />
@@ -147,10 +131,13 @@ function ReadRow({
         </td>
         <td className={CELL}>
           <div className="flex items-center gap-2">
-            <Button type="button" size="sm" variant="outline" disabled={disabled} onClick={onEdit}>
-              {t('edit')}
-              <span className="sr-only"> {player.fullName}</span>
-            </Button>
+            <EditPlayerDialog
+              seasonId={seasonId}
+              player={player}
+              teams={teams}
+              maxRank={maxRank}
+              defaultFees={defaultFees}
+            />
             <form
               onSubmit={(e) =>
                 submitInTransition(e, (formData) => {
@@ -161,13 +148,7 @@ function ReadRow({
             >
               <Hidden seasonId={seasonId} playerId={player.id} />
               <input type="hidden" name="status" value={withdrawn ? 'active' : 'withdrawn'} />
-              <Button
-                type="submit"
-                size="sm"
-                variant={withdrawn ? 'outline' : 'destructive'}
-                pending={statusPending}
-                disabled={disabled}
-              >
+              <Button type="submit" size="sm" variant={withdrawn ? 'outline' : 'destructive'} pending={statusPending}>
                 {withdrawn ? t('reinstate') : t('withdraw')}
                 <span className="sr-only"> {player.fullName}</span>
               </Button>
@@ -188,209 +169,6 @@ function ReadRow({
   );
 }
 
-function EditRow({
-  seasonId,
-  player,
-  teams,
-  maxRank,
-  defaultFees,
-  onDone,
-}: {
-  seasonId: string;
-  player: PlayerRow;
-  teams: Team[];
-  maxRank: number;
-  defaultFees: Record<MemberType, number>;
-  onDone: () => void;
-}) {
-  const t = useTranslations('Admin.players');
-  const formId = `edit-player-${player.id}`;
-  const [state, action, pending] = useActionState<PlayerEditState, FormData>(async (prev, formData) => {
-    const result = await updateSeasonPlayer(prev, formData);
-    if (result && 'ok' in result && result.ok) onDone();
-    return result;
-  }, undefined);
-  const [values, setValues] = useState({
-    fullName: player.fullName,
-    gender: player.gender,
-    rank: String(player.rank),
-    skillPoints: String(player.skillPoints),
-    teamId: player.teamId ?? '',
-    memberType: player.memberType ?? 'employee',
-    feeAmount: String(player.feeAmount ?? defaultFees[player.memberType ?? 'employee']),
-  });
-  const field = (key: keyof typeof values) => ({
-    value: values[key],
-    onChange: (e: { currentTarget: { value: string } }) => {
-      const value = e.currentTarget.value;
-      setValues((v) => ({ ...v, [key]: value }));
-    },
-  });
-  const errors = errorsOf(state);
-  const invalid = (field: PlayerEditError) => errors.includes(field) || undefined;
-  const name = player.fullName;
-
-  return (
-    <>
-      <tr className="border-border bg-muted/40 border-t">
-        <td className={CELL}>
-          <Input
-            form={formId}
-            name="fullName"
-            {...field('fullName')}
-            required
-            maxLength={MAX_PLAYER_NAME_LENGTH}
-            autoComplete="off"
-            aria-label={t('aria.name', { name })}
-            aria-invalid={invalid('fullName')}
-            className="min-w-40"
-          />
-        </td>
-        <td className={CELL}>
-          <select
-            form={formId}
-            name="gender"
-            {...field('gender')}
-            aria-label={t('aria.gender', { name })}
-            aria-invalid={invalid('gender')}
-            className={SELECT_CLASS}
-          >
-            {(['male', 'female'] as const).map((g) => (
-              <option key={g} value={g}>
-                {t(`gender.${g}`)}
-              </option>
-            ))}
-          </select>
-        </td>
-        <td className={CELL}>
-          <Input
-            form={formId}
-            name="rank"
-            type="number"
-            inputMode="numeric"
-            min={1}
-            max={maxRank}
-            step={1}
-            {...field('rank')}
-            required
-            aria-label={t('aria.rank', { name })}
-            aria-invalid={invalid('rank')}
-            className="w-16"
-          />
-        </td>
-        <td className={CELL}>
-          <Input
-            form={formId}
-            name="skillPoints"
-            type="number"
-            inputMode="numeric"
-            min={0}
-            max={MAX_SKILL_POINTS}
-            step={1}
-            {...field('skillPoints')}
-            required
-            aria-label={t('aria.skill', { name })}
-            aria-invalid={invalid('skillPoints')}
-            className="w-24"
-          />
-        </td>
-        <td className={CELL}>
-          <select
-            form={formId}
-            name="teamId"
-            {...field('teamId')}
-            aria-label={t('aria.team', { name })}
-            aria-invalid={invalid('team')}
-            className={SELECT_CLASS}
-          >
-            <option value="">{t('noTeam')}</option>
-            {teams.map((team) => (
-              <option key={team.id} value={team.id}>
-                {team.name}
-              </option>
-            ))}
-          </select>
-        </td>
-        <td className={CELL}>
-          <select
-            form={formId}
-            name="memberType"
-            value={values.memberType}
-            aria-label={t('aria.memberType', { name })}
-            aria-invalid={invalid('memberType')}
-            className={SELECT_CLASS}
-            // The fee follows the member type: start from the season's default for that type.
-            onChange={(e) => {
-              const memberType = e.currentTarget.value as MemberType;
-              setValues((v) => ({ ...v, memberType, feeAmount: String(defaultFees[memberType] ?? 0) }));
-            }}
-          >
-            {MEMBER_TYPES.map((type) => (
-              <option key={type} value={type}>
-                {t(`memberType.${type}`)}
-              </option>
-            ))}
-          </select>
-        </td>
-        <td className={CELL}>
-          <Input
-            form={formId}
-            name="feeAmount"
-            type="number"
-            inputMode="numeric"
-            min={0}
-            max={MAX_FEE_AMOUNT}
-            step={1}
-            {...field('feeAmount')}
-            required
-            aria-label={t('aria.fee', { name })}
-            aria-invalid={invalid('feeAmount')}
-            className="w-32"
-          />
-        </td>
-        <td className={CELL} />
-        <td className={CELL}>
-          <form
-            id={formId}
-            // Not `action`: React resets a form after its action, which would drop a failed edit.
-            onSubmit={(e) => submitInTransition(e, action)}
-            className="flex items-center gap-2"
-          >
-            <Hidden seasonId={seasonId} playerId={player.id} />
-            <Button type="submit" size="sm" pending={pending}>
-              {pending ? t('saving') : t('save')}
-              <span className="sr-only"> {name}</span>
-            </Button>
-            <Button type="button" size="sm" variant="outline" disabled={pending} onClick={onDone}>
-              {t('cancel')}
-              <span className="sr-only"> {name}</span>
-            </Button>
-          </form>
-        </td>
-      </tr>
-      {state && (errors.length > 0 || 'error' in state) && (
-        <tr className="bg-muted/40">
-          <td colSpan={9} className="px-3 pb-2">
-            <ul role="alert" className="text-destructive flex flex-col gap-0.5 text-sm">
-              {'error' in state ? (
-                <li>{t('errors.failed')}</li>
-              ) : (
-                errors.map((field) => <li key={field}>{t(`errors.${field}`, { max: errorMax(field), maxRank })}</li>)
-              )}
-            </ul>
-          </td>
-        </tr>
-      )}
-    </>
-  );
-}
-
-function errorMax(field: PlayerEditError): number {
-  if (field === 'fullName') return MAX_PLAYER_NAME_LENGTH;
-  if (field === 'skillPoints') return MAX_SKILL_POINTS;
-  return MAX_FEE_AMOUNT;
-}
-
 export function PlayersTable({
   seasonId,
   players,
@@ -405,7 +183,6 @@ export function PlayersTable({
   defaultFees: Record<MemberType, number>;
 }) {
   const t = useTranslations('Admin.players');
-  const [editingId, setEditingId] = useState<string | null>(null);
 
   if (players.length === 0) {
     return <p className="text-muted-foreground text-sm">{t('empty')}</p>;
@@ -426,27 +203,16 @@ export function PlayersTable({
           </tr>
         </thead>
         <tbody>
-          {players.map((player) =>
-            editingId === player.id ? (
-              <EditRow
-                key={player.id}
-                seasonId={seasonId}
-                player={player}
-                teams={teams}
-                maxRank={maxRank}
-                defaultFees={defaultFees}
-                onDone={() => setEditingId(null)}
-              />
-            ) : (
-              <ReadRow
-                key={player.id}
-                seasonId={seasonId}
-                player={player}
-                disabled={editingId !== null}
-                onEdit={() => setEditingId(player.id)}
-              />
-            ),
-          )}
+          {players.map((player) => (
+            <PlayerTableRow
+              key={player.id}
+              seasonId={seasonId}
+              player={player}
+              teams={teams}
+              maxRank={maxRank}
+              defaultFees={defaultFees}
+            />
+          ))}
         </tbody>
       </table>
     </div>
