@@ -2,6 +2,7 @@
 
 import { useTranslations } from 'next-intl';
 import { useRef, useState, useTransition } from 'react';
+import { CsvTemplateLink } from '@/components/csv-template-link';
 import { Button } from '@/components/ui/button';
 import {
   MAX_IMPORT_ROWS,
@@ -10,6 +11,7 @@ import {
   type Change,
   type PlanKind,
   type PlanRow,
+  playerImportTemplate,
 } from '@/lib/player-import';
 import { MAX_PLAYER_NAME_LENGTH, MAX_SKILL_POINTS } from '@/lib/season-players';
 import {
@@ -256,6 +258,9 @@ export function PlayerImport({ seasonId, maxRank }: { seasonId: string; maxRank:
             })}
           </p>
           <div className="flex flex-col gap-3">
+            <CsvTemplateLink csv={playerImportTemplate({ maxRank })} filename="players-template.csv">
+              {t('template')}
+            </CsvTemplateLink>
             <label className="flex flex-col gap-1 text-sm font-medium">
               {t('file')}
               <input

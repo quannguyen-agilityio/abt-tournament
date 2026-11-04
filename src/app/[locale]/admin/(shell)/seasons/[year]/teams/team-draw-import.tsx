@@ -2,8 +2,9 @@
 
 import { useTranslations } from 'next-intl';
 import { useRef, useState, useTransition } from 'react';
+import { CsvTemplateLink } from '@/components/csv-template-link';
 import { Button } from '@/components/ui/button';
-import { DRAW_COLUMNS, MAX_DRAW_ROWS, type DrawPlanKind, type DrawPlanRow } from '@/lib/team-draw';
+import { DRAW_COLUMNS, MAX_DRAW_ROWS, teamDrawTemplate, type DrawPlanKind, type DrawPlanRow } from '@/lib/team-draw';
 import { MAX_TEAM_NAME_LENGTH } from '@/lib/teams';
 import {
   applyTeamDraw,
@@ -127,6 +128,9 @@ export function TeamDrawImport({ seasonId }: { seasonId: string }) {
             {t('hint', { header: DRAW_COLUMNS.join(','), rows: MAX_DRAW_ROWS })}
           </p>
           <div className="flex flex-col gap-3">
+            <CsvTemplateLink csv={teamDrawTemplate()} filename="team-draw-template.csv">
+              {t('template')}
+            </CsvTemplateLink>
             <label className="flex flex-col gap-1 text-sm font-medium">
               {t('file')}
               <input
