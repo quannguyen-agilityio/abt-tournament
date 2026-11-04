@@ -1039,6 +1039,7 @@ export type Database = {
         Args: { p_expected: Json; p_match_id: string; p_score_away: number; p_score_home: number; p_slot_no: number };
         Returns: undefined;
       };
+      save_team_board: { Args: { p_captains: Json; p_moves: Json; p_season_id: string }; Returns: number };
       set_current_season: { Args: { p_season_id: string }; Returns: undefined };
       substitute_player: {
         Args: {
