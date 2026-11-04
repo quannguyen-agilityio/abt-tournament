@@ -7,6 +7,7 @@ import { routing } from '@/i18n/routing';
 import { requireBtc } from '@/lib/auth/session';
 import { createClient } from '@/lib/supabase/server';
 import { CreateSeasonForm } from './create-season-form';
+import Loading from './loading';
 
 async function Seasons({ params }: Pick<PageProps<'/[locale]/admin/seasons'>, 'params'>) {
   const { locale } = await params;
@@ -110,7 +111,7 @@ async function Seasons({ params }: Pick<PageProps<'/[locale]/admin/seasons'>, 'p
 
 export default function SeasonsPage({ params }: PageProps<'/[locale]/admin/seasons'>) {
   return (
-    <Suspense>
+    <Suspense fallback={<Loading />}>
       <Seasons params={params} />
     </Suspense>
   );

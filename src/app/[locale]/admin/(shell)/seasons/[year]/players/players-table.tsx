@@ -165,7 +165,8 @@ function ReadRow({
                 type="submit"
                 size="sm"
                 variant={withdrawn ? 'outline' : 'destructive'}
-                disabled={disabled || statusPending}
+                pending={statusPending}
+                disabled={disabled}
               >
                 {withdrawn ? t('reinstate') : t('withdraw')}
                 <span className="sr-only"> {player.fullName}</span>
@@ -356,7 +357,7 @@ function EditRow({
             className="flex items-center gap-2"
           >
             <Hidden seasonId={seasonId} playerId={player.id} />
-            <Button type="submit" size="sm" disabled={pending}>
+            <Button type="submit" size="sm" pending={pending}>
               {pending ? t('saving') : t('save')}
               <span className="sr-only"> {name}</span>
             </Button>

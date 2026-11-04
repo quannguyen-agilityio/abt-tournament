@@ -11,6 +11,7 @@ import { sortSeasonPlayers, summarizeFees } from '@/lib/season-players';
 import { createClient } from '@/lib/supabase/server';
 import { PlayerImport } from './player-import';
 import { PlayersTable, type PlayerRow } from './players-table';
+import Loading from './loading';
 
 async function SeasonPlayers({ params }: Pick<PageProps<'/[locale]/admin/seasons/[year]/players'>, 'params'>) {
   const { locale, year: yearParam } = await params;
@@ -111,7 +112,7 @@ async function SeasonPlayers({ params }: Pick<PageProps<'/[locale]/admin/seasons
 
 export default function SeasonPlayersPage({ params }: PageProps<'/[locale]/admin/seasons/[year]/players'>) {
   return (
-    <Suspense>
+    <Suspense fallback={<Loading />}>
       <SeasonPlayers params={params} />
     </Suspense>
   );

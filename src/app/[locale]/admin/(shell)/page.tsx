@@ -4,6 +4,7 @@ import { notFound } from 'next/navigation';
 import { Suspense } from 'react';
 import { routing } from '@/i18n/routing';
 import { requireStaff } from '@/lib/auth/session';
+import Loading from './loading';
 
 async function AdminHome({ params }: Pick<PageProps<'/[locale]/admin'>, 'params'>) {
   const { locale } = await params;
@@ -22,7 +23,7 @@ async function AdminHome({ params }: Pick<PageProps<'/[locale]/admin'>, 'params'
 
 export default function AdminHomePage({ params }: PageProps<'/[locale]/admin'>) {
   return (
-    <Suspense>
+    <Suspense fallback={<Loading />}>
       <AdminHome params={params} />
     </Suspense>
   );

@@ -1,7 +1,7 @@
 'use client';
 
 import { useTranslations } from 'next-intl';
-import { Button } from '@/components/ui/button';
+import { SignOutButton } from '@/components/sign-out-button';
 import { Link, usePathname } from '@/i18n/navigation';
 import type { AdminNavKey, AdminRole } from '@/lib/admin-nav';
 import { signOut } from '@/lib/auth/actions';
@@ -31,9 +31,7 @@ export function AdminSidebar({ entries, viewer }: Props) {
           {t(viewer.role === 'btc' ? 'roleBtc' : 'roleReferee')}
         </span>
         <form action={signOut} className="mt-3">
-          <Button type="submit" variant="outline" size="sm" className="w-full">
-            {tAuth('signOut')}
-          </Button>
+          <SignOutButton className="w-full">{tAuth('signOut')}</SignOutButton>
         </form>
       </div>
       <nav aria-label={t('navLabel')} className="overflow-x-auto">

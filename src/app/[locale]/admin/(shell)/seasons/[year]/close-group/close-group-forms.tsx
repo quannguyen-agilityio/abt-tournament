@@ -189,7 +189,7 @@ export function CloseGroupForm({
             {t(`errors.${state.error}`)}
           </p>
         )}
-        <Button type="submit" disabled={pending || !ready}>
+        <Button type="submit" pending={pending} disabled={!ready}>
           {pending ? t('submitting') : t('submit')}
         </Button>
       </div>
@@ -213,7 +213,7 @@ export function ReopenGroupForm({ seasonId }: { seasonId: string }) {
       className="flex flex-wrap items-center gap-3"
     >
       <input type="hidden" name="seasonId" value={seasonId} />
-      <Button type="submit" variant="outline" disabled={pending}>
+      <Button type="submit" variant="outline" pending={pending}>
         {pending ? t('submitting') : t('submit')}
       </Button>
       <span className="text-muted-foreground text-sm">{t('hint')}</span>

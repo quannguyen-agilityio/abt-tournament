@@ -284,7 +284,13 @@ function ScoreRow({
                 {t(`errors.${error}`)}
               </p>
             )}
-            <Button type="submit" size="sm" variant={dirty ? 'default' : 'outline'} disabled={!canSave}>
+            <Button
+              type="submit"
+              size="sm"
+              variant={dirty ? 'default' : 'outline'}
+              pending={pending}
+              disabled={!canSave}
+            >
               {pending ? t('saving') : error ? t('retry') : t('save')}
             </Button>
           </div>

@@ -48,7 +48,12 @@ export function GenerateSchedule({
               {t('cancel')}
             </Button>
           )}
-          <Button type="submit" variant={confirming ? 'destructive' : 'default'} disabled={disabled}>
+          <Button
+            type="submit"
+            variant={confirming ? 'destructive' : 'default'}
+            pending={pending}
+            disabled={locked || teamCount < 2}
+          >
             {pending ? t('generating') : confirming ? t('regenerate') : t('generate')}
           </Button>
         </div>
@@ -158,7 +163,7 @@ export function MatchSlotForm({
           </option>
         ))}
       </select>
-      <Button type="submit" size="sm" variant="outline" disabled={saving}>
+      <Button type="submit" size="sm" variant="outline" pending={saving}>
         {saving ? t('saving') : t('save')}
         <span className="sr-only"> {match.code}</span>
       </Button>

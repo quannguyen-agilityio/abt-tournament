@@ -3,6 +3,7 @@ import { notFound } from 'next/navigation';
 import { hasLocale } from 'next-intl';
 import { setRequestLocale } from 'next-intl/server';
 import { LocaleSwitcher } from '@/components/locale-switcher';
+import { PageSkeleton } from '@/components/page-skeletons';
 import { PublicNav } from '@/components/public-nav';
 import { SeasonSwitcher } from '@/components/season-switcher';
 import { SiteFooter } from '@/components/site-footer';
@@ -59,7 +60,7 @@ export default function SeasonLayout({ children, params }: LayoutProps<'/[locale
       </Suspense>
       <main className="mx-auto w-full max-w-6xl flex-1 px-4 py-6 sm:py-8">
         {/* Each Suspense boundary throws its own notFound(), so the pages are gated too, not just the header. */}
-        <Suspense>
+        <Suspense fallback={<PageSkeleton />}>
           <SeasonGate params={params}>{children}</SeasonGate>
         </Suspense>
       </main>

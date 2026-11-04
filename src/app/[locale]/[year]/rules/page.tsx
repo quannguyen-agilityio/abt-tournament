@@ -6,6 +6,7 @@ import { routing } from '@/i18n/routing';
 import { rulesValues } from '@/lib/public-rules';
 import { getPublicSeason } from '@/lib/public-season-db';
 import { cn } from '@/lib/utils';
+import Loading from './loading';
 
 const CHIP = 'inline-flex items-center rounded-full border px-2 py-0.5 text-xs font-medium whitespace-nowrap';
 
@@ -78,7 +79,7 @@ async function Rules({ params }: Pick<PageProps<'/[locale]/[year]/rules'>, 'para
 
 export default function RulesPage({ params }: PageProps<'/[locale]/[year]/rules'>) {
   return (
-    <Suspense>
+    <Suspense fallback={<Loading />}>
       <Rules params={params} />
     </Suspense>
   );

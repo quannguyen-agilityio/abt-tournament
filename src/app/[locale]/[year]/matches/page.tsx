@@ -15,6 +15,7 @@ import {
 import { getPublicSeason, getSeasonCourts, getSeasonSchedule, getSeasonTeams } from '@/lib/public-season-db';
 import { zonedToUtc } from '@/lib/schedule';
 import { MatchFiltersForm } from './match-filters';
+import Loading from './loading';
 
 const GRID = 'grid min-w-0 gap-3 md:grid-cols-2 xl:grid-cols-3';
 const DAY_HEADING = 'font-display mb-1 text-2xl font-bold uppercase';
@@ -102,7 +103,7 @@ async function Matches({ params, searchParams }: PageProps<'/[locale]/[year]/mat
 
 export default function MatchesPage(props: PageProps<'/[locale]/[year]/matches'>) {
   return (
-    <Suspense>
+    <Suspense fallback={<Loading />}>
       <Matches {...props} />
     </Suspense>
   );

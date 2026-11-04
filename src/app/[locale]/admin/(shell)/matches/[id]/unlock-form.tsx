@@ -24,7 +24,7 @@ export function UnlockForm({ matchId, code }: { matchId: string; code: string })
           {t(`unlockErrors.${state.error}`)}
         </p>
       )}
-      <Button type="submit" variant="outline" disabled={pending}>
+      <Button type="submit" variant="outline" pending={pending}>
         {pending ? t('unlocking') : t('unlock')}
       </Button>
     </form>

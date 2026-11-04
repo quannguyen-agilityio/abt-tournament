@@ -199,7 +199,7 @@ export function SubstituteForm({ matchId, relay, slots, teams, isBtc }: Props) {
             <span className="text-win font-semibold">✓</span> {t('saved')}
           </p>
         )}
-        <Button type="submit" disabled={pending || !ready || blocked}>
+        <Button type="submit" pending={pending} disabled={!ready || blocked}>
           {pending ? t('submitting') : t('submit')}
         </Button>
       </div>

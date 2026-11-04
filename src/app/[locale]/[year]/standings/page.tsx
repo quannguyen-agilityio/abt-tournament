@@ -9,6 +9,7 @@ import { signed } from '@/lib/format';
 import { buildStandingsView, type StandingsHint } from '@/lib/public-standings';
 import { getGroupClosure, getPublicSeason, getSeasonMatches, getSeasonTeams } from '@/lib/public-season-db';
 import { cn } from '@/lib/utils';
+import Loading from './loading';
 
 const CHIP = 'inline-flex items-center rounded-full border px-2 py-0.5 text-xs font-medium whitespace-nowrap';
 const CHIP_WARN = 'border-warn/60 bg-warn/10 text-warn';
@@ -179,7 +180,7 @@ async function Standings({ params }: Pick<PageProps<'/[locale]/[year]/standings'
 
 export default function StandingsPage({ params }: PageProps<'/[locale]/[year]/standings'>) {
   return (
-    <Suspense>
+    <Suspense fallback={<Loading />}>
       <Standings params={params} />
     </Suspense>
   );

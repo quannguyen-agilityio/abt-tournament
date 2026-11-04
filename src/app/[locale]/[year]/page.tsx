@@ -22,6 +22,7 @@ import {
 import { buildStandingsView } from '@/lib/public-standings';
 import { cn } from '@/lib/utils';
 import { BracketCard } from './bracket/bracket-card';
+import Loading from './loading';
 
 const PANEL = 'border-border bg-surface rounded-[10px] border';
 const EMPTY = `${PANEL} text-muted-foreground p-6 text-center text-sm`;
@@ -257,7 +258,7 @@ async function SeasonHome({ params }: Pick<PageProps<'/[locale]/[year]'>, 'param
 
 export default function SeasonHomePage({ params }: PageProps<'/[locale]/[year]'>) {
   return (
-    <Suspense>
+    <Suspense fallback={<Loading />}>
       <SeasonHome params={params} />
     </Suspense>
   );

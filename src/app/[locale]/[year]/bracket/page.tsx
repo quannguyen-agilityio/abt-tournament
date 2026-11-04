@@ -7,6 +7,7 @@ import { routing } from '@/i18n/routing';
 import { buildBracketView, type BracketCode } from '@/lib/public-bracket';
 import { getGroupClosure, getPublicSeason, getSeasonMatches, getSeasonTeams } from '@/lib/public-season-db';
 import { BracketCard } from './bracket-card';
+import Loading from './loading';
 
 const EYEBROW = 'text-muted-foreground text-xs font-semibold tracking-wider uppercase';
 
@@ -79,7 +80,7 @@ async function Bracket({ params }: Pick<PageProps<'/[locale]/[year]/bracket'>, '
 
 export default function BracketPage({ params }: PageProps<'/[locale]/[year]/bracket'>) {
   return (
-    <Suspense>
+    <Suspense fallback={<Loading />}>
       <Bracket params={params} />
     </Suspense>
   );

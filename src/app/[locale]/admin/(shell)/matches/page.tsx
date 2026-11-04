@@ -12,6 +12,7 @@ import { formatDate, formatTime } from '@/lib/format';
 import { getCurrentSeasonYear } from '@/lib/seasons-db';
 import { groupStaffMatches } from '@/lib/staff-matches';
 import { createClient } from '@/lib/supabase/server';
+import Loading from './loading';
 
 async function StaffMatches({ params }: Pick<PageProps<'/[locale]/admin/matches'>, 'params'>) {
   const { locale } = await params;
@@ -138,7 +139,7 @@ async function StaffMatches({ params }: Pick<PageProps<'/[locale]/admin/matches'
 
 export default function StaffMatchesPage({ params }: PageProps<'/[locale]/admin/matches'>) {
   return (
-    <Suspense>
+    <Suspense fallback={<Loading />}>
       <StaffMatches params={params} />
     </Suspense>
   );

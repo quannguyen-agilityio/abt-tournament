@@ -116,7 +116,7 @@ export function CreateUserForm() {
           {t('success', { email: state.email })}
         </p>
       )}
-      <Button type="submit" size="lg" disabled={pending} className="w-full">
+      <Button type="submit" size="lg" pending={pending} className="w-full">
         {pending ? t('saving') : t('submit')}
       </Button>
     </form>

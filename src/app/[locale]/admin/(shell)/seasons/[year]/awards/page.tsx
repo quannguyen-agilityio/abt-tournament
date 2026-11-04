@@ -12,6 +12,7 @@ import { getPublicSeason, getSeasonMatches, getSeasonPlayers, getSeasonTeams } f
 import { createClient } from '@/lib/supabase/server';
 import { AddWinnerForm, AwardForm, DeleteAwardForm, WinnerRow, type AwardFormValues } from './award-forms';
 import { AwardList } from './award-list';
+import Loading from './loading';
 
 const BRACKET_ORDER = ['SF1', 'SF2', '3RD', 'F'];
 
@@ -161,7 +162,7 @@ async function Awards({ params, searchParams }: PageProps<'/[locale]/admin/seaso
 
 export default function AwardsPage({ params, searchParams }: PageProps<'/[locale]/admin/seasons/[year]/awards'>) {
   return (
-    <Suspense>
+    <Suspense fallback={<Loading />}>
       <Awards params={params} searchParams={searchParams} />
     </Suspense>
   );

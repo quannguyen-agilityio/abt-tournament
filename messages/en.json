@@ -4,6 +4,7 @@
     "description": "Web app for running the Agility Badminton Tournament (ABT)."
   },
   "Common": {
+    "loading": "Loading…",
     "language": "Language"
   },
   "Home": {

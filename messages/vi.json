@@ -4,6 +4,7 @@
     "description": "Ứng dụng web quản lý giải cầu lông Agility Badminton Tournament (ABT)."
   },
   "Common": {
+    "loading": "Đang tải…",
     "language": "Ngôn ngữ"
   },
   "Home": {

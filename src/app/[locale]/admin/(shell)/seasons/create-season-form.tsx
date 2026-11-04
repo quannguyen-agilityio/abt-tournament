@@ -99,7 +99,7 @@ export function CreateSeasonForm({ sources }: { sources: { id: string; name: str
           })}
         </p>
       )}
-      <Button type="submit" size="lg" disabled={pending} className="w-full">
+      <Button type="submit" size="lg" pending={pending} className="w-full">
         {pending ? t('saving') : t('submit')}
       </Button>
     </form>

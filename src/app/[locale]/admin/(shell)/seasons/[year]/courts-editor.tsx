@@ -98,7 +98,7 @@ export function CourtsEditor({ seasonId, courts }: { seasonId: string; courts: C
           aria-invalid={errorOf(addState) === 'name' || undefined}
           className="h-8 min-w-0 flex-1"
         />
-        <Button type="submit" size="sm" disabled={adding}>
+        <Button type="submit" size="sm" pending={adding}>
           {t('add')}
         </Button>
       </form>
