@@ -472,7 +472,7 @@
       "subtitle": "{season} · {count, plural, one {# team} other {# teams}} · {players, plural, one {# player} other {# players}}",
       "back": "← Season",
       "empty": "No teams yet. Add a team or import the draw.",
-      "dragHint": "Drag players between teams, or use the team menu on each row. The captain defaults to the team's Rank 1 player.",
+      "dragHint": "Drag players between teams, or use the team menu on each row, then save. The captain defaults to the team's Rank 1 player.",
       "add": "Add team",
       "addTitle": "New team",
       "create": "Create",
@@ -496,6 +496,9 @@
       "withdrawn": "Withdrawn",
       "unassigned": "No team",
       "emptyTeam": "Drop players here.",
+      "unsaved": "{count, plural, one {# unsaved change} other {# unsaved changes}}",
+      "discard": "Discard",
+      "leaveConfirm": "The teams have unsaved changes. Leave without saving?",
       "rosterCount": "{count, plural, one {# active player} other {# active players}}",
       "warnings": {
         "title": "Check the teams",
@@ -508,6 +511,7 @@
         "color": "Choose a color.",
         "notEmpty": "Move the players out before deleting the team.",
         "inUse": "This team already has matches and cannot be deleted.",
+        "saveFailed": "Could not save the changes, so nothing was changed. Your edits are still here: please try again.",
         "failed": "Could not save the change. Please try again later."
       },
       "draw": {

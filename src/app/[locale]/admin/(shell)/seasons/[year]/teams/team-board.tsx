@@ -2,22 +2,23 @@
 
 import { GripVertical } from 'lucide-react';
 import { useTranslations } from 'next-intl';
-import { useOptimistic, useState, useTransition } from 'react';
+import { useEffect, useState, useTransition } from 'react';
 import { Button } from '@/components/ui/button';
+import {
+  EMPTY_DRAFT,
+  applyDraft,
+  chooseCaptainInDraft,
+  draftChanges,
+  draftSize,
+  moveInDraft,
+  normalizeDraft,
+  type BoardDraft,
+  type BoardPlayer,
+  type BoardTeam,
+} from '@/lib/team-board';
 import { sortRoster } from '@/lib/teams';
-import { moveTeamPlayer, setTeamCaptain, type TeamActionState } from './actions';
+import { saveTeamBoard } from './actions';
 import { TeamHeader } from './team-forms';
-
-export type BoardPlayer = {
-  id: string;
-  fullName: string;
-  rank: number;
-  skillPoints: number;
-  status: 'active' | 'withdrawn';
-  teamId: string | null;
-};
-
-export type BoardTeam = { id: string; name: string; color: string; captainId: string | null };
 
 const SELECT_CLASS =
   'border-input focus-visible:border-ring focus-visible:ring-ring/50 dark:bg-input/30 h-7 w-32 min-w-0 rounded-lg border bg-transparent px-1.5 text-xs outline-none focus-visible:ring-3';
@@ -26,10 +27,33 @@ const SELECT_CLASS =
 const NO_TEAM = '';
 const DRAG_TYPE = 'application/x-abt-season-player';
 
-function form(values: Record<string, string>): FormData {
-  const formData = new FormData();
-  for (const [key, value] of Object.entries(values)) formData.set(key, value);
-  return formData;
+/**
+ * Asks before the page is left while `message` is set: on reload or close (the browser's own
+ * prompt) and on a click on a link to another page of the app.
+ */
+function useLeaveWarning(message: string | null) {
+  useEffect(() => {
+    if (!message) return;
+    const onBeforeUnload = (e: BeforeUnloadEvent) => e.preventDefault();
+    // Capture phase, so it runs before the link's own client-side navigation.
+    const onClick = (e: MouseEvent) => {
+      if (e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+      const link = e.target instanceof Element ? e.target.closest('a[href]') : null;
+      if (!(link instanceof HTMLAnchorElement) || link.target === '_blank' || link.hasAttribute('download')) return;
+      const url = new URL(link.href);
+      if (url.origin === location.origin && url.pathname === location.pathname) return;
+      if (!window.confirm(message)) {
+        e.preventDefault();
+        e.stopPropagation();
+      }
+    };
+    window.addEventListener('beforeunload', onBeforeUnload);
+    document.addEventListener('click', onClick, true);
+    return () => {
+      window.removeEventListener('beforeunload', onBeforeUnload);
+      document.removeEventListener('click', onClick, true);
+    };
+  }, [message]);
 }
 
 function PlayerItem({
@@ -144,12 +168,13 @@ function DropZone({
 
 /**
  * Teams with their rosters. Players move by drag and drop, or with the "move to" select on each row
- * (the keyboard way). Moves show at once and are confirmed by the server refresh.
+ * (the keyboard way). Moves and captain choices only change a draft on the page, until Save sends
+ * them all in one request; Discard goes back to the saved board.
  */
 export function TeamBoard({
   seasonId,
-  teams,
-  players,
+  teams: savedTeams,
+  players: savedPlayers,
 }: {
   seasonId: string;
   teams: BoardTeam[];
@@ -158,31 +183,38 @@ export function TeamBoard({
   const t = useTranslations('Admin.teams');
   const [pending, startTransition] = useTransition();
   const [error, setError] = useState(false);
-  const [shown, moveShown] = useOptimistic(players, (state, move: { playerId: string; teamId: string | null }) =>
-    state.map((p) => (p.id === move.playerId ? { ...p, teamId: move.teamId } : p)),
-  );
-
-  function run(action: () => Promise<TeamActionState>) {
-    startTransition(async () => {
-      const result = await action();
-      setError(!result || !('ok' in result));
-    });
-  }
+  const [rawDraft, setDraft] = useState<BoardDraft>(EMPTY_DRAFT);
+  // Normalized against the saved board on every render, so a refresh rebases the draft.
+  const draft = normalizeDraft(savedTeams, savedPlayers, rawDraft);
+  const changes = draftSize(draft);
+  const { teams, players } = applyDraft(savedTeams, savedPlayers, draft);
+  useLeaveWarning(changes > 0 ? t('leaveConfirm') : null);
 
   function move(playerId: string, teamId: string) {
-    const player = shown.find((p) => p.id === playerId);
+    const player = players.find((p) => p.id === playerId);
     if (!player || (player.teamId ?? NO_TEAM) === teamId) return;
-    run(async () => {
-      moveShown({ playerId, teamId: teamId || null });
-      return moveTeamPlayer(undefined, form({ seasonId, seasonPlayerId: playerId, teamId }));
-    });
+    setDraft(moveInDraft(draft, playerId, teamId || null));
   }
 
   function makeCaptain(teamId: string, playerId: string) {
-    run(() => setTeamCaptain(undefined, form({ seasonId, teamId, seasonPlayerId: playerId })));
+    setDraft(chooseCaptainInDraft(draft, teamId, playerId));
   }
 
-  const rosterOf = (teamId: string | null) => sortRoster(shown.filter((p) => p.teamId === teamId));
+  function save() {
+    startTransition(async () => {
+      const result = await saveTeamBoard(seasonId, draftChanges(draft));
+      const ok = !!result && 'ok' in result;
+      setError(!ok);
+      if (ok) setDraft(EMPTY_DRAFT);
+    });
+  }
+
+  function discard() {
+    setError(false);
+    setDraft(EMPTY_DRAFT);
+  }
+
+  const rosterOf = (teamId: string | null) => sortRoster(players.filter((p) => p.teamId === teamId));
   const unassigned = rosterOf(null);
 
   const list = (roster: BoardPlayer[], team: BoardTeam | null) =>
@@ -206,10 +238,28 @@ export function TeamBoard({
 
   return (
     <div className="flex flex-col gap-4">
-      {error && (
-        <p role="alert" className="text-destructive text-sm">
-          {t('errors.failed')}
-        </p>
+      {(changes > 0 || error) && (
+        <section
+          aria-label={t('unsaved', { count: changes })}
+          className="border-warn/40 bg-surface sticky top-16 z-10 flex flex-wrap items-center gap-x-3 gap-y-2 rounded-[10px] border p-3 shadow-sm"
+        >
+          <p role="status" className="text-warn text-sm font-medium">
+            {t('unsaved', { count: changes })}
+          </p>
+          {error && (
+            <p role="alert" className="text-destructive basis-full text-sm sm:order-last">
+              {t('errors.saveFailed')}
+            </p>
+          )}
+          <div className="ml-auto flex gap-2">
+            <Button type="button" variant="outline" size="sm" disabled={pending} onClick={discard}>
+              {t('discard')}
+            </Button>
+            <Button type="button" size="sm" disabled={pending || changes === 0} onClick={save}>
+              {pending ? t('saving') : t('save')}
+            </Button>
+          </div>
+        </section>
       )}
       {teams.length === 0 ? (
         <p className="border-border bg-surface text-muted-foreground rounded-[10px] border p-6 text-sm">{t('empty')}</p>
@@ -217,6 +267,7 @@ export function TeamBoard({
         <div className="grid gap-4 md:grid-cols-2 2xl:grid-cols-3">
           {teams.map((team) => {
             const roster = rosterOf(team.id);
+            const savedEmpty = !savedPlayers.some((p) => p.teamId === team.id);
             return (
               <DropZone
                 key={team.id}
@@ -224,7 +275,7 @@ export function TeamBoard({
                 disabled={pending}
                 onDropPlayer={(playerId) => move(playerId, team.id)}
               >
-                <TeamHeader seasonId={seasonId} team={team} empty={roster.length === 0} />
+                <TeamHeader seasonId={seasonId} team={team} empty={savedEmpty && roster.length === 0} />
                 <p className="text-muted-foreground px-4 pt-2 text-xs">
                   {t('rosterCount', { count: roster.filter((p) => p.status === 'active').length })}
                 </p>
