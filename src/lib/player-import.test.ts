@@ -7,7 +7,10 @@ import {
   parseCsv,
   parsePlayerCsv,
   planPlayerImport,
+  playerImportTemplate,
+  REQUIRED_COLUMNS,
   slugify,
+  toCsv,
   type ImportPerson,
   type ImportSeasonPlayer,
   type ParsedRow,
@@ -354,5 +357,33 @@ describe('planPlayerImport changes and fees', () => {
       },
     );
     expect(result.counts).toEqual({ invalid: 1, ambiguous: 0, new: 2, changed: 0, unchanged: 1 });
+  });
+});
+
+describe('toCsv / playerImportTemplate', () => {
+  it('writes one line per row and quotes cells that need it', () => {
+    expect(toCsv([['a', 'b, c'], [], ['say "hi"', 1]])).toBe('a,"b, c"\n\n"say ""hi""",1');
+  });
+
+  it('uses the parser header, dropdowns for the enum fields and example rows that parse cleanly', () => {
+    const template = playerImportTemplate({ maxRank: 6 });
+    expect(template.columns.map((c) => c.header)).toEqual([...REQUIRED_COLUMNS]);
+    expect(template.columns.find((c) => c.header === 'gender')?.list).toEqual({
+      values: ['male', 'female'],
+      strict: true,
+    });
+    expect(template.columns.find((c) => c.header === 'member_type')?.list?.values).toEqual([
+      'employee',
+      'intern',
+      'guest',
+    ]);
+    expect(template.columns.find((c) => c.header === 'rank')?.whole).toEqual({ min: 1, max: 6 });
+
+    const result = parsePlayerCsv(toCsv([template.columns.map((c) => c.header), ...template.rows]), { maxRank: 6 });
+    expect(result.ok).toBe(true);
+    if (!result.ok) return;
+    expect(result.rows.map((r) => r.ok)).toEqual([true, true]);
+    expect(result.rows[0]).toMatchObject({ value: { fullName: 'Nguyễn Văn Ân', gender: 'male' } });
+    expect(result.rows[1]).toMatchObject({ value: { rank: 6, memberType: 'intern' } });
   });
 });

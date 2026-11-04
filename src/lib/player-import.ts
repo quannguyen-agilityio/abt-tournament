@@ -1,6 +1,7 @@
 // Players CSV import (spec §6, A2): parse the file, validate each row and plan what applying it does.
 // Pure on purpose: the server action recomputes the plan from the database on every preview and apply.
 import type { MemberType } from '@/domain/settings';
+import type { ImportTemplate, TemplateColumn } from './import-workbook';
 import { MAX_PLAYER_NAME_LENGTH, MAX_SKILL_POINTS, wholeNumber } from './season-players';
 
 export const MAX_IMPORT_ROWS = 500;
@@ -10,6 +11,8 @@ export const MAX_IMPORT_BYTES = 200 * 1024;
 export const REQUIRED_COLUMNS = ['full_name', 'gender', 'rank', 'skill_points', 'member_type'] as const;
 
 export type Gender = 'male' | 'female';
+const GENDERS: readonly Gender[] = ['male', 'female'];
+const MEMBER_TYPES: readonly MemberType[] = ['employee', 'intern', 'guest'];
 export type ImportField = 'fullName' | 'gender' | 'rank' | 'skillPoints' | 'memberType';
 export type RowError = ImportField | 'duplicate';
 
@@ -88,6 +91,35 @@ export function parseCsv(input: string): CsvRecord[] {
   }
   if (cell !== '' || cells.length > 0 || wasQuoted) endRecord();
   return records;
+}
+
+/** CSV text of `rows`, one line each, cells quoted where needed. */
+export function toCsv(rows: readonly (readonly (string | number)[])[]): string {
+  const quote = (value: string | number) => {
+    const text = String(value);
+    return /[",;\r\n]/.test(text) ? `"${text.replace(/"/g, '""')}"` : text;
+  };
+  return rows.map((row) => row.map(quote).join(',')).join('\n');
+}
+
+/** Ready-to-fill import file: the parser's own header, dropdowns for the enum fields, and example rows. */
+export function playerImportTemplate({ maxRank }: { maxRank: number }): ImportTemplate {
+  const rules: Record<(typeof REQUIRED_COLUMNS)[number], Omit<TemplateColumn, 'header'>> = {
+    full_name: {},
+    gender: { list: { values: GENDERS, strict: true } },
+    rank: { whole: { min: 1, max: maxRank } },
+    skill_points: { whole: { min: 0, max: MAX_SKILL_POINTS } },
+    member_type: { list: { values: MEMBER_TYPES, strict: true } },
+  };
+  const examples: Record<(typeof REQUIRED_COLUMNS)[number], string | number>[] = [
+    { full_name: 'Nguyễn Văn Ân', gender: 'male', rank: 1, skill_points: 0, member_type: 'employee' },
+    { full_name: 'Trần Thị Bình', gender: 'female', rank: maxRank, skill_points: 10, member_type: 'intern' },
+  ];
+  return {
+    columns: REQUIRED_COLUMNS.map((header) => ({ header, ...rules[header] })),
+    rows: examples.map((row) => REQUIRED_COLUMNS.map((column) => row[column])),
+    maxRows: MAX_IMPORT_ROWS,
+  };
 }
 
 export type PlayerValues = {
