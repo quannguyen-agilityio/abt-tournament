@@ -1,5 +1,15 @@
 import { describe, expect, it } from 'vitest';
-import { MAX_DRAW_ROWS, parseDrawCsv, planDrawImport, type DrawPlayer, type DrawRow, type DrawTeam } from './team-draw';
+import {
+  DRAW_COLUMNS,
+  MAX_DRAW_ROWS,
+  parseDrawCsv,
+  planDrawImport,
+  teamDrawTemplate,
+  type DrawPlayer,
+  type DrawRow,
+  type DrawTeam,
+} from './team-draw';
+import { parseCsv } from './player-import';
 import { MAX_TEAM_NAME_LENGTH, TEAM_COLORS } from './teams';
 
 const HEADER = 'full_name,team_name';
@@ -99,5 +109,19 @@ describe('planDrawImport', () => {
     const result = plan('Trần Thị Bình,Đội Đỏ');
     expect(result.canApply).toBe(false);
     expect(result.newTeams).toEqual([]);
+  });
+});
+
+describe('teamDrawTemplate', () => {
+  it('uses the parser header and example rows that parse cleanly', () => {
+    const template = teamDrawTemplate();
+    expect(parseCsv(template)[0].cells).toEqual([...DRAW_COLUMNS]);
+    expect(parseDrawCsv(template)).toEqual({
+      ok: true,
+      rows: [
+        { line: 2, fullName: 'Nguyễn Văn Ân', teamName: 'Đội Đỏ' },
+        { line: 3, fullName: 'Trần Thị Bình', teamName: 'Đội Xanh' },
+      ],
+    });
   });
 });

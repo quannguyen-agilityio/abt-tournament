@@ -1,7 +1,7 @@
 // Draw CSV import (spec §6 A3, plan D7): the draw happens outside the app and arrives as
 // `full_name, team_name`. Pure on purpose: the server action recomputes the plan from the database on
 // every preview and apply.
-import { normalizeName, parseCsv, slugify } from './player-import';
+import { normalizeName, parseCsv, slugify, toCsv } from './player-import';
 import { MAX_TEAM_NAME_LENGTH, nextTeamColors } from './teams';
 
 export const MAX_DRAW_ROWS = 500;
@@ -40,6 +40,11 @@ export function parseDrawCsv(text: string): DrawParseResult {
       teamName: cell(r.cells, 'team_name'),
     })),
   };
+}
+
+/** Ready-to-fill draw file: the parser's own header plus example rows. */
+export function teamDrawTemplate(): string {
+  return toCsv([DRAW_COLUMNS, ['Nguyễn Văn Ân', 'Đội Đỏ'], ['Trần Thị Bình', 'Đội Xanh']]);
 }
 
 export type DrawPlayer = { id: string; fullName: string; slug: string; teamId: string | null };

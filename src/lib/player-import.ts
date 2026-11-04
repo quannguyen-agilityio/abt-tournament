@@ -90,6 +90,24 @@ export function parseCsv(input: string): CsvRecord[] {
   return records;
 }
 
+/** CSV text for a download: UTF-8 BOM so Excel reads Vietnamese names, CRLF line ends, quoted where needed. */
+export function toCsv(rows: readonly (readonly (string | number)[])[]): string {
+  const quote = (value: string | number) => {
+    const text = String(value);
+    return /[",;\r\n]/.test(text) ? `"${text.replace(/"/g, '""')}"` : text;
+  };
+  return '\uFEFF' + rows.map((row) => row.map(quote).join(',')).join('\r\n') + '\r\n';
+}
+
+/** Ready-to-fill import file: the parser's own header plus example rows showing the allowed values. */
+export function playerImportTemplate({ maxRank }: { maxRank: number }): string {
+  const examples: Record<(typeof REQUIRED_COLUMNS)[number], string | number>[] = [
+    { full_name: 'Nguyễn Văn Ân', gender: 'male', rank: 1, skill_points: 0, member_type: 'employee' },
+    { full_name: 'Trần Thị Bình', gender: 'female', rank: maxRank, skill_points: 10, member_type: 'intern' },
+  ];
+  return toCsv([REQUIRED_COLUMNS, ...examples.map((row) => REQUIRED_COLUMNS.map((column) => row[column]))]);
+}
+
 export type PlayerValues = {
   fullName: string;
   gender: Gender;

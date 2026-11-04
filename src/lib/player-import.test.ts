@@ -7,7 +7,10 @@ import {
   parseCsv,
   parsePlayerCsv,
   planPlayerImport,
+  playerImportTemplate,
+  REQUIRED_COLUMNS,
   slugify,
+  toCsv,
   type ImportPerson,
   type ImportSeasonPlayer,
   type ParsedRow,
@@ -354,5 +357,34 @@ describe('planPlayerImport changes and fees', () => {
       },
     );
     expect(result.counts).toEqual({ invalid: 1, ambiguous: 0, new: 2, changed: 0, unchanged: 1 });
+  });
+});
+
+describe('toCsv / playerImportTemplate', () => {
+  it('starts with a BOM, ends lines with CRLF and quotes cells that need it', () => {
+    expect(
+      toCsv([
+        ['a', 'b, c'],
+        ['say "hi"', 1],
+      ]),
+    ).toBe('\uFEFFa,"b, c"\r\n"say ""hi""",1\r\n');
+  });
+
+  it('uses the parser header and example rows that parse cleanly', () => {
+    const template = playerImportTemplate({ maxRank: 6 });
+    const [header] = parseCsv(template);
+    expect(header.cells).toEqual([...REQUIRED_COLUMNS]);
+
+    const result = parsePlayerCsv(template, { maxRank: 6 });
+    expect(result.ok).toBe(true);
+    if (!result.ok) return;
+    expect(result.rows.map((r) => r.ok)).toEqual([true, true]);
+    expect(result.rows[0]).toMatchObject({ value: { fullName: 'Nguyễn Văn Ân', gender: 'male' } });
+    expect(result.rows[1]).toMatchObject({ value: { rank: 6, memberType: 'intern' } });
+  });
+
+  it('parses with only the header left', () => {
+    const header = playerImportTemplate({ maxRank: 6 }).split('\r\n')[0];
+    expect(parsePlayerCsv(header, { maxRank: 6 })).toEqual({ ok: true, rows: [] });
   });
 });
