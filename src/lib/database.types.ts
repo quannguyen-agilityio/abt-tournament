@@ -1035,6 +1035,7 @@ export type Database = {
         };
         Returns: undefined;
       };
+      save_match_slots: { Args: { p_season_id: string; p_slots: Json }; Returns: number };
       save_slot_score: {
         Args: { p_expected: Json; p_match_id: string; p_score_away: number; p_score_home: number; p_slot_no: number };
         Returns: undefined;
