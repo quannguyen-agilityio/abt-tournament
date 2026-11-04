@@ -206,4 +206,18 @@
   h3 {
     text-wrap: balance;
   }
+  /* Preflight leaves clickable controls on the arrow cursor; disabled ones keep it. */
+  button:not(:disabled),
+  [role='button']:not([aria-disabled='true']),
+  [role='tab']:not([aria-disabled='true']),
+  [role='menuitem']:not([aria-disabled='true']),
+  [role='option']:not([aria-disabled='true']),
+  select:not(:disabled),
+  summary,
+  input:where([type='checkbox'], [type='radio'], [type='color'], [type='file']):not(:disabled),
+  input:where([type='button'], [type='reset'], [type='submit']):not(:disabled),
+  ::file-selector-button,
+  label:has(input:where([type='checkbox'], [type='radio']):not(:disabled)) {
+    cursor: pointer;
+  }
 }
