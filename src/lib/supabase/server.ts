@@ -30,3 +30,14 @@ export async function createClient() {
     },
   });
 }
+
+// Supabase stores the session in `sb-<project ref>-auth-token`, split into `.0`, `.1`, … when large.
+const SESSION_COOKIE = /^sb-.+-auth-token(\.\d+)?$/;
+
+/**
+ * Whether the request carries a Supabase session cookie. Only a hint, the token is not checked: a
+ * reader that gets `true` goes through `createClient()`, where RLS decides what the session may see.
+ */
+export async function hasSessionCookie(): Promise<boolean> {
+  return (await cookies()).getAll().some((c) => SESSION_COOKIE.test(c.name));
+}

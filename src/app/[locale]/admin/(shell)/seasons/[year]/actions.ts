@@ -1,12 +1,11 @@
 'use server';
 
-import { refresh } from 'next/cache';
-
 import { parseSeasonSettings, type SettingsError } from '@/domain/settings';
 import { canSetCurrent, canTransitionSeason, SEASON_STATUSES, type SeasonStatus } from '@/domain/season-status';
 import { requireBtc } from '@/lib/auth/session';
 import { isUuid } from '@/lib/auth/users';
 import type { Json } from '@/lib/database.types';
+import { invalidatePublicData } from '@/lib/public-cache';
 import {
   moveCourt as reorderCourts,
   parseCourtName,
@@ -55,7 +54,7 @@ export async function setSeasonStatus(_prev: SeasonActionState, formData: FormDa
   const { error } = await supabase.from('season').update({ status: to }).eq('id', seasonId);
   if (error) return { error: 'failed' };
 
-  refresh();
+  invalidatePublicData();
   return { ok: true };
 }
 
@@ -71,7 +70,7 @@ export async function setCurrentSeason(_prev: SeasonActionState, formData: FormD
   const { error } = await supabase.rpc('set_current_season', { p_season_id: seasonId });
   if (error) return { error: error.code === RAISE_EXCEPTION ? 'draft' : 'failed' };
 
-  refresh();
+  invalidatePublicData();
   return { ok: true };
 }
 
@@ -91,7 +90,7 @@ export async function updateSeasonDetails(_prev: SeasonDetailsState, formData: F
   const { error } = await supabase.from('season').update({ name, venue, match_days: matchDays }).eq('id', seasonId);
   if (error) return { error: 'failed', fields };
 
-  refresh();
+  invalidatePublicData();
   return { ok: true };
 }
 
@@ -114,7 +113,7 @@ export async function saveSeasonSettings(_prev: SeasonSettingsState, formData: F
     .eq('id', seasonId);
   if (error) return { error: 'failed' };
 
-  refresh();
+  invalidatePublicData();
   return { ok: true };
 }
 
@@ -150,7 +149,7 @@ export async function addCourt(_prev: CourtActionState, formData: FormData): Pro
     .insert({ season_id: seasonId, name, sort_order: (last?.sort_order ?? 0) + 1 });
   if (error) return { error: 'failed' };
 
-  refresh();
+  invalidatePublicData();
   return { ok: true };
 }
 
@@ -167,7 +166,7 @@ export async function renameCourt(_prev: CourtActionState, formData: FormData): 
   const { error } = await supabase.from('court').update({ name }).eq('id', courtId);
   if (error) return { error: 'failed' };
 
-  refresh();
+  invalidatePublicData();
   return { ok: true };
 }
 
@@ -194,7 +193,7 @@ export async function moveCourt(_prev: CourtActionState, formData: FormData): Pr
     if (error) return { error: 'failed' };
   }
 
-  refresh();
+  invalidatePublicData();
   return { ok: true };
 }
 
@@ -209,6 +208,6 @@ export async function deleteCourt(_prev: CourtActionState, formData: FormData): 
   const { error } = await supabase.from('court').delete().eq('id', courtId);
   if (error) return { error: error.code === FOREIGN_KEY_VIOLATION ? 'inUse' : 'failed' };
 
-  refresh();
+  invalidatePublicData();
   return { ok: true };
 }

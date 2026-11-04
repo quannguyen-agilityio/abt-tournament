@@ -4,6 +4,7 @@ import { useTranslations } from 'next-intl';
 import { startTransition, useActionState, useMemo, useState } from 'react';
 import { TeamChip } from '@/components/team-chip';
 import { Button } from '@/components/ui/button';
+import { NativeSelect } from '@/components/ui/native-select';
 import {
   validateLineup,
   type LineupRuleCode,
@@ -50,7 +51,7 @@ type Props = {
 };
 
 const SELECT =
-  'border-input focus-visible:border-ring focus-visible:ring-ring/50 dark:bg-input/30 aria-invalid:border-loss aria-invalid:bg-loss/10 h-9 w-full min-w-0 rounded-lg border bg-transparent px-2 text-sm outline-none focus-visible:ring-3 disabled:opacity-70';
+  'aria-invalid:border-loss aria-invalid:bg-loss/10 dark:aria-invalid:bg-loss/10 h-9 aria-invalid:ring-0 disabled:opacity-70';
 
 const samePicks = (a: SlotPair[], b: SlotPair[]) => a.every((pair, i) => pair[0] === b[i][0] && pair[1] === b[i][1]);
 
@@ -269,7 +270,7 @@ function TeamLineupForm({
                 const value = picks[i][position];
                 const options = slotOptions(team.present, slot.slotType, settings, picks[i]);
                 return (
-                  <select
+                  <NativeSelect
                     key={position}
                     name={`slot-${slot.slotNo}-p${position + 1}`}
                     value={value ?? ''}
@@ -287,7 +288,7 @@ function TeamLineupForm({
                     ))}
                     {/* A saved pick of a player who is no longer present. */}
                     {value && !nameOf.has(value) && <option value={value}>{t('absent')}</option>}
-                  </select>
+                  </NativeSelect>
                 );
               })}
             </div>

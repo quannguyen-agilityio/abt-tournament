@@ -1,9 +1,8 @@
 'use server';
 
-import { refresh } from 'next/cache';
-
 import { requireBtc } from '@/lib/auth/session';
 import { isUuid } from '@/lib/auth/users';
+import { invalidatePublicData } from '@/lib/public-cache';
 import { MAX_DRAW_BYTES, parseDrawCsv, planDrawImport, type DrawPlan } from '@/lib/team-draw';
 import { createClient } from '@/lib/supabase/server';
 
@@ -77,6 +76,6 @@ export async function applyTeamDraw(_prev: DrawApplyState, formData: FormData): 
   });
   if (error) return { error: 'failed' };
 
-  refresh();
+  invalidatePublicData();
   return { ok: true, applied: data, skipped: plan.counts.invalid };
 }

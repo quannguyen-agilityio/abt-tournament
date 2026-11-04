@@ -10,8 +10,13 @@ export type MatchSlotInput = {
 
 export type MatchSlotError = 'dateTime' | 'court' | 'referee';
 
-function text(formData: FormData, name: string): string {
-  const value = formData.get(name);
+/**
+ * The slot of one match as the page edits it: wall-clock date (`YYYY-MM-DD`) and time (`HH:mm`) in
+ * the season timezone, court and referee ids. Blank when unset.
+ */
+export type SlotFields = { date: string; time: string; courtId: string; refereeId: string };
+
+function text(value: unknown): string {
   return typeof value === 'string' ? value.trim() : '';
 }
 
@@ -55,24 +60,24 @@ export function utcToZoned(instant: Date, timeZone: string): { date: string; tim
 }
 
 /**
- * Validates the slot form of one match. Date and time are wall-clock values in the season
- * timezone and come together: both blank unschedules the match. Blank court or referee clears it.
+ * Validates the slot of one match. Date and time are wall-clock values in the season timezone and
+ * come together: both blank unschedules the match. Blank court or referee clears it.
  */
 export function parseMatchSlot(
-  formData: FormData,
+  fields: Partial<Record<keyof SlotFields, unknown>>,
   timeZone: string,
 ): { ok: true; value: MatchSlotInput } | { ok: false; errors: MatchSlotError[] } {
   const errors: MatchSlotError[] = [];
-  const date = text(formData, 'date');
-  const time = text(formData, 'time');
+  const date = text(fields.date);
+  const time = text(fields.time);
   let scheduledAt: Date | null = null;
   if (date || time) {
     if (isIsoDate(date) && isTime(time)) scheduledAt = zonedToUtc(date, time, timeZone);
     else errors.push('dateTime');
   }
-  const courtId = text(formData, 'courtId');
+  const courtId = text(fields.courtId);
   if (courtId && !isUuid(courtId)) errors.push('court');
-  const refereeId = text(formData, 'refereeId');
+  const refereeId = text(fields.refereeId);
   if (refereeId && !isUuid(refereeId)) errors.push('referee');
 
   if (errors.length > 0) return { ok: false, errors };

@@ -2,8 +2,10 @@
 
 import { GripVertical } from 'lucide-react';
 import { useTranslations } from 'next-intl';
-import { useEffect, useState, useTransition } from 'react';
+import { useState, useTransition } from 'react';
 import { Button } from '@/components/ui/button';
+import { NativeSelect } from '@/components/ui/native-select';
+import { useLeaveWarning } from '@/components/use-leave-warning';
 import {
   EMPTY_DRAFT,
   applyDraft,
@@ -20,41 +22,11 @@ import { sortRoster } from '@/lib/teams';
 import { saveTeamBoard } from './actions';
 import { TeamHeader } from './team-forms';
 
-const SELECT_CLASS =
-  'border-input focus-visible:border-ring focus-visible:ring-ring/50 dark:bg-input/30 h-7 w-32 min-w-0 rounded-lg border bg-transparent px-1.5 text-xs outline-none focus-visible:ring-3';
+const SELECT_CLASS = 'h-7 w-32 px-1.5 text-xs';
 
 /** Drop target key for players without a team. */
 const NO_TEAM = '';
 const DRAG_TYPE = 'application/x-abt-season-player';
-
-/**
- * Asks before the page is left while `message` is set: on reload or close (the browser's own
- * prompt) and on a click on a link to another page of the app.
- */
-function useLeaveWarning(message: string | null) {
-  useEffect(() => {
-    if (!message) return;
-    const onBeforeUnload = (e: BeforeUnloadEvent) => e.preventDefault();
-    // Capture phase, so it runs before the link's own client-side navigation.
-    const onClick = (e: MouseEvent) => {
-      if (e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
-      const link = e.target instanceof Element ? e.target.closest('a[href]') : null;
-      if (!(link instanceof HTMLAnchorElement) || link.target === '_blank' || link.hasAttribute('download')) return;
-      const url = new URL(link.href);
-      if (url.origin === location.origin && url.pathname === location.pathname) return;
-      if (!window.confirm(message)) {
-        e.preventDefault();
-        e.stopPropagation();
-      }
-    };
-    window.addEventListener('beforeunload', onBeforeUnload);
-    document.addEventListener('click', onClick, true);
-    return () => {
-      window.removeEventListener('beforeunload', onBeforeUnload);
-      document.removeEventListener('click', onClick, true);
-    };
-  }, [message]);
-}
 
 function PlayerItem({
   player,
@@ -111,7 +83,7 @@ function PlayerItem({
             </Button>
           )
         ))}
-      <select
+      <NativeSelect
         value={player.teamId ?? NO_TEAM}
         disabled={disabled}
         aria-label={t('moveLabel', { name: player.fullName })}
@@ -124,7 +96,7 @@ function PlayerItem({
           </option>
         ))}
         <option value={NO_TEAM}>{t('noTeam')}</option>
-      </select>
+      </NativeSelect>
     </li>
   );
 }

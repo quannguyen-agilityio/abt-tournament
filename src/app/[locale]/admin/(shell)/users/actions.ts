@@ -1,9 +1,8 @@
 'use server';
 
-import { refresh } from 'next/cache';
-
 import { requireBtc } from '@/lib/auth/session';
 import { isUuid, parseNewUser, type NewUserError, validateTempPassword } from '@/lib/auth/users';
+import { invalidatePublicData } from '@/lib/public-cache';
 import { createAdminClient } from '@/lib/supabase/admin';
 
 // Roughly 100 years: Supabase has no "ban forever", and a banned user can neither sign in nor
@@ -53,7 +52,7 @@ export async function createUser(_prev: CreateUserState, formData: FormData): Pr
     return { error: 'failed', fields };
   }
 
-  refresh();
+  invalidatePublicData();
   return { ok: true, email };
 }
 
@@ -74,7 +73,7 @@ export async function setUserActive(_prev: UserActionState, formData: FormData):
   });
   if (banError) return { error: 'failed' };
 
-  refresh();
+  invalidatePublicData();
   return { ok: true };
 }
 
@@ -96,6 +95,6 @@ export async function resetUserPassword(_prev: UserActionState, formData: FormDa
     .eq('user_id', userId);
   if (profileError) return { error: 'failed' };
 
-  refresh();
+  invalidatePublicData();
   return { ok: true };
 }
