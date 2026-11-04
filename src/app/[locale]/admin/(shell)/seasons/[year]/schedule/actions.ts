@@ -73,7 +73,7 @@ export async function updateMatchSlot(_prev: MatchSlotState, formData: FormData)
   const supabase = await createClient();
   const settings = await seasonSettings(supabase, seasonId);
   if (!settings) return { error: 'failed' };
-  const parsed = parseMatchSlot(formData, settings.timezone);
+  const parsed = parseMatchSlot(Object.fromEntries(formData), settings.timezone);
   if (!parsed.ok) return parsed;
   const { scheduledAt, courtId, refereeId } = parsed.value;
 
