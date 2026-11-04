@@ -2,6 +2,7 @@ import 'server-only';
 
 import type { SupabaseClient } from '@supabase/supabase-js';
 import { cacheLife, cacheTag } from 'next/cache';
+import { connection } from 'next/server';
 import { cache } from 'react';
 
 import { DEFAULT_SEASON_SETTINGS, parseSeasonSettings, type SeasonSettings } from '@/domain/settings';
@@ -360,7 +361,12 @@ async function cachedRead<K extends ReaderKey>(key: K, ...args: ReaderArgs<K>): 
  * lock), so their reads go through their session and are not cached. Everyone else shares the cache.
  */
 async function read<K extends ReaderKey>(key: K, ...args: ReaderArgs<K>): Promise<ReaderResult<K>> {
-  if (await hasSessionCookie()) return reader(key)(await createClient(), ...args);
+  if (await hasSessionCookie()) {
+    // Supabase auth reads the clock, which is request-time data under cacheComponents (runtime
+    // prefetches can read cookies, so cookies() alone is not enough).
+    await connection();
+    return reader(key)(await createClient(), ...args);
+  }
   return cachedRead(key, ...args);
 }
 

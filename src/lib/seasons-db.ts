@@ -29,9 +29,12 @@ async function cachedSeasonYears(): Promise<number[]> {
  * Season years the viewer can see, newest first. RLS hides drafts from the public; a signed-in BTC
  * member also sees them, so their read goes through the session and is not cached.
  */
-export const listPublicSeasons = cache(async (): Promise<number[]> =>
-  (await hasSessionCookie()) ? readSeasonYears(await createClient()) : cachedSeasonYears(),
-);
+export const listPublicSeasons = cache(async (): Promise<number[]> => {
+  if (!(await hasSessionCookie())) return cachedSeasonYears();
+  // Supabase auth reads the clock, which is request-time data under cacheComponents.
+  await connection();
+  return readSeasonYears(await createClient());
+});
 
 // The current season is never a draft (set_current_season refuses one), so anon sees the same row.
 async function cachedCurrentSeason(): Promise<{ year: number } | null> {
