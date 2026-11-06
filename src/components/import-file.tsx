@@ -47,7 +47,7 @@ export function ImportTemplateLink({
     <Button
       type="button"
       variant="link"
-      className="h-auto self-start px-0"
+      className="hidden h-auto self-start px-0 lg:inline-flex"
       pending={pending}
       disabled={pending}
       onClick={() => void download()}

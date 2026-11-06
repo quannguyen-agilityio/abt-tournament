@@ -138,7 +138,7 @@ export function TeamDrawImport({ seasonId, players, teams }: { seasonId: string;
             <ImportTemplateLink template={teamDrawTemplate({ players, teams })} filename="team-draw-template.xlsx">
               {t('template')}
             </ImportTemplateLink>
-            <label className="flex flex-col gap-1 text-sm font-medium">
+            <label className="hidden flex-col gap-1 text-sm font-medium lg:flex">
               {t('file')}
               <input
                 ref={fileInput}
