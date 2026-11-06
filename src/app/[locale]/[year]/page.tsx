@@ -27,8 +27,9 @@ import Loading from './loading';
 const PANEL = 'border-border bg-surface rounded-[10px] border';
 const EMPTY = `${PANEL} text-muted-foreground p-6 text-center text-sm`;
 const EYEBROW = 'text-muted-foreground text-xs font-semibold tracking-wider uppercase';
-const TH = 'px-3 py-2.5 text-right text-xs font-semibold uppercase tracking-wide text-muted-foreground';
-const TD = 'px-3 py-2.5 text-right';
+const TH =
+  'px-3 first:pl-4 last:pr-4 py-2.5 text-right text-xs font-semibold uppercase tracking-wide text-muted-foreground';
+const TD = 'px-3 first:pl-4 last:pr-4 py-2.5 text-right';
 const PODIUM_TONE = {
   champion: 'border-primary bg-brand-soft/40',
   runner_up: 'border-border',

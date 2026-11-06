@@ -1302,5 +1302,15 @@
         "failed": "Không đổi được mật khẩu. Hãy thử lại sau."
       }
     }
+  },
+  "InstallBanner": {
+    "title": "Thêm ABT vào màn hình chính",
+    "hint": "Mở như một app, toàn màn hình.",
+    "iosHint": "Safari cần thêm hai bước bấm nhanh.",
+    "install": "Cài đặt",
+    "howTo": "Cách làm",
+    "dismiss": "Đóng",
+    "step1": "Bấm nút Chia sẻ trên thanh công cụ của Safari.",
+    "step2": "Chọn “Thêm vào MH chính”, rồi bấm Thêm."
   }
 }
