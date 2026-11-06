@@ -1302,5 +1302,15 @@
         "failed": "Could not change the password. Try again later."
       }
     }
+  },
+  "InstallBanner": {
+    "title": "Add ABT to your home screen",
+    "hint": "Open it like an app, full screen.",
+    "iosHint": "Safari needs two quick taps to add it.",
+    "install": "Install",
+    "howTo": "How",
+    "dismiss": "Dismiss",
+    "step1": "Tap the Share button in Safari's toolbar.",
+    "step2": "Choose “Add to Home Screen”, then tap Add."
   }
 }
