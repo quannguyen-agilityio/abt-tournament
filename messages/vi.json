@@ -1224,6 +1224,7 @@
       "tooFewItems": "Cần ít nhất {minimum} mục.",
       "invalidValue": "Chọn một trong: {values}.",
       "unknownKeys": "Thông số không xác định: {keys}.",
+      "setTargetEven": "Điểm chạm mỗi set phải là số lẻ (đổi sân ở giữa set, tại (điểm chạm + 1) / 2).",
       "invalidTimezone": "Nhập múi giờ IANA hợp lệ, ví dụ Asia/Ho_Chi_Minh.",
       "rankRangeReversed": "Rank đầu của khoảng không được lớn hơn rank cuối.",
       "rankRangeAboveMaxRank": "Khoảng rank phải nằm trong 1–{maxRank}.",

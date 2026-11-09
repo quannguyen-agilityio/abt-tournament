@@ -28,6 +28,10 @@ export interface SeasonSettings {
   /** Placing prizes in VND (spec §5 P1); 0 means none is shown. */
   prizes: Record<Placing, number>;
   timezone: string;
+  /** Phase 2 (spec-phase-2 §3): off, the A5 screen offers only final-score entry. */
+  live_scoring: boolean;
+  /** Length of one medical timeout in a live-scored match; there is no limit on how many. */
+  medical_timeout_minutes: number;
 }
 
 /** The ABT 2026 rules. A new season starts from these. */
@@ -48,6 +52,8 @@ export const DEFAULT_SEASON_SETTINGS: Readonly<SeasonSettings> = Object.freeze<S
   fees: { employee: 300_000, intern: 150_000, guest: 300_000 },
   prizes: { champion: 0, runner_up: 0, third: 0 },
   timezone: 'Asia/Ho_Chi_Minh',
+  live_scoring: true,
+  medical_timeout_minutes: 5,
 });
 
 const defaults = (): SeasonSettings => structuredClone(DEFAULT_SEASON_SETTINGS) as SeasonSettings;
@@ -70,6 +76,7 @@ const rankRange = z.strictObject({ min: positiveInt, max: positiveInt });
 
 /** Custom issue codes; each maps to `SeasonSettings.errors.<code>` in messages/*.json. */
 export type SettingsRuleCode =
+  | 'setTargetEven'
   | 'rankRangeReversed'
   | 'rankRangeAboveMaxRank'
   | 'slotCountMismatch'
@@ -133,8 +140,13 @@ export const seasonSettingsSchema = z
       .string()
       .refine(isTimeZone, { message: 'invalidTimezone' satisfies SettingsRuleCode })
       .default(() => defaults().timezone),
+    live_scoring: z.boolean().default(() => defaults().live_scoring),
+    medical_timeout_minutes: positiveInt.default(() => defaults().medical_timeout_minutes),
   })
   .superRefine((s, ctx) => {
+    // The change of ends is at (set_target + 1) / 2 (spec-phase-2 §4.3), so the target must be odd.
+    if (s.set_target % 2 === 0) addRuleIssue(ctx, 'setTargetEven', ['set_target']);
+
     checkRankRange(ctx, 'low_rank_range', s.low_rank_range, s.max_rank);
     checkRankRange(ctx, 'high_rank_range', s.high_rank_range, s.max_rank);
 

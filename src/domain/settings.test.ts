@@ -27,6 +27,8 @@ describe('DEFAULT_SEASON_SETTINGS', () => {
       fees: { employee: 300_000, intern: 150_000, guest: 300_000 },
       prizes: { champion: 0, runner_up: 0, third: 0 },
       timezone: 'Asia/Ho_Chi_Minh',
+      live_scoring: true,
+      medical_timeout_minutes: 5,
     });
   });
 
@@ -82,6 +84,9 @@ describe('parseSeasonSettings', () => {
       ['an unsupported bracket size', { knockout_teams: 8 }, 'knockout_teams', 'invalidValue', { values: '4' }],
       ['an unknown setting', { set_targett: 31 }, '', 'unknownKeys', { keys: 'set_targett' }],
       ['an unknown time zone', { timezone: 'Mars/Olympus' }, 'timezone', 'invalidTimezone', {}],
+      ['a non-boolean live_scoring', { live_scoring: 'yes' }, 'live_scoring', 'invalidType', {}],
+      ['a zero medical timeout', { medical_timeout_minutes: 0 }, 'medical_timeout_minutes', 'tooSmall', { minimum: 1 }],
+      ['a fractional medical timeout', { medical_timeout_minutes: 2.5 }, 'medical_timeout_minutes', 'notInteger', {}],
     ])('rejects %s', (_, input, path, key, params) => {
       expect(errorsOf(input)).toEqual([{ path, message_key: `SeasonSettings.errors.${key}`, params }]);
     });
@@ -142,10 +147,24 @@ describe('parseSeasonSettings', () => {
         { min_players_present: 4 },
         [{ path: 'min_players_present', key: 'minPlayersTooLow', params: { minimum: 5 } }],
       ],
+      [
+        'an even set target (no halfway change of ends)',
+        { set_target: 30, group_handicap_cap: 15 },
+        [{ path: 'set_target', key: 'setTargetEven', params: {} }],
+      ],
     ])('rejects %s', (_, input, expected) => {
       expect(errorsOf(input)).toEqual(
         expected.map(({ path, key, params }) => ({ path, message_key: `SeasonSettings.errors.${key}`, params })),
       );
+    });
+
+    it.each([21, 27, 31])('accepts the odd set target %i', (set_target) => {
+      expect(parseSeasonSettings({ set_target, group_handicap_cap: 10 }).ok).toBe(true);
+    });
+
+    it('keeps live scoring off and a custom medical timeout', () => {
+      const result = parseSeasonSettings({ live_scoring: false, medical_timeout_minutes: 3 });
+      expect(result.ok && result.settings).toMatchObject({ live_scoring: false, medical_timeout_minutes: 3 });
     });
 
     it('accepts a consistent non-default season', () => {
@@ -173,6 +192,7 @@ describe('parseSeasonSettings', () => {
       'invalidValue',
       'unknownKeys',
       'invalidTimezone',
+      'setTargetEven',
       'rankRangeReversed',
       'rankRangeAboveMaxRank',
       'slotCountMismatch',

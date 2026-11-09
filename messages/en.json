@@ -1224,6 +1224,7 @@
       "tooFewItems": "Add at least {minimum} item(s).",
       "invalidValue": "Choose one of: {values}.",
       "unknownKeys": "Unknown setting(s): {keys}.",
+      "setTargetEven": "The set target must be an odd number (the ends change halfway, at (target + 1) / 2).",
       "invalidTimezone": "Enter a valid IANA time zone, e.g. Asia/Ho_Chi_Minh.",
       "rankRangeReversed": "The lowest rank in the range must not be greater than the highest.",
       "rankRangeAboveMaxRank": "The range must stay within ranks 1–{maxRank}.",
