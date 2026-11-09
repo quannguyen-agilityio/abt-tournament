@@ -31,6 +31,7 @@ ABT keeps its own scoring rules (§2: set to 31 without a 2-point lead, handicap
 | L7  | Injury: a **medical timeout** (default 5 minutes), then the scorer resumes the match or records a **retirement**. There is no limit on the number of medical timeouts.                                                                              |
 | L8  | Group retirement: the retiring side loses the current set (the opponent is credited `set_target`, the retiring side keeps its points). Later sets in which the injured player is lined up are forfeited 31–0. Other sets are played normally.       |
 | L9  | Relay retirement: the retiring team loses the match. The opponent is credited the final milestone (125); the retiring team keeps its cumulative score.                                                                                               |
+| L10 | No reset during a live match: every action is a new event, and nothing is deleted. The scorer can undo and fix the setup until a set or leg is confirmed. After that, only the BTC can **reopen** it (audited). |
 
 ## 3. Season settings (additions to §2)
 
@@ -85,6 +86,21 @@ The receiver is always the opponent standing diagonally from the server.
   - The serving team is the winner of the last rally (L4). The scorer picks its server (who stands by the parity of the team's cumulative score) and the receiver.
 - **The final milestone (relay) or the last set (group):** confirming completes the match (`status = completed`, `winner_team_id` derived).
 
+### 4.5 Corrections (L10)
+
+There is no "reset" action. The event log is append-only, so a wrong tap is corrected by a new event and the history stays.
+
+| Mistake                                     | Who                      | How                                                                                                                                                                                                                                                                                                      |
+| ------------------------------------------- | ------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Wrong point                                 | Scorer                   | **Hoàn tác** adds an `undo` event that cancels the last uncancelled `point`. It can be repeated, back to the setup of the set.                                                                                                                                                                         |
+| Wrong ends, server or receiver at the setup | Scorer                   | **Sửa thiết lập** (in the menu) opens the setup screen with the current choices. Saving adds a new `setup` event, and `replay` recomputes positions and servers for every rally after it. The score does not change. The serving team stays fixed when there is a handicap (L1) or at a relay leg change (L4). |
+| Wrong final score, already confirmed        | BTC only                 | **Mở lại set** / **Mở lại lượt** on A5 adds a `reopened` event with a required reason, written to the audit log. The slot goes back to `live`, its `score_home`/`score_away` are cleared, and a `completed` match goes back to `in_progress`, so the standings and public caches update. The scorer then undoes or adds points and confirms again. |
+
+- The scorer cannot undo past an `end_confirmed` event. The undo button is disabled and says that the BTC must reopen the set.
+- **Relay:** leg scores are cumulative, so the BTC can reopen only the last confirmed leg, and only while the next leg has no point yet. To fix an earlier leg, reopen the legs from the last one backwards.
+- **Group:** sets are independent, so any confirmed set can be reopened while another set is live.
+- Reopening a set that ended by retirement also clears the forfeits it caused (§6), after a confirmation that lists them.
+
 ## 5. Scorer lock (L5)
 
 - `match.scorer_id` (fk → `profile`) and `match.scorer_since` hold the current scorer.
@@ -124,7 +140,7 @@ The current set's stored score still satisfies §4.4 (one side at target, the ot
 | ---------------- | -------------- | ------------------------------------------------------------------------------------------------------------- |
 | `match_slot_id`  | fk             |                                                                                                               |
 | `seq`            | int            | 1, 2, 3… per slot; unique (`match_slot_id`, `seq`)                                                            |
-| `kind`           | enum           | `setup`, `point`, `undo`, `ends_changed`, `timeout_start`, `timeout_end`, `retire`, `end_confirmed`            |
+| `kind`           | enum           | `setup`, `point`, `undo`, `ends_changed`, `timeout_start`, `timeout_end`, `retire`, `end_confirmed`, `reopened`            |
 | `payload`        | jsonb          | `setup`: serving side, server, receiver, ends. `point`: `side`. `undo`: the `seq` it cancels. `timeout_*`/`retire`: player |
 | `client_at`      | timestamptz    | When the scorer tapped (the device clock), for the timeline                                                   |
 | `created_by`     | fk → `profile` |                                                                                                               |
@@ -139,7 +155,8 @@ The current set's stored score still satisfies §4.4 (one side at target, the ot
 
 - checks that the caller is the current scorer, and that `expected_seq` = last `seq` + 1;
 - replays the log with the new event and rejects it if it is invalid;
-- inserts the event; on `end_confirmed` it writes the slot score, and on the last slot it completes the match, in the same transaction.
+- inserts the event; on `end_confirmed` it writes the slot score, and on the last slot it completes the match, in the same transaction;
+- accepts `reopened` only from a BTC member, with a non-empty reason (§4.5). It clears the slot score and reopens the match in the same transaction. A later event from the scorer needs no takeover: the lock is unchanged.
 
 **RLS:** anon can read `live_event` and the new columns of matches that are `in_progress` or `completed` (no personal data beyond names already public). Only the RPC writes.
 
@@ -151,9 +168,9 @@ The current set's stored score still satisfies §4.4 (one side at target, the ot
 | --- | ----------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | L-A | Entry on A5       | After **Lock**, the A5 Scores step shows **Bắt đầu chấm trực tiếp** next to the Phase 1 entry. It shows who holds the lock, if anyone. While the season has `live_scoring` on, the **Substitute** action is not offered after the lock (L6). It comes back only if the BTC switches the match to Phase 1 final-score entry before any rally is scored.                                                                                   |
 | L-B | Set / leg setup   | Court diagram. Steps: choose ends (left/right) → serving team → server → receiver. Shows the start points (handicap) and the resulting service court. The serving-team step is skipped (fixed) when there is a handicap (L1) and at a relay leg change (L4).             |
-| L-C | Scoring           | Big score, court diagram with the 4 players and the shuttle on the server, two large **+1** buttons in the team colors, **Hoàn tác**, set strip 1–5 (or leg progress to 125), menu (Chấn thương, Nhận quyền chấm). |
+| L-C | Scoring           | Big score, court diagram with the 4 players and the shuttle on the server, two large **+1** buttons in the team colors, **Hoàn tác**, set strip 1–5 (or leg progress to 125), menu (Sửa thiết lập, Chấn thương, Nhận quyền chấm). |
 | L-D | Change of ends    | Full-screen prompt at the L2 point, with **Tiếp tục**.                                                                                                                                                                       |
-| L-E | End of set / leg  | Final score, **Xác nhận** / **Hoàn tác điểm cuối**.                                                                                                                                                                         |
+| L-E | End of set / leg  | Final score, **Xác nhận** / **Hoàn tác điểm cuối**. After confirming, only the BTC can reopen (§4.5).                                                                                                                                                                         |
 | L-F | Medical timeout   | Countdown, injured player, **Tiếp tục** / **Bỏ cuộc**.                                                                                                                                                                      |
 | L-G | Retirement        | List of consequences (§6) before confirming.                                                                                                                                                                                |
 | L-H | Read-only viewer  | The same screen without controls, "Đang chấm bởi {name}", **Nhận quyền chấm**.                                                                                                                                             |
@@ -173,6 +190,6 @@ The current set's stored score still satisfies §4.4 (one side at target, the ot
 
 ## 9. Testing
 
-- **Unit (`src/domain/live.test.ts`):** service courts and server rotation in the BWF doubles examples, the side that starts at 0 serves first when there is a handicap (only 0–0 takes the toss), start parity at a relay leg change, change of ends with and without handicap, undo across the change of ends and across the end of a set, relay leg change and serve carry-over, timeout blocks points, retirement results for group and relay.
-- **RPC:** a non-scorer is rejected, a stale `seq` is rejected, a point after the end is rejected, the last `end_confirmed` completes the match.
+- **Unit (`src/domain/live.test.ts`):** service courts and server rotation in the BWF doubles examples, the side that starts at 0 serves first when there is a handicap (only 0–0 takes the toss), start parity at a relay leg change, change of ends with and without handicap, undo across the change of ends and of the winning point before confirming, a new `setup` event that recomputes servers without changing the score, relay leg change and serve carry-over, timeout blocks points, retirement results for group and relay.
+- **RPC:** a non-scorer is rejected, a stale `seq` is rejected, a point after the end is rejected, an undo past `end_confirmed` is rejected, `reopened` from a referee is rejected, reopening a relay leg is rejected once the next leg has a point, the last `end_confirmed` completes the match and `reopened` puts it back to `in_progress`.
 - **Playwright:** score a full set on a 375 px viewport; take over the lock from a second session; go offline, score 3 rallies, reconnect and check the public page.
