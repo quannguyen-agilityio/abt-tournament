@@ -89,7 +89,8 @@ select ok(
   'a delete writes the old row'
 );
 
--- Every table spec §3.1 lists is audited, team included (disqualification, spec §4.5).
+-- Every table spec §3.1 lists is audited, team included (disqualification, spec §4.5), and live_event
+-- for its BTC reopens only (spec-phase-2 §7, live_apply.test.sql).
 select bag_eq(
   $$
     select c.relname::text
@@ -99,7 +100,7 @@ select bag_eq(
   $$,
   array[
     'match', 'match_slot', 'match_attendance', 'slot_substitution', 'lineup_override',
-    'group_closure', 'award_winner', 'season_player', 'season_player_private', 'team'
+    'group_closure', 'award_winner', 'season_player', 'season_player_private', 'team', 'live_event'
   ],
   'the audit trigger is on every table in spec §3.1'
 );
