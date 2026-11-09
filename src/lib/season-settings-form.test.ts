@@ -13,7 +13,10 @@ function formOf(values: ReturnType<typeof settingsToFormValues>): FormData {
   const data = new FormData();
   for (const [key, value] of Object.entries(values)) {
     if (Array.isArray(value)) value.forEach((v) => data.append(key, v));
-    else data.set(key, value);
+    // A checkbox is sent as "on" when ticked and left out otherwise.
+    else if (typeof value === 'boolean') {
+      if (value) data.set(key, 'on');
+    } else data.set(key, value);
   }
   return data;
 }
@@ -74,6 +77,28 @@ describe('settingsFromForm', () => {
     expect(result.errors.map((e) => e.message_key)).toContain('SeasonSettings.errors.slotCountMismatch');
   });
 
+  it('keeps live scoring off and the medical timeout through a save', () => {
+    const data = formOf(
+      settingsToFormValues({ ...DEFAULT_SEASON_SETTINGS, live_scoring: false, medical_timeout_minutes: 3 }),
+    );
+    expect(data.has(SETTINGS_FIELDS.liveScoring)).toBe(false);
+    const result = parseSeasonSettings(settingsFromForm(data));
+    expect(result.ok && result.settings).toMatchObject({ live_scoring: false, medical_timeout_minutes: 3 });
+  });
+
+  it('reads a ticked live scoring checkbox and reports a blank medical timeout', () => {
+    const data = defaultForm();
+    data.set(SETTINGS_FIELDS.liveScoring, 'on');
+    data.set(SETTINGS_FIELDS.medicalTimeoutMinutes, '');
+    expect(settingsFromForm(data)).toMatchObject({ live_scoring: true });
+    const result = parseSeasonSettings(settingsFromForm(data));
+    expect(result.ok).toBe(false);
+    if (result.ok) return;
+    expect(result.errors.map((e) => [e.path, e.message_key])).toEqual([
+      ['medical_timeout_minutes', 'SeasonSettings.errors.notInteger'],
+    ]);
+  });
+
   it('reports an invalid timezone', () => {
     const data = defaultForm();
     data.set(SETTINGS_FIELDS.timezone, 'Mars/Base');
@@ -96,6 +121,8 @@ describe('settingsToFormValues', () => {
       fee_employee: '300000',
       prize_champion: '0',
       timezone: 'Asia/Ho_Chi_Minh',
+      live_scoring: true,
+      medical_timeout_minutes: '5',
     });
   });
 
@@ -105,10 +132,13 @@ describe('settingsToFormValues', () => {
   });
 
   it('shows values of the wrong shape as blank', () => {
-    expect(settingsToFormValues({ set_target: { a: 1 }, relay_milestones: 'x', low_rank_range: 5 })).toMatchObject({
+    expect(
+      settingsToFormValues({ set_target: { a: 1 }, relay_milestones: 'x', low_rank_range: 5, live_scoring: 'no' }),
+    ).toMatchObject({
       set_target: '',
       relay_milestones: '',
       low_rank_min: '4',
+      live_scoring: true,
     });
   });
 });

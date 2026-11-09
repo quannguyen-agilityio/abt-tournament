@@ -26,6 +26,8 @@ export const SETTINGS_FIELDS = {
   prizeRunnerUp: 'prize_runner_up',
   prizeThird: 'prize_third',
   timezone: 'timezone',
+  liveScoring: 'live_scoring',
+  medicalTimeoutMinutes: 'medical_timeout_minutes',
 } as const;
 
 const F = SETTINGS_FIELDS;
@@ -53,6 +55,8 @@ export const SETTINGS_FORM_PATHS = [
   'prizes.runner_up',
   'prizes.third',
   'timezone',
+  'live_scoring',
+  'medical_timeout_minutes',
 ] as const;
 
 function text(formData: FormData, name: string): string {
@@ -100,6 +104,9 @@ export function settingsFromForm(formData: FormData): Record<string, unknown> {
       third: num(formData, F.prizeThird),
     },
     timezone: text(formData, F.timezone).trim(),
+    // A checkbox sends its value only when ticked.
+    live_scoring: formData.has(F.liveScoring),
+    medical_timeout_minutes: num(formData, F.medicalTimeoutMinutes),
   };
 }
 
@@ -125,6 +132,8 @@ export interface SettingsFormValues {
   prize_runner_up: string;
   prize_third: string;
   timezone: string;
+  live_scoring: boolean;
+  medical_timeout_minutes: string;
 }
 
 function isRecord(value: unknown): value is Record<string, unknown> {
@@ -171,6 +180,8 @@ export function settingsToFormValues(stored: unknown): SettingsFormValues {
     prize_runner_up: str(prizes.runner_up),
     prize_third: str(prizes.third),
     timezone: str(s.timezone),
+    live_scoring: typeof s.live_scoring === 'boolean' ? s.live_scoring : DEFAULT_SEASON_SETTINGS.live_scoring,
+    medical_timeout_minutes: str(s.medical_timeout_minutes),
   };
 }
 
