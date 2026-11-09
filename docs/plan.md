@@ -77,10 +77,13 @@ This project replaces the sheet with a web app that has:
 - **Auto-refresh:** public pages refresh about every 30 s on match days.
 - **Audit log:** every result and lineup change is recorded.
 
-### Phase 2 (after ABT 2027, not committed)
+### Phase 2: live scoring
+
+Phase 2 is **live point-by-point scoring** only, specified in [spec-phase-2.md](spec-phase-2.md).
+
+Ideas not taken into Phase 2 (still not committed):
 
 - In-app team draw (randomized, rank-balanced), with a projector-friendly "draw show" screen
-- Live point-by-point scoring
 - Voting for side awards
 - Fun-stats page (the "Tổng kết vui" sheet), if still wanted
 
