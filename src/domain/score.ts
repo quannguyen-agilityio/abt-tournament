@@ -36,6 +36,8 @@ export interface SlotScore {
 export interface GroupSetScore extends SlotScore {
   handicap_home: number;
   handicap_away: number;
+  /** Set when the side forfeited this set after a retirement (spec-phase-2 §6); start points are ignored. */
+  forfeit_side?: Side | null;
 }
 
 export type Score = Record<Side, number>;
@@ -79,7 +81,8 @@ export interface GroupSetResult {
 
 /**
  * Group set: exactly one side at `set_target` and the other below it, each side at or above its
- * start points. There is no 2-point lead rule.
+ * start points. There is no 2-point lead rule. A forfeited set (31–0) skips the start-points check,
+ * as in a match forfeit.
  */
 export function validateGroupSet(set: GroupSetScore, settings: Pick<SeasonSettings, 'set_target'>): GroupSetResult {
   const violations: ScoreViolation[] = [];
@@ -93,7 +96,9 @@ export function validateGroupSet(set: GroupSetScore, settings: Pick<SeasonSettin
     violations.push(scoreViolation('SET_TARGET', { slotNo, params: { target } }));
   }
 
-  const start: Handicap = { home: set.handicap_home, away: set.handicap_away };
+  const start: Handicap = set.forfeit_side
+    ? { home: 0, away: 0 }
+    : { home: set.handicap_home, away: set.handicap_away };
   for (const side of SIDES) {
     if (score[side] < start[side]) {
       violations.push(scoreViolation('BELOW_HANDICAP', { slotNo, side, params: { handicap: start[side] } }));
