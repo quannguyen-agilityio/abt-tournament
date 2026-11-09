@@ -8,6 +8,7 @@ import {
   eventPayload,
   lastRallySide,
   liveSlotSetup,
+  parseLiveClaimInput,
   parseLiveEventInput,
   toLiveEvent,
   type LiveSlotRow,
@@ -28,6 +29,33 @@ const row = (over: Partial<LiveSlotRow> = {}): LiveSlotRow => ({
 });
 const group = { stage: 'group', relay_handicap_home: null, relay_handicap_away: null };
 const relay = { stage: 'final', relay_handicap_home: 0, relay_handicap_away: 6 };
+
+const MATCH_ID = '00000000-0000-4000-8000-000000000031';
+const SCORER_ID = '00000000-0000-4000-8000-0000000000a1';
+
+describe('parseLiveClaimInput', () => {
+  it('reads a claim with nobody holding the lock', () => {
+    expect(parseLiveClaimInput({ matchId: MATCH_ID })).toEqual({ matchId: MATCH_ID, expectedScorerId: null });
+    expect(parseLiveClaimInput({ matchId: MATCH_ID, expectedScorerId: null })).toEqual({
+      matchId: MATCH_ID,
+      expectedScorerId: null,
+    });
+  });
+
+  it('reads a takeover with the scorer the screen showed', () => {
+    expect(parseLiveClaimInput({ matchId: MATCH_ID, expectedScorerId: SCORER_ID })).toEqual({
+      matchId: MATCH_ID,
+      expectedScorerId: SCORER_ID,
+    });
+  });
+
+  it('rejects malformed input', () => {
+    expect(parseLiveClaimInput(undefined)).toBeNull();
+    expect(parseLiveClaimInput({})).toBeNull();
+    expect(parseLiveClaimInput({ matchId: 'V01' })).toBeNull();
+    expect(parseLiveClaimInput({ matchId: MATCH_ID, expectedScorerId: 'Referee One' })).toBeNull();
+  });
+});
 
 describe('parseLiveEventInput', () => {
   it('reads a point', () => {
