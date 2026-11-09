@@ -342,6 +342,62 @@ export type Database = {
           },
         ];
       };
+      live_event: {
+        Row: {
+          client_at: string;
+          created_at: string;
+          created_by: string | null;
+          id: string;
+          kind: Database['public']['Enums']['live_event_kind'];
+          match_slot_id: string;
+          payload: NonNullable<Json>;
+          seq: number;
+        };
+        ComputedFields: never;
+        Insert: {
+          client_at?: string;
+          created_at?: string;
+          created_by?: string | null;
+          id?: string;
+          kind: Database['public']['Enums']['live_event_kind'];
+          match_slot_id: string;
+          payload?: NonNullable<Json>;
+          seq: number;
+        };
+        Update: {
+          client_at?: string;
+          created_at?: string;
+          created_by?: string | null;
+          id?: string;
+          kind?: Database['public']['Enums']['live_event_kind'];
+          match_slot_id?: string;
+          payload?: NonNullable<Json>;
+          seq?: number;
+        };
+        Relationships: [
+          {
+            foreignKeyName: 'live_event_created_by_fkey';
+            columns: ['created_by'];
+            isOneToOne: false;
+            referencedRelation: 'profile';
+            referencedColumns: ['user_id'];
+          },
+          {
+            foreignKeyName: 'live_event_created_by_fkey';
+            columns: ['created_by'];
+            isOneToOne: false;
+            referencedRelation: 'referee_name';
+            referencedColumns: ['user_id'];
+          },
+          {
+            foreignKeyName: 'live_event_match_slot_id_fkey';
+            columns: ['match_slot_id'];
+            isOneToOne: false;
+            referencedRelation: 'match_slot';
+            referencedColumns: ['id'];
+          },
+        ];
+      };
       match: {
         Row: {
           away_team_id: string | null;
@@ -356,8 +412,11 @@ export type Database = {
           referee_id: string | null;
           relay_handicap_away: number | null;
           relay_handicap_home: number | null;
+          retired_team_id: string | null;
           round: number | null;
           scheduled_at: string | null;
+          scorer_id: string | null;
+          scorer_since: string | null;
           season_id: string;
           stage: Database['public']['Enums']['match_stage'];
           status: Database['public']['Enums']['match_status'];
@@ -379,8 +438,11 @@ export type Database = {
           referee_id?: string | null;
           relay_handicap_away?: number | null;
           relay_handicap_home?: number | null;
+          retired_team_id?: string | null;
           round?: number | null;
           scheduled_at?: string | null;
+          scorer_id?: string | null;
+          scorer_since?: string | null;
           season_id: string;
           stage: Database['public']['Enums']['match_stage'];
           status?: Database['public']['Enums']['match_status'];
@@ -401,8 +463,11 @@ export type Database = {
           referee_id?: string | null;
           relay_handicap_away?: number | null;
           relay_handicap_home?: number | null;
+          retired_team_id?: string | null;
           round?: number | null;
           scheduled_at?: string | null;
+          scorer_id?: string | null;
+          scorer_since?: string | null;
           season_id?: string;
           stage?: Database['public']['Enums']['match_stage'];
           status?: Database['public']['Enums']['match_status'];
@@ -449,6 +514,27 @@ export type Database = {
           {
             foreignKeyName: 'match_referee_id_fkey';
             columns: ['referee_id'];
+            isOneToOne: false;
+            referencedRelation: 'referee_name';
+            referencedColumns: ['user_id'];
+          },
+          {
+            foreignKeyName: 'match_retired_team_id_fkey';
+            columns: ['retired_team_id'];
+            isOneToOne: false;
+            referencedRelation: 'team';
+            referencedColumns: ['id'];
+          },
+          {
+            foreignKeyName: 'match_scorer_id_fkey';
+            columns: ['scorer_id'];
+            isOneToOne: false;
+            referencedRelation: 'profile';
+            referencedColumns: ['user_id'];
+          },
+          {
+            foreignKeyName: 'match_scorer_id_fkey';
+            columns: ['scorer_id'];
             isOneToOne: false;
             referencedRelation: 'referee_name';
             referencedColumns: ['user_id'];
@@ -524,16 +610,22 @@ export type Database = {
           away_p1: string | null;
           away_p2: string | null;
           created_at: string;
+          ended_at: string | null;
+          forfeit_side: Database['public']['Enums']['match_side'] | null;
           handicap_away: number;
           handicap_home: number;
           home_p1: string | null;
           home_p2: string | null;
           id: string;
+          live_status: Database['public']['Enums']['slot_live_status'];
           match_id: string;
+          retired_player_id: string | null;
+          retired_side: Database['public']['Enums']['match_side'] | null;
           score_away: number | null;
           score_home: number | null;
           slot_no: number;
           slot_type: Database['public']['Enums']['slot_type'];
+          started_at: string | null;
           updated_at: string;
         };
         ComputedFields: never;
@@ -541,32 +633,44 @@ export type Database = {
           away_p1?: string | null;
           away_p2?: string | null;
           created_at?: string;
+          ended_at?: string | null;
+          forfeit_side?: Database['public']['Enums']['match_side'] | null;
           handicap_away?: number;
           handicap_home?: number;
           home_p1?: string | null;
           home_p2?: string | null;
           id?: string;
+          live_status?: Database['public']['Enums']['slot_live_status'];
           match_id: string;
+          retired_player_id?: string | null;
+          retired_side?: Database['public']['Enums']['match_side'] | null;
           score_away?: number | null;
           score_home?: number | null;
           slot_no: number;
           slot_type: Database['public']['Enums']['slot_type'];
+          started_at?: string | null;
           updated_at?: string;
         };
         Update: {
           away_p1?: string | null;
           away_p2?: string | null;
           created_at?: string;
+          ended_at?: string | null;
+          forfeit_side?: Database['public']['Enums']['match_side'] | null;
           handicap_away?: number;
           handicap_home?: number;
           home_p1?: string | null;
           home_p2?: string | null;
           id?: string;
+          live_status?: Database['public']['Enums']['slot_live_status'];
           match_id?: string;
+          retired_player_id?: string | null;
+          retired_side?: Database['public']['Enums']['match_side'] | null;
           score_away?: number | null;
           score_home?: number | null;
           slot_no?: number;
           slot_type?: Database['public']['Enums']['slot_type'];
+          started_at?: string | null;
           updated_at?: string;
         };
         Relationships: [
@@ -603,6 +707,13 @@ export type Database = {
             columns: ['match_id'];
             isOneToOne: false;
             referencedRelation: 'match';
+            referencedColumns: ['id'];
+          },
+          {
+            foreignKeyName: 'match_slot_retired_player_id_fkey';
+            columns: ['retired_player_id'];
+            isOneToOne: false;
+            referencedRelation: 'season_player';
             referencedColumns: ['id'];
           },
         ];
@@ -1017,6 +1128,16 @@ export type Database = {
           team_id: string;
         }[];
       };
+      live_apply: {
+        Args: {
+          p_client_at?: string;
+          p_expected_seq: number;
+          p_kind: Database['public']['Enums']['live_event_kind'];
+          p_payload?: Json;
+          p_slot_id: string;
+        };
+        Returns: number;
+      };
       lock_match_lineups: {
         Args: { p_match_id: string; p_relay_away?: number; p_relay_home?: number; p_slots: Json };
         Returns: undefined;
@@ -1077,12 +1198,23 @@ export type Database = {
         | 'COMPENSATION'
         | 'MIN_PRESENT'
         | 'SUB_RANK';
+      live_event_kind:
+        | 'setup'
+        | 'point'
+        | 'undo'
+        | 'ends_changed'
+        | 'timeout_start'
+        | 'timeout_end'
+        | 'retire'
+        | 'end_confirmed'
+        | 'reopened';
       match_side: 'home' | 'away';
       match_stage: 'group' | 'semi_final' | 'third_place' | 'final';
       match_status: 'scheduled' | 'lineup_locked' | 'in_progress' | 'completed' | 'forfeit' | 'annulled';
       member_type: 'employee' | 'intern' | 'guest';
       season_player_status: 'active' | 'withdrawn';
       season_status: 'draft' | 'published' | 'group' | 'knockout' | 'finished';
+      slot_live_status: 'pending' | 'live' | 'finished';
       slot_type: 'open' | 'low' | 'high';
       user_role: 'btc' | 'referee';
     };
@@ -1207,12 +1339,24 @@ export const Constants = {
         'MIN_PRESENT',
         'SUB_RANK',
       ],
+      live_event_kind: [
+        'setup',
+        'point',
+        'undo',
+        'ends_changed',
+        'timeout_start',
+        'timeout_end',
+        'retire',
+        'end_confirmed',
+        'reopened',
+      ],
       match_side: ['home', 'away'],
       match_stage: ['group', 'semi_final', 'third_place', 'final'],
       match_status: ['scheduled', 'lineup_locked', 'in_progress', 'completed', 'forfeit', 'annulled'],
       member_type: ['employee', 'intern', 'guest'],
       season_player_status: ['active', 'withdrawn'],
       season_status: ['draft', 'published', 'group', 'knockout', 'finished'],
+      slot_live_status: ['pending', 'live', 'finished'],
       slot_type: ['open', 'low', 'high'],
       user_role: ['btc', 'referee'],
     },
