@@ -273,3 +273,24 @@ button.ptag.pick { box-shadow: 0 0 0 2px rgb(var(--accent)); }
 .sc.ro .sc-foot { display: none; }
 .ptag:disabled { color: rgb(var(--fg)); }
 @media (min-width: 700px) { .sc .court { --ch: 250px; } }
+
+/* corrections (spec-phase-2 §4.5): tappable finished sets / legs, reopen sheet, locked undo, toast */
+.strip .cell .cellbtn { display: block; width: 100%; margin: 0; padding: 0; border: 0; background: none; color: inherit; font: inherit; line-height: inherit; text-align: center; cursor: default; border-radius: 6px; }
+.strip .cell.done .cellbtn:not(:disabled) { cursor: pointer; }
+.strip .cell.done .cellbtn:not(:disabled):hover { background: rgb(var(--surface2)); }
+.strip .cell .cellbtn:focus-visible { outline: 2px solid rgb(var(--accent)); outline-offset: 1px; }
+.strip .cell.edit { border-color: rgb(var(--warn) / 0.55); background: rgb(var(--warn) / 0.1); }
+.strip .cell.edit::after { background: rgb(var(--warn)); }
+.strip .cell.edit b { font-family: var(--font-body, inherit); font-size: 11px; font-weight: 700; color: rgb(var(--warn)); }
+.strip.lgs { padding: 2px 0 0; border: 0; background: none; }
+.sc-foot .last.lock { color: rgb(var(--warn)); font-weight: 600; max-width: 56%; }
+.ov-title.sm { font-size: clamp(28px, 8vw, 40px); }
+.bigscore.sm { font-size: clamp(56px, 18vw, 84px); margin-top: 8px; }
+.ov .sheet-msg { margin-top: 14px; padding: 12px; border-radius: 12px; border: 1px solid rgb(var(--line)); background: rgb(var(--surface2)); font-size: 14px; font-weight: 600; }
+.sheet-form { margin-top: 14px; text-align: left; }
+.sheet-form .eyebrow { display: block; margin-bottom: 6px; }
+.sheet-form textarea.input { height: auto; min-height: 76px; padding: 8px 10px; resize: vertical; line-height: 1.4; }
+.sheet-hint { margin-top: 4px; font-size: 12px; color: rgb(var(--muted)); }
+.ov-card[data-sheet] { max-height: calc(100dvh - 32px); overflow-y: auto; }
+.toast { position: absolute; left: 12px; right: 12px; bottom: 76px; z-index: 70; padding: 10px 14px; border-radius: 12px; background: rgb(var(--fg)); color: rgb(var(--surface)); font-size: 14px; font-weight: 600; text-align: center; box-shadow: 0 10px 30px rgb(0 0 0 / 0.25); }
+.toast[hidden] { display: none; }

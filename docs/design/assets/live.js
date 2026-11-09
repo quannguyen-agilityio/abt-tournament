@@ -59,6 +59,16 @@
       serving: 'đang giao', worm: 'Diễn biến set {n}', wormSub: 'Cách biệt điểm sau mỗi pha cầu', wormUp: '{team} dẫn', hcStartLbl: '{team} xuất phát +{n}', endsLbl: 'Đổi sân', rally: 'Pha cầu',
       matchSets: 'Các set', pending2: 'Chưa đấu', livePair: 'đang đấu', stateLive: 'Trạng thái demo', stLive: 'LIVE', stEnds: 'Đổi sân', stMed: 'Y tế', replay: 'Phát lại',
       medPublic: 'Tạm dừng y tế · {p}',
+      // corrections (spec §4.5, L10)
+      editSetup: 'Sửa thiết lập', editTitle: 'Sửa thiết lập set {n}', editLegTitle: 'Sửa thiết lập lượt {n}', editNote: 'Tỉ số giữ nguyên <b>{a}–{b}</b>; app tính lại vị trí và người giao.', saveSetup: 'Lưu thiết lập',
+      undoLockedSet: 'Set trước đã xác nhận — cần BTC mở lại', undoLockedLeg: 'Lượt trước đã xác nhận — cần BTC mở lại',
+      role: 'Vai trò', roleReferee: 'Trọng tài', roleBtc: 'BTC',
+      editing: 'Đang sửa', openSetAria: 'Set {n}: {score}, đã xác nhận. Mở chi tiết', openLegAria: 'Lượt {n}: {score}, đã xác nhận. Mở chi tiết', editingAria: '{u}: đang sửa',
+      shConfirmed: '{U} đã xác nhận', shBy: 'Xác nhận bởi {name} · {time}', shRefereeMsg: '{U} đã xác nhận. Chỉ BTC mở lại được.', close: 'Đóng',
+      reasonLbl: 'Lý do mở lại (bắt buộc)', reasonHint: 'Lý do được ghi vào nhật ký thay đổi.', reopenBtn: 'Mở lại {u}', reopenQ: 'Mở lại {u}?',
+      cSetCleared: 'Tỉ số {u} bị xoá tạm cho tới khi xác nhận lại', cMatchLive: 'Trận chuyển về Đang đấu, BXH cập nhật', cAudit: 'Ghi vào nhật ký thay đổi',
+      blkOnlyLast: 'Chỉ mở lại được lượt cuối đã xác nhận', blkHasPoints: 'Lượt hiện tại đã có điểm — hoàn tác hết điểm của lượt này trước',
+      reopened: 'Đã mở lại {u} · người chấm có thể sửa và xác nhận lại', setU: 'set', legU: 'lượt',
     },
     en: {
       mock: 'MOCKUP', mockups: '← Mockups', liveIdx: 'Live', themeSystem: 'System', themeLight: 'Light', themeDark: 'Dark', theme: 'Theme',
@@ -94,6 +104,15 @@
       serving: 'serving', worm: 'Set {n} rally timeline', wormSub: 'Point lead after every rally', wormUp: '{team} ahead', hcStartLbl: '{team} start +{n}', endsLbl: 'Change of ends', rally: 'Rally',
       matchSets: 'Sets', pending2: 'Not played', livePair: 'in play', stateLive: 'Demo state', stLive: 'LIVE', stEnds: 'Ends', stMed: 'Medical', replay: 'Replay',
       medPublic: 'Medical timeout · {p}',
+      editSetup: 'Edit setup', editTitle: 'Edit setup · set {n}', editLegTitle: 'Edit setup · leg {n}', editNote: 'The score stays at <b>{a}–{b}</b>; the app recomputes positions and servers.', saveSetup: 'Save setup',
+      undoLockedSet: 'Previous set is confirmed — the organiser must reopen it', undoLockedLeg: 'Previous leg is confirmed — the organiser must reopen it',
+      role: 'Role', roleReferee: 'Referee', roleBtc: 'Organiser (BTC)',
+      editing: 'Editing', openSetAria: 'Set {n}: {score}, confirmed. Open details', openLegAria: 'Leg {n}: {score}, confirmed. Open details', editingAria: '{u}: being corrected',
+      shConfirmed: '{U} confirmed', shBy: 'Confirmed by {name} · {time}', shRefereeMsg: '{U} is confirmed. Only the organiser can reopen it.', close: 'Close',
+      reasonLbl: 'Reason for reopening (required)', reasonHint: 'The reason is written to the change log.', reopenBtn: 'Reopen {u}', reopenQ: 'Reopen {u}?',
+      cSetCleared: 'The score of {u} is cleared until it is confirmed again', cMatchLive: 'The match goes back to In progress and the standings update', cAudit: 'Written to the change log',
+      blkOnlyLast: 'Only the last confirmed leg can be reopened', blkHasPoints: 'The current leg already has points — undo all of its points first',
+      reopened: '{u} reopened · the scorer can fix it and confirm again', setU: 'set', legU: 'leg',
     },
   };
   const t = (k, v) => {
@@ -121,6 +140,13 @@
   const SCORER = 'Bùi Thanh Sơn';
   const OTHER_SCORER = 'Võ Minh Tâm';
   const MED_MS = 5 * 60 * 1000;
+  // Who confirmed each finished set / leg (fake audit data for the reopen sheet).
+  const CONFIRMED = { set: [[SCORER, '13:42'], [SCORER, '14:05'], [OTHER_SCORER, '14:31'], [SCORER, '14:58']], leg: [[SCORER, '13:20']] };
+  const letterEvents = (str) => String(str).split('').filter((c) => 'HAE'.includes(c)).map((c) => (c === 'E' ? { k: 'ends' } : { k: 'point', side: c }));
+  // Rally list -> URL letters (H/A per point, E where the change of ends was confirmed); replay stays the single source of truth.
+  const rallyLetters = (S) => S.rallies.map((r, i) => r.side + (S.endsDone && S.endsAt === i + 1 ? 'E' : '')).join('');
+  const ROLES = ['referee', 'btc'];
+  const roleParam = () => { const r = new URLSearchParams(location.search).get('role'); return ROLES.includes(r) ? r : null; };
 
   const nameOf = (ctx, side, k) => TEAM[side].roster[ctx.pairs[side][k]];
 
@@ -140,7 +166,7 @@
   function relayCtx(P) {
     const num = (v, d) => (v === null || v === '' || isNaN(+v) ? d : +v);
     return {
-      relay: true, leg: RELAY_LEG.n, milestone: MILESTONES[RELAY_LEG.n - 1], pairs: { H: RELAY_LEG.hp, A: RELAY_LEG.ap }, code: 'SF2', court: 'Sân 1', finished: [],
+      relay: true, leg: RELAY_LEG.n, milestone: MILESTONES[RELAY_LEG.n - 1], pairs: { H: RELAY_LEG.hp, A: RELAY_LEG.ap }, code: 'SF2', court: 'Sân 1', finished: [[25, 19]],
       setup: {
         start: RELAY_LEG.start, target: MILESTONES[RELAY_LEG.n - 1], changeEnds: false,
         left: P.get('left') === 'H' ? 'H' : 'A', serving: P.get('serve') === 'A' ? 'A' : 'H', server: num(P.get('srv'), 0), receiver: num(P.get('rcv'), 0),
@@ -303,10 +329,13 @@
     const demo = P.get('demo');
     const ro = kind === 'viewer';
     const relay = kind === 'relay';
-    let ctx = relay ? relayCtx(P) : groupCtx(+P.get('set') >= 1 && +P.get('set') <= 5 ? +P.get('set') : 3, P);
+    let ctx = relay ? relayCtx(P) : groupCtx(demo === 'nextset' ? 4 : +P.get('set') >= 1 && +P.get('set') <= 5 ? +P.get('set') : 3, P);
     let events = [];
+    let role = roleParam() || (store.get('abt.role') === 'btc' ? 'btc' : 'referee'); // URL param wins over the stored role
+    const reopened = new Set(); // mock outcome: finished sets / legs now marked "Đang sửa"
+    const confirmedAt = {};
     let S;
-    const ui = { ov: null, ovKey: '', menu: false, offline: false, pending: 0, paused: false, prev: null, flush: null };
+    const ui = { sheet: null, reason: '', toast: '', ov: null, ovKey: '', menu: false, offline: false, pending: 0, paused: false, prev: null, flush: null };
     const scorerName = ro ? OTHER_SCORER : SCORER;
     const root = $('#app');
     const el = (sel) => $(sel, root);
@@ -317,7 +346,8 @@
       events = synth(ctx.setup, goal);
       if (ro) events = synth(ctx.setup, { H: 12, A: 19 });
       const fin = relay ? { H: ctx.milestone - 1, A: 41 } : { H: 30, A: 27 };
-      if (demo === 'fresh') events = [];
+      if (demo === 'fresh' || demo === 'nextset' || demo === 'legstart') events = [];
+      else if (P.get('r') !== null) events = letterEvents(P.get('r')); // coming back from "Sửa thiết lập": same rallies, new setup
       else if (demo === 'ends') { events = synth(ctx.setup, { H: 15, A: 20 }); events.push({ k: 'point', side: 'H' }); }
       else if (demo === 'end') { events = synth(ctx.setup, fin); events.push({ k: 'point', side: 'H' }); }
       else if (demo === 'timeout') { events = synth(ctx.setup, relay ? { H: 39, A: 31 } : { H: 14, A: 19 }); events.push({ k: 'timeout_start', player: { side: 'A', k: 0 }, at: Date.now() - 48000 }); }
@@ -331,19 +361,20 @@
     function build() {
       const mid = relay ? `${t('leg')} ${ctx.leg}/5 · ${t('milestone')} ${ctx.milestone}` : `${t('set')} ${ctx.setNo} · ${t('type_' + ctx.type)}`;
       const strip = relay ? `<div class="rl sc-pad" id="strip">${['H', 'A'].map((s) => `<div class="rl-row" style="--tc:${TEAM[s].color}">${sw(s)}<div class="relay" data-s="${s}"><span style="background:${TEAM[s].color};width:0"></span>${MILESTONES.slice(0, 4).map((m) => `<i class="tick" style="left:${(m / 125) * 100}%"></i>`).join('')}</div><b data-n="${s}">0</b></div>`).join('')}
-        <div class="rl-ms" aria-hidden="true">${MILESTONES.map((m) => `<span data-m="${m}" style="left:${(m / 125) * 100}%">${m}</span>`).join('')}</div></div>`
-        : `<div class="strip sc-pad" id="strip" role="list" aria-label="${t('set')}">${[1, 2, 3, 4, 5].map((n) => `<div class="cell" role="listitem" data-n="${n}"><i>${t('set').toUpperCase()} ${n}</i><b></b></div>`).join('')}</div>`;
+        <div class="rl-ms" aria-hidden="true">${MILESTONES.map((m) => `<span data-m="${m}" style="left:${(m / 125) * 100}%">${m}</span>`).join('')}</div>
+        <div class="strip lgs" role="list" aria-label="${t('leg')}">${[1, 2, 3, 4, 5].map((n) => `<div class="cell" role="listitem" data-n="${n}"><button type="button" class="cellbtn" data-act="sheet" data-n="${n}" disabled><i>${t('leg').toUpperCase()} ${n}</i><b></b></button></div>`).join('')}</div></div>`
+        : `<div class="strip sc-pad" id="strip" role="list" aria-label="${t('set')}">${[1, 2, 3, 4, 5].map((n) => `<div class="cell" role="listitem" data-n="${n}"><button type="button" class="cellbtn" data-act="sheet" data-n="${n}" disabled><i>${t('set').toUpperCase()} ${n}</i><b></b></button></div>`).join('')}</div>`;
       const teamBlocks = ['H', 'A'].map((s) => `<section class="info i-${s}" data-info="${s}" style="--tc:${TEAM[s].color}">
           <div class="nm">${sw(s)}<span class="t">${esc(TEAM[s].name)}</span><span class="sh">${SHUTTLE}</span><span class="hc" data-hc="${s}" hidden></span></div>
           <div class="pl" data-pl="${s}"></div><div class="big" data-big="${s}" aria-hidden="true">0</div></section>`).join('');
       const buttons = ['H', 'A'].map((s) => `<div class="b-slot b-${s}" style="--tc:${TEAM[s].color}"><button class="plus" type="button" data-act="plus" data-side="${s}" aria-label="${esc(t('plusAria', { team: TEAM[s].name }))}">+1<small>${esc(t('plusLabel', { team: TEAM[s].name }))}</small></button></div>`).join('');
-      root.innerHTML = `${ribbon(ro ? `<button class="lv-rb" id="rb-pause" aria-pressed="false">${t('pauseSim')}</button>` : `<button class="lv-rb" id="rb-net" aria-pressed="${ui.offline}">${ui.offline ? t('offlineOff') : t('offlineOn')}</button><button class="lv-rb" id="rb-reset">${t('reset')}</button>`)}
+      root.innerHTML = `${ribbon(ro ? `<button class="lv-rb" id="rb-pause" aria-pressed="false">${t('pauseSim')}</button>` : `<button class="lv-rb" id="rb-role" aria-pressed="${role === 'btc'}" aria-label="${t('role')}: ${roleName()}">${t('role')}: ${roleName()}</button><button class="lv-rb" id="rb-net" aria-pressed="${ui.offline}">${ui.offline ? t('offlineOff') : t('offlineOn')}</button><button class="lv-rb" id="rb-reset">${t('reset')}</button>`)}
       <div class="sc ${ro ? 'ro' : ''}" id="sc" data-mode="${kind}">
         <header class="sc-top sc-pad">
           <div class="sc-code">${ctx.code}<small>${ctx.court}</small></div>
           <div class="sc-mid"><span class="sc-set" id="midlabel">${mid}</span><span class="chip chip-live" id="statechip">${t('live')}</span></div>
           ${ro ? '' : `<div class="sc-menu"><button class="iconbtn" id="menu-btn" type="button" aria-haspopup="menu" aria-expanded="false" aria-label="${t('menu')}">${ICON_DOTS}</button>
-            <div class="menu" id="menu" role="menu" hidden><button role="menuitem" class="warnrow" data-act="injury">${t('injury')}</button><a role="menuitem" href="viewer.html">${t('takeover')}</a></div></div>`}
+            <div class="menu" id="menu" role="menu" hidden><button role="menuitem" data-act="edit-setup">${t('editSetup')}</button><button role="menuitem" class="warnrow" data-act="injury">${t('injury')}</button><a role="menuitem" href="viewer.html">${t('takeover')}</a></div></div>`}
         </header>
         <div class="sc-status sc-pad"><span class="net net-ok" id="net" role="status"></span><span class="who">${t('scorer')}: ${esc(scorerName)}</span></div>
         ${strip}
@@ -353,12 +384,16 @@
           <div class="court-wrap">${courtMarkup(false)}<p class="cap" id="cap"></p></div>
           ${buttons}
         </main>
-        <footer class="sc-foot sc-pad"><button class="btn undo" type="button" data-act="undo" id="undo">${ICON_UNDO}${t('undo')}</button><span class="last" id="last"></span></footer>
+        <footer class="sc-foot sc-pad"><button class="btn undo" type="button" data-act="undo" id="undo" aria-describedby="last">${ICON_UNDO}${t('undo')}</button><span class="last" id="last"></span></footer>
         <div class="sr-only-lv" id="live-region" aria-live="polite" aria-atomic="true"></div>
+        <div class="toast" id="toast" role="status" hidden></div>
         <div id="ovroot"></div>
       </div>`;
       bindRibbon(() => { ui.ovKey = ''; build(); bind(); update(); });
     }
+    const roleName = () => t(role === 'btc' ? 'roleBtc' : 'roleReferee');
+    const unitOf = (n) => `${t(relay ? 'legU' : 'setU')} ${n}`;
+    const cap1 = (x) => x.charAt(0).toUpperCase() + x.slice(1);
 
     // ----- state -> DOM -----
     function update() {
@@ -388,15 +423,21 @@
       if (relay) {
         ['H', 'A'].forEach((s) => { el(`.relay[data-s="${s}"] > span`).style.width = `${(S.score[s] / 125) * 100}%`; el(`[data-n="${s}"]`).textContent = S.score[s]; });
         root.querySelectorAll('.rl-ms span').forEach((m) => m.classList.toggle('on', +m.dataset.m === ctx.milestone));
-      } else {
-        root.querySelectorAll('#strip .cell').forEach((c) => {
-          const n = +c.dataset.n, b = c.querySelector('b');
-          c.className = 'cell';
-          if (n < ctx.setNo || (n === ctx.setNo && S.confirmed)) { const [h, a] = n < ctx.setNo ? ctx.finished[n - 1] : [S.score.H, S.score.A]; b.textContent = `${h}–${a}`; c.classList.add('done'); c.style.setProperty('--wc', TEAM[h > a ? 'H' : 'A'].color); }
-          else if (n === ctx.setNo) { b.textContent = `${S.score.H}–${S.score.A}`; c.classList.add('cur'); c.setAttribute('aria-current', 'true'); }
-          else { b.textContent = '–'; c.classList.add('pend'); }
-        });
       }
+      // finished sets / legs are buttons (they open the correction sheet); reopened ones show "Đang sửa"
+      const curNo = relay ? ctx.leg : ctx.setNo;
+      root.querySelectorAll('#strip .cell').forEach((c) => {
+        const n = +c.dataset.n, b = c.querySelector('b'), btn = c.querySelector('button');
+        c.className = 'cell'; c.removeAttribute('aria-current'); btn.removeAttribute('aria-label'); btn.disabled = true;
+        if (n < curNo || (n === curNo && S.confirmed)) {
+          const [h, a] = n < curNo ? ctx.finished[n - 1] : [S.score.H, S.score.A];
+          c.classList.add('done'); c.style.setProperty('--wc', TEAM[h > a ? 'H' : 'A'].color);
+          if (reopened.has(n)) { b.textContent = t('editing'); c.classList.add('edit'); btn.setAttribute('aria-label', t('editingAria', { u: cap1(unitOf(n)) })); }
+          else { b.textContent = `${h}–${a}`; btn.disabled = false; btn.setAttribute('aria-label', t(relay ? 'openLegAria' : 'openSetAria', { n, score: `${h}–${a}` })); }
+        }
+        else if (n === curNo) { b.textContent = `${S.score.H}–${S.score.A}`; c.classList.add('cur'); c.setAttribute('aria-current', 'true'); }
+        else { b.textContent = '–'; c.classList.add('pend'); }
+      });
       // state chip
       const chip = el('#statechip');
       const st = S.retired ? ['chip-loss', t('retiredChip')] : S.timeout ? ['chip-warn', t('medChip')] : S.endsDue ? ['chip-accent', t('endsChip')] : S.ended ? ['chip-win', relay ? t('endedLeg') : t('endedChip')] : ['chip-live', t('live')];
@@ -404,7 +445,11 @@
       // undo + last point
       const lastR = S.rallies[S.rallies.length - 1];
       el('#undo').disabled = !lastR || S.confirmed || !!S.retired || !!S.timeout;
-      el('#last').textContent = lastR ? `${t('lastPoint', { team: TEAM[lastR.side].name })} · #${S.rallies.length}` : t('noPoints');
+      // L10: undo never crosses an end_confirmed. With no point in this set / leg, the previous one is locked until the BTC reopens it.
+      const locked = !lastR && (relay ? ctx.leg > 1 : ctx.setNo > 1);
+      const lastEl = el('#last');
+      lastEl.classList.toggle('lock', locked);
+      lastEl.textContent = lastR ? `${t('lastPoint', { team: TEAM[lastR.side].name })} · #${S.rallies.length}` : locked ? t(relay ? 'undoLockedLeg' : 'undoLockedSet') : t('noPoints');
       el('#live-region').textContent = `${t('scoreAria', { ta: TEAM[S.left].name, a: S.score[S.left], tb: TEAM[other(S.left)].name, b: S.score[other(S.left)] })} ${plain(svc)}`;
       renderNet();
       syncOverlay();
@@ -447,6 +492,7 @@
       update();
     }
     function wantedOverlay() {
+      if (ui.sheet) return `sheet:${ui.sheet}`;
       if (ui.ov === 'takeover') return 'takeover';
       if (ro) return null;
       if (S.retired) return 'retired';
@@ -511,6 +557,7 @@
             <button class="btn btn-lg btn-danger" data-act="tretire" type="button" ${p ? '' : 'disabled'}>${t('retire')}</button>
             ${p ? `<button class="linkbtn mockhint" data-act="skip" type="button">${t('skipTo0')}</button>` : `<button class="linkbtn" data-act="tcancel" type="button">${t('cancel')}</button>`}</div></div>`;
       }
+      if (k === 'sheet') return sheetBody(ui.sheet);
       if (k === 'retire') return retireBody(false);
       if (k === 'retired') return retireBody(true);
       if (k === 'takeover') {
@@ -519,6 +566,46 @@
           <div class="ov-actions"><a class="btn btn-primary btn-xl" data-focus href="score.html">${t('takeover')}</a><button class="btn btn-lg" data-act="take-close" type="button">${t('cancel')}</button></div></div>`;
       }
       return '';
+    }
+    // Confirmed set / leg: read-only for the referee, reopen form for the BTC (spec §4.5). Relay legs are cumulative, so only
+    // the last confirmed leg can be reopened and only while the current leg has no point.
+    function sheetBody(n) {
+      const [h, a] = n < (relay ? ctx.leg : ctx.setNo) ? ctx.finished[n - 1] : [S.score.H, S.score.A];
+      const w = h > a ? 'H' : 'A';
+      const u = unitOf(n);
+      const who = confirmedAt[n] || (CONFIRMED[relay ? 'leg' : 'set'][n - 1] || [SCORER, '14:00']);
+      const eyebrow = relay ? `${t('leg')} ${n}/5 · ${t('milestone')} ${MILESTONES[n - 1]}` : `${t('set')} ${n} · ${t('type_' + SETS[n - 1].type)}`;
+      const score = `<div class="bigscore sm"><span class="${w === 'H' ? '' : 'lose'}" style="color:${w === 'H' ? TEAM.H.color : ''}">${h}</span><span class="dash">–</span><span class="${w === 'A' ? '' : 'lose'}" style="color:${w === 'A' ? TEAM.A.color : ''}">${a}</span></div>`;
+      const head = `<div class="eyebrow">${eyebrow}</div><h2 id="ov-h" class="ov-title sm">${t('shConfirmed', { U: cap1(u) })}</h2>${score}<p class="ov-sub">${t('shBy', { name: esc(who[0]), time: who[1] })}</p>`;
+      const closeBtn = (focus) => `<button class="btn btn-lg" data-act="sheet-close" ${focus ? 'data-focus' : ''} type="button">${t('close')}</button>`;
+      if (role !== 'btc') return `<div class="ov-card" data-sheet="ref">${head}<p class="sheet-msg">${t('shRefereeMsg', { U: cap1(u) })}</p><div class="ov-actions">${closeBtn(true)}</div></div>`;
+      const lastConf = ctx.finished.length;
+      const blocked = relay ? (n !== lastConf ? 'blkOnlyLast' : !S.confirmed && S.rallies.length > 0 ? 'blkHasPoints' : null) : null;
+      if (blocked) return `<div class="ov-card" data-sheet="blocked">${head}<ul class="conseq"><li class="bad"><span class="ic" aria-hidden="true">✕</span><span>${t(blocked)}</span></li></ul><div class="ov-actions">${closeBtn(true)}</div></div>`;
+      const li = (cls, ic, txt) => `<li class="${cls}"><span class="ic" aria-hidden="true">${ic}</span><span>${txt}</span></li>`;
+      return `<div class="ov-card" data-sheet="btc">${head}
+        <div class="sheet-form"><label class="eyebrow" for="reason">${t('reasonLbl')}</label>
+        <textarea id="reason" class="input" rows="3" required aria-describedby="reason-h" data-focus>${esc(ui.reason)}</textarea><p class="sheet-hint" id="reason-h">${t('reasonHint')}</p></div>
+        <ul class="conseq">${li('bad', '✕', t('cSetCleared', { u }))}${li('neu', 'i', t('cMatchLive'))}${li('neu', 'i', t('cAudit'))}</ul>
+        <div class="ov-actions"><button class="btn btn-loss btn-xl" data-act="reopen" type="button" ${ui.reason.trim() ? '' : 'disabled'}>${t('reopenBtn', { u })}</button>${closeBtn(false)}</div></div>`;
+    }
+    function closeSheet() {
+      const n = ui.sheet; ui.sheet = null; ui.reason = ''; update();
+      const b = n && root.querySelector(`#strip [data-act="sheet"][data-n="${n}"]`);
+      if (b && !b.disabled) b.focus({ preventScroll: true });
+    }
+    let toastT = null;
+    function toast(msg) {
+      const tt = el('#toast'); tt.textContent = msg; tt.hidden = false;
+      clearTimeout(toastT); toastT = setTimeout(() => { tt.hidden = true; }, 5000);
+    }
+    // "Sửa thiết lập": go to the setup screen with the current choices and the rally list; saving comes back with the same rallies.
+    function editSetupUrl() {
+      const q = new URLSearchParams();
+      if (relay) q.set('mode', 'relay'); else q.set('set', ctx.setNo);
+      q.set('edit', '1'); q.set('left', ctx.setup.left); q.set('serve', ctx.setup.serving); q.set('srv', ctx.setup.server); q.set('rcv', ctx.setup.receiver); q.set('r', rallyLetters(S));
+      if (roleParam()) q.set('role', roleParam());
+      return `setup.html?${q}`;
     }
     // Retirement consequences (spec-phase-2 §6, L8/L9)
     function retireBody(done) {
@@ -577,6 +664,13 @@
         if (menu) menu.hidden = true;
         if (act === 'plus') point(b.dataset.side);
         else if (act === 'undo') undo();
+        else if (act === 'edit-setup') location.href = editSetupUrl();
+        else if (act === 'sheet') { ui.sheet = +b.dataset.n; ui.reason = ''; update(); }
+        else if (act === 'sheet-close') closeSheet();
+        else if (act === 'reopen') {
+          if (!ui.reason.trim()) return;
+          const n = ui.sheet; reopened.add(n); closeSheet(); toast(t('reopened', { u: unitOf(n) }));
+        }
         else if (act === 'injury') { ui.ov = 'timeout'; update(); }
         else if (act === 'pick') { events.push({ k: 'timeout_start', player: { side: b.dataset.side, k: +b.dataset.k }, at: Date.now() }); ui.ovKey = ''; update(); }
         else if (act === 'tcancel') { ui.ov = null; update(); }
@@ -586,12 +680,18 @@
         else if (act === 'rconfirm') { events.push({ k: 'retire', player: S.timeout.player }); ui.ov = null; update(); }
         else if (act === 'skip') { const i = events.map((x) => x.k).lastIndexOf('timeout_start'); events[i].at = Date.now() - MED_MS; ui.ovKey = ''; update(); }
         else if (act === 'ends') { events.push({ k: 'ends' }); update(); }
-        else if (act === 'confirm-end') { events.push({ k: 'end_confirmed' }); if (!relay) { ctx.finished = ctx.finished.concat([[S.score.H, S.score.A]]); } update(); }
+        else if (act === 'confirm-end') { events.push({ k: 'end_confirmed' }); confirmedAt[relay ? ctx.leg : ctx.setNo] = [SCORER, new Date().toTimeString().slice(0, 5)]; ctx.finished = ctx.finished.concat([[S.score.H, S.score.A]]); update(); }
         else if (act === 'next-now') startNextSet();
         else if (act === 'take-open') { ui.ov = 'takeover'; update(); }
         else if (act === 'take-close') { ui.ov = null; update(); }
       };
-      document.onkeydown = (e) => { if (e.key === 'Escape') { const m = el('#menu'); if (m && !m.hidden) { m.hidden = true; el('#menu-btn').focus(); } } };
+      root.oninput = (e) => {
+        if (e.target.id !== 'reason') return;
+        ui.reason = e.target.value;
+        const rb = root.querySelector('[data-act="reopen"]'); if (rb) rb.disabled = !ui.reason.trim();
+      };
+      const rr = $('#rb-role'); if (rr) rr.onclick = () => { role = role === 'btc' ? 'referee' : 'btc'; store.set('abt.role', role); ui.ovKey = ''; build(); bind(); update(); };
+      document.onkeydown = (e) => { if (e.key === 'Escape' && ui.sheet) { closeSheet(); return; } if (e.key === 'Escape') { const m = el('#menu'); if (m && !m.hidden) { m.hidden = true; el('#menu-btn').focus(); } } };
       const net = $('#rb-net'); if (net) net.onclick = () => setOffline(!ui.offline);
       const rs = $('#rb-reset'); if (rs) rs.onclick = () => { events = []; ui.ov = null; ui.prev = null; ui.pending = 0; setOffline(false); update(); };
       const ps = $('#rb-pause'); if (ps) ps.onclick = () => { ui.paused = !ui.paused; ps.setAttribute('aria-pressed', String(ui.paused)); ps.textContent = ui.paused ? t('playSim') : t('pauseSim'); };
@@ -605,6 +705,7 @@
     }
 
     seedLog();
+    if (demo === 'reopen' && !ro) ui.sheet = relay ? 1 : 2;
     build(); bind(); update();
     if (!ro) { setInterval(tick, 250); try { navigator.wakeLock && navigator.wakeLock.request('screen').catch(() => {}); } catch (e) { /* not supported over file:// */ } }
     // Viewer: pretend the other scorer keeps entering points.
@@ -631,7 +732,20 @@
     // Relay: ends change at the leg change (L3) and the winner of the last rally serves first (L4).
     // Group set with a handicap: the side that starts at 0 serves first (L1). Only a 0–0 start asks who serves.
     const fixedServe = relay ? 'H' : start.H === start.A ? null : start.H < start.A ? 'H' : 'A';
+    // Edit mode (Sửa thiết lập): the current choices come in the URL, the rally list is passed back untouched so the score stays.
+    const edit = P.get('edit') === '1';
+    const num = (v) => (v === null || v === '' || isNaN(+v) ? null : +v);
     const sel = { left: relay ? 'A' : 'H', serving: fixedServe, server: null, receiver: null };
+    const rallies = P.get('r') || '';
+    let editScore = { H: start.H, A: start.A };
+    if (edit) {
+      if (['H', 'A'].includes(P.get('left'))) sel.left = P.get('left');
+      if (!fixedServe && ['H', 'A'].includes(P.get('serve'))) sel.serving = P.get('serve');
+      if ([0, 1].includes(num(P.get('srv')))) sel.server = num(P.get('srv'));
+      if ([0, 1].includes(num(P.get('rcv')))) sel.receiver = num(P.get('rcv'));
+      if (!sel.serving) { sel.server = null; sel.receiver = null; }
+      editScore = replay(ctx.setup, letterEvents(rallies)).score;
+    }
     let step = relay ? 2 : 0;
     const minStep = relay ? 2 : 0;
     const root = $('#app');
@@ -648,7 +762,7 @@
       }
       return { left: sel.left, pos, server, receiver, pairs: ctx.pairs };
     }
-    const titleTxt = () => (relay ? t('setupLegTitle', { n: ctx.leg }) : t('setupTitle', { n: setNo, type: t('type_' + ctx.type) }));
+    const titleTxt = () => (edit ? t(relay ? 'editLegTitle' : 'editTitle', { n: relay ? ctx.leg : setNo }) : relay ? t('setupLegTitle', { n: ctx.leg }) : t('setupTitle', { n: setNo, type: t('type_' + ctx.type) }));
     const startTeam = (s) => `<div class="t" style="--tc:${TEAM[s].color}"><b>${esc(TEAM[s].name)}${!relay && start[s] > 0 ? ` <span class="hc">${t('hcStart', { n: start[s] })}</span>` : ''}</b><span class="v">${start[s]}</span><small>${relay ? t('cumul') : start[s] > 0 ? t('hcStart', { n: start[s] }) : t('noHc')}</small></div>`;
 
     function stepPanel() {
@@ -676,11 +790,15 @@
     function render() {
       const labels = [t('stEnds'), t('stServe'), t('stServer'), t('stReceiver')];
       const skip = (i) => i < minStep || (i === 1 && fixedServe);
-      const url = `${relay ? `relay.html?leg=${ctx.leg}` : `score.html?set=${setNo}`}&left=${sel.left}&serve=${sel.serving}&srv=${sel.server}&rcv=${sel.receiver}`;
+      const role = roleParam() ? `&role=${roleParam()}` : '';
+      const page = relay ? `relay.html?leg=${ctx.leg}` : `score.html?set=${setNo}`;
+      const url = `${page}&left=${sel.left}&serve=${sel.serving}&srv=${sel.server}&rcv=${sel.receiver}${edit ? `&r=${rallies}` : ''}${role}`;
+      const cancelUrl = `${page}&left=${P.get('left')}&serve=${P.get('serve')}&srv=${P.get('srv')}&rcv=${P.get('rcv')}&r=${rallies}${role}`;
       root.innerHTML = `${ribbon()}
       <div class="su">
         <div><div class="eyebrow">${ctx.code} · ${ctx.court} · ${relay ? `${t('leg')} ${ctx.leg}/5` : `${t('set')} ${setNo}/5`}</div><h1>${titleTxt()}</h1></div>
         ${relay ? `<div class="banner-ends">${ICON_SWAP}<div><b>${t('relayBanner')}</b><span class="text-sm">${t('relayBannerSub', { n: ctx.leg, m: ctx.milestone, a: start.H, b: start.A })}</span></div></div>` : ''}
+        ${edit ? `<div class="explain" role="note">${t('editNote', { a: editScore.H, b: editScore.A })}</div>` : ''}
         <div class="sp">${['H', 'A'].map(startTeam).join('')}</div>
         <nav class="steps" aria-label="Steps">${labels.map((l, i) => `<button type="button" data-act="goto" data-i="${i}" class="${i < step ? 'done' : i === step ? 'now' : ''} ${skip(i) ? 'lock' : ''}" ${i === step ? 'aria-current="step"' : ''} ${skip(i) ? 'disabled' : ''}><b>${i < step ? '✓' : i + 1}</b>${l}</button>`).join('')}</nav>
         <div class="panel" style="padding:10px">${courtMarkup(true)}</div>
@@ -691,7 +809,7 @@
         <div class="panel" style="padding:12px">${stepPanel()}</div>
         ${step > minStep ? `<button class="linkbtn" data-act="back" type="button" style="justify-self:start">← ${t('back')}</button>` : ''}
       </div>
-      <div class="su-cta"><div class="in"><button class="btn btn-primary btn-xl" id="go" type="button" ${complete() ? '' : 'disabled'} data-url="${url}">${complete() ? (relay ? t('startLeg', { n: ctx.leg }) : t('startSet')) : t('needMore')}</button></div></div>`;
+      <div class="su-cta"><div class="in"><button class="btn btn-primary btn-xl" id="go" type="button" ${complete() ? '' : 'disabled'} data-url="${url}">${complete() ? (edit ? t('saveSetup') : relay ? t('startLeg', { n: ctx.leg }) : t('startSet')) : t('needMore')}</button>${edit ? `<a class="btn btn-lg" href="${cancelUrl}">${t('cancel')}</a>` : ''}</div></div>`;
       const court = $('[data-court]');
       const v = preview();
       v.pick = step === 2 && sel.server !== null ? { side: sel.serving, k: sel.server } : step === 3 && sel.receiver !== null ? { side: other(sel.serving), k: sel.receiver } : null;
@@ -710,13 +828,13 @@
         const a = b.dataset.act;
         const set = (side, k) => {
           if (step === 1) { sel.serving = side; sel.server = null; sel.receiver = null; step = 2; }
-          else if (step === 2 && side === sel.serving) { sel.server = k; sel.receiver = null; step = 3; }
+          else if (step === 2 && side === sel.serving) { sel.server = k; if (!edit) sel.receiver = null; step = 3; }
           else if (step === 3 && side === other(sel.serving)) { sel.receiver = k; }
         };
         if (a === 'swap') sel.left = other(sel.left);
         else if (a === 'next') step = fixedServe ? 2 : 1;
         else if (a === 'back') step = Math.max(minStep, step === 2 && fixedServe ? 0 : step - 1);
-        else if (a === 'goto') { const i = +b.dataset.i; if (!skip(i) && i <= step) step = i; }
+        else if (a === 'goto') { const i = +b.dataset.i; if (!skip(i) && (edit || i <= step)) step = i; }
         else if (a === 'serve') set(b.dataset.side, 0);
         else if (a === 'server') set(sel.serving, +b.dataset.k);
         else if (a === 'receiver') set(other(sel.serving), +b.dataset.k);
