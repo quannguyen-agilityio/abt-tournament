@@ -364,3 +364,89 @@ export function legChange(previous: LiveState): LegChange | null {
     ends: { left: other(previous.ends.left) },
   };
 }
+
+/** A slot of the match, as the retirement rules read it. */
+export interface RetirementSlot {
+  slot_no: number;
+  /** The slot's players from the locked lineup. */
+  pairs: Record<Side, Pair>;
+  /** The slot's end is confirmed (a finished set stays as it is). */
+  finished: boolean;
+}
+
+/** The scores to write to `match_slot`, with the side that retired or forfeited. */
+export interface RetiredSlot {
+  slot_no: number;
+  score_home: number;
+  score_away: number;
+  retired_side: Side;
+}
+
+export interface ForfeitedSlot {
+  slot_no: number;
+  score_home: number;
+  score_away: number;
+  forfeit_side: Side;
+}
+
+export interface Retirement {
+  /** The side whose player retired. */
+  side: Side;
+  /** The injured player. */
+  player: string;
+  /** The set or leg in which the player retired. */
+  slot_no: number;
+  /** The live score when the player retired (relay: cumulative). */
+  score: Score;
+}
+
+export interface GroupRetirementResult {
+  /** The current set: the opponent is credited `set_target`; the retiring side keeps its points. */
+  current: RetiredSlot;
+  /** Later unfinished sets with the injured player in the lineup: `set_target`–0, start points ignored. */
+  forfeits: ForfeitedSlot[];
+}
+
+const credit = (side: Side, own: number, opponent: number) =>
+  side === 'home' ? { score_home: own, score_away: opponent } : { score_home: opponent, score_away: own };
+
+/**
+ * Group retirement (L8, §6): what the retirement confirmation lists and the RPC writes. Sets
+ * already finished, and later sets without the injured player, are played as normal.
+ */
+export function groupRetirement(
+  retirement: Retirement,
+  slots: readonly RetirementSlot[],
+  settings: Pick<SeasonSettings, 'set_target'>,
+): GroupRetirementResult {
+  const { side, player, slot_no, score } = retirement;
+  const target = settings.set_target;
+  const forfeits = slots
+    .filter((s) => s.slot_no > slot_no && !s.finished && s.pairs[side].includes(player))
+    .sort((a, b) => a.slot_no - b.slot_no)
+    .map((s): ForfeitedSlot => ({ slot_no: s.slot_no, ...credit(side, 0, target), forfeit_side: side }));
+  return {
+    current: { slot_no, ...credit(side, score[side], target), retired_side: side },
+    forfeits,
+  };
+}
+
+export interface RelayRetirementResult {
+  /** The opponent wins the match. */
+  winner: Side;
+  /** The current leg: the opponent is credited the final milestone; later legs stay empty. */
+  current: RetiredSlot;
+}
+
+/** Relay retirement (L9, §6): the retiring team loses the match and keeps its cumulative score. */
+export function relayRetirement(
+  retirement: Retirement,
+  settings: Pick<SeasonSettings, 'relay_milestones'>,
+): RelayRetirementResult {
+  const { side, slot_no, score } = retirement;
+  const final = settings.relay_milestones.at(-1) ?? 0;
+  return {
+    winner: other(side),
+    current: { slot_no, ...credit(side, score[side], final), retired_side: side },
+  };
+}

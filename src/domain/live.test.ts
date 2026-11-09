@@ -3,12 +3,15 @@ import type { Side } from './lineup';
 import {
   changeOfEndsPoint,
   fixedServingSide,
+  groupRetirement,
   legChange,
   LiveEventError,
+  relayRetirement,
   replay,
   tryReplay,
   type LiveEvent,
   type LiveState,
+  type Pair,
   type SetupPayload,
   type SlotSetup,
 } from './live';
@@ -600,5 +603,68 @@ describe('replay: random rally sequences', () => {
       expect(result.violations, `seed ${seed}`).toEqual([]);
       expect(result.winner).toBe(state.winnerSide);
     }
+  });
+});
+
+describe('groupRetirement (L8)', () => {
+  const lineup = (home: Pair, away: Pair = ['X', 'Y']) => ({ home, away });
+  const slots = [
+    { slot_no: 1, pairs: lineup(['A', 'B']), finished: true },
+    { slot_no: 2, pairs: lineup(['C', 'D']), finished: false },
+    { slot_no: 3, pairs: lineup(['A', 'E']), finished: false },
+    { slot_no: 4, pairs: lineup(['F', 'G']), finished: false },
+    { slot_no: 5, pairs: lineup(['H', 'A']), finished: false },
+  ];
+
+  it('credits the opponent set_target, forfeits later sets of the injured player and leaves the rest', () => {
+    const result = groupRetirement(
+      { side: 'home', player: 'A', slot_no: 3, score: { home: 18, away: 22 } },
+      slots,
+      settings,
+    );
+    expect(result).toEqual({
+      current: { slot_no: 3, score_home: 18, score_away: 31, retired_side: 'home' },
+      forfeits: [{ slot_no: 5, score_home: 0, score_away: 31, forfeit_side: 'home' }],
+    });
+  });
+
+  it('forfeits nothing when the injured player has no later set', () => {
+    const result = groupRetirement(
+      { side: 'away', player: 'X', slot_no: 5, score: { home: 12, away: 9 } },
+      slots,
+      settings,
+    );
+    expect(result).toEqual({
+      current: { slot_no: 5, score_home: 31, score_away: 9, retired_side: 'away' },
+      forfeits: [],
+    });
+  });
+
+  it('stores scores the set validator accepts', () => {
+    const { current, forfeits } = groupRetirement(
+      { side: 'home', player: 'C', slot_no: 2, score: { home: 18, away: 22 } },
+      [...slots, { slot_no: 4, pairs: lineup(['C', 'G']), finished: false }],
+      settings,
+    );
+    expect(validateGroupSet({ ...current, handicap_home: 9, handicap_away: 0 }, settings)).toEqual({
+      winner: 'away',
+      violations: [],
+    });
+    expect(forfeits).toHaveLength(1);
+    expect(validateGroupSet({ ...forfeits[0], handicap_home: 9, handicap_away: 0 }, settings)).toEqual({
+      winner: 'away',
+      violations: [],
+    });
+  });
+});
+
+describe('relayRetirement (L9)', () => {
+  it('credits the opponent the final milestone and ends the match', () => {
+    expect(relayRetirement({ side: 'away', player: 'C', slot_no: 3, score: { home: 61, away: 70 } }, settings)).toEqual(
+      {
+        winner: 'home',
+        current: { slot_no: 3, score_home: 125, score_away: 70, retired_side: 'away' },
+      },
+    );
   });
 });
