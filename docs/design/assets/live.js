@@ -23,7 +23,7 @@
 
   const DICT = {
     vi: {
-      mock: 'MOCKUP', mockups: '← Mockups', liveIdx: 'Live', themeSystem: 'Hệ thống', themeLight: 'Sáng', themeDark: 'Tối', theme: 'Giao diện',
+      mock: 'MOCKUP', mockups: '← Mockups', liveIdx: 'Live', backMatch: 'Về trận', themeSystem: 'Hệ thống', themeLight: 'Sáng', themeDark: 'Tối', theme: 'Giao diện',
       offlineOn: 'Mạng: tắt', offlineOff: 'Mạng: bật', reset: '↺ Đặt lại', pauseSim: 'Tạm dừng mô phỏng', playSim: 'Chạy mô phỏng',
       lang: 'Ngôn ngữ',
       court: 'Sân', set: 'Set', leg: 'Lượt', milestone: 'mốc', live: 'LIVE', endsChip: 'Đổi sân', medChip: 'Tạm dừng y tế', endedChip: 'Kết thúc set', endedLeg: 'Kết thúc lượt', retiredChip: 'Bỏ cuộc',
@@ -48,7 +48,7 @@
       retDone: 'Đã ghi nhận bỏ cuộc', retDoneSub: '{p} ({team}) bỏ cuộc vì chấn thương. Kết quả đã được ghi vào trận.',
       takeTitle: 'Nhận quyền chấm trận {code}?', takeBody: '{name} sẽ chuyển sang chế độ chỉ xem ngay khi có điểm hoặc tin nhắn realtime kế tiếp. Chỉ một người chấm tại một thời điểm.', takeLog: 'Hành động được ghi vào nhật ký (ai, lúc nào).',
       // setup
-      setupTitle: 'Thiết lập set {n} · {type}', setupLegTitle: 'Đổi lượt {n}/5', stEnds: 'Chọn sân', stServe: 'Đội giao', stServer: 'Người giao', stReceiver: 'Người nhận',
+      setupTitle: 'Thiết lập set {n} · {type}', setupLegTitle: 'Đổi lượt {n}/5', setupLeg1Title: 'Thiết lập lượt 1/5 · tiếp sức', stEnds: 'Chọn sân', stServe: 'Đội giao', stServer: 'Người giao', stReceiver: 'Người nhận',
       endsPick: 'Chọn sân (nhìn từ chỗ ngồi của người chấm)', leftEnd: 'Bên trái', rightEnd: 'Bên phải', swap: 'Đổi bên', next: 'Tiếp', pickServe: 'Đội nào giao trước?', pickServer: 'Ai giao bóng? ({team})', pickRecv: 'Ai nhận bóng? ({team})',
       startPts: 'Điểm xuất phát', hcStart: 'xuất phát {n}', noHc: 'không chấp', startSet: 'Bắt đầu set', startLeg: 'Bắt đầu lượt {n}', needMore: 'Hoàn tất các bước để bắt đầu',
       exServer: 'Giao từ ô <b>{c}</b> vì điểm {n} là số {p}.', exRecv: 'Người nhận <b>{r}</b> đứng ô {c} (chéo với người giao, cùng nhãn phải/trái).', exNone: 'Chọn người giao để xem ô giao bóng.',
@@ -71,7 +71,7 @@
       reopened: 'Đã mở lại {u} · người chấm có thể sửa và xác nhận lại', setU: 'set', legU: 'lượt',
     },
     en: {
-      mock: 'MOCKUP', mockups: '← Mockups', liveIdx: 'Live', themeSystem: 'System', themeLight: 'Light', themeDark: 'Dark', theme: 'Theme',
+      mock: 'MOCKUP', mockups: '← Mockups', liveIdx: 'Live', backMatch: 'Back to match', themeSystem: 'System', themeLight: 'Light', themeDark: 'Dark', theme: 'Theme',
       offlineOn: 'Network: off', offlineOff: 'Network: on', reset: '↺ Reset', pauseSim: 'Pause simulation', playSim: 'Run simulation',
       lang: 'Language',
       court: 'Court', set: 'Set', leg: 'Leg', milestone: 'milestone', live: 'LIVE', endsChip: 'Change of ends', medChip: 'Medical timeout', endedChip: 'Set finished', endedLeg: 'Leg finished', retiredChip: 'Retired',
@@ -94,7 +94,7 @@
       rLeg: 'Leg {n}: {a}–{b}, {team2} are credited {m}; {team} keep {k}.', rLater: 'Legs {a}–{b}: left empty.', rMatch: 'Match: {team} lose by retirement (injury); {team2} win.', rBadge: 'The public page shows “Retired (injury)” with {p}’s name.',
       retDone: 'Retirement recorded', retDoneSub: '{p} ({team}) retired with an injury. The result is written to the match.',
       takeTitle: 'Take over scoring for {code}?', takeBody: '{name} will switch to view-only on the next point or realtime message. Only one scorer at a time.', takeLog: 'This action is logged (who, when).',
-      setupTitle: 'Set up set {n} · {type}', setupLegTitle: 'Leg change {n}/5', stEnds: 'Ends', stServe: 'Serving team', stServer: 'Server', stReceiver: 'Receiver',
+      setupTitle: 'Set up set {n} · {type}', setupLegTitle: 'Leg change {n}/5', setupLeg1Title: 'Set up leg 1/5 · relay', stEnds: 'Ends', stServe: 'Serving team', stServer: 'Server', stReceiver: 'Receiver',
       endsPick: 'Choose ends (as seen from the scorer’s seat)', leftEnd: 'Left', rightEnd: 'Right', swap: 'Swap', next: 'Next', pickServe: 'Which team serves first?', pickServer: 'Who serves? ({team})', pickRecv: 'Who receives? ({team})',
       startPts: 'Start points', hcStart: 'starts on {n}', noHc: 'no handicap', startSet: 'Start set', startLeg: 'Start leg {n}', needMore: 'Complete the steps to start',
       exServer: 'Serve from the <b>{c}</b> court because {n} is {p}.', exRecv: 'Receiver <b>{r}</b> stands in the {c} court (diagonal to the server, same right/left label).', exNone: 'Pick the server to see the service court.',
@@ -137,6 +137,8 @@
   const FINISHED = [[31, 24], [27, 31], [31, 22], [29, 31]];
   const MILESTONES = [25, 50, 75, 100, 125];
   const RELAY_LEG = { n: 2, start: { H: 25, A: 19 }, hp: [2, 3], ap: [2, 3] };
+  // Leg 1 starts with the capped net relay handicap (spec §4.3): here the away team starts on 6.
+  const RELAY_LEG1 = { n: 1, start: { H: 0, A: 6 }, hp: [0, 1], ap: [0, 1] };
   const SCORER = 'Bùi Thanh Sơn';
   const OTHER_SCORER = 'Võ Minh Tâm';
   const MED_MS = 5 * 60 * 1000;
@@ -165,11 +167,14 @@
   }
   function relayCtx(P) {
     const num = (v, d) => (v === null || v === '' || isNaN(+v) ? d : +v);
+    const L = P.get('leg') === '1' ? RELAY_LEG1 : RELAY_LEG;
+    // Leg 1: the side that starts at 0 serves first (L1); later legs: the winner of the last rally (L4).
+    const serving = L.n === 1 && L.start.H !== L.start.A ? (L.start.H < L.start.A ? 'H' : 'A') : P.get('serve') === 'A' ? 'A' : 'H';
     return {
-      relay: true, leg: RELAY_LEG.n, milestone: MILESTONES[RELAY_LEG.n - 1], pairs: { H: RELAY_LEG.hp, A: RELAY_LEG.ap }, code: 'SF2', court: 'Sân 1', finished: [[25, 19]],
+      relay: true, leg: L.n, milestone: MILESTONES[L.n - 1], pairs: { H: L.hp, A: L.ap }, code: 'SF2', court: 'Sân 1', finished: L.n === 1 ? [] : [[25, 19]],
       setup: {
-        start: RELAY_LEG.start, target: MILESTONES[RELAY_LEG.n - 1], changeEnds: false,
-        left: P.get('left') === 'H' ? 'H' : 'A', serving: P.get('serve') === 'A' ? 'A' : 'H', server: num(P.get('srv'), 0), receiver: num(P.get('rcv'), 0),
+        start: L.start, target: MILESTONES[L.n - 1], changeEnds: false,
+        left: P.get('left') === 'H' ? 'H' : L.n === 1 ? 'H' : 'A', serving, server: num(P.get('srv'), 0), receiver: num(P.get('rcv'), 0),
       },
     };
   }
@@ -223,7 +228,8 @@
     const ev = events.slice();
     const rnd = () => ((seed = (Math.imul(seed, 1664525) + 1013904223) >>> 0) / 4294967296);
     let st = replay(setup, ev);
-    while (st.score.H < goal.H || st.score.A < goal.A) {
+    // The guard stops a goal the set or leg cannot reach (e.g. past its milestone) instead of looping forever.
+    for (let guard = 0; (st.score.H < goal.H || st.score.A < goal.A) && guard < 400; guard++) {
       if (st.endsDue) ev.push({ k: 'ends' });
       else {
         const rh = goal.H - st.score.H, ra = goal.A - st.score.A;
@@ -244,10 +250,16 @@
   const themeLabel = () => ({ system: t('themeSystem'), light: t('themeLight'), dark: t('themeDark') })[theme];
   const mmss = (ms) => { const s = Math.ceil(ms / 1000); return `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`; };
 
+  // Back to the A5 Scores step (entry flow): the card state that matches where the user came from.
+  function backLink() {
+    const st = { setup: 'ready', score: 'mine', relay: 'mine', viewer: 'other' }[document.body.dataset.screen];
+    if (!st) return '';
+    return `<a href="admin-match.html?state=${st}${roleParam() ? `&role=${roleParam()}` : ''}">← ${t('backMatch')} V07</a>`;
+  }
   function ribbon(extra = '') {
     return `<div class="lv-ribbon mock-ribbon">
       <b class="hidden sm:inline">${t('mock')}</b>
-      <a href="../index.html">${t('mockups')}</a><a href="index.html">${t('liveIdx')}</a>
+      <a href="../index.html">${t('mockups')}</a><a href="index.html">${t('liveIdx')}</a>${backLink()}
       <span class="grow"></span>${extra}
       <button class="lv-rb" id="rb-loc" aria-label="${t('lang')}">${locale === 'vi' ? 'EN' : 'VI'}</button>
       <button class="lv-rb" id="rb-theme" aria-label="${t('theme')}: ${themeLabel()}">${ICON_THEME}<span>${themeLabel()}</span></button>
@@ -346,7 +358,8 @@
       events = synth(ctx.setup, goal);
       if (ro) events = synth(ctx.setup, { H: 12, A: 19 });
       const fin = relay ? { H: ctx.milestone - 1, A: 41 } : { H: 30, A: 27 };
-      if (demo === 'fresh' || demo === 'nextset' || demo === 'legstart') events = [];
+      // Leg 1 of a relay is reached from its setup (admin-match → setup → here): it starts with no rally.
+      if (demo === 'fresh' || demo === 'nextset' || demo === 'legstart' || (relay && ctx.leg === 1 && !demo && P.get('r') === null)) events = [];
       else if (P.get('r') !== null) events = letterEvents(P.get('r')); // coming back from "Sửa thiết lập": same rallies, new setup
       else if (demo === 'ends') { events = synth(ctx.setup, { H: 15, A: 20 }); events.push({ k: 'point', side: 'H' }); }
       else if (demo === 'end') { events = synth(ctx.setup, fin); events.push({ k: 'point', side: 'H' }); }
@@ -539,7 +552,7 @@
       }
       if (k === 'next') {
         const last = relay ? ctx.leg === 5 : ctx.setNo === 5;
-        if (last) return `<div class="ov-card"><h2 id="ov-h" class="ov-title">${t('matchDone')}</h2>${finalLine()}<p class="ov-sub">${t('matchDoneSub')}</p><div class="ov-actions"><a class="btn btn-primary btn-xl" data-focus href="index.html">${t('backToList')}</a></div></div>`;
+        if (last) return `<div class="ov-card"><h2 id="ov-h" class="ov-title">${t('matchDone')}</h2>${finalLine()}<p class="ov-sub">${t('matchDoneSub')}</p><div class="ov-actions"><a class="btn btn-primary btn-xl" data-focus href="admin-matches.html">${t('backToList')}</a></div></div>`;
         if (relay) return `<div class="ov-card"><div class="eyebrow">${t('savedLeg', { n: ctx.leg })}</div><h2 id="ov-h" class="ov-title">${S.score.H}–${S.score.A}</h2><p class="ov-sub">${t('nextLeg', { n: ctx.leg + 1 })}</p><div class="ov-actions"><a class="btn btn-primary btn-xl" data-focus href="setup.html?mode=relay">${t('toLegSetup')}</a></div></div>`;
         return `<div class="ov-card"><div class="eyebrow">${t('savedSet', { n: ctx.setNo })}</div><h2 id="ov-h" class="ov-title">${S.score.H}–${S.score.A}</h2>
           <p class="ov-sub">${t('nextSet', { n: ctx.setNo + 1, type: t('type_' + SETS[ctx.setNo].type) })}</p>
@@ -635,7 +648,7 @@
       rows += li('neu', 'i', t('rBadge', { p: `<b>${esc(pl)}</b>` }));
       if (done) {
         return `<div class="ov-card"><div class="eyebrow">${t('retiredChip')}</div><h2 id="ov-h" class="ov-title">${t('retDone')}</h2><p class="ov-sub">${t('retDoneSub', { p: esc(pl), team: esc(tm) })}</p><ul class="conseq">${rows}</ul>
-          <div class="ov-actions"><a class="btn btn-primary btn-xl" data-focus href="index.html">${t('backToList')}</a></div></div>`;
+          <div class="ov-actions"><a class="btn btn-primary btn-xl" data-focus href="admin-matches.html">${t('backToList')}</a></div></div>`;
       }
       return `<div class="ov-card"><div class="eyebrow">${t('injury')}</div><h2 id="ov-h" class="ov-title">${t('retTitle')}</h2><p class="ov-sub">${t('retSub', { p: esc(pl), team: esc(tm) })}</p><ul class="conseq">${rows}</ul>
         <div class="ov-actions"><button class="btn btn-loss btn-xl" data-act="rconfirm" data-focus type="button">${t('retConfirm')}</button><button class="btn btn-lg" data-act="rback" type="button">${t('back')}</button></div></div>`;
@@ -725,9 +738,12 @@
   // =====================================================================================
   function mountSetup() {
     const P = new URLSearchParams(location.search);
-    const relay = P.get('mode') === 'relay';
+    // leg1: the start of a relay match is set up like the start of a set (ends, then the L1 serve rule);
+    // `relay` below means a leg change (L3/L4).
+    const leg1 = P.get('mode') === 'relay' && P.get('leg') === '1';
+    const relay = P.get('mode') === 'relay' && !leg1;
     const setNo = +P.get('set') >= 1 && +P.get('set') <= 5 ? +P.get('set') : 3;
-    const ctx = relay ? relayCtx(new URLSearchParams()) : groupCtx(setNo, new URLSearchParams());
+    const ctx = relay || leg1 ? relayCtx(new URLSearchParams(leg1 ? 'leg=1' : '')) : groupCtx(setNo, new URLSearchParams());
     const start = ctx.setup.start;
     // Relay: ends change at the leg change (L3) and the winner of the last rally serves first (L4).
     // Group set with a handicap: the side that starts at 0 serves first (L1). Only a 0–0 start asks who serves.
@@ -762,7 +778,7 @@
       }
       return { left: sel.left, pos, server, receiver, pairs: ctx.pairs };
     }
-    const titleTxt = () => (edit ? t(relay ? 'editLegTitle' : 'editTitle', { n: relay ? ctx.leg : setNo }) : relay ? t('setupLegTitle', { n: ctx.leg }) : t('setupTitle', { n: setNo, type: t('type_' + ctx.type) }));
+    const titleTxt = () => (edit ? t(relay || leg1 ? 'editLegTitle' : 'editTitle', { n: relay || leg1 ? ctx.leg : setNo }) : leg1 ? t('setupLeg1Title') : relay ? t('setupLegTitle', { n: ctx.leg }) : t('setupTitle', { n: setNo, type: t('type_' + ctx.type) }));
     const startTeam = (s) => `<div class="t" style="--tc:${TEAM[s].color}"><b>${esc(TEAM[s].name)}${!relay && start[s] > 0 ? ` <span class="hc">${t('hcStart', { n: start[s] })}</span>` : ''}</b><span class="v">${start[s]}</span><small>${relay ? t('cumul') : start[s] > 0 ? t('hcStart', { n: start[s] }) : t('noHc')}</small></div>`;
 
     function stepPanel() {
@@ -791,12 +807,12 @@
       const labels = [t('stEnds'), t('stServe'), t('stServer'), t('stReceiver')];
       const skip = (i) => i < minStep || (i === 1 && fixedServe);
       const role = roleParam() ? `&role=${roleParam()}` : '';
-      const page = relay ? `relay.html?leg=${ctx.leg}` : `score.html?set=${setNo}`;
+      const page = relay || leg1 ? `relay.html?leg=${ctx.leg}` : `score.html?set=${setNo}`;
       const url = `${page}&left=${sel.left}&serve=${sel.serving}&srv=${sel.server}&rcv=${sel.receiver}${edit ? `&r=${rallies}` : ''}${role}`;
       const cancelUrl = `${page}&left=${P.get('left')}&serve=${P.get('serve')}&srv=${P.get('srv')}&rcv=${P.get('rcv')}&r=${rallies}${role}`;
       root.innerHTML = `${ribbon()}
       <div class="su">
-        <div><div class="eyebrow">${ctx.code} · ${ctx.court} · ${relay ? `${t('leg')} ${ctx.leg}/5` : `${t('set')} ${setNo}/5`}</div><h1>${titleTxt()}</h1></div>
+        <div><div class="eyebrow">${ctx.code} · ${ctx.court} · ${relay || leg1 ? `${t('leg')} ${ctx.leg}/5` : `${t('set')} ${setNo}/5`}</div><h1>${titleTxt()}</h1></div>
         ${relay ? `<div class="banner-ends">${ICON_SWAP}<div><b>${t('relayBanner')}</b><span class="text-sm">${t('relayBannerSub', { n: ctx.leg, m: ctx.milestone, a: start.H, b: start.A })}</span></div></div>` : ''}
         ${edit ? `<div class="explain" role="note">${t('editNote', { a: editScore.H, b: editScore.A })}</div>` : ''}
         <div class="sp">${['H', 'A'].map(startTeam).join('')}</div>
@@ -932,7 +948,7 @@
       <header class="topbar"><div class="gutter max-w-6xl mx-auto flex items-center gap-4 h-14"><a href="../public/home.html" class="wordmark">ABT<i>·</i>27</a>
         <nav class="hidden md:flex items-center gap-1 ml-2"><a class="navlink" href="../public/home.html">${t('pHome')}</a><a class="navlink" href="../public/standings.html">${t('pStand')}</a><a class="navlink" href="../public/matches.html" aria-current="page">${t('pMatches')}</a><a class="navlink" href="../public/bracket.html">${t('pBracket')}</a></nav></div></header>
       <main class="pw">
-        <div class="text-sm text-muted"><a class="hover:underline" href="../public/matches.html">← ${t('pMatches')}</a> · <b class="display text-fg text-base">${ctx.code}</b> · ${t('group')} · ${t('round')} 4 · ${ctx.court} · 10:30</div>
+        <div class="text-sm text-muted"><a class="hover:underline" href="public-matches.html">← ${t('pMatches')}</a> · <b class="display text-fg text-base">${ctx.code}</b> · ${t('group')} · ${t('round')} 4 · ${ctx.court} · 10:30</div>
         <section class="panel pbd" aria-label="${t('live')}">
           <div class="pbd-top">${chip()}<span class="chip">${t('set')} ${ctx.setNo} · ${t('type_' + ctx.type)}</span>${['H', 'A'].filter((s) => setup.start[s] > 0).map((s) => `<span class="hc">${esc(TEAM[s].name)} +${setup.start[s]}</span>`).join('')}</div>
           <div class="pbd-grid">${team('H')}<div class="sets-mid"><span class="eyebrow">${t('setsWon')}</span><span class="v">${setsH}–${setsA}</span></div>${team('A')}</div>

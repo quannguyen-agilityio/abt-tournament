@@ -294,3 +294,34 @@ button.ptag.pick { box-shadow: 0 0 0 2px rgb(var(--accent)); }
 .ov-card[data-sheet] { max-height: calc(100dvh - 32px); overflow-y: auto; }
 .toast { position: absolute; left: 12px; right: 12px; bottom: 76px; z-index: 70; padding: 10px 14px; border-radius: 12px; background: rgb(var(--fg)); color: rgb(var(--surface)); font-size: 14px; font-weight: 600; text-align: center; box-shadow: 0 10px 30px rgb(0 0 0 / 0.25); }
 .toast[hidden] { display: none; }
+
+/* ---------- entry flow into live scoring (live-entry.js): A5 list / card, P1, P3 ---------- */
+.lv-card { display: grid; gap: 12px; padding: 16px; border: 1px solid rgb(var(--line)); border-radius: 14px; background: rgb(var(--surface)); min-width: 0; }
+.lv-card.on { border-color: rgb(var(--accent)); box-shadow: 0 0 0 1px rgb(var(--accent)); }
+.lv-card.live { border-color: rgb(var(--loss) / 0.45); }
+.lv-card.off { background: rgb(var(--surface2)); }
+.lv-card .btn-xl, .lv-card .btn-lg { width: 100%; }
+.lv-board { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 12px; align-items: end; padding: 10px 12px; border-radius: 10px; background: rgb(var(--surface2)); }
+.lv-board > div { display: grid; gap: 2px; min-width: 0; }
+.lv-board b { font-size: 30px; font-weight: 800; line-height: 1; letter-spacing: 0.01em; }
+.lv-board-sets { text-align: right; justify-items: end; }
+.lv-direct { display: grid; gap: 6px; padding-top: 12px; border-top: 1px solid rgb(var(--line)); }
+.lv-route { min-width: 0; flex: 1 1 200px; padding: 6px 8px; border-radius: 8px; border: 1px dashed rgb(var(--line)); background: rgb(var(--surface2)); font-size: 12.5px; overflow-wrap: anywhere; }
+.lv-ro { background: rgb(var(--surface2) / 0.55); }
+.lv-livelist .lv-row { text-decoration: none; color: inherit; }
+.lv-nowcard { border-color: rgb(var(--loss) / 0.35); }
+.lv-serve { display: inline-flex; flex: none; color: rgb(var(--warn)); }
+.lv-curset { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; padding-top: 8px; border-top: 1px solid rgb(var(--line)); }
+.lv-curset b { font-size: 22px; font-weight: 700; }
+.lv-fchip { display: inline-flex; align-items: center; gap: 8px; min-height: 40px; padding: 0 14px; border-radius: 999px; border: 1px solid rgb(var(--line)); background: rgb(var(--surface)); font-size: 14px; font-weight: 600; text-decoration: none; color: rgb(var(--fg)); }
+.lv-fchip:hover { background: rgb(var(--surface2)); }
+.lv-fchip[aria-current='true'] { background: rgb(var(--fg)); color: rgb(var(--surface)); border-color: transparent; }
+.lv-fchip[aria-current='true'] .num { color: inherit; opacity: 0.7; }
+.lv-fchip .chip-live { color: rgb(var(--loss)); }
+/* Phone: the committee/referee switch moves into the ribbon so the card's button sits near the top. */
+@media (max-width: 1023px) { body[data-live-entry] .side > .panel { display: none; } }
+/* The Phase 1 header is a few px too wide at 360 and (public) at 1024; tighten it on the entry-flow pages only. */
+@media (max-width: 479px) { body[data-live-entry] .topbar #season-select { max-width: 5.75rem; } body[data-live-entry] .topbar .gutter { gap: 8px; } }
+@media (min-width: 1024px) and (max-width: 1279px) { body[data-live-entry] .topbar .navlink { padding-left: 6px; padding-right: 6px; font-size: 13px; } body[data-live-entry] .topbar #theme-btn span { display: none; } body[data-live-entry] .topbar .gutter { gap: 8px; } }
+body[data-live-entry] .side nav a { white-space: nowrap; }
+body[data-live-entry] .lv-ribbon { height: auto; min-height: 32px; padding-top: 4px; padding-bottom: 4px; }

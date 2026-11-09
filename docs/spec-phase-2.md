@@ -162,6 +162,44 @@ The current set's stored score still satisfies §4.4 (one side at target, the ot
 
 ## 8. Screens
 
+### 8.0 Entry flow
+
+How each user reaches live scoring, from login to the scoring screen.
+
+```text
+Login (BTC / referee)
+  → Admin › Matches (A5 list)          live matches first, then "My matches" for a referee
+  → Match (A5): Attendance → Lineups → Lock      no substitution after the lock in a live match (L6)
+  → Scores step (L-A)
+       ├─ Start live scoring        → set / leg setup (L-B) → scoring (L-C)
+       ├─ Resume (I hold the lock)  → scoring (L-C) at the current set
+       ├─ Someone else is scoring   → read-only viewer (L-H) · Take over
+       └─ Enter final scores        Phase 1 fallback, only for slots with no live event
+```
+
+**A5 list (Matches):**
+
+- A section **Đang chấm trực tiếp** at the top lists every `in_progress` match with a live slot. Each row has the LIVE chip, the court, the current set and score (`Set 3 · 9–16`) and the scorer's name.
+- A match whose lineups are locked shows **Sẵn sàng chấm**.
+- Tapping a live match opens A5 at the Scores step.
+
+**A5 Scores step (L-A):** a **Live scoring** card above the Phase 1 entry grid. Its state follows the lock (§5):
+
+| State                                   | Card                                                                                                                                       |
+| --------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
+| Lineups not locked                      | Disabled, with "Khoá đội hình trước khi chấm"                                                                                            |
+| Locked, nobody scoring, no live event   | **Bắt đầu chấm trực tiếp** (primary). Claims the lock and opens the setup of set 1 (or relay leg 1)                                       |
+| I hold the lock                         | **Tiếp tục chấm** with the current set and score. Opens the scoring screen; a set that ended but is not confirmed opens its L-E prompt  |
+| Another user holds the lock             | "Đang chấm bởi {name} · từ {time}", **Xem trực tiếp** (L-H) and **Nhận quyền chấm** (confirmation, audited)                               |
+| Match completed                         | Summary per set; **Mở lại set** for the BTC (§4.5)                                                                                         |
+
+- The Phase 1 entry grid stays below the card. A row whose slot has live events is read-only there ("Chấm trực tiếp"), so the two ways cannot overwrite each other. A slot entered as a final score cannot be scored live.
+- Opening the scoring screen asks for a screen Wake Lock. If the lock moves while the screen is open, it switches to read-only (§5).
+
+**Direct link:** the scoring screen has its own route, `/admin/seasons/{year}/matches/{code}/live`. It needs the same role and shows the A5 card state when the user does not hold the lock, so a bookmark or a link shared in chat works.
+
+**Public:** visitors need no action. P1 and P3 show the LIVE chip on live matches (§8.2), and tapping one opens P4 with the live panel.
+
 ### 8.1 Scorer (admin, phone first)
 
 | ID  | Screen            | Content                                                                                                                                                                                                                     |
@@ -184,7 +222,7 @@ The current set's stored score still satisfies §4.4 (one side at target, the ot
 | Screen  | Change                                                                                                                                              |
 | ------- | --------------------------------------------------------------------------------------------------------------------------------------------------- |
 | P4      | **Live panel** at the top while a slot is live: score, server (shuttle icon), "Đổi sân" or timeout state, and a rally timeline (score worm) of the current set. Finished sets keep the Phase 1 rows. |
-| P1, P3  | Live matches show a **LIVE** chip and the current set score (for example `Set 3 · 14–11`).                                                          |
+| P1, P3  | Live matches show a **LIVE** chip and the current set score (for example `Set 3 · 14–11`). On P1, the "Now" block per court puts live matches first, with the set score of the match (`1–1`) and the current set score. P3 lets visitors filter on **Đang live**. |
 
 **Realtime:** P4 subscribes to `live_event` inserts for its match through Supabase Realtime and replays the log in the browser. P1 and P3 keep the 30 s refresh (§5). If the realtime channel drops, P4 falls back to the same 30 s refresh.
 
