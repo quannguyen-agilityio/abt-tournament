@@ -68,7 +68,11 @@
       reasonLbl: 'Lý do mở lại (bắt buộc)', reasonHint: 'Lý do được ghi vào nhật ký thay đổi.', reopenBtn: 'Mở lại {u}', reopenQ: 'Mở lại {u}?',
       cSetCleared: 'Tỉ số {u} bị xoá tạm cho tới khi xác nhận lại', cMatchLive: 'Trận chuyển về Đang đấu, BXH cập nhật', cAudit: 'Ghi vào nhật ký thay đổi',
       blkOnlyLast: 'Chỉ mở lại được lượt cuối đã xác nhận', blkHasPoints: 'Lượt hiện tại đã có điểm — hoàn tác hết điểm của lượt này trước',
-      reopened: 'Đã mở lại {u} · người chấm có thể sửa và xác nhận lại', setU: 'set', legU: 'lượt',
+      reopened: 'Đã mở lại {u} · người chấm bấm vào ô {u} để sửa rồi xác nhận lại', setU: 'set', legU: 'lượt',
+      fixAria: '{u}: đang sửa. Mở để sửa', fixBanner: 'Đang sửa {u} · mở lại bởi BTC',
+      retReopened: 'Đã xóa bỏ cuộc và các kết quả xử thua · người chấm tiếp tục trận', shRetired: 'Đã ghi nhận bỏ cuộc', shRetiredSub: '{p} ({team}) bỏ cuộc vì chấn thương. Chỉ BTC mở lại được.', reopenRet: 'Mở lại bỏ cuộc',
+      cRetireClr: 'Ghi nhận bỏ cuộc của {p} bị xoá, người chấm tiếp tục trận', cForfeitSets: 'Các set bị xử thua do bỏ cuộc cũng được xóa', cForfeitLegs: 'Kết quả xử thua do bỏ cuộc cũng được xóa',
+      wlOn: 'Màn hình luôn sáng', wlOff: 'Không giữ được màn hình sáng — hãy tắt tự khóa',
     },
     en: {
       mock: 'MOCKUP', mockups: '← Mockups', liveIdx: 'Live', backMatch: 'Back to match', themeSystem: 'System', themeLight: 'Light', themeDark: 'Dark', theme: 'Theme',
@@ -112,7 +116,11 @@
       reasonLbl: 'Reason for reopening (required)', reasonHint: 'The reason is written to the change log.', reopenBtn: 'Reopen {u}', reopenQ: 'Reopen {u}?',
       cSetCleared: 'The score of {u} is cleared until it is confirmed again', cMatchLive: 'The match goes back to In progress and the standings update', cAudit: 'Written to the change log',
       blkOnlyLast: 'Only the last confirmed leg can be reopened', blkHasPoints: 'The current leg already has points — undo all of its points first',
-      reopened: '{u} reopened · the scorer can fix it and confirm again', setU: 'set', legU: 'leg',
+      reopened: '{u} reopened · the scorer taps the {u} cell to fix it and confirm again', setU: 'set', legU: 'leg',
+      fixAria: '{u}: being corrected. Open to fix', fixBanner: 'Fixing {u} · reopened by the organiser',
+      retReopened: 'Retirement and forfeit results cleared · the scorer continues the match', shRetired: 'Retirement recorded', shRetiredSub: '{p} ({team}) retired with an injury. Only the organiser can reopen it.', reopenRet: 'Reopen retirement',
+      cRetireClr: 'The retirement of {p} is cleared and the scorer continues the match', cForfeitSets: 'Sets forfeited because of the retirement are cleared too', cForfeitLegs: 'The forfeit result caused by the retirement is cleared too',
+      wlOn: 'Screen stays on', wlOff: 'Cannot keep the screen on — turn off auto-lock',
     },
   };
   const t = (k, v) => {
@@ -122,10 +130,18 @@
   };
 
   // ---------- fake data ----------
-  const TEAM = {
+  const TEAM_GROUP = {
     H: { name: 'Sấm Sét', color: '#E4572E', roster: ['Trần Minh Khang', 'Lê Gia Bảo', 'Phạm Hữu Phúc', 'Hoàng Thu Lan', 'Đỗ Công Long'] },
     A: { name: 'Lông Vũ Xanh', color: '#2E86AB', roster: ['Nguyễn Quốc Hưng', 'Võ Mỹ Vy', 'Đặng Văn Kiên', 'Bùi Ngọc Mai', 'Hồ Đức Tú'] },
   };
+  // Relay pages show the final F of data.js (lineup_locked, Sân 1, 14:45): Gió Ngược vs Smash Bros, leg pairs = indexes [0,1] and [2,3].
+  const TEAM_RELAY = {
+    H: { name: 'Gió Ngược', color: '#2A9D8F', roster: ['Lê Thanh Thông', 'Ngô Khánh Nhàn', 'Vũ Ngọc Hạnh', 'Phan Văn Thông', 'Vũ Gia Tín'] },
+    A: { name: 'Smash Bros', color: '#8B5CF6', roster: ['Nguyễn Hữu Luân', 'Hồ Bảo Vy', 'Phan Ngọc Diễm', 'Lý Bảo Diễm', 'Phan Thanh Tín'] },
+  };
+  const PAGE_Q = new URLSearchParams(location.search);
+  const RELAY_MODE = document.body.dataset.screen === 'relay' || (['setup', 'viewer'].includes(document.body.dataset.screen) && PAGE_Q.get('mode') === 'relay');
+  const TEAM = RELAY_MODE ? TEAM_RELAY : TEAM_GROUP;
   // Five sets, each with its own pairs (indexes into the rosters) and handicap start points.
   const SETS = [
     { type: 'open', hp: [0, 1], ap: [0, 1], start: { H: 0, A: 0 } },
@@ -135,10 +151,11 @@
     { type: 'open', hp: [0, 4], ap: [0, 4], start: { H: 0, A: 5 } },
   ];
   const FINISHED = [[31, 24], [27, 31], [31, 22], [29, 31]];
+  const FINAL_SET5 = [31, 28]; // set 5 of V07 (only used to rebuild a reopened set 5)
   const MILESTONES = [25, 50, 75, 100, 125];
   const RELAY_LEG = { n: 2, start: { H: 25, A: 19 }, hp: [2, 3], ap: [2, 3] };
-  // Leg 1 starts with the capped net relay handicap (spec §4.3): here the away team starts on 6.
-  const RELAY_LEG1 = { n: 1, start: { H: 0, A: 6 }, hp: [0, 1], ap: [0, 1] };
+  // Leg 1 starts with the capped net relay handicap (spec §4.3): F has relayStart [0, 5], so the away team starts on 5.
+  const RELAY_LEG1 = { n: 1, start: { H: 0, A: 5 }, hp: [0, 1], ap: [0, 1] };
   const SCORER = 'Bùi Thanh Sơn';
   const OTHER_SCORER = 'Võ Minh Tâm';
   const MED_MS = 5 * 60 * 1000;
@@ -171,7 +188,7 @@
     // Leg 1: the side that starts at 0 serves first (L1); later legs: the winner of the last rally (L4).
     const serving = L.n === 1 && L.start.H !== L.start.A ? (L.start.H < L.start.A ? 'H' : 'A') : P.get('serve') === 'A' ? 'A' : 'H';
     return {
-      relay: true, leg: L.n, milestone: MILESTONES[L.n - 1], pairs: { H: L.hp, A: L.ap }, code: 'SF2', court: 'Sân 1', finished: L.n === 1 ? [] : [[25, 19]],
+      relay: true, leg: L.n, milestone: MILESTONES[L.n - 1], pairs: { H: L.hp, A: L.ap }, code: 'F', court: 'Sân 1', finished: L.n === 1 ? [] : [[25, 19]],
       setup: {
         start: L.start, target: MILESTONES[L.n - 1], changeEnds: false,
         left: P.get('left') === 'H' ? 'H' : L.n === 1 ? 'H' : 'A', serving, server: num(P.get('srv'), 0), receiver: num(P.get('rcv'), 0),
@@ -245,6 +262,8 @@
   const ICON_THEME = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>';
   const ICON_SWAP = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 8h15M15 4l4 4-4 4M20 16H5M9 12l-4 4 4 4"/></svg>';
   const ICON_UNDO = '<svg class="lv-ico" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 14 4 9l5-5"/><path d="M4 9h10a6 6 0 0 1 0 12h-3"/></svg>';
+  const ICON_SUN = '<svg class="lv-ico" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>';
+  const ICON_LOCK = '<svg class="lv-ico" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>';
   const ICON_DOTS = '<svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="12" cy="5" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="12" cy="19" r="2"/></svg>';
   const sw = (side) => `<span class="swatch" style="background:${TEAM[side].color}"></span>`;
   const themeLabel = () => ({ system: t('themeSystem'), light: t('themeLight'), dark: t('themeDark') })[theme];
@@ -254,7 +273,8 @@
   function backLink() {
     const st = { setup: 'ready', score: 'mine', relay: 'mine', viewer: 'other' }[document.body.dataset.screen];
     if (!st) return '';
-    return `<a href="admin-match.html?state=${st}${roleParam() ? `&role=${roleParam()}` : ''}">← ${t('backMatch')} V07</a>`;
+    const code = RELAY_MODE ? 'F' : 'V07';
+    return `<a href="admin-match.html?code=${code}&state=${st}${roleParam() ? `&role=${roleParam()}` : ''}">← ${t('backMatch')} ${code}</a>`;
   }
   function ribbon(extra = '') {
     return `<div class="lv-ribbon mock-ribbon">
@@ -340,33 +360,43 @@
     const P = new URLSearchParams(location.search);
     const demo = P.get('demo');
     const ro = kind === 'viewer';
-    const relay = kind === 'relay';
+    const relay = kind === 'relay' || (ro && RELAY_MODE);
+    const fix = !ro && P.get('fix') === '1'; // opened from a reopened set / leg: rebuilt to its finished score, ended but not confirmed
     let ctx = relay ? relayCtx(P) : groupCtx(demo === 'nextset' ? 4 : +P.get('set') >= 1 && +P.get('set') <= 5 ? +P.get('set') : 3, P);
     let events = [];
     let role = roleParam() || (store.get('abt.role') === 'btc' ? 'btc' : 'referee'); // URL param wins over the stored role
     const reopened = new Set(); // mock outcome: finished sets / legs now marked "Đang sửa"
     const confirmedAt = {};
     let S;
-    const ui = { sheet: null, reason: '', toast: '', ov: null, ovKey: '', menu: false, offline: false, pending: 0, paused: false, prev: null, flush: null };
+    const ui = { sheet: null, reason: '', toast: '', ov: null, ovKey: '', menu: false, offline: false, pending: 0, paused: false, prev: null, flush: null, wl: null, lock: null };
     const scorerName = ro ? OTHER_SCORER : SCORER;
     const root = $('#app');
     const el = (sel) => $(sel, root);
 
     // initial / demo logs
     function seedLog() {
-      const goal = relay ? { H: 39, A: 31 } : { H: 9, A: 16 };
+      const goal = relay ? { H: 31, A: 27 } : { H: 9, A: 16 };
       events = synth(ctx.setup, goal);
-      if (ro) events = synth(ctx.setup, { H: 12, A: 19 });
+      if (ro) events = synth(ctx.setup, relay ? { H: 31, A: 27 } : { H: 12, A: 19 });
       const fin = relay ? { H: ctx.milestone - 1, A: 41 } : { H: 30, A: 27 };
       // Leg 1 of a relay is reached from its setup (admin-match → setup → here): it starts with no rally.
-      if (demo === 'fresh' || demo === 'nextset' || demo === 'legstart' || (relay && ctx.leg === 1 && !demo && P.get('r') === null)) events = [];
+      if (fix) {
+        // The winner's last point is pushed on top of the rebuilt rallies, like demo=end, so the end-of-set overlay shows with Undo available.
+        const [fh, fa] = relay ? [25, 19] : FINISHED.concat([FINAL_SET5])[ctx.setNo - 1];
+        const w = fh > fa ? 'H' : 'A';
+        events = synth(ctx.setup, { H: w === 'H' ? fh - 1 : fh, A: w === 'A' ? fa - 1 : fa });
+        events.push({ k: 'point', side: w });
+      }
+      else if (demo === 'fresh' || demo === 'nextset' || demo === 'legstart' || (relay && ctx.leg === 1 && !demo && P.get('r') === null) || (relay && demo === 'reopen' && !ro)) events = [];
       else if (P.get('r') !== null) events = letterEvents(P.get('r')); // coming back from "Sửa thiết lập": same rallies, new setup
       else if (demo === 'ends') { events = synth(ctx.setup, { H: 15, A: 20 }); events.push({ k: 'point', side: 'H' }); }
       else if (demo === 'end') { events = synth(ctx.setup, fin); events.push({ k: 'point', side: 'H' }); }
-      else if (demo === 'timeout') { events = synth(ctx.setup, relay ? { H: 39, A: 31 } : { H: 14, A: 19 }); events.push({ k: 'timeout_start', player: { side: 'A', k: 0 }, at: Date.now() - 48000 }); }
+      else if (demo === 'timeout') { events = synth(ctx.setup, relay ? { H: 31, A: 27 } : { H: 14, A: 19 }); events.push({ k: 'timeout_start', player: { side: 'A', k: 0 }, at: Date.now() - 48000 }); }
       else if (demo === 'retire') {
         events = synth(ctx.setup, relay ? { H: 41, A: 33 } : { H: 22, A: 18 });
-        events.push({ k: 'timeout_start', player: { side: 'A', k: 0 }, at: Date.now() - MED_MS - 1000 }); ui.ov = 'retire';
+        events.push({ k: 'timeout_start', player: { side: 'A', k: 0 }, at: Date.now() - MED_MS - 1000 });
+        // ?after=1: the retirement is already confirmed, so the BTC can try "Mở lại bỏ cuộc" (spec §4.5)
+        if (P.get('after') === '1') events.push({ k: 'retire', player: { side: 'A', k: 0 } }); else ui.ov = 'retire';
       }
     }
 
@@ -382,14 +412,15 @@
           <div class="pl" data-pl="${s}"></div><div class="big" data-big="${s}" aria-hidden="true">0</div></section>`).join('');
       const buttons = ['H', 'A'].map((s) => `<div class="b-slot b-${s}" style="--tc:${TEAM[s].color}"><button class="plus" type="button" data-act="plus" data-side="${s}" aria-label="${esc(t('plusAria', { team: TEAM[s].name }))}">+1<small>${esc(t('plusLabel', { team: TEAM[s].name }))}</small></button></div>`).join('');
       root.innerHTML = `${ribbon(ro ? `<button class="lv-rb" id="rb-pause" aria-pressed="false">${t('pauseSim')}</button>` : `<button class="lv-rb" id="rb-role" aria-pressed="${role === 'btc'}" aria-label="${t('role')}: ${roleName()}">${t('role')}: ${roleName()}</button><button class="lv-rb" id="rb-net" aria-pressed="${ui.offline}">${ui.offline ? t('offlineOff') : t('offlineOn')}</button><button class="lv-rb" id="rb-reset">${t('reset')}</button>`)}
-      <div class="sc ${ro ? 'ro' : ''}" id="sc" data-mode="${kind}">
+      <div class="sc ${ro ? 'ro' : ''}" id="sc" data-mode="${relay ? 'relay' : kind}">
         <header class="sc-top sc-pad">
           <div class="sc-code">${ctx.code}<small>${ctx.court}</small></div>
           <div class="sc-mid"><span class="sc-set" id="midlabel">${mid}</span><span class="chip chip-live" id="statechip">${t('live')}</span></div>
           ${ro ? '' : `<div class="sc-menu"><button class="iconbtn" id="menu-btn" type="button" aria-haspopup="menu" aria-expanded="false" aria-label="${t('menu')}">${ICON_DOTS}</button>
-            <div class="menu" id="menu" role="menu" hidden><button role="menuitem" data-act="edit-setup">${t('editSetup')}</button><button role="menuitem" class="warnrow" data-act="injury">${t('injury')}</button><a role="menuitem" href="viewer.html">${t('takeover')}</a></div></div>`}
+            <div class="menu" id="menu" role="menu" hidden><button role="menuitem" data-act="edit-setup">${t('editSetup')}</button><button role="menuitem" class="warnrow" data-act="injury">${t('injury')}</button><a role="menuitem" href="viewer.html${relay ? '?mode=relay' : ''}">${t('takeover')}</a></div></div>`}
         </header>
-        <div class="sc-status sc-pad"><span class="net net-ok" id="net" role="status"></span><span class="who">${t('scorer')}: ${esc(scorerName)}</span></div>
+        <div class="sc-status sc-pad"><span class="net net-ok" id="net" role="status"></span>${ro ? '' : `<span class="sc-wl" id="wl" role="status"></span>`}<span class="who">${t('scorer')}: ${esc(scorerName)}</span></div>
+        ${fix ? `<div class="fix-banner sc-pad" role="note">${t('fixBanner', { u: unitOf(relay ? ctx.leg : ctx.setNo) })}</div>` : ''}
         ${strip}
         ${ro ? `<div class="vw-banner sc-pad"><span class="chip">${t('readOnly')}</span><div class="txt"><b>${t('scoringBy', { name: esc(OTHER_SCORER) })}</b><br><span class="text-muted">${t('scoringByHint')}</span></div><button class="btn btn-primary btn-sm" data-act="take-open" type="button">${t('takeover')}</button></div>` : ''}
         <main class="sc-main" id="main" data-left="${ctx.setup.left}">
@@ -445,7 +476,8 @@
         if (n < curNo || (n === curNo && S.confirmed)) {
           const [h, a] = n < curNo ? ctx.finished[n - 1] : [S.score.H, S.score.A];
           c.classList.add('done'); c.style.setProperty('--wc', TEAM[h > a ? 'H' : 'A'].color);
-          if (reopened.has(n)) { b.textContent = t('editing'); c.classList.add('edit'); btn.setAttribute('aria-label', t('editingAria', { u: cap1(unitOf(n)) })); }
+          btn.dataset.act = 'sheet';
+          if (reopened.has(n)) { b.textContent = t('editing'); c.classList.add('edit'); btn.disabled = false; btn.dataset.act = 'fix'; btn.setAttribute('aria-label', t('fixAria', { u: cap1(unitOf(n)) })); }
           else { b.textContent = `${h}–${a}`; btn.disabled = false; btn.setAttribute('aria-label', t(relay ? 'openLegAria' : 'openSetAria', { n, score: `${h}–${a}` })); }
         }
         else if (n === curNo) { b.textContent = `${S.score.H}–${S.score.A}`; c.classList.add('cur'); c.setAttribute('aria-current', 'true'); }
@@ -464,10 +496,26 @@
       lastEl.classList.toggle('lock', locked);
       lastEl.textContent = lastR ? `${t('lastPoint', { team: TEAM[lastR.side].name })} · #${S.rallies.length}` : locked ? t(relay ? 'undoLockedLeg' : 'undoLockedSet') : t('noPoints');
       el('#live-region').textContent = `${t('scoreAria', { ta: TEAM[S.left].name, a: S.score[S.left], tb: TEAM[other(S.left)].name, b: S.score[other(S.left)] })} ${plain(svc)}`;
-      renderNet();
+      renderNet(); renderWl();
       syncOverlay();
     }
 
+    function renderWl() {
+      const w = el('#wl');
+      if (!w) return;
+      const on = ui.wl === 'on';
+      w.className = `sc-wl ${on ? 'on' : 'off'}`;
+      w.innerHTML = ui.wl ? `${on ? ICON_SUN : ICON_LOCK}<span>${t(on ? 'wlOn' : 'wlOff')}</span>` : '';
+    }
+    // Screen Wake Lock: released by the browser whenever the tab hides, so it is requested again when the page is visible.
+    function acquireWl() {
+      if (ro) return;
+      if (!(navigator.wakeLock && navigator.wakeLock.request)) { ui.wl = 'off'; renderWl(); return; }
+      navigator.wakeLock.request('screen').then((l) => {
+        ui.lock = l; ui.wl = 'on'; renderWl();
+        l.addEventListener('release', () => { if (ui.lock === l) { ui.wl = 'off'; renderWl(); } });
+      }, () => { ui.wl = 'off'; renderWl(); });
+    }
     function renderNet() {
       const n = el('#net');
       if (!n) return;
@@ -576,13 +624,23 @@
       if (k === 'takeover') {
         return `<div class="ov-card"><h2 id="ov-h" class="ov-title" style="font-size:clamp(30px,9vw,44px)">${t('takeTitle', { code: ctx.code })}</h2>
           <p class="ov-sub" style="font-size:15px">${t('takeBody', { name: esc(OTHER_SCORER) })}</p><p class="ov-sub">${t('takeLog')}</p>
-          <div class="ov-actions"><a class="btn btn-primary btn-xl" data-focus href="score.html">${t('takeover')}</a><button class="btn btn-lg" data-act="take-close" type="button">${t('cancel')}</button></div></div>`;
+          <div class="ov-actions"><a class="btn btn-primary btn-xl" data-focus href="${relay ? 'relay' : 'score'}.html${roleParam() ? `?role=${roleParam()}` : ''}">${t('takeover')}</a><button class="btn btn-lg" data-act="take-close" type="button">${t('cancel')}</button></div></div>`;
       }
       return '';
     }
     // Confirmed set / leg: read-only for the referee, reopen form for the BTC (spec §4.5). Relay legs are cumulative, so only
     // the last confirmed leg can be reopened and only while the current leg has no point.
+    function retireSheet() {
+      const inj = S.retired.player, pl = nameOf(ctx, inj.side, inj.k), tm = TEAM[inj.side].name;
+      const li = (cls, ic, txt) => `<li class="${cls}"><span class="ic" aria-hidden="true">${ic}</span><span>${txt}</span></li>`;
+      return `<div class="ov-card" data-sheet="retire"><div class="eyebrow">${relay ? `${t('leg')} ${ctx.leg}/5` : `${t('set')} ${ctx.setNo} · ${t('type_' + ctx.type)}`}</div><h2 id="ov-h" class="ov-title sm">${t('shRetired')}</h2><p class="ov-sub">${t('shRetiredSub', { p: esc(pl), team: esc(tm) })}</p>
+        <div class="sheet-form"><label class="eyebrow" for="reason">${t('reasonLbl')}</label>
+        <textarea id="reason" class="input" rows="3" required aria-describedby="reason-h" data-focus>${esc(ui.reason)}</textarea><p class="sheet-hint" id="reason-h">${t('reasonHint')}</p></div>
+        <ul class="conseq">${li('bad', '✕', t('cRetireClr', { p: esc(pl) }))}${li('bad', '✕', t(relay ? 'cForfeitLegs' : 'cForfeitSets'))}${li('neu', 'i', t('cMatchLive'))}${li('neu', 'i', t('cAudit'))}</ul>
+        <div class="ov-actions"><button class="btn btn-loss btn-xl" data-act="reopen" type="button" ${ui.reason.trim() ? '' : 'disabled'}>${t('reopenRet')}</button><button class="btn btn-lg" data-act="sheet-close" type="button">${t('close')}</button></div></div>`;
+    }
     function sheetBody(n) {
+      if (n === 'retire') return retireSheet();
       const [h, a] = n < (relay ? ctx.leg : ctx.setNo) ? ctx.finished[n - 1] : [S.score.H, S.score.A];
       const w = h > a ? 'H' : 'A';
       const u = unitOf(n);
@@ -611,6 +669,14 @@
     function toast(msg) {
       const tt = el('#toast'); tt.textContent = msg; tt.hidden = false;
       clearTimeout(toastT); toastT = setTimeout(() => { tt.hidden = true; }, 5000);
+    }
+    // Tapping a reopened cell: the set / leg is rebuilt at its finished score, ended but not confirmed again.
+    function fixUrl(n) {
+      const q = new URLSearchParams();
+      if (relay) q.set('leg', n); else q.set('set', n);
+      q.set('fix', '1');
+      if (roleParam()) q.set('role', roleParam());
+      return `${relay ? 'relay' : 'score'}.html?${q}`;
     }
     // "Sửa thiết lập": go to the setup screen with the current choices and the rally list; saving comes back with the same rallies.
     function editSetupUrl() {
@@ -648,7 +714,7 @@
       rows += li('neu', 'i', t('rBadge', { p: `<b>${esc(pl)}</b>` }));
       if (done) {
         return `<div class="ov-card"><div class="eyebrow">${t('retiredChip')}</div><h2 id="ov-h" class="ov-title">${t('retDone')}</h2><p class="ov-sub">${t('retDoneSub', { p: esc(pl), team: esc(tm) })}</p><ul class="conseq">${rows}</ul>
-          <div class="ov-actions"><a class="btn btn-primary btn-xl" data-focus href="admin-matches.html">${t('backToList')}</a></div></div>`;
+          <div class="ov-actions"><a class="btn btn-primary btn-xl" data-focus href="admin-matches.html">${t('backToList')}</a>${role === 'btc' ? `<button class="btn btn-lg" data-act="retire-reopen" type="button">${t('reopenRet')}</button>` : ''}</div></div>`;
       }
       return `<div class="ov-card"><div class="eyebrow">${t('injury')}</div><h2 id="ov-h" class="ov-title">${t('retTitle')}</h2><p class="ov-sub">${t('retSub', { p: esc(pl), team: esc(tm) })}</p><ul class="conseq">${rows}</ul>
         <div class="ov-actions"><button class="btn btn-loss btn-xl" data-act="rconfirm" data-focus type="button">${t('retConfirm')}</button><button class="btn btn-lg" data-act="rback" type="button">${t('back')}</button></div></div>`;
@@ -679,10 +745,19 @@
         else if (act === 'undo') undo();
         else if (act === 'edit-setup') location.href = editSetupUrl();
         else if (act === 'sheet') { ui.sheet = +b.dataset.n; ui.reason = ''; update(); }
+        else if (act === 'fix') location.href = fixUrl(+b.dataset.n);
+        else if (act === 'retire-reopen') { ui.sheet = 'retire'; ui.reason = ''; update(); }
         else if (act === 'sheet-close') closeSheet();
         else if (act === 'reopen') {
           if (!ui.reason.trim()) return;
-          const n = ui.sheet; reopened.add(n); closeSheet(); toast(t('reopened', { u: unitOf(n) }));
+          const n = ui.sheet;
+          if (n === 'retire') {
+            // the retirement and the forfeits it caused are cleared (spec §4.5): back to play in the current set / leg
+            events = events.filter((x) => x.k !== 'retire'); events.push({ k: 'timeout_end' }); ui.ov = null; ui.ovKey = '';
+            closeSheet(); toast(t('retReopened'));
+            return;
+          }
+          reopened.add(n); closeSheet(); toast(t('reopened', { u: unitOf(n) }));
         }
         else if (act === 'injury') { ui.ov = 'timeout'; update(); }
         else if (act === 'pick') { events.push({ k: 'timeout_start', player: { side: b.dataset.side, k: +b.dataset.k }, at: Date.now() }); ui.ovKey = ''; update(); }
@@ -720,7 +795,11 @@
     seedLog();
     if (demo === 'reopen' && !ro) ui.sheet = relay ? 1 : 2;
     build(); bind(); update();
-    if (!ro) { setInterval(tick, 250); try { navigator.wakeLock && navigator.wakeLock.request('screen').catch(() => {}); } catch (e) { /* not supported over file:// */ } }
+    if (!ro) {
+      setInterval(tick, 250);
+      try { acquireWl(); } catch (e) { ui.wl = 'off'; renderWl(); } // not supported over file://
+      document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') { try { acquireWl(); } catch (e) { ui.wl = 'off'; renderWl(); } } });
+    }
     // Viewer: pretend the other scorer keeps entering points.
     if (ro) {
       setInterval(() => {

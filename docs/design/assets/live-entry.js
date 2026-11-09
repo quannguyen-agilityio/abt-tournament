@@ -18,7 +18,7 @@
       watch: 'Xem trực tiếp', takeover: 'Nhận quyền chấm', takeTitle: 'Nhận quyền chấm trận {code}?',
       takeBody: '{name} sẽ chuyển sang chế độ chỉ xem ngay khi có điểm hoặc tin nhắn realtime kế tiếp. Chỉ một người chấm tại một thời điểm.',
       takeLog: 'Hành động được ghi vào nhật ký (ai, lúc nào).', cancel: 'Hủy', setsWon: 'Tỉ số set', curSet: 'Hiện tại',
-      doneTitle: 'Trận đã kết thúc', perSet: 'Kết quả từng set', perLeg: 'Kết quả từng lượt', reopenSet: 'Mở lại set {n}', reopenAria: 'Mở lại set {n} (chỉ BTC)', onlyBtc: 'Chỉ BTC mở lại được set đã xác nhận.', wins: 'thắng',
+      doneTitle: 'Trận đã kết thúc', perSet: 'Kết quả từng set', perLeg: 'Kết quả từng lượt', reopenSet: 'Mở lại set {n}', reopenAria: 'Mở lại set {n} (chỉ BTC)', onlyBtc: 'Chỉ BTC mở lại được set / lượt đã xác nhận.', wins: 'thắng',
       entryTitle: 'Nhập tỉ số cuối', fallback: 'Phương án dự phòng', entryDesc: 'Nhập tỉ số cuối của từng set. Bên được chấp xuất phát từ số điểm chấp.',
       entryRelay: 'Nhập tỉ số cộng dồn tại mỗi mốc. Một bên phải chạm đúng mốc.',
       noOverwrite: 'Hai cách nhập không ghi đè lên nhau. Set đã có điểm chấm trực tiếp chỉ đọc ở đây. Set nhập tỉ số cuối thì không chấm trực tiếp được.',
@@ -27,7 +27,7 @@
       demoState: 'Trạng thái demo', stUnlocked: 'Chưa khoá', stReady: 'Sẵn sàng', stMine: 'Của tôi', stOther: 'Người khác', stDone: 'Hoàn tất', roleLbl: 'Vai trò',
       heldByShort: 'Đang chấm', sets: 'set', liveFilter: 'Đang live', quick: 'Lọc nhanh', all: 'Tất cả', court: 'Sân', nextUp: 'Tiếp theo', noLiveCourt: 'Chưa có trận đang diễn ra',
       serving: 'đang giao', setScoreAria: 'Tỉ số set {a}–{b}', curAria: 'Set {n}, đang đánh {a}–{b}', liveCount: '{n} trận',
-      matchPoint: 'Trận {code}', wholeMatch: 'Tỉ số set', backList: 'Trận đấu', openMatch: 'Mở trận', stepBar: 'Các bước', unitSet: 'set', unitLeg: 'lượt', typeOpen: 'Tự do',
+      matchPoint: 'Trận {code}', wholeMatch: 'Tỉ số set', cumul: 'Tổng điểm', cumulAria: 'Tổng điểm {a}–{b}', reopenLeg: 'Mở lại lượt {n}', reopenLegAria: 'Mở lại lượt {n} (chỉ BTC)', copySelect: 'Chọn sẵn, nhấn giữ để sao chép', backList: 'Trận đấu', openMatch: 'Mở trận', stepBar: 'Các bước', unitSet: 'set', unitLeg: 'lượt', typeOpen: 'Tự do',
     },
     en: {
       liveNow: 'Scoring live now', ready: 'Ready to score', live: 'LIVE', you: 'You', scoring: 'Scoring', setN: 'Set {n}', legN: 'Leg {n}',
@@ -37,7 +37,7 @@
       watch: 'Watch live', takeover: 'Take over scoring', takeTitle: 'Take over scoring for {code}?',
       takeBody: '{name} will switch to view-only on the next point or realtime message. Only one scorer at a time.',
       takeLog: 'This action is logged (who, when).', cancel: 'Cancel', setsWon: 'Set score', curSet: 'Now',
-      doneTitle: 'Match finished', perSet: 'Result per set', perLeg: 'Result per leg', reopenSet: 'Reopen set {n}', reopenAria: 'Reopen set {n} (committee only)', onlyBtc: 'Only the committee can reopen a confirmed set.', wins: 'wins',
+      doneTitle: 'Match finished', perSet: 'Result per set', perLeg: 'Result per leg', reopenSet: 'Reopen set {n}', reopenAria: 'Reopen set {n} (committee only)', onlyBtc: 'Only the committee can reopen a confirmed set or leg.', wins: 'wins',
       entryTitle: 'Enter final scores', fallback: 'Fallback', entryDesc: 'Enter each set’s final score. The receiving pair starts from its handicap.',
       entryRelay: 'Enter the running score at each milestone. One side must hit the milestone exactly.',
       noOverwrite: 'The two ways never overwrite each other. A set with live points is read-only here. A set entered as a final score cannot be scored live.',
@@ -46,7 +46,7 @@
       demoState: 'Demo state', stUnlocked: 'Not locked', stReady: 'Ready', stMine: 'Mine', stOther: 'Someone else', stDone: 'Done', roleLbl: 'Role',
       heldByShort: 'Scorer', sets: 'sets', liveFilter: 'Live now', quick: 'Quick filter', all: 'All', court: 'Court', nextUp: 'Up next', noLiveCourt: 'No match in progress',
       serving: 'serving', setScoreAria: 'Set score {a}–{b}', curAria: 'Set {n}, playing {a}–{b}', liveCount: '{n} matches',
-      matchPoint: 'Match {code}', wholeMatch: 'Set score', backList: 'Matches', openMatch: 'Open match', stepBar: 'Steps', unitSet: 'set', unitLeg: 'leg', typeOpen: 'Open',
+      matchPoint: 'Match {code}', wholeMatch: 'Set score', cumul: 'Cumulative', cumulAria: 'Cumulative score {a}–{b}', reopenLeg: 'Reopen leg {n}', reopenLegAria: 'Reopen leg {n} (committee only)', copySelect: 'Selected, long-press to copy', backList: 'Matches', openMatch: 'Open match', stepBar: 'Steps', unitSet: 'set', unitLeg: 'leg', typeOpen: 'Open',
     },
   };
   const lt = (loc, k, o) => {
@@ -61,6 +61,9 @@
     V07: { home: 't1', away: 't2', court: 'Sân 2', time: '14:00', set: 3, adm: [9, 16], pub: [14, 11], sets: [1, 1], serving: 'home', scorer: 'u3', since: '14:02' },
     V08: { home: 't3', away: 't4', court: 'Sân 1', time: '14:00', set: 2, adm: [12, 10], pub: [12, 10], sets: [1, 0], serving: 'away', scorer: 'u4', since: '14:10' },
   };
+  // Relay final F (data.js: lineup_locked, Sân 1, 14:45). Not in LIVE: the list pages keep it "ready"; only admin-match's
+  // mine / other / done views use this. Scores are cumulative: leg 2 in progress at 31–27 (leg 1 ended 25–19), same as relay.html.
+  const RLIVE = { relay: true, set: 2, adm: [31, 27], court: 'Sân 1', time: '14:45', scorer: 'u4', since: '14:48', done: [[25, 19], [50, 44], [75, 71], [100, 97], [125, 118]] };
   // Same fake pairs and finished scores as the scorer mockups (live.js), so the A5 grid matches what the scorer sees.
   const V07 = {
     names: { t1: ['Trần Minh Khang', 'Lê Gia Bảo', 'Phạm Hữu Phúc', 'Hoàng Thu Lan', 'Đỗ Công Long'], t2: ['Nguyễn Quốc Hưng', 'Võ Mỹ Vy', 'Đặng Văn Kiên', 'Bùi Ngọc Mai', 'Hồ Đức Tú'] },
@@ -97,7 +100,7 @@
   const teamName = (id) => esc(A().T[id].name);
   const teamsLine = (m) => (m.home ? `${teamName(m.home)} – ${teamName(m.away)}` : '');
   const setLbl = (loc, n, relay) => lt(loc, relay ? 'legN' : 'setN', { n });
-  const curSetLbl = (loc, lv, scoreArr) => `${lt(loc, 'setN', { n: lv.set })} · ${scoreArr[0]}–${scoreArr[1]}`;
+  const curSetLbl = (loc, lv, scoreArr) => `${lt(loc, lv.relay ? 'legN' : 'setN', { n: lv.set })} · ${scoreArr[0]}–${scoreArr[1]}`;
 
   // Pages live in docs/design/live/, the Phase 1 shell links are relative to its own folder: send them to the right place.
   function fixLinks(area) {
@@ -143,7 +146,7 @@
     const rest = ms.filter((m) => !LIVE[m.code]);
     const mine = rest.filter((m) => m.referee === me);
     const others = rest.filter((m) => m.referee !== me);
-    const stateOf = (m) => (m.status === 'lineup_locked' ? 'ready' : m.status === 'completed' ? 'done' : '');
+    const stateOf = (m) => (m.status === 'lineup_locked' ? 'ready' : m.status === 'completed' ? 'done' : m.status === 'scheduled' && m.home ? 'unlocked' : '');
     const liveRow = (m) => {
       const lv = LIVE[m.code], isMine = lv.scorer === me;
       return `<a href="${hrefOf('admin-match.html', { code: m.code, state: isMine ? 'mine' : 'other' })}" class="lv-row block p-3 hover:bg-surface2" aria-label="${m.code} ${L('live')} ${esc(a.T[m.home].name)} – ${esc(a.T[m.away].name)}, ${curSetLbl(u.locale, lv, lv.adm)}">
@@ -154,7 +157,7 @@
     };
     const row = (m) => {
       const st = stateOf(m);
-      const href = st && m.status !== 'forfeit' ? hrefOf('admin-match.html', { code: m.code, state: st }) : `../admin/match.html${u.role === 'referee' ? `?code=${m.code}&role=referee` : `?code=${m.code}`}`;
+      const href = st ? hrefOf('admin-match.html', { code: m.code, state: st }) : `../admin/match.html${u.role === 'referee' ? `?code=${m.code}&role=referee` : `?code=${m.code}`}`;
       const chip = m.status === 'lineup_locked' ? `<span class="chip chip-accent">${L('ready')}</span>` : u.statusChip(m);
       return `<a href="${href}" class="flex flex-wrap items-center gap-x-4 gap-y-1 p-3 hover:bg-surface2">
         <b class="display text-lg w-12">${m.code}</b><span class="text-sm text-muted num w-28">${u.fmtDate(m.date)} ${m.time}</span><span class="text-sm text-muted w-14">${m.court}</span>
@@ -175,10 +178,14 @@
     const state = STATES.includes(p.get('state')) ? p.get('state') : 'ready';
     const defCode = { unlocked: 'V10', ready: 'V09', mine: 'V07', other: 'V07', done: 'V07' }[state];
     let m = a.matches.find((x) => x.code === p.get('code')) || a.matches.find((x) => x.code === defCode);
-    // Live, resume and summary states are only drawn for group matches with live data (relay is covered by relay.html).
-    if (['mine', 'other', 'done'].includes(state) && (m.stage !== 'group' || !m.slots || !m.slots[0].home.length)) m = a.matches.find((x) => x.code === 'V07');
+    // Live and resume states are drawn for V07 / the relay final F; the summary also works for any completed match with slot scores
+    // (relay slots hold cumulative scores). Anything else falls back to V07.
+    if (['mine', 'other', 'done'].includes(state)) {
+      const okDone = state === 'done' && m.status === 'completed' && m.slots && m.slots.every((x) => x.score);
+      if (!(m.code === 'F' || m.code === 'V07' || okDone)) m = a.matches.find((x) => x.code === 'V07');
+    }
     const code = m.code, relay = m.stage !== 'group';
-    const lv = LIVE[code] || LIVE.V07;
+    const lv = code === 'F' ? RLIVE : LIVE[code] || LIVE.V07;
     const unit = L(relay ? 'unitLeg' : 'unitSet');
     const holder = lv.scorer !== me ? lv.scorer : (me === 'u3' ? 'u4' : 'u3');
     const route = `/admin/seasons/${a.season.year}/matches/${code}/live`;
@@ -189,7 +196,7 @@
     const slots = (m.slots || []).map((x, i) => {
       const own = code === 'V07';
       const names = own ? [V07.pairs[i].map((k) => V07.names.t1[k]), V07.pairs[i].map((k) => V07.names.t2[k])] : [x.home.map(nm), x.away.map(nm)];
-      const score = own ? V07.done[i] : x.score;
+      const score = own ? V07.done[i] : code === 'F' ? RLIVE.done[i] : x.score;
       return { no: i + 1, type: own ? V07.types[i] : x.type, names, hc: own ? V07.hc[i] : x.hc, score };
     });
     const kindOf = (i) => (state === 'done' ? 'live' : hasLive ? (i < lv.set - 1 ? 'live' : i === lv.set - 1 ? 'cur' : 'free') : 'free');
@@ -210,7 +217,8 @@
     // ---- Live scoring card
     const cardHead = (chips) => `<div class="flex flex-wrap items-center gap-2"><h2 class="display text-2xl font-bold uppercase leading-none mr-1">${L('card')}</h2>${chips}</div>`;
     const bigBtn = (href, label, cls = 'btn-primary') => `<a class="btn ${cls} btn-xl" href="${href}">${label}</a>`;
-    const setBoard = () => `<div class="lv-board"><div class="lv-board-set"><span class="eyebrow">${L('curSet')}</span><b class="display num">${curSetLbl(u.locale, lv, lv.adm)}</b></div>
+    const setBoard = () => relay ? `<div class="lv-board"><div class="lv-board-set"><span class="eyebrow">${L('curSet')}</span><b class="display num">${curSetLbl(u.locale, lv, lv.adm)}</b></div>
+      <div class="lv-board-sets"><span class="eyebrow">${L('cumul')}</span><b class="display num" aria-label="${L('cumulAria', { a: lv.adm[0], b: lv.adm[1] })}">${lv.adm[0]}–${lv.adm[1]}</b></div></div>` : `<div class="lv-board"><div class="lv-board-set"><span class="eyebrow">${L('curSet')}</span><b class="display num">${curSetLbl(u.locale, lv, lv.adm)}</b></div>
       <div class="lv-board-sets"><span class="eyebrow">${L('wholeMatch')}</span><b class="display num" aria-label="${L('setScoreAria', { a: lv.sets[0], b: lv.sets[1] })}">${lv.sets[0]}–${lv.sets[1]}</b></div></div>`;
     let cardCls = 'lv-card', cardBody = '';
     if (state === 'unlocked') {
@@ -227,17 +235,17 @@
     } else if (state === 'mine') {
       cardCls += ' live';
       cardBody = `${cardHead(`<span class="chip chip-live">${L('live')}</span><span class="chip chip-accent">${L('youHold')}</span>`)}
-        ${bigBtn(hrefOf('score.html', { set: lv.set }), L('resume'))}
+        ${bigBtn(relay ? hrefOf('relay.html') : hrefOf('score.html', { set: lv.set }), L('resume'))}
         ${setBoard()}`;
     } else if (state === 'other') {
       cardCls += ' live';
       cardBody = `${cardHead(`<span class="chip chip-live">${L('live')}</span>`)}
         <p class="font-semibold flex items-start gap-2"><span class="text-warn mt-0.5">${SHUTTLE}</span><span>${L('heldBy', { name: `<b>${esc(u.userName(holder))}</b>`, time: lv.since })}</span></p>
         ${setBoard()}
-        <div class="grid gap-2 sm:grid-cols-2"><a class="btn btn-lg" href="${hrefOf('viewer.html')}">${L('watch')}</a><button class="btn btn-primary btn-lg" type="button" id="take-open" aria-haspopup="dialog">${L('takeover')}</button></div>
+        <div class="grid gap-2 sm:grid-cols-2"><a class="btn btn-lg" href="${hrefOf('viewer.html', relay ? { mode: 'relay' } : {})}">${L('watch')}</a><button class="btn btn-primary btn-lg" type="button" id="take-open" aria-haspopup="dialog">${L('takeover')}</button></div>
         <p class="text-xs text-muted">${L('heldHint')}</p>`;
     } else {
-      const w = winsOf(slots);
+      const w = relay ? slots[slots.length - 1].score : winsOf(slots);
       const winTeam = w[0] > w[1] ? m.home : m.away;
       cardBody = `${cardHead(`<span class="chip chip-win">${u.t('completed')}</span>`)}
         <div class="lv-board"><div class="lv-board-set"><span class="eyebrow">${L('doneTitle')}</span><b class="display num">${w[0]}–${w[1]}</b></div><div class="lv-board-sets"><span class="eyebrow">${u.t('winner')}</span><b class="display flex items-center gap-2"><span class="swatch" style="background:${a.T[winTeam].color}"></span>${teamName(winTeam)}</b></div></div>
@@ -246,12 +254,12 @@
             const homeWon = x.score[0] > x.score[1];
             return `<li class="flex items-center gap-3 py-2"><b class="display w-14 shrink-0">${setLbl(u.locale, i + 1, relay)}</b><span class="score num text-lg shrink-0"><span class="${homeWon ? 'w' : 'l'}">${x.score[0]}</span><span class="text-muted px-1">–</span><span class="${homeWon ? 'l' : 'w'}">${x.score[1]}</span></span>
               <span class="min-w-0 flex-1 truncate text-sm text-muted">${teamName(homeWon ? m.home : m.away)} ${L('wins')}</span>
-              ${u.role === 'btc' ? `<a class="btn btn-sm shrink-0" href="score.html?role=btc&demo=reopen" aria-label="${L('reopenAria', { n: i + 1 })}">${L('reopenSet', { n: i + 1 })}</a>` : ''}</li>`;
+              ${u.role === 'btc' ? `<a class="btn btn-sm shrink-0" href="${relay ? 'relay' : 'score'}.html?role=btc&demo=reopen" aria-label="${L(relay ? 'reopenLegAria' : 'reopenAria', { n: i + 1 })}">${L(relay ? 'reopenLeg' : 'reopenSet', { n: i + 1 })}</a>` : ''}</li>`;
           }).join('')}</ul>
           ${u.role === 'btc' ? '' : `<p class="text-xs text-muted mt-2">${L('onlyBtc')}</p>`}</div>`;
     }
     const direct = state === 'unlocked' ? '' : `<div class="lv-direct"><div class="eyebrow">${L('directLink')}</div>
-        <div class="flex flex-wrap items-center gap-2"><code class="lv-route" id="route">${route}</code><button class="btn btn-sm" type="button" id="copy-link" data-route="${route}" data-copied="${L('copied')}" data-label="${L('copyLink')}">${L('copyLink')}</button><span class="sr-only" role="status" id="copy-live"></span></div>
+        <div class="flex flex-wrap items-center gap-2"><code class="lv-route" id="route">${route}</code><button class="btn btn-sm" type="button" id="copy-link" data-route="${route}" data-copied="${L('copied')}" data-select="${L('copySelect')}" data-label="${L('copyLink')}">${L('copyLink')}</button><span class="sr-only" role="status" id="copy-live"></span></div>
         <p class="text-xs text-muted">${L('directHint')}</p></div>`;
     const card = `<section class="${cardCls}" aria-label="${L('card')}">${cardBody}${direct}</section>`;
 
@@ -289,12 +297,22 @@
     const copy = document.getElementById('copy-link');
     if (copy) {
       copy.onclick = () => {
-        const done = () => {
-          copy.textContent = copy.dataset.copied;
-          const st = document.getElementById('copy-live'); if (st) st.textContent = copy.dataset.copied;
-          setTimeout(() => { copy.textContent = copy.dataset.label; }, 2000);
+        const say = (msg) => {
+          copy.textContent = msg;
+          const st = document.getElementById('copy-live'); if (st) st.textContent = msg;
+          setTimeout(() => { copy.textContent = copy.dataset.label; }, 2400);
         };
-        try { navigator.clipboard.writeText(`${location.origin}${copy.dataset.route}`).then(done, done); } catch (e) { done(); }
+        const done = () => say(copy.dataset.copied);
+        // No clipboard permission (or an insecure origin): select the link text instead and say so, never claim "copied".
+        const fallback = () => {
+          const r = document.getElementById('route'), sel = window.getSelection();
+          if (r && sel) { const rg = document.createRange(); rg.selectNodeContents(r); sel.removeAllRanges(); sel.addRange(rg); }
+          say(copy.dataset.select);
+        };
+        try {
+          if (!navigator.clipboard || !navigator.clipboard.writeText) fallback();
+          else navigator.clipboard.writeText(`${location.origin}${copy.dataset.route}`).then(done, fallback);
+        } catch (e) { fallback(); }
       };
     }
     const open = document.getElementById('take-open');
@@ -302,14 +320,14 @@
     open.onclick = () => {
       const a = A();
       const code = new URLSearchParams(location.search).get('code') || 'V07';
-      const lv = LIVE[code] || LIVE.V07;
+      const lv = code === 'F' ? RLIVE : LIVE[code] || LIVE.V07;
       const me = u.role === 'referee' ? 'u3' : 'u1';
       const holder = lv.scorer !== me ? lv.scorer : (me === 'u3' ? 'u4' : 'u3');
       const ov = document.createElement('div');
       ov.className = 'ov'; ov.setAttribute('role', 'dialog'); ov.setAttribute('aria-modal', 'true'); ov.setAttribute('aria-labelledby', 'ov-h');
       ov.innerHTML = `<div class="ov-card"><h2 id="ov-h" class="ov-title" style="font-size:clamp(30px,9vw,44px)">${esc(L('takeTitle', { code }))}</h2>
         <p class="ov-sub" style="font-size:15px">${esc(L('takeBody', { name: u.userName(holder) }))}</p><p class="ov-sub">${esc(L('takeLog'))}</p>
-        <div class="ov-actions"><a class="btn btn-primary btn-xl" data-focus href="${hrefOf('score.html', { set: lv.set })}">${L('takeover')}</a><button class="btn btn-lg" type="button" data-close>${L('cancel')}</button></div></div>`;
+        <div class="ov-actions"><a class="btn btn-primary btn-xl" data-focus href="${lv.relay ? hrefOf('relay.html') : hrefOf('score.html', { set: lv.set })}">${L('takeover')}</a><button class="btn btn-lg" type="button" data-close>${L('cancel')}</button></div></div>`;
       document.body.appendChild(ov);
       const close = () => { ov.remove(); document.removeEventListener('keydown', onKey); open.focus(); };
       const onKey = (e) => {
@@ -404,7 +422,7 @@
       const st = STATES.includes(u.params.get('state')) ? u.params.get('state') : 'ready';
       const names = { unlocked: 'stUnlocked', ready: 'stReady', mine: 'stMine', other: 'stOther', done: 'stDone' };
       extra = `<span>${lt(u.locale, 'demoState')}: ${STATES.map((x, i) => {
-        const p = new URLSearchParams(location.search); p.set('state', x); p.delete('code');
+        const p = new URLSearchParams(location.search); p.set('state', x); if (p.get('code') !== 'F') p.delete('code');
         return `${i ? ' · ' : ''}<a class="underline-offset-2 ${st === x ? 'font-semibold underline' : 'hover:underline'}" href="admin-match.html?${p}" ${st === x ? 'aria-current="true"' : ''}>${lt(u.locale, names[x])}</a>`;
       }).join('')}</span>`;
       bindAdminMatch(u);
