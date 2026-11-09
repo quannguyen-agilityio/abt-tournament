@@ -49,6 +49,14 @@ describe('validateGroupSet', () => {
     expect(result.violations.map(key)).toEqual(expected);
   });
 
+  it('skips the start-points check for a set forfeited after a retirement (spec-phase-2 §6)', () => {
+    // The injured player's side had 9 start points; the forfeit is stored 0–31 all the same.
+    const forfeited = { ...set([0, 31], { home: 9, away: 0 }), forfeit_side: 'home' as const };
+    expect(validateGroupSet(forfeited, settings)).toEqual({ winner: 'away', violations: [] });
+    // The score must still reach the target.
+    expect(validateGroupSet({ ...forfeited, score_away: 30 }, settings).violations.map(key)).toEqual(['SET_TARGET@1:']);
+  });
+
   it('returns nothing for a set not entered yet', () => {
     expect(validateGroupSet(set([null, null]), settings)).toEqual({ winner: null, violations: [] });
   });
