@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>ABT · Phase 2 live scoring mockups</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800&family=Be+Vietnam+Pro:wght@400;500;600;700&display=swap">
+<script src="https://cdn.tailwindcss.com/3.4.17"></script>
+<script src="../assets/tw-config.js"></script>
+<link rel="stylesheet" href="../assets/app.css">
+</head>
+<body>
+<main class="gutter max-w-5xl mx-auto py-10 lv-idx">
+  <a class="text-sm text-muted hover:underline" href="../index.html">← All mockups</a>
+  <div class="wordmark text-5xl mt-3">ABT<i>·</i>27</div>
+  <div class="courtline mt-4 mb-6 max-w-sm"></div>
+  <h1 class="display text-4xl font-extrabold uppercase">Phase 2 · Live scoring</h1>
+  <p class="text-muted mt-2 max-w-prose">Point-by-point scoring screens for <a class="text-accent underline" href="../../spec-phase-2.md">docs/spec-phase-2.md</a> §8. The scorer screens run a real service-rule simulator (spec §4); tap +1 on the court. Every page has a VI/EN and light/dark/system toggle in the yellow ribbon. Open any file directly; no build step.</p>
+  <section class="mt-8">
+    <h2 class="eyebrow mb-3">Screens and demo states</h2>
+    <div class="panel divide-y divide-line">
+      <a class="flex flex-wrap gap-x-4 p-3 hover:bg-surface2" href="setup.html"><b class="display w-10">L-B</b><span class="font-semibold">Set setup</span><span class="text-muted text-sm">Ends, serving team, server, receiver on a court diagram; start points and the resulting service court</span></a>
+      <a class="flex flex-wrap gap-x-4 p-3 hover:bg-surface2" href="setup.html?mode=relay"><b class="display w-10">L-B</b><span class="font-semibold">Relay leg change</span><span class="text-muted text-sm">Leg 2 of 5, cumulative 25–19, ends swapped (L3), serving team fixed (L4)</span></a>
+      <a class="flex flex-wrap gap-x-4 p-3 hover:bg-surface2" href="score.html"><b class="display w-10">L-C</b><span class="font-semibold">Scorer: group set</span><span class="text-muted text-sm">Working simulator: BWF doubles service, handicap start, undo by replay, change of ends, end of set, offline badge</span></a>
+      <a class="flex flex-wrap gap-x-4 p-3 hover:bg-surface2" href="relay.html"><b class="display w-10">L-C</b><span class="font-semibold">Scorer: relay</span><span class="text-muted text-sm">Cumulative score, leg 2 · milestone 50, progress to 125</span></a>
+      <a class="flex flex-wrap gap-x-4 p-3 hover:bg-surface2" href="score.html?demo=ends"><b class="display w-10">L-D</b><span class="font-semibold">Change of ends prompt</span><span class="text-muted text-sm">Full-screen prompt when the side that started at 0 reaches 16</span></a>
+      <a class="flex flex-wrap gap-x-4 p-3 hover:bg-surface2" href="score.html?demo=end"><b class="display w-10">L-E</b><span class="font-semibold">End of set</span><span class="text-muted text-sm">“Kết thúc set?” with confirm / undo last point</span></a>
+      <a class="flex flex-wrap gap-x-4 p-3 hover:bg-surface2" href="relay.html?demo=end"><b class="display w-10">L-E</b><span class="font-semibold">End of leg</span><span class="text-muted text-sm">“Kết thúc lượt?” then the leg change screen</span></a>
+      <a class="flex flex-wrap gap-x-4 p-3 hover:bg-surface2" href="score.html?demo=timeout"><b class="display w-10">L-F</b><span class="font-semibold">Medical timeout</span><span class="text-muted text-sm">Countdown from 5:00, resume or retire; “skip to 0:00” link for the expired state</span></a>
+      <a class="flex flex-wrap gap-x-4 p-3 hover:bg-surface2" href="score.html?demo=retire"><b class="display w-10">L-G</b><span class="font-semibold">Retirement</span><span class="text-muted text-sm">Every consequence listed before the red confirm button (spec §6)</span></a>
+      <a class="flex flex-wrap gap-x-4 p-3 hover:bg-surface2" href="relay.html?demo=retire"><b class="display w-10">L-G</b><span class="font-semibold">Retirement (relay)</span><span class="text-muted text-sm">Relay variant: the match is lost, the opponent is credited 125</span></a>
+      <a class="flex flex-wrap gap-x-4 p-3 hover:bg-surface2" href="viewer.html"><b class="display w-10">L-H</b><span class="font-semibold">Read-only viewer</span><span class="text-muted text-sm">Controls disabled, “Đang chấm bởi …”, take-over confirm dialog</span></a>
+      <a class="flex flex-wrap gap-x-4 p-3 hover:bg-surface2" href="public-match.html"><b class="display w-10">P4</b><span class="font-semibold">Public live panel</span><span class="text-muted text-sm">Live card, shuttle on the server, rally timeline (score worm), set rows, simulated rallies every 2.5 s</span></a>
+      <a class="flex flex-wrap gap-x-4 p-3 hover:bg-surface2" href="public-match.html?state=ends"><b class="display w-10">P4</b><span class="font-semibold">Public: change of ends</span><span class="text-muted text-sm">The “Đổi sân” state</span></a>
+      <a class="flex flex-wrap gap-x-4 p-3 hover:bg-surface2" href="public-match.html?state=med"><b class="display w-10">P4</b><span class="font-semibold">Public: medical timeout</span><span class="text-muted text-sm">The “Tạm dừng y tế” state with countdown</span></a>
+    </div>
+  </section>
+  <p class="text-xs text-muted mt-8">Best viewed at 390×844 (phone, main target) and 1024×768 (tablet). All names are generated.</p>
+</main>
+</body>
+</html>
