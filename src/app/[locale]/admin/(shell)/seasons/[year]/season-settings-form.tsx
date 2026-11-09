@@ -247,22 +247,22 @@ export function SeasonSettingsForm({ seasonId, stored }: { seasonId: string; sto
 
       <fieldset className="flex flex-col gap-3">
         <legend className="mb-1 text-sm font-medium">{s('liveScoringTitle')}</legend>
-        <label className="flex min-h-11 cursor-pointer items-start gap-3 text-sm">
-          <input
-            type="checkbox"
-            name={F.liveScoring}
-            checked={values.live_scoring}
-            onChange={(e) => set('live_scoring', e.target.checked)}
-            aria-describedby={`${uid}-live-hint`}
-            className="accent-primary mt-0.5 size-4 shrink-0"
-          />
-          <span className="flex flex-col gap-1">
-            <span className="font-medium">{s('liveScoring')}</span>
-            <span id={`${uid}-live-hint`} className="text-muted-foreground text-xs">
-              {s('liveScoringHint')}
-            </span>
+        <div className="flex flex-col gap-1">
+          <label className="flex min-h-11 cursor-pointer items-center gap-3 text-sm font-medium">
+            <input
+              type="checkbox"
+              name={F.liveScoring}
+              checked={values.live_scoring}
+              onChange={(e) => set('live_scoring', e.target.checked)}
+              aria-describedby={`${uid}-live-hint`}
+              className="accent-primary size-4 shrink-0"
+            />
+            {s('liveScoring')}
+          </label>
+          <span id={`${uid}-live-hint`} className="text-muted-foreground text-xs">
+            {s('liveScoringHint')}
           </span>
-        </label>
+        </div>
         <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
           {field(F.medicalTimeoutMinutes, 'medical_timeout_minutes', s('medicalTimeoutMinutes'), {
             hint: s('medicalTimeoutHint'),
