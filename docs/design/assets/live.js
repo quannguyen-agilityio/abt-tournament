@@ -52,7 +52,7 @@
       endsPick: 'Chọn sân (nhìn từ chỗ ngồi của người chấm)', leftEnd: 'Bên trái', rightEnd: 'Bên phải', swap: 'Đổi bên', next: 'Tiếp', pickServe: 'Đội nào giao trước?', pickServer: 'Ai giao bóng? ({team})', pickRecv: 'Ai nhận bóng? ({team})',
       startPts: 'Điểm xuất phát', hcStart: 'xuất phát {n}', noHc: 'không chấp', startSet: 'Bắt đầu set', startLeg: 'Bắt đầu lượt {n}', needMore: 'Hoàn tất các bước để bắt đầu',
       exServer: 'Giao từ ô <b>{c}</b> vì điểm {n} là số {p}.', exRecv: 'Người nhận <b>{r}</b> đứng ô {c} (chéo với người giao, cùng nhãn phải/trái).', exNone: 'Chọn người giao để xem ô giao bóng.',
-      relayBanner: 'Đổi sân', relayBannerSub: 'Lượt {n}/5 · mốc {m} · tỷ số cộng dồn {a}–{b}', fixedServe: 'Đội thắng pha cuối giao trước', newPairs: 'Cặp mới', cumul: 'Tỷ số cộng dồn',
+      relayBanner: 'Đổi sân', relayBannerSub: 'Lượt {n}/5 · mốc {m} · tỷ số cộng dồn {a}–{b}', fixedServe: 'Đội thắng pha cuối giao trước', hcServe: '{team} chấp đối thủ (xuất phát 0) nên giao trước', newPairs: 'Cặp mới', cumul: 'Tỷ số cộng dồn',
       // public
       pHome: 'Trang chủ', pStand: 'Bảng xếp hạng', pMatches: 'Lịch & kết quả', pBracket: 'Vòng loại trực tiếp',
       group: 'Vòng bảng', round: 'Vòng', setsWon: 'Số set', liveNote: 'Trực tiếp · cập nhật realtime', liveNotePaused: 'Mô phỏng đang tạm dừng',
@@ -88,7 +88,7 @@
       endsPick: 'Choose ends (as seen from the scorer’s seat)', leftEnd: 'Left', rightEnd: 'Right', swap: 'Swap', next: 'Next', pickServe: 'Which team serves first?', pickServer: 'Who serves? ({team})', pickRecv: 'Who receives? ({team})',
       startPts: 'Start points', hcStart: 'starts on {n}', noHc: 'no handicap', startSet: 'Start set', startLeg: 'Start leg {n}', needMore: 'Complete the steps to start',
       exServer: 'Serve from the <b>{c}</b> court because {n} is {p}.', exRecv: 'Receiver <b>{r}</b> stands in the {c} court (diagonal to the server, same right/left label).', exNone: 'Pick the server to see the service court.',
-      relayBanner: 'Change of ends', relayBannerSub: 'Leg {n}/5 · milestone {m} · cumulative {a}–{b}', fixedServe: 'Winner of the last rally serves first', newPairs: 'New pairs', cumul: 'Cumulative score',
+      relayBanner: 'Change of ends', relayBannerSub: 'Leg {n}/5 · milestone {m} · cumulative {a}–{b}', fixedServe: 'Winner of the last rally serves first', hcServe: '{team} gives the handicap (starts on 0), so it serves first', newPairs: 'New pairs', cumul: 'Cumulative score',
       pHome: 'Home', pStand: 'Standings', pMatches: 'Schedule & results', pBracket: 'Knock-out',
       group: 'Group stage', round: 'Round', setsWon: 'Sets', liveNote: 'Live · updates in real time', liveNotePaused: 'Simulation paused',
       serving: 'serving', worm: 'Set {n} rally timeline', wormSub: 'Point lead after every rally', wormUp: '{team} ahead', hcStartLbl: '{team} start +{n}', endsLbl: 'Change of ends', rally: 'Rally',
@@ -131,7 +131,9 @@
       relay: false, setNo, type: cfg.type, pairs: { H: cfg.hp, A: cfg.ap }, code: 'V07', court: 'Sân 2', finished: FINISHED.slice(0, setNo - 1),
       setup: {
         start: cfg.start, target: 31, changeEnds: true,
-        left: P.get('left') === 'A' ? 'A' : 'H', serving: P.get('serve') === 'H' ? 'H' : 'A', server: num(P.get('srv'), 0), receiver: num(P.get('rcv'), 1),
+        // L1: with a handicap the side that starts at 0 serves first; only a 0–0 start takes the toss result.
+        left: P.get('left') === 'A' ? 'A' : 'H',
+        serving: cfg.start.H !== cfg.start.A ? (cfg.start.H < cfg.start.A ? 'H' : 'A') : P.get('serve') === 'H' ? 'H' : 'A', server: num(P.get('srv'), 0), receiver: num(P.get('rcv'), 1),
       },
     };
   }
@@ -627,7 +629,9 @@
     const ctx = relay ? relayCtx(new URLSearchParams()) : groupCtx(setNo, new URLSearchParams());
     const start = ctx.setup.start;
     // Relay: ends change at the leg change (L3) and the winner of the last rally serves first (L4).
-    const sel = { left: relay ? 'A' : 'H', serving: relay ? 'H' : null, server: null, receiver: null };
+    // Group set with a handicap: the side that starts at 0 serves first (L1). Only a 0–0 start asks who serves.
+    const fixedServe = relay ? 'H' : start.H === start.A ? null : start.H < start.A ? 'H' : 'A';
+    const sel = { left: relay ? 'A' : 'H', serving: fixedServe, server: null, receiver: null };
     let step = relay ? 2 : 0;
     const minStep = relay ? 2 : 0;
     const root = $('#app');
@@ -671,16 +675,18 @@
 
     function render() {
       const labels = [t('stEnds'), t('stServe'), t('stServer'), t('stReceiver')];
+      const skip = (i) => i < minStep || (i === 1 && fixedServe);
       const url = `${relay ? `relay.html?leg=${ctx.leg}` : `score.html?set=${setNo}`}&left=${sel.left}&serve=${sel.serving}&srv=${sel.server}&rcv=${sel.receiver}`;
       root.innerHTML = `${ribbon()}
       <div class="su">
         <div><div class="eyebrow">${ctx.code} · ${ctx.court} · ${relay ? `${t('leg')} ${ctx.leg}/5` : `${t('set')} ${setNo}/5`}</div><h1>${titleTxt()}</h1></div>
         ${relay ? `<div class="banner-ends">${ICON_SWAP}<div><b>${t('relayBanner')}</b><span class="text-sm">${t('relayBannerSub', { n: ctx.leg, m: ctx.milestone, a: start.H, b: start.A })}</span></div></div>` : ''}
         <div class="sp">${['H', 'A'].map(startTeam).join('')}</div>
-        <nav class="steps" aria-label="Steps">${labels.map((l, i) => `<button type="button" data-act="goto" data-i="${i}" class="${i < step ? 'done' : i === step ? 'now' : ''} ${i < minStep ? 'lock' : ''}" ${i === step ? 'aria-current="step"' : ''} ${i < minStep ? 'disabled' : ''}><b>${i < step ? '✓' : i + 1}</b>${l}</button>`).join('')}</nav>
+        <nav class="steps" aria-label="Steps">${labels.map((l, i) => `<button type="button" data-act="goto" data-i="${i}" class="${i < step ? 'done' : i === step ? 'now' : ''} ${skip(i) ? 'lock' : ''}" ${i === step ? 'aria-current="step"' : ''} ${skip(i) ? 'disabled' : ''}><b>${i < step ? '✓' : i + 1}</b>${l}</button>`).join('')}</nav>
         <div class="panel" style="padding:10px">${courtMarkup(true)}</div>
         ${relay ? `<div class="panel" style="padding:10px 12px;display:grid;gap:6px"><div class="eyebrow">${t('newPairs')}</div>${['H', 'A'].map((s) => `<div class="text-sm">${sw(s)} <b>${esc(TEAM[s].name)}</b>: ${esc(nameOf(ctx, s, 0))} · ${esc(nameOf(ctx, s, 1))}</div>`).join('')}
           <div class="text-sm" style="color:rgb(var(--warn));font-weight:600">${sw('H')} ${t('fixedServe')}: ${esc(TEAM.H.name)}</div></div>` : ''}
+        ${!relay && fixedServe ? `<div class="panel text-sm" style="padding:10px 12px;color:rgb(var(--warn));font-weight:600">${sw(fixedServe)} ${t('hcServe', { team: esc(TEAM[fixedServe].name) })}</div>` : ''}
         ${explain()}
         <div class="panel" style="padding:12px">${stepPanel()}</div>
         ${step > minStep ? `<button class="linkbtn" data-act="back" type="button" style="justify-self:start">← ${t('back')}</button>` : ''}
@@ -708,9 +714,9 @@
           else if (step === 3 && side === other(sel.serving)) { sel.receiver = k; }
         };
         if (a === 'swap') sel.left = other(sel.left);
-        else if (a === 'next') step = 1;
-        else if (a === 'back') step = Math.max(minStep, step - 1);
-        else if (a === 'goto') { const i = +b.dataset.i; if (i >= minStep && i <= step) step = i; }
+        else if (a === 'next') step = fixedServe ? 2 : 1;
+        else if (a === 'back') step = Math.max(minStep, step === 2 && fixedServe ? 0 : step - 1);
+        else if (a === 'goto') { const i = +b.dataset.i; if (!skip(i) && i <= step) step = i; }
         else if (a === 'serve') set(b.dataset.side, 0);
         else if (a === 'server') set(sel.serving, +b.dataset.k);
         else if (a === 'receiver') set(other(sel.serving), +b.dataset.k);

@@ -22,7 +22,7 @@ ABT keeps its own scoring rules (§2: set to 31 without a 2-point lead, handicap
 
 | #   | Decision                                                                                                                                                                                                                                              |
 | --- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| L1  | Serving side, server, receiver and service courts are tracked. At the start of each set (and of relay leg 1) the scorer picks the serving team, the server and the receiver.                                                                         |
+| L1  | Serving side, server, receiver and service courts are tracked. At the start of each set (and of relay leg 1), the side that gives the handicap (starts at 0) serves first. Only a 0–0 start goes through choosing the serving side. The scorer always picks the ends, the server and the receiver. |
 | L2  | Group stage: the break and change of ends happen when the side that **started at 0** reaches `(set_target + 1) / 2` (16 for a set to 31, 14 for a set to 27). Without a handicap, both start at 0, so whichever side gets there first. Once per set. |
 | L3  | Relay: the teams choose ends before leg 1. Ends change at every leg change (new pairs), never inside a leg.                                                                                                                                           |
 | L4  | Relay leg change: the team that won the last rally of the previous leg serves first. Only the server and the receiver are picked again (from the new pairs).                                                                                          |
@@ -55,9 +55,12 @@ The server recomputes it on every event to validate (no point after the set ende
 
 ### 4.1 Start of a set (or relay leg 1)
 
-1. The scorer picks the **serving team** and its **server**. The server stands in the court that matches the serving team's score: **even → right court, odd → left court**. The handicap counts, so a pair that starts on 9 serves from the left.
-2. The scorer picks the **receiver** from the other pair. The receiver stands diagonally opposite (same court label: right faces right). Each partner takes the other court.
-3. The scorer sets which team is on which end, as seen from the scorer's seat (left / right of the screen).
+1. **Serving team:**
+   - With a handicap (start points differ), the side that **starts at 0** (the one giving the handicap) serves first. The app sets it, and the scorer cannot change it.
+   - At **0–0**, the scorer picks the serving team (the result of the toss).
+2. The scorer picks the **server** from the serving pair. The server stands in the court that matches the serving team's score: **even → right court, odd → left court**. The serving team starts at 0, so it serves from the right court. (Parity still matters for the relay leg change, where the cumulative score is rarely 0.)
+3. The scorer picks the **receiver** from the other pair. The receiver stands diagonally opposite (same court label: right faces right). Each partner takes the other court.
+4. The scorer sets which team is on which end, as seen from the scorer's seat (left / right of the screen).
 
 ### 4.2 After each rally
 
@@ -147,7 +150,7 @@ The current set's stored score still satisfies §4.4 (one side at target, the ot
 | ID  | Screen            | Content                                                                                                                                                                                                                     |
 | --- | ----------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | L-A | Entry on A5       | After **Lock**, the A5 Scores step shows **Bắt đầu chấm trực tiếp** next to the Phase 1 entry. It shows who holds the lock, if anyone. While the season has `live_scoring` on, the **Substitute** action is not offered after the lock (L6). It comes back only if the BTC switches the match to Phase 1 final-score entry before any rally is scored.                                                                                   |
-| L-B | Set / leg setup   | Court diagram. Steps: choose ends (left/right) → serving team → server → receiver. Shows the start points (handicap) and the resulting service court. For a relay leg change, the serving team is fixed (L4).             |
+| L-B | Set / leg setup   | Court diagram. Steps: choose ends (left/right) → serving team → server → receiver. Shows the start points (handicap) and the resulting service court. The serving-team step is skipped (fixed) when there is a handicap (L1) and at a relay leg change (L4).             |
 | L-C | Scoring           | Big score, court diagram with the 4 players and the shuttle on the server, two large **+1** buttons in the team colors, **Hoàn tác**, set strip 1–5 (or leg progress to 125), menu (Chấn thương, Nhận quyền chấm). |
 | L-D | Change of ends    | Full-screen prompt at the L2 point, with **Tiếp tục**.                                                                                                                                                                       |
 | L-E | End of set / leg  | Final score, **Xác nhận** / **Hoàn tác điểm cuối**.                                                                                                                                                                         |
@@ -170,6 +173,6 @@ The current set's stored score still satisfies §4.4 (one side at target, the ot
 
 ## 9. Testing
 
-- **Unit (`src/domain/live.test.ts`):** service courts and server rotation in the BWF doubles examples, handicap start parity, change of ends with and without handicap, undo across the change of ends and across the end of a set, relay leg change and serve carry-over, timeout blocks points, retirement results for group and relay.
+- **Unit (`src/domain/live.test.ts`):** service courts and server rotation in the BWF doubles examples, the side that starts at 0 serves first when there is a handicap (only 0–0 takes the toss), start parity at a relay leg change, change of ends with and without handicap, undo across the change of ends and across the end of a set, relay leg change and serve carry-over, timeout blocks points, retirement results for group and relay.
 - **RPC:** a non-scorer is rejected, a stale `seq` is rejected, a point after the end is rejected, the last `end_confirmed` completes the match.
 - **Playwright:** score a full set on a 375 px viewport; take over the lock from a second session; go offline, score 3 rallies, reconnect and check the public page.
