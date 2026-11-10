@@ -3,6 +3,7 @@
 import { useTranslations } from 'next-intl';
 import { useRouter } from 'next/navigation';
 import { Fragment, useState, useTransition } from 'react';
+import { LiveChip, AccentChip } from '@/components/live-chip';
 import { TeamChip } from '@/components/team-chip';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -30,6 +31,11 @@ export type ScoreRowSlot = {
   handicap: Handicap;
   /** The saved score, or null before the first save. */
   score: Score | null;
+  /**
+   * The slot has live events (spec-phase-2 §8.0): read-only here, so the two ways of scoring never
+   * overwrite each other. `score` is the live score while the slot is being scored.
+   */
+  live?: { status: 'live' | 'finished'; score: Score | null } | null;
 };
 
 type Team = { id: string; name: string; color: string };
@@ -91,24 +97,34 @@ export function ScoresStep({ matchId, teams, slots, rules, settings, editable }:
         ))}
       </div>
       <ul className="border-border bg-surface divide-border divide-y rounded-[10px] border">
-        {slots.map((slot) => (
-          <ScoreRow
-            // A new saved score remounts the row, so its draft starts from what is saved.
-            key={`${slot.slotNo}:${slot.score?.home}-${slot.score?.away}`}
-            matchId={matchId}
-            teams={teams}
-            slot={slot}
-            relay={rules.relay}
-            milestone={settings.relay_milestones[slot.slotNo - 1]}
-            // A relay shows the start of leg 1 on that leg; a group set shows its own start points.
-            start={rules.relay ? (slot.slotNo === 1 ? rules.start : { home: 0, away: 0 }) : slot.handicap}
-            waitsFor={slotEnterable(rules, saved, slot.slotNo) ? null : slot.slotNo - 1}
-            violationsFor={(score) =>
-              slotScoreViolations(rules, withScore(saved, slot.slotNo, score), slot.slotNo, settings)
-            }
-            editable={editable}
-          />
-        ))}
+        {slots.map((slot) =>
+          slot.live ? (
+            <LiveRow
+              key={slot.slotNo}
+              slot={slot}
+              live={slot.live}
+              relay={rules.relay}
+              start={rules.relay ? (slot.slotNo === 1 ? rules.start : { home: 0, away: 0 }) : slot.handicap}
+            />
+          ) : (
+            <ScoreRow
+              // A new saved score remounts the row, so its draft starts from what is saved.
+              key={`${slot.slotNo}:${slot.score?.home}-${slot.score?.away}`}
+              matchId={matchId}
+              teams={teams}
+              slot={slot}
+              relay={rules.relay}
+              milestone={settings.relay_milestones[slot.slotNo - 1]}
+              // A relay shows the start of leg 1 on that leg; a group set shows its own start points.
+              start={rules.relay ? (slot.slotNo === 1 ? rules.start : { home: 0, away: 0 }) : slot.handicap}
+              waitsFor={slotEnterable(rules, saved, slot.slotNo) ? null : slot.slotNo - 1}
+              violationsFor={(score) =>
+                slotScoreViolations(rules, withScore(saved, slot.slotNo, score), slot.slotNo, settings)
+              }
+              editable={editable}
+            />
+          ),
+        )}
       </ul>
     </div>
   );
@@ -140,6 +156,53 @@ function Players({ names, start, alignEnd = false }: { names: string[]; start: n
       )}
       <Start points={start} />
     </div>
+  );
+}
+
+/** A slot scored live: its score and a chip, no inputs. */
+function LiveRow({
+  slot,
+  live,
+  relay,
+  start,
+}: {
+  slot: ScoreRowSlot;
+  live: NonNullable<ScoreRowSlot['live']>;
+  relay: boolean;
+  start: Handicap;
+}) {
+  const t = useTranslations('Admin.match.scores');
+  const tl = useTranslations('Admin.match.lineup');
+  const label = tl(relay ? 'leg' : 'set', { no: slot.slotNo });
+  const score = live.score;
+  return (
+    <li aria-label={label} className="bg-surface-2/55 flex flex-col gap-2 p-3">
+      <div className="flex items-baseline gap-2">
+        <b className="font-display text-lg">{label}</b>
+        <span className={cn('text-xs', slot.slotType === 'open' ? 'text-muted-foreground' : 'text-primary')}>
+          {tl(`slotType.${slot.slotType}`)}
+        </span>
+        <span className="ml-auto">
+          {live.status === 'live' ? <LiveChip /> : <AccentChip>{t('scoredLive')}</AccentChip>}
+        </span>
+      </div>
+      <div className="grid grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center gap-3">
+        <Players names={slot.home} start={start.home} />
+        <b className="font-display text-xl tabular-nums">
+          {score ? (
+            <>
+              {score.home}
+              <span className="text-muted-foreground px-1">–</span>
+              {score.away}
+            </>
+          ) : (
+            <span className="text-muted-foreground">–</span>
+          )}
+        </b>
+        <Players names={slot.away} start={start.away} alignEnd />
+      </div>
+      {live.status === 'live' && <p className="text-muted-foreground text-xs">{t('liveInProgress')}</p>}
+    </li>
   );
 }
 

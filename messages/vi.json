@@ -1127,7 +1127,9 @@
           "changed": "Vừa có tỉ số khác được lưu và trang đã được cập nhật. Kiểm tra lại dòng này rồi lưu lại.",
           "failed": "Không lưu được tỉ số. Vui lòng thử lại.",
           "network": "Mất kết nối. Tỉ số vẫn được giữ ở đây: bấm thử lại khi có mạng."
-        }
+        },
+        "scoredLive": "Chấm trực tiếp",
+        "liveInProgress": "Đang chấm trực tiếp: tỉ số được ghi khi xác nhận kết thúc set."
       },
       "complete": {
         "winner": "Thắng",
@@ -1215,6 +1217,60 @@
           "changed": "Các trận đấu đã thay đổi. Tải lại trang và kiểm tra lại danh sách.",
           "forbidden": "Chỉ Ban tổ chức mới có thể khôi phục đội.",
           "failed": "Không khôi phục được đội. Vui lòng thử lại."
+        }
+      },
+      "live": {
+        "title": "Chấm trực tiếp",
+        "setN": "Set {n}",
+        "legN": "Lượt {n}",
+        "unitSet": "set",
+        "unitLeg": "lượt",
+        "lockFirst": "Khoá đội hình trước khi chấm",
+        "goLock": "Đến bước Khoá",
+        "ready": "Sẵn sàng chấm",
+        "start": "Bắt đầu chấm trực tiếp",
+        "startHint": "Nhận quyền chấm rồi mở thiết lập {unit} 1. Chỉ một người chấm tại một thời điểm.",
+        "resume": "Tiếp tục chấm",
+        "youHold": "Bạn đang giữ quyền chấm",
+        "heldBy": "Đang chấm bởi <b>{name}</b> · từ {time}",
+        "heldHint": "Bạn xem được trực tiếp. Nhận quyền chấm sẽ chuyển người kia sang chỉ xem.",
+        "watch": "Xem trực tiếp",
+        "takeover": "Nhận quyền chấm",
+        "takeTitle": "Nhận quyền chấm trận {code}?",
+        "takeBody": "{name} sẽ chuyển sang chế độ chỉ xem ngay khi có điểm hoặc tin nhắn realtime kế tiếp. Chỉ một người chấm tại một thời điểm.",
+        "takeLog": "Hành động được ghi vào nhật ký (ai, lúc nào).",
+        "cancel": "Huỷ",
+        "current": "Hiện tại",
+        "setScore": "Tỉ số set",
+        "cumulative": "Tổng điểm",
+        "doneTitle": "Trận đã kết thúc",
+        "winner": "Đội thắng",
+        "perSet": "Kết quả từng set",
+        "perLeg": "Kết quả từng lượt",
+        "wins": "{team} thắng",
+        "onlyBtc": "Chỉ BTC mở lại được set / lượt đã xác nhận.",
+        "finalChip": "Nhập tỉ số cuối",
+        "finalHint": "BTC đã chuyển trận này sang nhập tỉ số cuối. Không chấm trực tiếp, và được thay người theo luật Phase 1.",
+        "switchToFinal": "Chuyển sang nhập tỉ số cuối",
+        "switchToLive": "Chuyển lại chấm trực tiếp",
+        "finalConfirm": "Chuyển trận {code} sang nhập tỉ số cuối? Chấm trực tiếp sẽ tắt và được thay người lại.",
+        "liveConfirm": "Chuyển trận {code} lại chấm trực tiếp? Sau khi khoá đội hình sẽ không thay người được nữa.",
+        "directLink": "Link chấm trực tiếp",
+        "copyLink": "Sao chép link chấm",
+        "copied": "Đã sao chép",
+        "copySelect": "Đã chọn sẵn, nhấn giữ để sao chép",
+        "directHint": "Cần cùng vai trò. Nếu bạn không giữ quyền chấm, link mở thẻ này.",
+        "entryTitle": "Nhập tỉ số cuối",
+        "fallback": "Phương án dự phòng",
+        "noOverwrite": "Hai cách nhập không ghi đè lên nhau. Set đã có điểm chấm trực tiếp chỉ đọc ở đây. Set nhập tỉ số cuối thì không chấm trực tiếp được.",
+        "errors": {
+          "invalid": "Yêu cầu không hợp lệ. Tải lại trang rồi thử lại.",
+          "off": "Mùa giải đã tắt chấm trực tiếp.",
+          "notAllowed": "Chỉ BTC hoặc trọng tài đang hoạt động mới làm được việc này.",
+          "changed": "Quyền chấm vừa thay đổi và trang đã được cập nhật. Kiểm tra lại rồi thử lại.",
+          "closed": "Trận này không mở để chấm trực tiếp. Tải lại trang.",
+          "failed": "Không thực hiện được. Vui lòng thử lại.",
+          "network": "Mất kết nối. Thử lại khi có mạng."
         }
       }
     }
@@ -1318,5 +1374,8 @@
     "dismiss": "Đóng",
     "step1": "Bấm nút Chia sẻ trên thanh công cụ của Safari.",
     "step2": "Chọn “Thêm vào MH chính”, rồi bấm Thêm."
+  },
+  "Live": {
+    "chip": "LIVE"
   }
 }

@@ -75,6 +75,16 @@ export function parseLiveClaimInput(input: unknown): LiveClaimInput | null {
   return result.success ? result.data : null;
 }
 
+const finalEntrySchema = z.object({ matchId: z.uuid(), on: z.boolean() });
+
+export type FinalEntryInput = z.infer<typeof finalEntrySchema>;
+
+/** Reads the final-score entry switch's input (§8.1 L-A), or `null` when it is malformed. */
+export function parseFinalEntryInput(input: unknown): FinalEntryInput | null {
+  const result = finalEntrySchema.safeParse(input);
+  return result.success ? result.data : null;
+}
+
 /** The new event with the `seq` it is written with. */
 export function withSeq(event: NewLiveEvent, seq: number): LiveEvent {
   return { ...event, seq } as LiveEvent;

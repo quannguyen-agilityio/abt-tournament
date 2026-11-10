@@ -8,6 +8,7 @@ import {
   eventPayload,
   lastRallySide,
   liveSlotSetup,
+  parseFinalEntryInput,
   parseLiveClaimInput,
   parseLiveEventInput,
   toLiveEvent,
@@ -258,5 +259,17 @@ describe('changesPublicResults', () => {
     expect(changesPublicResults('reopened', false)).toBe(true);
     expect(changesPublicResults('point', false)).toBe(false);
     expect(changesPublicResults('undo', false)).toBe(false);
+  });
+});
+
+describe('parseFinalEntryInput', () => {
+  it('reads the switch', () => {
+    expect(parseFinalEntryInput({ matchId: MATCH_ID, on: true })).toEqual({ matchId: MATCH_ID, on: true });
+    expect(parseFinalEntryInput({ matchId: MATCH_ID, on: false })).toEqual({ matchId: MATCH_ID, on: false });
+  });
+
+  it('refuses a malformed input', () => {
+    expect(parseFinalEntryInput({ matchId: 'nope', on: true })).toBeNull();
+    expect(parseFinalEntryInput({ matchId: MATCH_ID })).toBeNull();
   });
 });

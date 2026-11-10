@@ -8,6 +8,7 @@ import {
   checkLiveEvent,
   eventPayload,
   liveSlotSetup,
+  parseFinalEntryInput,
   parseLiveClaimInput,
   parseLiveEventInput,
 } from '@/lib/live-scoring';
@@ -143,4 +144,44 @@ export async function claimLiveScoring(input: unknown): Promise<LiveClaimState> 
     }
   }
   return { ok: true, scorerSince };
+}
+
+export type FinalEntryState =
+  | { ok: true }
+  | {
+      error:
+        | 'invalid'
+        // Not an active BTC member.
+        | 'notAllowed'
+        // The match is not open, or a slot has a live event already.
+        | 'closed'
+        | 'failed';
+    };
+
+/**
+ * Switches a match to Phase 1 final-score entry (`on`), or back to live scoring (spec-phase-2 §8.1
+ * L-A, L6). BTC only. `live_set_final_entry` refuses the switch once a slot has a live event, and
+ * releases the scorer lock; Substitute is offered again while the match is in final-score entry.
+ */
+export async function setFinalEntry(input: unknown): Promise<FinalEntryState> {
+  const viewer = await requireStaff();
+  if (viewer.role !== 'btc') return { error: 'notAllowed' };
+  const parsed = parseFinalEntryInput(input);
+  if (!parsed) return { error: 'invalid' };
+
+  const supabase = await createClient();
+  const { error } = await supabase.rpc('live_set_final_entry', { p_match_id: parsed.matchId, p_on: parsed.on });
+  if (error) {
+    switch (error.code) {
+      case '42501':
+        return { error: 'notAllowed' };
+      case 'P0001':
+        return { error: 'closed' };
+      case 'P0002':
+        return { error: 'invalid' };
+      default:
+        return { error: 'failed' };
+    }
+  }
+  return { ok: true };
 }

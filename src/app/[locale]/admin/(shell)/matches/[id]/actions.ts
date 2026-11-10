@@ -3,6 +3,7 @@
 import { effectivePair, validateLineup, type LineupAttendance, type LineupRuleCode, type Side } from '@/domain/lineup';
 import { DEFAULT_SEASON_SETTINGS, parseSeasonSettings } from '@/domain/settings';
 import { requireStaff } from '@/lib/auth/session';
+import { isLiveScored, substitutionsOffered } from '@/lib/live-entry';
 import { isUuid } from '@/lib/auth/users';
 import { attendanceEditable, parseAttendanceForm } from '@/lib/match-attendance';
 import {
@@ -28,7 +29,6 @@ import {
   addedViolations,
   parseSubstitutionForm,
   substitutionHandicap,
-  substitutionsOpen,
   substitutionState,
 } from '@/lib/match-substitution';
 import { invalidatePublicData } from '@/lib/public-cache';
@@ -389,7 +389,7 @@ async function loadSubstitutionMatch(supabase: Supabase, matchId: string) {
     supabase
       .from('match')
       .select(
-        'season_id, stage, status, imported, home_team_id, away_team_id, relay_handicap_home, relay_handicap_away, season:season_id (settings)',
+        'season_id, stage, status, imported, final_entry, home_team_id, away_team_id, relay_handicap_home, relay_handicap_away, season:season_id (settings)',
       )
       .eq('id', matchId)
       .maybeSingle(),
@@ -468,7 +468,8 @@ export async function substitutePlayer(_prev: SubstitutionState, formData: FormD
   if (loaded === undefined || overrides.error) return { error: 'failed' };
   if (!loaded) return { error: 'invalid' };
   const { match, teams, settings, attendance, players, skillOf, slots } = loaded;
-  if (!substitutionsOpen(match.status)) return { error: 'closed' };
+  // L6: no substitution after the lock in a live-scored match (spec-phase-2 §2).
+  if (!substitutionsOffered(match.status, isLiveScored(settings, match))) return { error: 'closed' };
   const side: Side | null = teamId === teams.home ? 'home' : teamId === teams.away ? 'away' : null;
   if (!side) return { error: 'invalid' };
 
