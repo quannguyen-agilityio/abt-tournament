@@ -62,9 +62,10 @@ const claimSchema = z.object({
   matchId: z.uuid(),
   /**
    * The scorer the screen showed: `null` to start live scoring when nobody holds the lock, or the
-   * current scorer to take over after the confirmation (spec-phase-2 §5).
+   * current scorer to take over after the confirmation (spec-phase-2 §5). Any GUID: user ids come
+   * from auth and the seed accounts are not RFC 4122 UUIDs.
    */
-  expectedScorerId: z.uuid().nullable().default(null),
+  expectedScorerId: z.guid().nullable().default(null),
 });
 
 export type LiveClaimInput = z.infer<typeof claimSchema>;
@@ -72,6 +73,16 @@ export type LiveClaimInput = z.infer<typeof claimSchema>;
 /** Reads the claim action's input, or `null` when it is malformed. */
 export function parseLiveClaimInput(input: unknown): LiveClaimInput | null {
   const result = claimSchema.safeParse(input);
+  return result.success ? result.data : null;
+}
+
+const finalEntrySchema = z.object({ matchId: z.uuid(), on: z.boolean() });
+
+export type FinalEntryInput = z.infer<typeof finalEntrySchema>;
+
+/** Reads the final-score entry switch's input (§8.1 L-A), or `null` when it is malformed. */
+export function parseFinalEntryInput(input: unknown): FinalEntryInput | null {
+  const result = finalEntrySchema.safeParse(input);
   return result.success ? result.data : null;
 }
 
@@ -95,14 +106,19 @@ export function toLiveEvent(row: { seq: number; kind: LiveEventKind; payload: un
   return { seq, kind, payload: row.payload } as LiveEvent;
 }
 
-/** The side that won the last rally no undo cancelled, or `null` when the log has no point left. */
-export function lastRallySide(events: readonly LiveEvent[]): Side | null {
+/** The points no undo cancelled, in order. */
+export function countedPoints(events: readonly LiveEvent[]): { seq: number; side: Side }[] {
   const points: { seq: number; side: Side }[] = [];
   for (const event of events) {
     if (event.kind === 'point') points.push({ seq: event.seq, side: event.payload.side });
     else if (event.kind === 'undo' && points.at(-1)?.seq === event.payload.seq) points.pop();
   }
-  return points.at(-1)?.side ?? null;
+  return points;
+}
+
+/** The side that won the last rally no undo cancelled, or `null` when the log has no point left. */
+export function lastRallySide(events: readonly LiveEvent[]): Side | null {
+  return countedPoints(events).at(-1)?.side ?? null;
 }
 
 /** A slot row with its lineup and start points, and the substitutions on it. */

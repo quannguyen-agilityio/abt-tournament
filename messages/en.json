@@ -977,6 +977,15 @@
         "mine": "My matches · {count}",
         "today": "Today · {count}",
         "rest": "Other matches · {count}"
+      },
+      "ready": "Ready to score",
+      "live": {
+        "title": "Scoring live now · {count}",
+        "scorer": "Scorer: <b>{name}</b>",
+        "noScorer": "Nobody holds the scoring lock",
+        "you": "You",
+        "setScore": "set score {home}–{away}",
+        "cumulative": "cumulative {home}–{away}"
       }
     },
     "match": {
@@ -1127,7 +1136,9 @@
           "changed": "Another score was saved in the meantime and the page was updated. Check this row and save again.",
           "failed": "Could not save the score. Please try again.",
           "network": "No connection. The score is kept here: retry when you are back online."
-        }
+        },
+        "scoredLive": "Scored live",
+        "liveInProgress": "Being scored live: the score is saved when the end is confirmed."
       },
       "complete": {
         "winner": "Winner",
@@ -1215,6 +1226,60 @@
           "changed": "The matches changed in the meantime. Reload the page and check the list again.",
           "forbidden": "Only the Organizing Committee can reinstate a team.",
           "failed": "Could not reinstate the team. Please try again."
+        }
+      },
+      "live": {
+        "title": "Live scoring",
+        "setN": "Set {n}",
+        "legN": "Leg {n}",
+        "unitSet": "set",
+        "unitLeg": "leg",
+        "lockFirst": "Lock the lineups before scoring",
+        "goLock": "Go to Lock",
+        "ready": "Ready to score",
+        "start": "Start live scoring",
+        "startHint": "Take the scoring lock, then open the setup of {unit} 1. Only one person scores at a time.",
+        "resume": "Resume scoring",
+        "youHold": "You hold the scoring lock",
+        "heldBy": "Scored by <b>{name}</b> · since {time}",
+        "heldHint": "You can watch live. Taking over switches the other scorer to view-only.",
+        "watch": "Watch live",
+        "takeover": "Take over scoring",
+        "takeTitle": "Take over scoring for {code}?",
+        "takeBody": "{name} will switch to view-only on the next point or realtime message. Only one scorer at a time.",
+        "takeLog": "This action is logged (who, when).",
+        "cancel": "Cancel",
+        "current": "Now",
+        "setScore": "Set score",
+        "cumulative": "Cumulative",
+        "doneTitle": "Match finished",
+        "winner": "Winner",
+        "perSet": "Result per set",
+        "perLeg": "Result per leg",
+        "wins": "{team} wins",
+        "onlyBtc": "Only the committee can reopen a confirmed set or leg.",
+        "finalChip": "Final-score entry",
+        "finalHint": "The committee switched this match to final-score entry. It is not scored live, and substitutions follow the Phase 1 rule.",
+        "switchToFinal": "Switch to final-score entry",
+        "switchToLive": "Switch back to live scoring",
+        "finalConfirm": "Switch {code} to final-score entry? Live scoring turns off and substitutions are allowed again.",
+        "liveConfirm": "Switch {code} back to live scoring? No substitutions are allowed after the lock.",
+        "directLink": "Direct scoring link",
+        "copyLink": "Copy scoring link",
+        "copied": "Copied",
+        "copySelect": "Selected, long-press to copy",
+        "directHint": "Same role needed. If you do not hold the lock, the link opens this card.",
+        "entryTitle": "Enter final scores",
+        "fallback": "Fallback",
+        "noOverwrite": "The two ways never overwrite each other. A set with live points is read-only here. A set entered as a final score cannot be scored live.",
+        "errors": {
+          "invalid": "Invalid request. Reload the page and try again.",
+          "off": "Live scoring is turned off for this season.",
+          "notAllowed": "Only an active committee member or referee can do this.",
+          "changed": "The scoring lock just changed and the page was updated. Check and try again.",
+          "closed": "This match is not open for live scoring. Reload the page.",
+          "failed": "That did not work. Please try again.",
+          "network": "Connection lost. Try again when you are back online."
         }
       }
     }
@@ -1318,5 +1383,8 @@
     "dismiss": "Dismiss",
     "step1": "Tap the Share button in Safari's toolbar.",
     "step2": "Choose “Add to Home Screen”, then tap Add."
+  },
+  "Live": {
+    "chip": "LIVE"
   }
 }

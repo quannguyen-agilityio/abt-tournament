@@ -15,9 +15,17 @@ import { attendanceEditable } from '@/lib/match-attendance';
 import { disqualificationPlan, reinstatementPlan } from '@/lib/match-disqualification';
 import { loadDisqualificationState } from '@/lib/match-disqualification-db';
 import { forfeitable } from '@/lib/match-forfeit';
+import {
+  canSwitchToFinalEntry,
+  isLiveScored,
+  liveCardState,
+  liveProgress,
+  scoredLive,
+  substitutionsOffered,
+} from '@/lib/live-entry';
+import { toLiveEvent } from '@/lib/live-scoring';
 import { lineupEditable, type SlotPair } from '@/lib/match-lineup';
 import { matchOutcome, scoreRules, scoresEditable } from '@/lib/match-scores';
-import { substitutionsOpen } from '@/lib/match-substitution';
 import { createClient } from '@/lib/supabase/server';
 import { cn } from '@/lib/utils';
 import { AnnulledResult } from './annulled-result';
@@ -26,6 +34,7 @@ import { CompletedResult, CompleteForm } from './complete-form';
 import { DisqualifyForm } from './disqualify-form';
 import { ForfeitForm, ForfeitResult } from './forfeit-form';
 import { LineupStep, type LineupTeam } from './lineup-step';
+import { LiveCard } from './live-card';
 import { LockedLineups } from './locked-lineups';
 import { ScoresStep } from './scores-step';
 import { SideActions } from './side-actions';
@@ -50,7 +59,7 @@ async function StaffMatch({ params, searchParams }: PageProps<'/[locale]/admin/m
   const { data: match, error } = await supabase
     .from('match')
     .select(
-      'id, season_id, code, stage, status, imported, relay_handicap_home, relay_handicap_away, winner_team_id, forfeit_team_id, forfeit_reason, scheduled_at, home_team_id, away_team_id, court:court_id (name), season:season_id (settings)',
+      'id, season_id, code, stage, status, imported, relay_handicap_home, relay_handicap_away, winner_team_id, forfeit_team_id, forfeit_reason, scheduled_at, home_team_id, away_team_id, final_entry, scorer_id, scorer_since, court:court_id (name), season:season_id (settings, year)',
     )
     .eq('id', id)
     .maybeSingle();
@@ -73,7 +82,7 @@ async function StaffMatch({ params, searchParams }: PageProps<'/[locale]/admin/m
     supabase
       .from('match_slot')
       .select(
-        'slot_no, slot_type, home_p1, home_p2, away_p1, away_p2, handicap_home, handicap_away, score_home, score_away, slot_substitution (id, side, replaced_id, substitute_id, reason, created_at)',
+        'id, slot_no, slot_type, live_status, home_p1, home_p2, away_p1, away_p2, handicap_home, handicap_away, score_home, score_away, slot_substitution (id, side, replaced_id, substitute_id, reason, created_at)',
       )
       .eq('match_id', match.id)
       .order('slot_no'),
@@ -103,6 +112,28 @@ async function StaffMatch({ params, searchParams }: PageProps<'/[locale]/admin/m
     ...slot,
     substitutions: [...slot_substitution].sort((a, b) => a.created_at.localeCompare(b.created_at)),
   }));
+  // Live scoring (spec-phase-2 §8.0): the logs of the slots scored live, and who holds the scorer lock.
+  const liveSlotIds = slots.filter(scoredLive).map((slot) => slot.id);
+  const [eventsResult, scorerResult] = await Promise.all([
+    liveSlotIds.length > 0
+      ? supabase
+          .from('live_event')
+          .select('match_slot_id, seq, kind, payload')
+          .in('match_slot_id', liveSlotIds)
+          .order('seq')
+      : Promise.resolve({ data: [], error: null }),
+    match.scorer_id
+      ? supabase.from('scorer_name').select('display_name').eq('user_id', match.scorer_id).maybeSingle()
+      : Promise.resolve({ data: null, error: null }),
+  ]);
+  if (eventsResult.error) throw eventsResult.error;
+  if (scorerResult.error) throw scorerResult.error;
+  const eventsOf = (slotNo: number) => {
+    const slotId = slots.find((slot) => slot.slot_no === slotNo)?.id;
+    return eventsResult.data.filter((e) => e.match_slot_id === slotId).map(toLiveEvent);
+  };
+  const liveScored = isLiveScored(settings, match);
+
   const lineupTeam = (team: (typeof teams)[number], side: 'home' | 'away'): LineupTeam => ({
     team,
     side,
@@ -146,6 +177,16 @@ async function StaffMatch({ params, searchParams }: PageProps<'/[locale]/admin/m
   // The result from the saved scores; once completed, the stored winner.
   const rules = scoreRules(match);
   const outcome = matchOutcome(rules, slots, settings);
+  const progress = liveProgress(rules, slots, eventsOf);
+  const liveHref = `/admin/seasons/${match.season.year}/matches/${encodeURIComponent(match.code)}/live`;
+  const cardState = liveCardState({
+    status: match.status,
+    settings,
+    finalEntry: match.final_entry,
+    scorerId: match.scorer_id,
+    viewerId: viewer.id,
+    slots,
+  });
   const sideOf = (teamId: string | null) =>
     teamId === match.home_team_id ? 'home' : teamId === match.away_team_id ? 'away' : null;
   const winnerSide = match.status === 'completed' ? sideOf(match.winner_team_id) : outcome.winner;
@@ -158,16 +199,31 @@ async function StaffMatch({ params, searchParams }: PageProps<'/[locale]/admin/m
     handicap: { home: slot.handicap_home, away: slot.handicap_away },
     score:
       slot.score_home !== null && slot.score_away !== null ? { home: slot.score_home, away: slot.score_away } : null,
+    live:
+      slot.live_status === 'pending'
+        ? null
+        : {
+            status: slot.live_status,
+            score:
+              slot.live_status === 'live'
+                ? progress?.slotNo === slot.slot_no
+                  ? progress.score
+                  : null
+                : slot.score_home !== null && slot.score_away !== null
+                  ? { home: slot.score_home, away: slot.score_away }
+                  : null,
+          },
   }));
 
-  // Side actions in the header: substitutions open from the lock until the match is completed.
+  // Side actions in the header: substitutions open from the lock until the match is completed, except in
+  // a live-scored match (L6).
   const substituteTeam = (team: (typeof teams)[number], side: 'home' | 'away') => ({
     team: { id: team.id, name: team.name },
     side,
     players: rosterOf(team.id).map((p) => ({ id: p.id, name: p.name, rank: p.rank, present: present.has(p.id) })),
   });
   const sideActions =
-    teams.length === 2 && !match.imported && substitutionsOpen(match.status)
+    teams.length === 2 && !match.imported && substitutionsOffered(match.status, liveScored)
       ? [
           {
             key: 'substitute',
@@ -231,6 +287,35 @@ async function StaffMatch({ params, searchParams }: PageProps<'/[locale]/admin/m
   }
   const disqualifyHref = (teamId: string) =>
     eligible.some((team) => team.id === teamId) ? `/admin/matches/${match.id}?disqualify=${teamId}` : null;
+
+  // The Live scoring card (spec-phase-2 §8.0) sits on the Scores step. Before the lock it shows only when
+  // the Scores step was asked for (the direct link, a bookmark), since that step does not exist yet.
+  const liveCard =
+    cardState && teams.length === 2 ? (
+      <LiveCard
+        state={cardState}
+        matchId={match.id}
+        code={match.code}
+        relay={rules.relay}
+        teams={[teams[0], teams[1]]}
+        liveHref={liveHref}
+        lockHref={`/admin/matches/${match.id}?step=lineup`}
+        scorer={
+          match.scorer_id && match.scorer_since
+            ? {
+                id: match.scorer_id,
+                name: scorerResult.data?.display_name ?? '—',
+                since: formatTime(new Date(match.scorer_since), locale, settings.timezone),
+              }
+            : null
+        }
+        progress={progress}
+        matchScore={outcome.score}
+        results={scoreRows.flatMap((row) => (row.score ? [{ slotNo: row.slotNo, score: row.score }] : []))}
+        isBtc={isBtc}
+        canSwitchToFinal={canSwitchToFinalEntry(slots)}
+      />
+    ) : null;
 
   return (
     <div className="flex flex-col gap-5">
@@ -305,6 +390,8 @@ async function StaffMatch({ params, searchParams }: PageProps<'/[locale]/admin/m
         ))}
       </ol>
 
+      {cardState === 'unlocked' && query.step === 'scores' && liveCard}
+
       {teams.length < 2 ? (
         <p className="border-border bg-surface text-muted-foreground rounded-[10px] border p-8 text-center text-sm">
           {t('tbd')}
@@ -360,6 +447,23 @@ async function StaffMatch({ params, searchParams }: PageProps<'/[locale]/admin/m
                   : t('scores.hint', { target: settings.set_target })}
             </p>
           </div>
+          {liveCard}
+          {liveScored && cardState !== 'done' && (
+            <div className="mt-3 flex flex-col gap-2">
+              <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
+                <h3 className="font-display text-xl font-bold uppercase">{t('live.entryTitle')}</h3>
+                <span className="border-border bg-surface-2 rounded-full border px-2 py-0.5 text-xs font-medium">
+                  {t('live.fallback')}
+                </span>
+              </div>
+              <p
+                role="note"
+                className="border-border bg-surface flex items-start gap-2 rounded-[10px] border p-3 text-sm"
+              >
+                {t('live.noOverwrite')}
+              </p>
+            </div>
+          )}
           <ScoresStep
             matchId={match.id}
             teams={[teams[0], teams[1]]}

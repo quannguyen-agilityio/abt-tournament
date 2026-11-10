@@ -8,6 +8,7 @@ import {
   eventPayload,
   lastRallySide,
   liveSlotSetup,
+  parseFinalEntryInput,
   parseLiveClaimInput,
   parseLiveEventInput,
   toLiveEvent,
@@ -258,5 +259,27 @@ describe('changesPublicResults', () => {
     expect(changesPublicResults('reopened', false)).toBe(true);
     expect(changesPublicResults('point', false)).toBe(false);
     expect(changesPublicResults('undo', false)).toBe(false);
+  });
+});
+
+describe('parseFinalEntryInput', () => {
+  it('reads the switch', () => {
+    expect(parseFinalEntryInput({ matchId: MATCH_ID, on: true })).toEqual({ matchId: MATCH_ID, on: true });
+    expect(parseFinalEntryInput({ matchId: MATCH_ID, on: false })).toEqual({ matchId: MATCH_ID, on: false });
+  });
+
+  it('refuses a malformed input', () => {
+    expect(parseFinalEntryInput({ matchId: 'nope', on: true })).toBeNull();
+    expect(parseFinalEntryInput({ matchId: MATCH_ID })).toBeNull();
+  });
+});
+
+describe('parseLiveClaimInput with seed user ids', () => {
+  it('accepts a scorer id that is not an RFC 4122 UUID', () => {
+    const seedId = '10000000-0000-0000-0000-000000000002';
+    expect(parseLiveClaimInput({ matchId: MATCH_ID, expectedScorerId: seedId })).toEqual({
+      matchId: MATCH_ID,
+      expectedScorerId: seedId,
+    });
   });
 });
