@@ -95,14 +95,19 @@ export function toLiveEvent(row: { seq: number; kind: LiveEventKind; payload: un
   return { seq, kind, payload: row.payload } as LiveEvent;
 }
 
-/** The side that won the last rally no undo cancelled, or `null` when the log has no point left. */
-export function lastRallySide(events: readonly LiveEvent[]): Side | null {
+/** The points no undo cancelled, in order. */
+export function countedPoints(events: readonly LiveEvent[]): { seq: number; side: Side }[] {
   const points: { seq: number; side: Side }[] = [];
   for (const event of events) {
     if (event.kind === 'point') points.push({ seq: event.seq, side: event.payload.side });
     else if (event.kind === 'undo' && points.at(-1)?.seq === event.payload.seq) points.pop();
   }
-  return points.at(-1)?.side ?? null;
+  return points;
+}
+
+/** The side that won the last rally no undo cancelled, or `null` when the log has no point left. */
+export function lastRallySide(events: readonly LiveEvent[]): Side | null {
+  return countedPoints(events).at(-1)?.side ?? null;
 }
 
 /** A slot row with its lineup and start points, and the substitutions on it. */
