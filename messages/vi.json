@@ -977,6 +977,15 @@
         "mine": "Trận của tôi · {count}",
         "today": "Hôm nay · {count}",
         "rest": "Các trận khác · {count}"
+      },
+      "ready": "Sẵn sàng chấm",
+      "live": {
+        "title": "Đang chấm trực tiếp · {count}",
+        "scorer": "Đang chấm: <b>{name}</b>",
+        "noScorer": "Chưa có người giữ quyền chấm",
+        "you": "Bạn",
+        "setScore": "tỉ số set {home}–{away}",
+        "cumulative": "tổng điểm {home}–{away}"
       }
     },
     "match": {

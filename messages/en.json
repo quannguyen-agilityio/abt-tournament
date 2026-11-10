@@ -977,6 +977,15 @@
         "mine": "My matches · {count}",
         "today": "Today · {count}",
         "rest": "Other matches · {count}"
+      },
+      "ready": "Ready to score",
+      "live": {
+        "title": "Scoring live now · {count}",
+        "scorer": "Scorer: <b>{name}</b>",
+        "noScorer": "Nobody holds the scoring lock",
+        "you": "You",
+        "setScore": "set score {home}–{away}",
+        "cumulative": "cumulative {home}–{away}"
       }
     },
     "match": {
