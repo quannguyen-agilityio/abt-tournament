@@ -1138,6 +1138,7 @@ export type Database = {
         };
         Returns: number;
       };
+      live_claim: { Args: { p_expected_scorer?: string; p_match_id: string }; Returns: string };
       lock_match_lineups: {
         Args: { p_match_id: string; p_relay_away?: number; p_relay_home?: number; p_slots: Json };
         Returns: undefined;

@@ -58,6 +58,23 @@ export function parseLiveEventInput(input: unknown): LiveEventInput | null {
   return result.success ? result.data : null;
 }
 
+const claimSchema = z.object({
+  matchId: z.uuid(),
+  /**
+   * The scorer the screen showed: `null` to start live scoring when nobody holds the lock, or the
+   * current scorer to take over after the confirmation (spec-phase-2 §5).
+   */
+  expectedScorerId: z.uuid().nullable().default(null),
+});
+
+export type LiveClaimInput = z.infer<typeof claimSchema>;
+
+/** Reads the claim action's input, or `null` when it is malformed. */
+export function parseLiveClaimInput(input: unknown): LiveClaimInput | null {
+  const result = claimSchema.safeParse(input);
+  return result.success ? result.data : null;
+}
+
 /** The new event with the `seq` it is written with. */
 export function withSeq(event: NewLiveEvent, seq: number): LiveEvent {
   return { ...event, seq } as LiveEvent;
