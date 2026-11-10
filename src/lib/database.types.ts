@@ -271,6 +271,13 @@ export type Database = {
             referencedColumns: ['user_id'];
           },
           {
+            foreignKeyName: 'group_closure_closed_by_fkey';
+            columns: ['closed_by'];
+            isOneToOne: false;
+            referencedRelation: 'scorer_name';
+            referencedColumns: ['user_id'];
+          },
+          {
             foreignKeyName: 'group_closure_season_id_fkey';
             columns: ['season_id'];
             isOneToOne: true;
@@ -324,6 +331,13 @@ export type Database = {
             columns: ['created_by'];
             isOneToOne: false;
             referencedRelation: 'referee_name';
+            referencedColumns: ['user_id'];
+          },
+          {
+            foreignKeyName: 'lineup_override_created_by_fkey';
+            columns: ['created_by'];
+            isOneToOne: false;
+            referencedRelation: 'scorer_name';
             referencedColumns: ['user_id'];
           },
           {
@@ -390,6 +404,13 @@ export type Database = {
             referencedColumns: ['user_id'];
           },
           {
+            foreignKeyName: 'live_event_created_by_fkey';
+            columns: ['created_by'];
+            isOneToOne: false;
+            referencedRelation: 'scorer_name';
+            referencedColumns: ['user_id'];
+          },
+          {
             foreignKeyName: 'live_event_match_slot_id_fkey';
             columns: ['match_slot_id'];
             isOneToOne: false;
@@ -404,6 +425,7 @@ export type Database = {
           code: string;
           court_id: string | null;
           created_at: string;
+          final_entry: boolean;
           forfeit_reason: string | null;
           forfeit_team_id: string | null;
           home_team_id: string | null;
@@ -430,6 +452,7 @@ export type Database = {
           code: string;
           court_id?: string | null;
           created_at?: string;
+          final_entry?: boolean;
           forfeit_reason?: string | null;
           forfeit_team_id?: string | null;
           home_team_id?: string | null;
@@ -455,6 +478,7 @@ export type Database = {
           code?: string;
           court_id?: string | null;
           created_at?: string;
+          final_entry?: boolean;
           forfeit_reason?: string | null;
           forfeit_team_id?: string | null;
           home_team_id?: string | null;
@@ -519,6 +543,13 @@ export type Database = {
             referencedColumns: ['user_id'];
           },
           {
+            foreignKeyName: 'match_referee_id_fkey';
+            columns: ['referee_id'];
+            isOneToOne: false;
+            referencedRelation: 'scorer_name';
+            referencedColumns: ['user_id'];
+          },
+          {
             foreignKeyName: 'match_retired_team_id_fkey';
             columns: ['retired_team_id'];
             isOneToOne: false;
@@ -537,6 +568,13 @@ export type Database = {
             columns: ['scorer_id'];
             isOneToOne: false;
             referencedRelation: 'referee_name';
+            referencedColumns: ['user_id'];
+          },
+          {
+            foreignKeyName: 'match_scorer_id_fkey';
+            columns: ['scorer_id'];
+            isOneToOne: false;
+            referencedRelation: 'scorer_name';
             referencedColumns: ['user_id'];
           },
           {
@@ -972,6 +1010,13 @@ export type Database = {
             referencedColumns: ['user_id'];
           },
           {
+            foreignKeyName: 'slot_substitution_created_by_fkey';
+            columns: ['created_by'];
+            isOneToOne: false;
+            referencedRelation: 'scorer_name';
+            referencedColumns: ['user_id'];
+          },
+          {
             foreignKeyName: 'slot_substitution_match_slot_id_fkey';
             columns: ['match_slot_id'];
             isOneToOne: false;
@@ -1070,6 +1115,22 @@ export type Database = {
         };
         Relationships: [];
       };
+      scorer_name: {
+        Row: {
+          display_name: string;
+          user_id: string;
+        };
+        ComputedFields: never;
+        Insert: {
+          display_name?: string | null;
+          user_id?: string | null;
+        };
+        Update: {
+          display_name?: string | null;
+          user_id?: string | null;
+        };
+        Relationships: [];
+      };
     };
     Functions: {
       add_award_winner: {
@@ -1139,6 +1200,7 @@ export type Database = {
         Returns: number;
       };
       live_claim: { Args: { p_expected_scorer?: string; p_match_id: string }; Returns: string };
+      live_set_final_entry: { Args: { p_match_id: string; p_on: boolean }; Returns: undefined };
       lock_match_lineups: {
         Args: { p_match_id: string; p_relay_away?: number; p_relay_home?: number; p_slots: Json };
         Returns: undefined;
