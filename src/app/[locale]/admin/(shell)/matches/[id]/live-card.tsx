@@ -309,22 +309,35 @@ export function LiveCard(props: LiveCardProps) {
   );
 }
 
-function TakeoverDialog({
+/** The takeover confirmation (spec-phase-2 §5). Also used by the read-only scorer screen (L-H). */
+export function TakeoverDialog({
   code,
   scorerName,
   pending,
   onConfirm,
+  compact = false,
 }: {
   code: string;
   scorerName: string;
   pending: boolean;
   onConfirm: () => void;
+  /** A small trigger button, for a banner. */
+  compact?: boolean;
 }) {
   const t = useTranslations('Admin.match.live');
   const [open, setOpen] = useState(false);
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger render={<Button type="button" size="lg" className="w-full" pending={pending} />}>
+      <DialogTrigger
+        render={
+          <Button
+            type="button"
+            size={compact ? 'sm' : 'lg'}
+            className={compact ? undefined : 'w-full'}
+            pending={pending}
+          />
+        }
+      >
         {t('takeover')}
       </DialogTrigger>
       <DialogContent closeLabel={t('cancel')}>
