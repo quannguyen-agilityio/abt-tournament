@@ -62,9 +62,10 @@ const claimSchema = z.object({
   matchId: z.uuid(),
   /**
    * The scorer the screen showed: `null` to start live scoring when nobody holds the lock, or the
-   * current scorer to take over after the confirmation (spec-phase-2 §5).
+   * current scorer to take over after the confirmation (spec-phase-2 §5). Any GUID: user ids come
+   * from auth and the seed accounts are not RFC 4122 UUIDs.
    */
-  expectedScorerId: z.uuid().nullable().default(null),
+  expectedScorerId: z.guid().nullable().default(null),
 });
 
 export type LiveClaimInput = z.infer<typeof claimSchema>;

@@ -273,3 +273,13 @@ describe('parseFinalEntryInput', () => {
     expect(parseFinalEntryInput({ matchId: MATCH_ID })).toBeNull();
   });
 });
+
+describe('parseLiveClaimInput with seed user ids', () => {
+  it('accepts a scorer id that is not an RFC 4122 UUID', () => {
+    const seedId = '10000000-0000-0000-0000-000000000002';
+    expect(parseLiveClaimInput({ matchId: MATCH_ID, expectedScorerId: seedId })).toEqual({
+      matchId: MATCH_ID,
+      expectedScorerId: seedId,
+    });
+  });
+});
