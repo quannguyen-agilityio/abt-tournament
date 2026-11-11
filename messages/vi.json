@@ -176,6 +176,14 @@
       "relayNoStart": "Không có điểm chấp",
       "progress": "Tiến độ tới {target}"
     },
+    "live": {
+      "setN": "Set {n}",
+      "legN": "Lượt {n}",
+      "setScore": "Tỉ số set {home}–{away}",
+      "serving": "đang giao",
+      "filter": "Đang live",
+      "quickFilter": "Lọc nhanh"
+    },
     "gender": {
       "male": "Nam",
       "female": "Nữ"

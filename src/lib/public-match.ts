@@ -33,7 +33,7 @@ export interface MatchSlotInput {
 }
 
 /** The `match` row the page reads, with its slots. */
-export interface MatchDetailInput extends Omit<ScheduleMatchInput, 'slots' | 'court_id'> {
+export interface MatchDetailInput extends Omit<ScheduleMatchInput, 'slots' | 'court_id' | 'live'> {
   status_before_annul: MatchStatus | null;
   forfeit_reason: string | null;
   relay_handicap_home: number | null;

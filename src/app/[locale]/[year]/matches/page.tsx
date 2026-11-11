@@ -8,6 +8,7 @@ import { routing } from '@/i18n/routing';
 import { formatDay, formatTime } from '@/lib/format';
 import {
   buildScheduleView,
+  isLive,
   parseMatchFilters,
   scheduleDays,
   type MatchCard as MatchCardData,
@@ -62,6 +63,7 @@ async function Matches({ params, searchParams }: PageProps<'/[locale]/[year]/mat
         }))}
         teams={teams.map((team) => ({ value: team.id, label: team.name }))}
         courts={courts.map((court) => ({ value: court.id, label: court.name }))}
+        liveCount={matches.filter(isLive).length}
       />
 
       {view.count === 0 ? (

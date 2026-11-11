@@ -7,10 +7,13 @@ import { cache } from 'react';
 
 import { DEFAULT_SEASON_SETTINGS, parseSeasonSettings, type SeasonSettings } from '@/domain/settings';
 import type { Database } from '@/lib/database.types';
+import type { LiveEvent } from '@/domain/live';
+import { toLiveEvent } from '@/lib/live-scoring';
 import type { AwardInput } from '@/lib/public-awards';
 import type { MatchDetailInput, MatchPlayer } from '@/lib/public-match';
 import type { ScheduleMatchInput } from '@/lib/public-matches';
 import type { PublicTeam } from '@/lib/public-standings';
+import { liveSummary } from '@/lib/public-live';
 import type { ProfileMatch } from '@/lib/public-players';
 import { PUBLIC_DATA_TAG } from '@/lib/public-cache';
 import type { PublicPlayer } from '@/lib/public-teams';
@@ -210,11 +213,53 @@ async function readSeasonSchedule(supabase: Supabase, seasonId: string): Promise
   const { data, error } = await supabase
     .from('match')
     .select(
-      'id, code, stage, round, status, home_team_id, away_team_id, forfeit_team_id, winner_team_id, scheduled_at, court_id, match_slot(slot_no, score_home, score_away)',
+      `id, code, stage, round, status, home_team_id, away_team_id, forfeit_team_id, winner_team_id, scheduled_at,
+      court_id, relay_handicap_home, relay_handicap_away,
+      match_slot(id, slot_no, score_home, score_away, live_status, handicap_home, handicap_away)`,
     )
     .eq('season_id', seasonId);
   if (error) throw error;
-  return data.map(({ match_slot: slots, ...match }) => ({ ...match, slots }));
+
+  // Live matches (spec-phase-2 §8.2): the summary is computed here, so the page gets a few numbers
+  // per match, not the logs. A group match needs the log of its live set; a relay match the logs of
+  // its legs so far, for the serve carried over at a leg change.
+  const logSlots = data
+    .filter((m) => m.status === 'in_progress')
+    .flatMap((m) =>
+      m.match_slot.filter((s) => (m.stage === 'group' ? s.live_status === 'live' : s.live_status !== 'pending')),
+    )
+    .map((s) => s.id);
+  const logs = await readLiveLogs(supabase, logSlots);
+
+  return data.map(({ match_slot: rows, relay_handicap_home, relay_handicap_away, ...match }) => {
+    const slots = rows.map(({ slot_no, score_home, score_away }) => ({ slot_no, score_home, score_away }));
+    if (match.status !== 'in_progress') return { ...match, slots };
+    const idOf = new Map(rows.map((s) => [s.slot_no, s.id]));
+    const live = liveSummary(
+      { stage: match.stage, relay_handicap_home, relay_handicap_away },
+      rows,
+      (slotNo) => logs.get(idOf.get(slotNo) ?? '') ?? [],
+    );
+    return { ...match, slots, live };
+  });
+}
+
+/** The logs of these slots, by slot id, in `seq` order. */
+async function readLiveLogs(supabase: Supabase, slotIds: readonly string[]): Promise<Map<string, LiveEvent[]>> {
+  const logs = new Map<string, LiveEvent[]>();
+  if (slotIds.length === 0) return logs;
+  const { data, error } = await supabase
+    .from('live_event')
+    .select('match_slot_id, seq, kind, payload')
+    .in('match_slot_id', slotIds)
+    .order('seq');
+  if (error) throw error;
+  for (const row of data) {
+    const log = logs.get(row.match_slot_id) ?? [];
+    log.push(toLiveEvent(row));
+    logs.set(row.match_slot_id, log);
+  }
+  return logs;
 }
 
 export interface MatchDetail extends MatchDetailInput {

@@ -7,6 +7,7 @@ import {
   type Side,
   type SlotScore,
 } from '../domain';
+import type { LiveSummary } from './public-live';
 import { isIsoDate } from './season-admin';
 import { scheduleGrid, type ScheduleDay } from './schedule';
 
@@ -24,6 +25,8 @@ export interface ScheduleMatchInput {
   scheduled_at: string | null;
   court_id: string | null;
   slots: readonly SlotScore[];
+  /** Set while the match is scored live (spec-phase-2 §8.2). */
+  live?: LiveSummary | null;
 }
 
 /** Group: sets won. Knock-out: the relay scoreboard. `null` before the first score. */
@@ -45,6 +48,8 @@ export interface MatchFilters {
   team: string | null;
   court: string | null;
   stage: StageFilter | null;
+  /** `'1'`: only the matches scored live right now (spec-phase-2 §8.2). */
+  live: '1' | null;
 }
 
 const scored = (slots: readonly SlotScore[]) =>
@@ -103,6 +108,7 @@ export function parseMatchFilters(
     team: known.teamIds.includes(team) ? team : null,
     court: known.courtIds.includes(court) ? court : null,
     stage: stage === 'group' || stage === 'ko' ? stage : null,
+    live: first(query.live) === '1' ? '1' : null,
   };
 }
 
@@ -110,6 +116,9 @@ export function parseMatchFilters(
 export function filtersToQuery(filters: MatchFilters): Record<string, string> {
   return Object.fromEntries(Object.entries(filters).filter(([, value]) => value !== null)) as Record<string, string>;
 }
+
+/** The match is being scored live: it has a live summary. */
+export const isLive = (match: Pick<ScheduleMatchInput, 'live'>): boolean => Boolean(match.live);
 
 /** Local days that have a match or are season match days, in order. */
 export function scheduleDays(
@@ -135,7 +144,8 @@ export function buildScheduleView(input: {
       (m) =>
         (!filters.team || m.home_team_id === filters.team || m.away_team_id === filters.team) &&
         (!filters.court || m.court_id === filters.court) &&
-        (!filters.stage || (filters.stage === 'group') === (m.stage === 'group')),
+        (!filters.stage || (filters.stage === 'group') === (m.stage === 'group')) &&
+        (!filters.live || isLive(m)),
     )
     .sort((a, b) => a.code.localeCompare(b.code))
     .map((m): MatchCard => ({ ...m, score: matchScore(m, settings) }));

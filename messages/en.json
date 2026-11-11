@@ -176,6 +176,14 @@
       "relayNoStart": "No start handicap",
       "progress": "Progress to {target}"
     },
+    "live": {
+      "setN": "Set {n}",
+      "legN": "Leg {n}",
+      "setScore": "Set score {home}–{away}",
+      "serving": "serving",
+      "filter": "Live now",
+      "quickFilter": "Quick filter"
+    },
     "gender": {
       "male": "Male",
       "female": "Female"
