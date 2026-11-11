@@ -11,7 +11,7 @@ import {
 } from './public-matches';
 
 const settings = DEFAULT_SEASON_SETTINGS;
-const ALL: MatchFilters = { day: null, team: null, court: null, stage: null };
+const ALL: MatchFilters = { day: null, team: null, court: null, stage: null, live: null };
 const T1 = '00000000-0000-4000-8000-000000000001';
 const T2 = '00000000-0000-4000-8000-000000000002';
 const T3 = '00000000-0000-4000-8000-000000000003';
@@ -92,7 +92,10 @@ describe('parseMatchFilters', () => {
       team: T1,
       court: C1,
       stage: 'ko',
+      live: null,
     });
+    expect(parseMatchFilters({ live: '1' }, known).live).toBe('1');
+    expect(parseMatchFilters({ live: 'yes' }, known).live).toBeNull();
   });
 
   it('falls back to "all" for unknown or malformed values', () => {
@@ -170,6 +173,18 @@ describe('buildScheduleView', () => {
     expect(codes(day)).toEqual([['2027-01-16', [['06:30', ['V04']]]]]);
     expect(day.unscheduled).toEqual([]);
     expect(day.count).toBe(1);
+  });
+
+  it('filters on the matches scored live', () => {
+    const live = { slotNo: 2, relay: false, score: { home: 4, away: 7 }, servingSide: 'away' as const };
+    const v = buildScheduleView({
+      matches: [match('V01', { status: 'in_progress', live }), match('V02', { status: 'in_progress' })],
+      filters: { ...ALL, live: '1' },
+      settings,
+    });
+    expect(v.count).toBe(1);
+    expect(v.days[0].times[0].matches.map((m) => [m.code, m.live])).toEqual([['V01', live]]);
+    expect(filtersToQuery({ ...ALL, live: '1' })).toEqual({ live: '1' });
   });
 
   it('attaches the score to each card', () => {

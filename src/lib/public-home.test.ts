@@ -62,6 +62,18 @@ describe('buildHomeView', () => {
     expect(view.courts[0].now[0].score).toEqual({ home: 1, away: 0, winner: null });
   });
 
+  it('puts live matches first in "Now"', () => {
+    const live = { slotNo: 1, relay: false, score: { home: 3, away: 1 }, servingSide: 'home' as const };
+    const matches = [
+      match('V01', { status: 'in_progress', scheduled_at: at(1) }),
+      match('V02', { status: 'in_progress', scheduled_at: at(2), live }),
+    ];
+    expect(buildHomeView({ matches, courts: COURTS, settings }).courts[0].now.map((m) => m.code)).toEqual([
+      'V02',
+      'V01',
+    ]);
+  });
+
   it('puts unscheduled matches after scheduled ones in "Next"', () => {
     const matches = [match('V01', { scheduled_at: null }), match('V02', { scheduled_at: at(6) })];
     expect(buildHomeView({ matches, courts: COURTS, settings }).courts[0].next?.code).toBe('V02');

@@ -30,10 +30,15 @@ export interface MatchSlotInput {
   score_away: number | null;
   /** In the order they were made. */
   substitutions: (SlotSubstitution & { reason: string })[];
+  /** Live scoring (spec-phase-2 §7); absent for a match read without its live columns. */
+  live_status?: 'pending' | 'live' | 'finished';
+  retired_side?: Side | null;
+  retired_player_id?: string | null;
+  forfeit_side?: Side | null;
 }
 
 /** The `match` row the page reads, with its slots. */
-export interface MatchDetailInput extends Omit<ScheduleMatchInput, 'slots' | 'court_id'> {
+export interface MatchDetailInput extends Omit<ScheduleMatchInput, 'slots' | 'court_id' | 'live'> {
   status_before_annul: MatchStatus | null;
   forfeit_reason: string | null;
   relay_handicap_home: number | null;
@@ -54,6 +59,12 @@ export interface SlotView {
   score: Record<Side, number> | null;
   winner: Side | null;
   substitutions: { side: Side; out: MatchPlayer | null; in: MatchPlayer | null; reason: string }[];
+  /** Being scored live: its score shows in the live panel until the end is confirmed. */
+  live: boolean;
+  /** spec-phase-2 §6: the side whose player retired injured in this slot, and that player. */
+  retired: { side: Side; player: MatchPlayer | null } | null;
+  /** spec-phase-2 §6 (L8): forfeited because the injured player was lined up in it. */
+  forfeitSide: Side | null;
 }
 
 export interface RelayView {
@@ -123,6 +134,11 @@ export function buildMatchDetail(input: {
               in: player(sub.substitute_id),
               reason: sub.reason,
             })),
+            live: slot.live_status === 'live',
+            retired: slot.retired_side
+              ? { side: slot.retired_side, player: player(slot.retired_player_id ?? null) }
+              : null,
+            forfeitSide: slot.forfeit_side ?? null,
           };
         })
     : [];

@@ -16,18 +16,22 @@ export function MatchFiltersForm({
   days,
   teams,
   courts,
+  liveCount,
 }: {
   filters: MatchFilters;
   days: Option[];
   teams: Option[];
   courts: Option[];
+  /** Matches scored live right now; the quick filter shows while there is one (spec-phase-2 §8.2). */
+  liveCount: number;
 }) {
   const t = useTranslations('Public.matches');
+  const tl = useTranslations('Public.live');
   const router = useRouter();
   const pathname = usePathname();
   const [pending, startTransition] = useTransition();
 
-  const set = (key: keyof MatchFilters, value: string) => {
+  const set = (key: keyof MatchFilters, value: string | null) => {
     const query = filtersToQuery({ ...filters, [key]: value || null });
     startTransition(() => router.replace({ pathname, query }, { scroll: false }));
   };
@@ -47,29 +51,55 @@ export function MatchFiltersForm({
     </label>
   );
 
-  return (
-    <form
-      aria-label={t('filters')}
-      aria-busy={pending}
-      className="mb-6 grid grid-cols-2 items-end gap-3 sm:grid-cols-[repeat(4,minmax(0,1fr))_auto]"
-      onSubmit={(e) => e.preventDefault()}
+  const quick = (on: boolean, label: React.ReactNode) => (
+    <button
+      type="button"
+      aria-pressed={Boolean(filters.live) === on}
+      onClick={() => set('live', on ? '1' : null)}
+      className="border-border bg-surface hover:bg-surface-2 aria-pressed:bg-foreground aria-pressed:text-surface inline-flex min-h-10 items-center gap-2 rounded-full border px-3.5 text-sm font-semibold aria-pressed:border-transparent"
     >
-      {field('day', t('day'), days)}
-      {field('team', t('team'), teams)}
-      {field('court', t('court'), courts)}
-      {field('stage', t('stage'), [
-        { value: 'group', label: t('stageGroup') },
-        { value: 'ko', label: t('stageKo') },
-      ])}
-      {active && (
-        <button
-          type="button"
-          className="text-primary col-span-2 h-9 justify-self-start text-sm font-medium hover:underline sm:col-span-1"
-          onClick={() => startTransition(() => router.replace({ pathname, query: {} }, { scroll: false }))}
-        >
-          {t('clear')}
-        </button>
+      {label}
+    </button>
+  );
+
+  return (
+    <>
+      {(liveCount > 0 || filters.live) && (
+        <div role="group" aria-label={tl('quickFilter')} className="mb-4 flex flex-wrap items-center gap-2">
+          {quick(false, t('all'))}
+          {quick(
+            true,
+            <>
+              <span aria-hidden className="bg-loss size-1.5 rounded-full motion-safe:animate-pulse" />
+              {tl('filter')}
+              <span className="tabular-nums opacity-70">{liveCount}</span>
+            </>,
+          )}
+        </div>
       )}
-    </form>
+      <form
+        aria-label={t('filters')}
+        aria-busy={pending}
+        className="mb-6 grid grid-cols-2 items-end gap-3 sm:grid-cols-[repeat(4,minmax(0,1fr))_auto]"
+        onSubmit={(e) => e.preventDefault()}
+      >
+        {field('day', t('day'), days)}
+        {field('team', t('team'), teams)}
+        {field('court', t('court'), courts)}
+        {field('stage', t('stage'), [
+          { value: 'group', label: t('stageGroup') },
+          { value: 'ko', label: t('stageKo') },
+        ])}
+        {active && (
+          <button
+            type="button"
+            className="text-primary col-span-2 h-9 justify-self-start text-sm font-medium hover:underline sm:col-span-1"
+            onClick={() => startTransition(() => router.replace({ pathname, query: {} }, { scroll: false }))}
+          >
+            {t('clear')}
+          </button>
+        )}
+      </form>
+    </>
   );
 }

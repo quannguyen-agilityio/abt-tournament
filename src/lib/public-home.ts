@@ -60,7 +60,11 @@ export function buildHomeView(input: {
       return {
         courtId: court.id,
         court: court.name,
-        now: here.filter((m) => m.status === 'in_progress').map(card),
+        // Live matches first (spec-phase-2 §8.2); sort() is stable, so time order holds within each.
+        now: here
+          .filter((m) => m.status === 'in_progress')
+          .sort((a, b) => Number(!a.live) - Number(!b.live))
+          .map(card),
         next: next ? card(next) : null,
       };
     })

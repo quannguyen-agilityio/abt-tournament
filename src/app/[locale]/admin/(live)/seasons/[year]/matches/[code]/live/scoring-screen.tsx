@@ -4,6 +4,7 @@ import { EllipsisVertical, Lock, Sun, Undo2 } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { useEffect, useId, useRef, useState } from 'react';
 import { TakeoverDialog } from '@/app/[locale]/admin/(shell)/matches/[id]/live-card';
+import { ShuttleIcon } from '@/components/shuttle-icon';
 import { Button } from '@/components/ui/button';
 import type { Side } from '@/domain/lineup';
 import type { LiveState, SlotSetup } from '@/domain/live';
@@ -11,7 +12,7 @@ import type { Score } from '@/domain/score';
 import { Link } from '@/i18n/navigation';
 import { setupPreview, type ScorerSlot } from '@/lib/live-scorer';
 import { cn } from '@/lib/utils';
-import { CourtDiagram, ShuttleIcon } from './court';
+import { CourtDiagram } from './court';
 import type { Teams } from './overlays';
 import styles from './scorer.module.css';
 

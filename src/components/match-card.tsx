@@ -1,8 +1,11 @@
 import { useLocale, useTranslations } from 'next-intl';
+import { LiveChip } from '@/components/live-chip';
+import { ShuttleIcon } from '@/components/shuttle-icon';
 import { TeamChip } from '@/components/team-chip';
 import type { MatchStage, MatchStatus } from '@/domain';
 import { Link } from '@/i18n/navigation';
 import { formatDateTime, formatTime } from '@/lib/format';
+import type { LiveSummary } from '@/lib/public-live';
 import type { MatchCard as MatchCardData, MatchScore } from '@/lib/public-matches';
 import { cn } from '@/lib/utils';
 
@@ -41,6 +44,13 @@ export function useStageLabel() {
 export const scoreTone = (score: MatchScore, side: 'home' | 'away') =>
   score.winner !== null && score.winner !== side ? 'text-muted-foreground' : undefined;
 
+/** `Set 3 · 14–11`, or `Leg 3 · 64–58` in a relay (cumulative). */
+export function useLiveSlotLabel() {
+  const t = useTranslations('Public.live');
+  return (live: Pick<LiveSummary, 'slotNo' | 'relay' | 'score'>) =>
+    `${t(live.relay ? 'legN' : 'setN', { n: live.slotNo })} · ${live.score.home}–${live.score.away}`;
+}
+
 /** One P3 schedule card. Links to the match page (P4). `withDate` shows the day too, for lists not grouped by day. */
 export function MatchCard({
   match,
@@ -59,31 +69,41 @@ export function MatchCard({
 }) {
   const t = useTranslations('Public');
   const locale = useLocale() as 'vi' | 'en';
+  const tl = useTranslations('Public.live');
   const stageLabel = useStageLabel();
-  const { score } = match;
+  const liveSlotLabel = useLiveSlotLabel();
+  const { score, live } = match;
   const court = match.court_id ? courts.get(match.court_id) : undefined;
 
   return (
     <Link
       href={`/${year}/matches/${match.code}`}
-      className="border-border bg-surface hover:border-primary/60 flex min-w-0 flex-col gap-3 rounded-[10px] border p-4 transition-colors"
+      className={cn(
+        'bg-surface hover:border-primary/60 flex min-w-0 flex-col gap-3 rounded-[10px] border p-4 transition-colors',
+        live ? 'border-loss/35' : 'border-border',
+      )}
     >
       <div className="text-muted-foreground flex items-center gap-2 text-xs">
         <span className="font-display text-foreground text-sm font-semibold">{match.code}</span>
         <span aria-hidden>·</span>
         <span className="truncate">{stageLabel(match.stage, match.round)}</span>
-        <MatchStatusChip status={match.status} className="ml-auto" />
+        {live ? <LiveChip className="ml-auto" /> : <MatchStatusChip status={match.status} className="ml-auto" />}
       </div>
       <div className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-x-3 gap-y-1.5">
         {(['home', 'away'] as const).map((side) => {
           const teamId = match[`${side}_team_id`];
           const team = teamId ? teams.get(teamId) : undefined;
           return [
-            <div key={`${side}-team`} className="min-w-0">
+            <div key={`${side}-team`} className="flex min-w-0 items-center gap-2">
               {team ? (
                 <TeamChip name={team.name} color={team.color} />
               ) : (
                 <span className="text-muted-foreground">{t('tbd')}</span>
+              )}
+              {live?.servingSide === side && (
+                <span role="img" aria-label={tl('serving')} title={tl('serving')} className="text-warn flex-none">
+                  <ShuttleIcon />
+                </span>
               )}
             </div>,
             <div
@@ -95,6 +115,14 @@ export function MatchCard({
           ];
         })}
       </div>
+      {live && (
+        <div className="border-border flex items-baseline justify-between gap-2 border-t pt-2">
+          <span className="text-muted-foreground text-xs font-semibold tracking-wider uppercase">
+            {!live.relay && tl('setScore', { home: score?.home ?? 0, away: score?.away ?? 0 })}
+          </span>
+          <b className="font-display text-[22px] font-bold whitespace-nowrap tabular-nums">{liveSlotLabel(live)}</b>
+        </div>
+      )}
       {(match.scheduled_at || court) && (
         <div className="text-muted-foreground flex flex-wrap items-center gap-x-3 gap-y-1 text-xs tabular-nums">
           {match.scheduled_at && (
