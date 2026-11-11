@@ -23,6 +23,7 @@ import {
   scoredLive,
   substitutionsOffered,
 } from '@/lib/live-entry';
+import { reopenOptions } from '@/lib/live-reopen';
 import { toLiveEvent } from '@/lib/live-scoring';
 import { lineupEditable, type SlotPair } from '@/lib/match-lineup';
 import { matchOutcome, scoreRules, scoresEditable } from '@/lib/match-scores';
@@ -35,6 +36,7 @@ import { DisqualifyForm } from './disqualify-form';
 import { ForfeitForm, ForfeitResult } from './forfeit-form';
 import { LineupStep, type LineupTeam } from './lineup-step';
 import { LiveCard } from './live-card';
+import type { ReopenItem } from './reopen-dialog';
 import { LockedLineups } from './locked-lineups';
 import { ScoresStep } from './scores-step';
 import { SideActions } from './side-actions';
@@ -82,7 +84,7 @@ async function StaffMatch({ params, searchParams }: PageProps<'/[locale]/admin/m
     supabase
       .from('match_slot')
       .select(
-        'id, slot_no, slot_type, live_status, home_p1, home_p2, away_p1, away_p2, handicap_home, handicap_away, score_home, score_away, slot_substitution (id, side, replaced_id, substitute_id, reason, created_at)',
+        'id, slot_no, slot_type, live_status, home_p1, home_p2, away_p1, away_p2, handicap_home, handicap_away, score_home, score_away, retired_side, retired_player_id, forfeit_side, slot_substitution (id, side, replaced_id, substitute_id, reason, created_at)',
       )
       .eq('match_id', match.id)
       .order('slot_no'),
@@ -288,6 +290,23 @@ async function StaffMatch({ params, searchParams }: PageProps<'/[locale]/admin/m
   const disqualifyHref = (teamId: string) =>
     eligible.some((team) => team.id === teamId) ? `/admin/matches/${match.id}?disqualify=${teamId}` : null;
 
+  // BTC reopen (spec-phase-2 §4.5): the confirmed live slots, with whether each can be reopened now.
+  // Referees never get the list, and live_apply refuses their reopen anyway.
+  const reopen: ReopenItem[] = isBtc
+    ? reopenOptions(rules.relay, slots, eventsOf).flatMap((option) => {
+        const slot = slots.find((s) => s.slot_no === option.slotNo);
+        if (!slot || slot.score_home === null || slot.score_away === null) return [];
+        return [
+          {
+            ...option,
+            slotId: slot.id,
+            score: { home: slot.score_home, away: slot.score_away },
+            retiredName: option.retirement ? (nameOf.get(option.retirement.player) ?? null) : null,
+          },
+        ];
+      })
+    : [];
+
   // The Live scoring card (spec-phase-2 §8.0) sits on the Scores step. Before the lock it shows only when
   // the Scores step was asked for (the direct link, a bookmark), since that step does not exist yet.
   const liveCard =
@@ -314,6 +333,7 @@ async function StaffMatch({ params, searchParams }: PageProps<'/[locale]/admin/m
         results={scoreRows.flatMap((row) => (row.score ? [{ slotNo: row.slotNo, score: row.score }] : []))}
         isBtc={isBtc}
         canSwitchToFinal={canSwitchToFinalEntry(slots)}
+        reopen={reopen}
       />
     ) : null;
 
