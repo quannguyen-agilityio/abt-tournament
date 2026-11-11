@@ -1280,6 +1280,41 @@
           "closed": "Trận này không mở để chấm trực tiếp. Tải lại trang.",
           "failed": "Không thực hiện được. Vui lòng thử lại.",
           "network": "Mất kết nối. Thử lại khi có mạng."
+        },
+        "reopen": {
+          "confirmed": "Đã xác nhận",
+          "set": "Mở lại set {n}",
+          "leg": "Mở lại lượt {n}",
+          "setAria": "Mở lại set {n} (chỉ BTC)",
+          "legAria": "Mở lại lượt {n} (chỉ BTC)",
+          "titleSet": "Mở lại set {n}?",
+          "titleLeg": "Mở lại lượt {n}?",
+          "body": "{label} đã xác nhận {score}. Sau khi mở lại, người chấm hoàn tác hoặc thêm điểm rồi xác nhận lại. Quyền chấm không đổi.",
+          "cleared": "Tỉ số {label} bị xoá tạm cho tới khi xác nhận lại",
+          "matchLive": "Trận chuyển về Đang đấu, BXH và trang công khai cập nhật",
+          "retirement": "Ghi nhận bỏ cuộc của {player} bị xoá, người chấm tiếp tục trận",
+          "forfeits": "Các set bị xử thua do bỏ cuộc cũng được xoá: {slots}",
+          "retiredTeam": "Kết quả xử thua do bỏ cuộc cũng được xoá",
+          "audit": "Ghi vào nhật ký thay đổi",
+          "reason": "Lý do mở lại (bắt buộc)",
+          "reasonHint": "Lý do được ghi vào nhật ký thay đổi.",
+          "blocked": {
+            "notLast": "Chỉ mở lại được lượt cuối đã xác nhận",
+            "nextStarted": "Lượt kế tiếp đã có điểm. Người chấm hoàn tác hết điểm của lượt đó trước"
+          },
+          "groupHint": "Mở lại set nào cũng được, kể cả khi set khác đang chấm.",
+          "relayHint": "Chỉ mở lại được lượt cuối đã xác nhận. Lượt trước đó mở lại từ lượt cuối ngược về.",
+          "done": "Đã mở lại {label}. Người chấm mở màn hình chấm để sửa rồi xác nhận lại.",
+          "errors": {
+            "invalid": "Yêu cầu không hợp lệ. Tải lại trang rồi thử lại.",
+            "off": "Mùa giải đã tắt chấm trực tiếp.",
+            "notScorer": "Chỉ BTC mở lại được set / lượt đã xác nhận.",
+            "changed": "Set / lượt vừa thay đổi và trang đã được cập nhật. Kiểm tra lại rồi thử lại.",
+            "closed": "Không mở lại được lúc này: lượt kế tiếp đã có điểm, hoặc trận không còn mở. Tải lại trang.",
+            "rejected": "Set / lượt này chưa được xác nhận nên không cần mở lại.",
+            "failed": "Không thực hiện được. Vui lòng thử lại.",
+            "network": "Mất kết nối. Thử lại khi có mạng."
+          }
         }
       }
     },

@@ -1280,6 +1280,41 @@
           "closed": "This match is not open for live scoring. Reload the page.",
           "failed": "That did not work. Please try again.",
           "network": "Connection lost. Try again when you are back online."
+        },
+        "reopen": {
+          "confirmed": "Confirmed",
+          "set": "Reopen set {n}",
+          "leg": "Reopen leg {n}",
+          "setAria": "Reopen set {n} (committee only)",
+          "legAria": "Reopen leg {n} (committee only)",
+          "titleSet": "Reopen set {n}?",
+          "titleLeg": "Reopen leg {n}?",
+          "body": "{label} was confirmed at {score}. After reopening, the scorer undoes or adds points and confirms again. The scoring lock does not change.",
+          "cleared": "The score of {label} is cleared until it is confirmed again",
+          "matchLive": "The match goes back to In progress, and the standings and public pages update",
+          "retirement": "The retirement of {player} is cleared and the scorer continues the match",
+          "forfeits": "Sets forfeited because of the retirement are cleared too: {slots}",
+          "retiredTeam": "The forfeit result caused by the retirement is cleared too",
+          "audit": "Written to the change log",
+          "reason": "Reason for reopening (required)",
+          "reasonHint": "The reason is written to the change log.",
+          "blocked": {
+            "notLast": "Only the last confirmed leg can be reopened",
+            "nextStarted": "The next leg already has points. The scorer undoes all of its points first"
+          },
+          "groupHint": "Any set can be reopened, even while another set is being scored.",
+          "relayHint": "Only the last confirmed leg can be reopened. Earlier legs are reopened from the last one backwards.",
+          "done": "{label} reopened. The scorer opens the scoring screen to fix it and confirm again.",
+          "errors": {
+            "invalid": "Invalid request. Reload the page and try again.",
+            "off": "Live scoring is turned off for this season.",
+            "notScorer": "Only the committee can reopen a confirmed set or leg.",
+            "changed": "The set or leg just changed and the page was updated. Check and try again.",
+            "closed": "This cannot be reopened now: the next leg has points, or the match is no longer open. Reload the page.",
+            "rejected": "This set or leg is not confirmed, so there is nothing to reopen.",
+            "failed": "That did not work. Please try again.",
+            "network": "Connection lost. Try again when you are back online."
+          }
         }
       }
     },

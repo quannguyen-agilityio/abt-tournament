@@ -23,6 +23,7 @@ import { Link, useRouter } from '@/i18n/navigation';
 import type { LiveCardState, LiveProgress } from '@/lib/live-entry';
 import { cn } from '@/lib/utils';
 import { claimLiveScoring, setFinalEntry, type FinalEntryState, type LiveClaimState } from './live-actions';
+import { ReopenDialog, type ReopenItem } from './reopen-dialog';
 
 type Team = { name: string; color: string };
 
@@ -47,6 +48,8 @@ export type LiveCardProps = {
   isBtc: boolean;
   /** No slot has a live event yet, so the BTC can still switch to final-score entry (L6). */
   canSwitchToFinal: boolean;
+  /** BTC: the confirmed sets or legs, with whether each can be reopened now (§4.5). Empty otherwise. */
+  reopen: ReopenItem[];
 };
 
 type ActionError =
@@ -64,6 +67,7 @@ export function LiveCard(props: LiveCardProps) {
   const router = useRouter();
   const nextRouter = useNextRouter();
   const [error, setError] = useState<ActionError | null>(null);
+  const [reopenedNo, setReopenedNo] = useState<number | null>(null);
   const [pending, startTransition] = useTransition();
   const unit = t(relay ? 'unitLeg' : 'unitSet');
   const slotLabel = (no: number) => t(relay ? 'legN' : 'setN', { n: no });
@@ -116,6 +120,31 @@ export function LiveCard(props: LiveCardProps) {
           {relay ? `${progress.score.home}–${progress.score.away}` : `${matchScore.home}–${matchScore.away}`}
         </b>
       </div>
+    </div>
+  );
+
+  const reopenOf = (slotNo: number) => (props.isBtc ? props.reopen.find((item) => item.slotNo === slotNo) : undefined);
+  const reopenButton = (item: ReopenItem) => (
+    <ReopenDialog item={item} relay={relay} matchCompleted={state === 'done'} onReopened={setReopenedNo} />
+  );
+  // While the match is being played, the BTC reopens a confirmed set or leg from this list (group:
+  // any set, even while another is live; relay: the last confirmed leg).
+  const confirmedList = props.isBtc && props.reopen.length > 0 && ['ready', 'mine', 'other'].includes(state) && (
+    <div>
+      <h3 className="text-muted-foreground mb-1 text-[11px] font-semibold tracking-[0.12em] uppercase">
+        {t('reopen.confirmed')}
+      </h3>
+      <ul className="divide-border divide-y">
+        {props.reopen.map((item) => (
+          <li key={item.slotNo} className="flex flex-wrap items-center gap-x-3 gap-y-1 py-2">
+            <b className="font-display w-16 shrink-0">{slotLabel(item.slotNo)}</b>
+            <span className="font-display shrink-0 text-lg tabular-nums">
+              {item.score.home}–{item.score.away}
+            </span>
+            <span className="ml-auto">{reopenButton(item)}</span>
+          </li>
+        ))}
+      </ul>
     </div>
   );
 
@@ -258,8 +287,9 @@ export function LiveCard(props: LiveCardProps) {
             <ul className="divide-border divide-y">
               {results.map(({ slotNo, score }) => {
                 const homeWon = score.home > score.away;
+                const item = reopenOf(slotNo);
                 return (
-                  <li key={slotNo} className="flex items-center gap-3 py-2">
+                  <li key={slotNo} className="flex flex-wrap items-center gap-x-3 gap-y-1 py-2">
                     <b className="font-display w-16 shrink-0">{slotLabel(slotNo)}</b>
                     <span className="font-display shrink-0 text-lg tabular-nums">
                       <span className={homeWon ? 'text-win font-bold' : 'text-muted-foreground'}>{score.home}</span>
@@ -269,11 +299,14 @@ export function LiveCard(props: LiveCardProps) {
                     <span className="text-muted-foreground min-w-0 flex-1 truncate text-sm">
                       {t('wins', { team: teams[homeWon ? 0 : 1].name })}
                     </span>
+                    {item && !item.blocked && <span className="ml-auto">{reopenButton(item)}</span>}
                   </li>
                 );
               })}
             </ul>
-            <p className="text-muted-foreground mt-2 text-xs">{t('onlyBtc')}</p>
+            <p className="text-muted-foreground mt-2 text-xs">
+              {t(props.isBtc ? (relay ? 'reopen.relayHint' : 'reopen.groupHint') : 'onlyBtc')}
+            </p>
           </div>
         </>
       );
@@ -298,6 +331,12 @@ export function LiveCard(props: LiveCardProps) {
         {chips}
       </div>
       {body}
+      {confirmedList}
+      {reopenedNo !== null && (
+        <p role="status" className="border-primary/40 bg-primary/10 rounded-lg border p-3 text-sm font-medium">
+          {t('reopen.done', { label: slotLabel(reopenedNo) })}
+        </p>
+      )}
       {error && (
         <p role="alert" className="text-destructive text-sm">
           {t(`errors.${error}`)}
