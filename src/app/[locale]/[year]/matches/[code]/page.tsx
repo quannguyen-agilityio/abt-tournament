@@ -2,6 +2,7 @@ import { hasLocale, useLocale, useTranslations } from 'next-intl';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { notFound } from 'next/navigation';
 import { Suspense } from 'react';
+import { LiveChip } from '@/components/live-chip';
 import { MatchStatusChip, scoreTone, useStageLabel, type CardTeam } from '@/components/match-card';
 import { SeasonRefresh } from '@/components/season-refresh';
 import { TeamChip } from '@/components/team-chip';
@@ -9,10 +10,12 @@ import type { SeasonSettings, Side } from '@/domain';
 import { Link } from '@/i18n/navigation';
 import { routing } from '@/i18n/routing';
 import { formatDate, formatTime } from '@/lib/format';
+import { buildLivePanel } from '@/lib/public-live';
 import { buildMatchDetail, type MatchDetailView, type MatchPlayer, type SlotView } from '@/lib/public-match';
 import type { MatchScore } from '@/lib/public-matches';
 import { getMatchDetail, getPublicSeason, getSeasonTeams, type MatchDetail } from '@/lib/public-season-db';
 import { cn } from '@/lib/utils';
+import { LivePanel } from './live-panel';
 import Loading from './loading';
 
 const CODE = /^(V\d{2}|SF[12]|3RD|F)$/;
@@ -97,6 +100,8 @@ function SlotRow({ slot, relay, teams }: { slot: SlotView; relay: boolean; teams
               </div>
             )}
           </>
+        ) : slot.live ? (
+          <LiveChip />
         ) : (
           <span className="text-muted-foreground text-sm">{t('notPlayed')}</span>
         )}
@@ -295,6 +300,11 @@ async function MatchPage({ params }: Pick<PageProps<'/[locale]/[year]/matches/[c
   const away = match.away_team_id ? byId.get(match.away_team_id) : undefined;
   const teams: Teams = { home, away };
   const disqualified = [home, away].find((team) => team?.disqualified);
+  // spec-phase-2 §8.2: only for a match in progress that is scored live, and never before the lineups
+  // are public (A6). Without it the page opens no realtime channel.
+  const livePanel = view.lineupVisible
+    ? buildLivePanel({ match, slots: match.slots, logs: match.liveLogs, settings: season.settings })
+    : null;
 
   return (
     <>
@@ -302,6 +312,16 @@ async function MatchPage({ params }: Pick<PageProps<'/[locale]/[year]/matches/[c
         ← {tn('matches')}
       </Link>
       <Header match={match} view={view} teams={teams} timeZone={season.settings.timezone} />
+      {livePanel && (
+        <LivePanel
+          data={livePanel}
+          teams={{
+            home: home && { name: home.name, color: home.color },
+            away: away && { name: away.name, color: away.color },
+          }}
+          names={Object.fromEntries([...match.players.values()].map((p) => [p.id, p.name]))}
+        />
+      )}
       {match.status === 'annulled' && (
         <div className={cn(PANEL, 'border-loss/60 mb-4 flex items-start gap-3 p-4 text-sm')}>
           <MatchStatusChip status="annulled" />

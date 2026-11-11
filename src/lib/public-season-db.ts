@@ -7,13 +7,12 @@ import { cache } from 'react';
 
 import { DEFAULT_SEASON_SETTINGS, parseSeasonSettings, type SeasonSettings } from '@/domain/settings';
 import type { Database } from '@/lib/database.types';
-import type { LiveEvent } from '@/domain/live';
-import { toLiveEvent } from '@/lib/live-scoring';
 import type { AwardInput } from '@/lib/public-awards';
-import type { MatchDetailInput, MatchPlayer } from '@/lib/public-match';
+import type { MatchDetailInput, MatchPlayer, MatchSlotInput } from '@/lib/public-match';
 import type { ScheduleMatchInput } from '@/lib/public-matches';
 import type { PublicTeam } from '@/lib/public-standings';
 import { liveSummary } from '@/lib/public-live';
+import { toTimedEvent, type TimedLiveEvent } from '@/lib/public-live-panel';
 import type { ProfileMatch } from '@/lib/public-players';
 import { PUBLIC_DATA_TAG } from '@/lib/public-cache';
 import type { PublicPlayer } from '@/lib/public-teams';
@@ -245,27 +244,30 @@ async function readSeasonSchedule(supabase: Supabase, seasonId: string): Promise
 }
 
 /** The logs of these slots, by slot id, in `seq` order. */
-async function readLiveLogs(supabase: Supabase, slotIds: readonly string[]): Promise<Map<string, LiveEvent[]>> {
-  const logs = new Map<string, LiveEvent[]>();
+async function readLiveLogs(supabase: Supabase, slotIds: readonly string[]): Promise<Map<string, TimedLiveEvent[]>> {
+  const logs = new Map<string, TimedLiveEvent[]>();
   if (slotIds.length === 0) return logs;
   const { data, error } = await supabase
     .from('live_event')
-    .select('match_slot_id, seq, kind, payload')
+    .select('match_slot_id, seq, kind, payload, client_at')
     .in('match_slot_id', slotIds)
     .order('seq');
   if (error) throw error;
   for (const row of data) {
     const log = logs.get(row.match_slot_id) ?? [];
-    log.push(toLiveEvent(row));
+    log.push(toTimedEvent(row));
     logs.set(row.match_slot_id, log);
   }
   return logs;
 }
 
 export interface MatchDetail extends MatchDetailInput {
+  slots: (MatchSlotInput & { id: string; live_status: Database['public']['Enums']['slot_live_status'] })[];
   court: string | null;
   referee: string | null;
   players: Map<string, MatchPlayer>;
+  /** While the match is in progress: the logs of its slots scored live so far, by slot id (spec-phase-2 §8.2). */
+  liveLogs: Map<string, TimedLiveEvent[]>;
 }
 
 /**
@@ -279,8 +281,9 @@ async function readMatchDetail(supabase: Supabase, seasonId: string, code: strin
       `id, code, stage, round, status, status_before_annul, home_team_id, away_team_id, forfeit_team_id,
       forfeit_reason, winner_team_id, scheduled_at, referee_id, relay_handicap_home, relay_handicap_away,
       court(name),
-      match_slot(slot_no, slot_type, home_p1, home_p2, away_p1, away_p2, handicap_home, handicap_away,
-        score_home, score_away, slot_substitution(side, replaced_id, substitute_id, reason, created_at))`,
+      match_slot(id, slot_no, slot_type, home_p1, home_p2, away_p1, away_p2, handicap_home, handicap_away,
+        score_home, score_away, live_status, retired_side, retired_player_id, forfeit_side,
+        slot_substitution(side, replaced_id, substitute_id, reason, created_at))`,
     )
     .eq('season_id', seasonId)
     .eq('code', code)
@@ -307,13 +310,23 @@ async function readMatchDetail(supabase: Supabase, seasonId: string, code: strin
     ),
   ].filter((id): id is string => id !== null);
 
-  const [players, referee] = await Promise.all([
+  // A group set needs only its own log; a relay leg also the earlier legs', for the serve carried over.
+  const logSlots =
+    match.status === 'in_progress'
+      ? slots.filter((s) => (match.stage === 'group' ? s.live_status === 'live' : s.live_status !== 'pending'))
+      : [];
+
+  const [players, referee, liveLogs] = await Promise.all([
     ids.length === 0
       ? Promise.resolve({ data: [], error: null })
       : supabase.from('season_player').select('id, rank, skill_points, person(full_name, slug)').in('id', ids),
     refereeId
       ? supabase.from('referee_name').select('display_name').eq('user_id', refereeId).maybeSingle()
       : Promise.resolve({ data: null, error: null }),
+    readLiveLogs(
+      supabase,
+      logSlots.map((s) => s.id),
+    ),
   ]);
   if (players.error) throw players.error;
   if (referee.error) throw referee.error;
@@ -329,6 +342,7 @@ async function readMatchDetail(supabase: Supabase, seasonId: string, code: strin
         { id: p.id, name: p.person.full_name, slug: p.person.slug, rank: p.rank, skill: p.skill_points },
       ]),
     ),
+    liveLogs,
   };
 }
 

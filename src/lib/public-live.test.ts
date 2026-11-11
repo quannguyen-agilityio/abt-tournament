@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import type { LiveEvent } from '../domain/live';
 import type { LiveEntrySlot } from './live-entry';
-import { liveSummary, servingSideOf } from './public-live';
+import { buildLivePanel, liveSummary, servingSideOf } from './public-live';
 
 const GROUP = { stage: 'group', relay_handicap_home: null, relay_handicap_away: null };
 const RELAY = { stage: 'final', relay_handicap_home: 0, relay_handicap_away: 6 };
@@ -94,6 +94,69 @@ describe('liveSummary', () => {
       relay: true,
       score: { home: 25, away: 22 },
       servingSide: 'away',
+    });
+  });
+});
+
+describe('buildLivePanel', () => {
+  const settings = { set_target: 31, relay_milestones: [25, 50, 75, 100, 125], medical_timeout_minutes: 5 };
+  const row = (slot_no: number, extra: Record<string, unknown> = {}) => ({
+    id: `s${slot_no}`,
+    slot_no,
+    live_status: 'pending',
+    score_home: null as number | null,
+    score_away: null as number | null,
+    home_p1: 'h1',
+    home_p2: 'h2',
+    away_p1: 'a1',
+    away_p2: 'a2',
+    handicap_home: 0,
+    handicap_away: 0,
+    ...extra,
+  });
+  const timed = (event: LiveEvent) => ({ ...event, at: '2027-01-09T03:00:00Z' });
+
+  it('is null unless the match is in progress and scored live', () => {
+    const slots = [row(1)];
+    expect(buildLivePanel({ match: { ...GROUP, status: 'in_progress' }, slots, logs: new Map(), settings })).toBeNull();
+    const live = [row(1, { live_status: 'live' })];
+    expect(
+      buildLivePanel({ match: { ...GROUP, status: 'completed' }, slots: live, logs: new Map(), settings }),
+    ).toBeNull();
+  });
+
+  it('gives every slot its setup, the logs of live slots and the sets won', () => {
+    const slots = [
+      row(1, { live_status: 'finished', score_home: 31, score_away: 20 }),
+      row(2, { live_status: 'live', handicap_away: 3 }),
+      row(3),
+    ];
+    const logs = new Map([
+      ['s1', [timed(setup(1))]],
+      ['s2', [timed(setup(1)), timed(point(2, 'home'))]],
+    ]);
+    const panel = buildLivePanel({ match: { ...GROUP, status: 'in_progress' }, slots, logs, settings })!;
+    expect(panel.relay).toBe(false);
+    expect(panel.slots.map((s) => [s.id, s.setup?.start])).toEqual([
+      ['s1', { home: 0, away: 0 }],
+      ['s2', { home: 0, away: 3 }],
+      ['s3', { home: 0, away: 0 }],
+    ]);
+    expect(Object.keys(panel.logs)).toEqual(['s2']);
+    expect(panel.setsWon).toEqual({ home: 1, away: 0 });
+  });
+
+  it('relay: a leg after the first starts from the previous score, with the serve carried over', () => {
+    const slots = [
+      row(1, { live_status: 'finished', score_home: 25, score_away: 22 }),
+      row(2, { live_status: 'live' }),
+    ];
+    const logs = new Map([['s1', [timed(setup(1)), timed(point(2, 'away'))]]]);
+    const panel = buildLivePanel({ match: { ...RELAY, status: 'in_progress' }, slots, logs, settings })!;
+    expect(panel.slots[1].setup).toMatchObject({
+      kind: 'relay',
+      start: { home: 25, away: 22 },
+      carried_serving_side: 'away',
     });
   });
 });

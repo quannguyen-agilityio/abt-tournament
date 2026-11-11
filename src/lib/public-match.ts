@@ -30,6 +30,11 @@ export interface MatchSlotInput {
   score_away: number | null;
   /** In the order they were made. */
   substitutions: (SlotSubstitution & { reason: string })[];
+  /** Live scoring (spec-phase-2 §7); absent for a match read without its live columns. */
+  live_status?: 'pending' | 'live' | 'finished';
+  retired_side?: Side | null;
+  retired_player_id?: string | null;
+  forfeit_side?: Side | null;
 }
 
 /** The `match` row the page reads, with its slots. */
@@ -54,6 +59,8 @@ export interface SlotView {
   score: Record<Side, number> | null;
   winner: Side | null;
   substitutions: { side: Side; out: MatchPlayer | null; in: MatchPlayer | null; reason: string }[];
+  /** Being scored live: its score shows in the live panel until the end is confirmed. */
+  live: boolean;
 }
 
 export interface RelayView {
@@ -123,6 +130,7 @@ export function buildMatchDetail(input: {
               in: player(sub.substitute_id),
               reason: sub.reason,
             })),
+            live: slot.live_status === 'live',
           };
         })
     : [];
