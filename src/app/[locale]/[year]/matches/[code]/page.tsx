@@ -99,6 +99,19 @@ function SlotRow({ slot, relay, teams }: { slot: SlotView; relay: boolean; teams
                 {t('winner')}: {winner.name}
               </div>
             )}
+            {slot.retired && (
+              <div className="mt-1.5 flex flex-col items-center gap-0.5">
+                <span className={cn(CHIP, 'border-loss/40 bg-loss/10 text-loss')}>{t('retired')}</span>
+                <span className="text-muted-foreground text-xs text-balance">
+                  {teams[slot.retired.side]?.name}: {slot.retired.player?.name ?? '—'}
+                </span>
+              </div>
+            )}
+            {slot.forfeitSide && (
+              <div className="text-muted-foreground mt-1 text-xs">
+                {t('forfeitedSet', { team: teams[slot.forfeitSide]?.name ?? '—' })}
+              </div>
+            )}
           </>
         ) : slot.live ? (
           <LiveChip />

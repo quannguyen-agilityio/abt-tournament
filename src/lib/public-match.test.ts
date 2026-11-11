@@ -116,6 +116,34 @@ describe('buildMatchDetail: group', () => {
     ]);
   });
 
+  it('marks the set scored live, the retired set with its player, and a set forfeited after it', () => {
+    const view = buildMatchDetail({
+      match: match({
+        status: 'in_progress',
+        slots: [
+          slot(1, {
+            live_status: 'finished',
+            score_home: 18,
+            score_away: 31,
+            retired_side: 'home',
+            retired_player_id: 'h2',
+          }),
+          slot(2, { live_status: 'pending', score_home: 0, score_away: 31, forfeit_side: 'home' }),
+          slot(3, { live_status: 'live' }),
+          slot(4),
+        ],
+      }),
+      players,
+      settings,
+    });
+    expect(view.slots.map((s) => [s.live, s.retired, s.forfeitSide])).toEqual([
+      [false, { side: 'home', player: players.get('h2') }, null],
+      [false, null, 'home'],
+      [true, null, null],
+      [false, null, null],
+    ]);
+  });
+
   it('records a group forfeit as 5–0', () => {
     const view = buildMatchDetail({
       match: match({ status: 'forfeit', forfeit_team_id: 't2', forfeit_reason: 'No show' }),

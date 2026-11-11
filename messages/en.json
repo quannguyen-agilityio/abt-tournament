@@ -174,7 +174,9 @@
       "relayStart": "Start handicap",
       "relayCap": "cap {cap}",
       "relayNoStart": "No start handicap",
-      "progress": "Progress to {target}"
+      "progress": "Progress to {target}",
+      "retired": "Retired (injury)",
+      "forfeitedSet": "{team} forfeits (injured player)"
     },
     "live": {
       "setN": "Set {n}",

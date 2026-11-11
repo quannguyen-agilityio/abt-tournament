@@ -174,7 +174,9 @@
       "relayStart": "Chấp đầu lượt 1",
       "relayCap": "tối đa {cap}",
       "relayNoStart": "Không có điểm chấp",
-      "progress": "Tiến độ tới {target}"
+      "progress": "Tiến độ tới {target}",
+      "retired": "Bỏ cuộc (chấn thương)",
+      "forfeitedSet": "{team} xử thua (VĐV chấn thương)"
     },
     "live": {
       "setN": "Set {n}",
