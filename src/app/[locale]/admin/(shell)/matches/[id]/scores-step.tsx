@@ -33,9 +33,10 @@ export type ScoreRowSlot = {
   score: Score | null;
   /**
    * The slot has live events (spec-phase-2 §8.0): read-only here, so the two ways of scoring never
-   * overwrite each other. `score` is the live score while the slot is being scored.
+   * overwrite each other. `score` is the live score while the slot is being scored. `retired`: the
+   * slot ended by retirement; `forfeited`: forfeited because of it (§6).
    */
-  live?: { status: 'live' | 'finished'; score: Score | null } | null;
+  live?: { status: 'live' | 'finished' | 'retired' | 'forfeited'; score: Score | null } | null;
 };
 
 type Team = { id: string; name: string; color: string };
@@ -183,7 +184,15 @@ function LiveRow({
           {tl(`slotType.${slot.slotType}`)}
         </span>
         <span className="ml-auto">
-          {live.status === 'live' ? <LiveChip /> : <AccentChip>{t('scoredLive')}</AccentChip>}
+          {live.status === 'live' ? (
+            <LiveChip />
+          ) : live.status === 'retired' || live.status === 'forfeited' ? (
+            <span className="border-loss/40 bg-loss/10 text-loss inline-flex items-center rounded-full border px-2 py-0.5 text-xs font-medium whitespace-nowrap">
+              {t(live.status)}
+            </span>
+          ) : (
+            <AccentChip>{t('scoredLive')}</AccentChip>
+          )}
         </span>
       </div>
       <div className="grid grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center gap-3">

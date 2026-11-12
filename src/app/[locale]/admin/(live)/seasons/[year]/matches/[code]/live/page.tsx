@@ -55,7 +55,7 @@ async function LiveScreen({ params }: Pick<PageProps<'/[locale]/admin/seasons/[y
     supabase
       .from('match_slot')
       .select(
-        'id, slot_no, slot_type, live_status, home_p1, home_p2, away_p1, away_p2, handicap_home, handicap_away, score_home, score_away, slot_substitution (side, replaced_id, substitute_id, created_at)',
+        'id, slot_no, slot_type, live_status, home_p1, home_p2, away_p1, away_p2, handicap_home, handicap_away, score_home, score_away, forfeit_side, slot_substitution (side, replaced_id, substitute_id, created_at)',
       )
       .eq('match_id', match.id)
       .order('slot_no'),
@@ -91,7 +91,7 @@ async function LiveScreen({ params }: Pick<PageProps<'/[locale]/admin/seasons/[y
 
   const { data: events, error: eventsError } = await supabase
     .from('live_event')
-    .select('match_slot_id, seq, kind, payload')
+    .select('match_slot_id, seq, kind, payload, client_at')
     .in(
       'match_slot_id',
       slots.map((slot) => slot.id),
@@ -99,8 +99,11 @@ async function LiveScreen({ params }: Pick<PageProps<'/[locale]/admin/seasons/[y
     .order('seq');
   if (eventsError) throw eventsError;
   const logs: Record<number, LiveEvent[]> = {};
+  const eventTimes: Record<number, Record<number, string>> = {};
   for (const slot of slots) {
-    logs[slot.slot_no] = events.filter((e) => e.match_slot_id === slot.id).map(toLiveEvent);
+    const rows = events.filter((e) => e.match_slot_id === slot.id);
+    logs[slot.slot_no] = rows.map(toLiveEvent);
+    eventTimes[slot.slot_no] = Object.fromEntries(rows.map((e) => [e.seq, e.client_at]));
   }
 
   return (
@@ -115,10 +118,12 @@ async function LiveScreen({ params }: Pick<PageProps<'/[locale]/admin/seasons/[y
         relay_handicap_away: match.relay_handicap_away,
       }}
       settings={{ set_target: settings.set_target, relay_milestones: settings.relay_milestones }}
+      medicalTimeoutMinutes={settings.medical_timeout_minutes}
       teams={{ home: { name: home.name, color: home.color }, away: { name: away.name, color: away.color } }}
       names={Object.fromEntries(playersResult.data.map((p) => [p.id, p.person?.full_name ?? '']))}
       slots={slots}
       logs={logs}
+      eventTimes={eventTimes}
       viewerId={viewer.id}
       scorer={match.scorer_id ? { id: match.scorer_id, name: scorerResult.data?.display_name ?? '—' } : null}
     />

@@ -201,11 +201,13 @@ async function StaffMatch({ params, searchParams }: PageProps<'/[locale]/admin/m
     handicap: { home: slot.handicap_home, away: slot.handicap_away },
     score:
       slot.score_home !== null && slot.score_away !== null ? { home: slot.score_home, away: slot.score_away } : null,
-    live:
-      slot.live_status === 'pending'
+    // A set forfeited after a retirement (§6, L8) has no live event but is read-only too.
+    live: slot.forfeit_side
+      ? { status: 'forfeited' as const, score: { home: slot.score_home ?? 0, away: slot.score_away ?? 0 } }
+      : slot.live_status === 'pending'
         ? null
         : {
-            status: slot.live_status,
+            status: slot.retired_side ? ('retired' as const) : slot.live_status,
             score:
               slot.live_status === 'live'
                 ? progress?.slotNo === slot.slot_no
