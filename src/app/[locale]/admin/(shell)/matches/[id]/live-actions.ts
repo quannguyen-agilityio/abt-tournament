@@ -7,6 +7,7 @@ import {
   changesPublicResults,
   checkLiveEvent,
   eventPayload,
+  isResentEvent,
   liveSlotSetup,
   parseFinalEntryInput,
   parseLiveClaimInput,
@@ -37,6 +38,10 @@ export type LiveApplyState =
  * scorer lock and refuses the event if the log changed after it was read (`expectedSeq`), so the
  * log validated here is the one written. Confirming or reopening a slot, and the first event of a
  * match, change the results, so they expire the public caches.
+ *
+ * A resend is idempotent (§8.1 Connection state): when the stored event at `expectedSeq` is this
+ * same tap (`isResentEvent`), the first send was written but its answer was lost, so it answers `ok`
+ * without writing it again.
  */
 export async function applyLiveEvent(input: unknown): Promise<LiveApplyState> {
   const viewer = await requireStaff();
@@ -52,11 +57,26 @@ export async function applyLiveEvent(input: unknown): Promise<LiveApplyState> {
   const { slot, match, settings, events, previous } = loaded;
   if (!settings.live_scoring) return { error: 'off' };
 
+  // The log already holds an event at `expectedSeq`: answer `ok` if it is this tap, sent before.
+  const resent = async (): Promise<LiveApplyState> => {
+    if (!clientAt) return { error: 'changed' };
+    const { data: stored, error: storedError } = await supabase
+      .from('live_event')
+      .select('kind, payload, client_at, created_by')
+      .eq('match_slot_id', slotId)
+      .eq('seq', expectedSeq)
+      .maybeSingle();
+    if (storedError) return { error: 'failed' };
+    if (!stored || !isResentEvent(stored, { event, clientAt }, viewer.id)) return { error: 'changed' };
+    return { ok: true, seq: expectedSeq };
+  };
+
   const setup = liveSlotSetup({ slot, match, previous });
   if (!setup) return { error: 'closed' };
   const check = checkLiveEvent(setup, events, { expectedSeq, event }, settings);
   if (!check.ok) {
-    return check.code === 'SEQ_OUT_OF_ORDER' ? { error: 'changed' } : { error: 'rejected', code: check.code };
+    if (check.code !== 'SEQ_OUT_OF_ORDER') return { error: 'rejected', code: check.code };
+    return expectedSeq <= (events.at(-1)?.seq ?? 0) ? resent() : { error: 'changed' };
   }
 
   const { data: seq, error } = await supabase.rpc('live_apply', {
@@ -71,7 +91,8 @@ export async function applyLiveEvent(input: unknown): Promise<LiveApplyState> {
       case '42501':
         return { error: 'notScorer' };
       case '40001':
-        return { error: 'changed' };
+        // Another send of the same tap may have been written in between.
+        return resent();
       case 'P0001':
         return { error: 'closed' };
       case '22023':

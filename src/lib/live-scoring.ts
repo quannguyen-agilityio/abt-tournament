@@ -107,6 +107,35 @@ export function toLiveEvent(row: { seq: number; kind: LiveEventKind; payload: un
   return { seq, kind, payload: row.payload } as LiveEvent;
 }
 
+/** JSON with object keys sorted, so two payloads compare equal whatever order jsonb gave their keys. */
+function stableJson(value: unknown): string {
+  if (Array.isArray(value)) return `[${value.map(stableJson).join(',')}]`;
+  if (value && typeof value === 'object') {
+    const entries = Object.entries(value as Record<string, unknown>)
+      .filter(([, v]) => v !== undefined)
+      .sort(([a], [b]) => (a < b ? -1 : a > b ? 1 : 0));
+    return `{${entries.map(([k, v]) => `${JSON.stringify(k)}:${stableJson(v)}`).join(',')}}`;
+  }
+  return JSON.stringify(value);
+}
+
+/**
+ * Whether the stored event at `expectedSeq` is this very event sent again (spec-phase-2 §8.1
+ * Connection state): the first send was written but its answer never reached the screen, so the
+ * offline queue resends it. The tap time from the device (`clientAt`) identifies the tap, with the
+ * same author, kind and payload. Without a tap time a resend cannot be told from a new event.
+ */
+export function isResentEvent(
+  stored: { kind: LiveEventKind; payload: unknown; client_at: string; created_by: string | null },
+  input: { event: NewLiveEvent; clientAt?: string },
+  userId: string,
+): boolean {
+  if (!input.clientAt || stored.created_by !== userId || stored.kind !== input.event.kind) return false;
+  const storedAt = Date.parse(stored.client_at);
+  if (Number.isNaN(storedAt) || storedAt !== Date.parse(input.clientAt)) return false;
+  return stableJson(stored.payload ?? {}) === stableJson(eventPayload(input.event));
+}
+
 /** The points no undo cancelled, in order. */
 export function countedPoints(events: readonly LiveEvent[]): { seq: number; side: Side }[] {
   const points: { seq: number; side: Side }[] = [];

@@ -6,6 +6,7 @@ import {
   changesPublicResults,
   checkLiveEvent,
   eventPayload,
+  isResentEvent,
   lastRallySide,
   liveSlotSetup,
   parseFinalEntryInput,
@@ -286,5 +287,43 @@ describe('parseLiveClaimInput with seed user ids', () => {
       matchId: MATCH_ID,
       expectedScorerId: seedId,
     });
+  });
+});
+
+describe('isResentEvent', () => {
+  const USER = 'user-1';
+  const at = '2026-11-12T08:15:30.123Z';
+  const stored = {
+    kind: 'setup' as const,
+    payload: { ends: { left: 'home' }, receiver: 'a1', server: 'h1', serving_side: 'home' },
+    client_at: '2026-11-12T08:15:30.123+00:00',
+    created_by: USER,
+  };
+  const event = {
+    kind: 'setup' as const,
+    payload: { serving_side: 'home' as const, server: 'h1', receiver: 'a1', ends: { left: 'home' as const } },
+  };
+
+  it('matches the same tap whatever the key order and time zone notation', () => {
+    expect(isResentEvent(stored, { event, clientAt: at }, USER)).toBe(true);
+  });
+
+  it('matches a stored event without payload', () => {
+    const row = { kind: 'end_confirmed' as const, payload: {}, client_at: at, created_by: USER };
+    expect(isResentEvent(row, { event: { kind: 'end_confirmed' }, clientAt: at }, USER)).toBe(true);
+  });
+
+  it('refuses another tap, author, kind or payload', () => {
+    expect(isResentEvent(stored, { event, clientAt: '2026-11-12T08:15:30.124Z' }, USER)).toBe(false);
+    expect(isResentEvent(stored, { event, clientAt: at }, 'user-2')).toBe(false);
+    expect(isResentEvent({ ...stored, created_by: null }, { event, clientAt: at }, USER)).toBe(false);
+    expect(isResentEvent(stored, { event: { kind: 'ends_changed' }, clientAt: at }, USER)).toBe(false);
+    const other = { ...event, payload: { ...event.payload, server: 'h2' } };
+    expect(isResentEvent(stored, { event: other, clientAt: at }, USER)).toBe(false);
+  });
+
+  it('cannot tell a resend without a tap time', () => {
+    expect(isResentEvent(stored, { event }, USER)).toBe(false);
+    expect(isResentEvent({ ...stored, client_at: 'not a date' }, { event, clientAt: at }, USER)).toBe(false);
   });
 });
