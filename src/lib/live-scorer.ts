@@ -1,13 +1,17 @@
 import type { Side } from '../domain/lineup';
 import {
   fixedServingSide,
+  groupRetirement,
   legChange,
+  relayRetirement,
   tryReplay,
   type Court,
   type Ends,
   type LiveEvent,
   type LiveSettings,
   type LiveState,
+  type Retirement,
+  type RetirementSlot,
   type SetupPayload,
   type SlotSetup,
 } from '../domain/live';
@@ -15,9 +19,9 @@ import type { Score } from '../domain/score';
 import type { SlotLiveStatus } from './live-entry';
 import { liveSlotSetup, type LiveSlotContext, type LiveSlotRow } from './live-scoring';
 
-// The scorer screens (spec-phase-2 §8.1 L-B–L-E): which set or leg is current, the court diagram
-// while choosing the setup, and the checks the screen does on the logs it holds locally. Pure, so
-// the screen only renders what these return.
+// The scorer screens (spec-phase-2 §8.1 L-B–L-G): which set or leg is current, the court diagram
+// while choosing the setup, what a retirement does, and the checks the screen does on the logs it
+// holds locally. Pure, so the screen only renders what these return.
 
 /** A slot of the match as the scorer screen holds it. */
 export interface ScorerSlot extends LiveSlotRow {
@@ -26,6 +30,8 @@ export interface ScorerSlot extends LiveSlotRow {
   live_status: SlotLiveStatus;
   score_home: number | null;
   score_away: number | null;
+  /** A set forfeited after a retirement (§6, L8), once the server has written it. */
+  forfeit_side?: Side | null;
 }
 
 export type ScorerMatch = LiveSlotContext['match'];
@@ -34,7 +40,7 @@ export type ScorerMatch = LiveSlotContext['match'];
 export type ScorerLogs = Readonly<Record<number, readonly LiveEvent[]>>;
 
 /**
- * - `final`: entered as a Phase 1 final score, so live scoring skips it.
+ * - `final`: entered as a Phase 1 final score, or forfeited after a retirement, so live scoring skips it.
  * - `finished`: the log ends in a confirmed end.
  * - `live`: the log has events.
  * - `pending`: not started.
@@ -107,7 +113,52 @@ export function slotPhases(
     const setup = scorerSlotSetup(match, slots, logs, slot.slot_no, settings);
     phases[slot.slot_no] = slotPhase(slot, logOf(logs, slot.slot_no), setup, settings);
   }
+  // A group retirement forfeits later sets with the injured player (L8). The screen knows it from its
+  // own log before the server's rows say so, so it moves on to the next set at once.
+  const retirement = match.stage === 'group' ? matchRetirement(match, slots, logs, settings) : null;
+  if (retirement) {
+    for (const forfeit of groupRetirement(retirement, retirementSlots(slots, phases), settings).forfeits) {
+      phases[forfeit.slot_no] = 'final';
+    }
+  }
   return phases;
+}
+
+/**
+ * The retirement recorded in the logs (§6): the first slot whose log ends in a `retire` that no
+ * reopen cleared, with the injured player's side and the live score when it happened.
+ */
+export function matchRetirement(
+  match: ScorerMatch,
+  slots: readonly ScorerSlot[],
+  logs: ScorerLogs,
+  settings: LiveSettings,
+): Retirement | null {
+  for (const slot of [...slots].sort((a, b) => a.slot_no - b.slot_no)) {
+    const log = logOf(logs, slot.slot_no);
+    if (!log.some((event) => event.kind === 'retire')) continue;
+    const setup = scorerSlotSetup(match, slots, logs, slot.slot_no, settings);
+    if (!setup) continue;
+    const result = tryReplay(setup, log, settings);
+    if (result.ok && result.state.retired) {
+      const { side, player } = result.state.retired;
+      return { side, player, slot_no: slot.slot_no, score: result.state.score };
+    }
+  }
+  return null;
+}
+
+/**
+ * The slots as the retirement rules read them: the stored lineup (a live-scored match has no
+ * substitution after the lock, L6), and whether the slot has started. Only a set not started yet is
+ * forfeited, as `live_apply` does.
+ */
+function retirementSlots(slots: readonly ScorerSlot[], phases: Record<number, SlotPhase>): RetirementSlot[] {
+  return slots.map((s) => ({
+    slot_no: s.slot_no,
+    pairs: { home: [s.home_p1 ?? '', s.home_p2 ?? ''], away: [s.away_p1 ?? '', s.away_p2 ?? ''] },
+    finished: phases[s.slot_no] !== 'pending',
+  }));
 }
 
 /**
@@ -120,6 +171,8 @@ export function currentSlotNo(
   logs: ScorerLogs,
   settings: LiveSettings,
 ): number | null {
+  // A relay retirement ends the match (L9): the later legs stay empty.
+  if (match.stage !== 'group' && matchRetirement(match, slots, logs, settings)) return null;
   const phases = slotPhases(match, slots, logs, settings);
   const sorted = [...slots].sort((a, b) => a.slot_no - b.slot_no);
   return (
@@ -129,7 +182,11 @@ export function currentSlotNo(
   );
 }
 
-/** The score of a finished slot (its confirmed replay), or of a slot entered as a final score. */
+/**
+ * The score of a finished slot (its confirmed replay), or of a slot entered as a final score. A
+ * retirement credits the opponent the target in the retired slot and forfeits later sets (§6), as
+ * `live_apply` stores them.
+ */
 export function finishedScore(
   match: ScorerMatch,
   slots: readonly ScorerSlot[],
@@ -139,13 +196,113 @@ export function finishedScore(
 ): Score | null {
   const slot = slots.find((s) => s.slot_no === slotNo);
   if (!slot) return null;
-  const log = logOf(logs, slotNo);
+  const retirement = matchRetirement(match, slots, logs, settings);
+  if (retirement?.slot_no === slotNo)
+    return storedScore(retirementResult(match, slots, logs, retirement, settings).current);
+
+  const phases = slotPhases(match, slots, logs, settings);
+  const phase = phases[slotNo];
+  if (phase === 'final') {
+    if (slot.score_home !== null && slot.score_away !== null) return { home: slot.score_home, away: slot.score_away };
+    const forfeit = retirement
+      ? retirementResult(match, slots, logs, retirement, settings).forfeits.find((f) => f.slot_no === slotNo)
+      : undefined;
+    return forfeit ? storedScore(forfeit) : null;
+  }
+  if (phase !== 'finished') return null;
   const setup = scorerSlotSetup(match, slots, logs, slotNo, settings);
-  const phase = slotPhase(slot, log, setup, settings);
-  if (phase === 'final') return { home: slot.score_home!, away: slot.score_away! };
-  if (phase !== 'finished' || !setup) return null;
-  const result = tryReplay(setup, log, settings);
+  if (!setup) return null;
+  const result = tryReplay(setup, logOf(logs, slotNo), settings);
   return result.ok ? result.state.score : null;
+}
+
+const storedScore = (slot: { score_home: number; score_away: number }): Score => ({
+  home: slot.score_home,
+  away: slot.score_away,
+});
+
+function retirementResult(
+  match: ScorerMatch,
+  slots: readonly ScorerSlot[],
+  logs: ScorerLogs,
+  retirement: Retirement,
+  settings: LiveSettings,
+) {
+  if (match.stage !== 'group') return { ...relayRetirement(retirement, settings), forfeits: [] };
+  // The phases before the retirement: which later sets had not started when the player retired.
+  const phases: Record<number, SlotPhase> = {};
+  for (const s of slots) {
+    const setup = scorerSlotSetup(match, slots, logs, s.slot_no, settings);
+    phases[s.slot_no] = slotPhase(s, logOf(logs, s.slot_no), setup, settings);
+  }
+  return groupRetirement(retirement, retirementSlots(slots, phases), settings);
+}
+
+/** One line of the retirement confirmation (L-G) for a set or leg other than the current one. */
+export type RetirementLine =
+  /** Group: an earlier set, or a later one already started: its result stays. */
+  | { slotNo: number; outcome: 'kept' }
+  /** Group: a later set with the injured player in the lineup, forfeited target–0. */
+  | { slotNo: number; outcome: 'forfeit'; score: Score }
+  /** Group: a later set without the injured player, played as normal. */
+  | { slotNo: number; outcome: 'played' }
+  /** Relay: a later leg, left empty. */
+  | { slotNo: number; outcome: 'empty' };
+
+export interface RetirementPreview {
+  relay: boolean;
+  /** The injured player's side, which loses. */
+  side: Side;
+  player: string;
+  /** The current set or leg: the live score, and the score stored after the retirement. */
+  current: { slotNo: number; live: Score; stored: Score };
+  /** The other sets or legs, in order. */
+  others: RetirementLine[];
+  /** Relay: the final milestone the opponent is credited. */
+  milestone: number | null;
+}
+
+/**
+ * What a retirement of `player` in the current slot would do (L-G, §6), listed before the scorer
+ * confirms it. Mirrors `live_apply`, so the list matches what the server writes.
+ */
+export function retirementPreview(
+  match: ScorerMatch,
+  slots: readonly ScorerSlot[],
+  logs: ScorerLogs,
+  settings: LiveSettings,
+  retirement: Retirement,
+): RetirementPreview {
+  const relay = match.stage !== 'group';
+  const result = retirementResult(match, slots, logs, retirement, settings);
+  const forfeits = new Map(result.forfeits.map((f) => [f.slot_no, f]));
+  const phases = slotPhases(match, slots, logs, settings);
+  const others: RetirementLine[] = [];
+  for (const s of [...slots].sort((a, b) => a.slot_no - b.slot_no)) {
+    if (s.slot_no === retirement.slot_no) continue;
+    const forfeit = forfeits.get(s.slot_no);
+    if (relay) {
+      others.push(
+        s.slot_no < retirement.slot_no
+          ? { slotNo: s.slot_no, outcome: 'kept' }
+          : { slotNo: s.slot_no, outcome: 'empty' },
+      );
+    } else if (forfeit) {
+      others.push({ slotNo: s.slot_no, outcome: 'forfeit', score: storedScore(forfeit) });
+    } else if (s.slot_no < retirement.slot_no || phases[s.slot_no] !== 'pending') {
+      others.push({ slotNo: s.slot_no, outcome: 'kept' });
+    } else {
+      others.push({ slotNo: s.slot_no, outcome: 'played' });
+    }
+  }
+  return {
+    relay,
+    side: retirement.side,
+    player: retirement.player,
+    current: { slotNo: retirement.slot_no, live: retirement.score, stored: storedScore(result.current) },
+    others,
+    milestone: relay ? (settings.relay_milestones.at(-1) ?? null) : null,
+  };
 }
 
 /**

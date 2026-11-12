@@ -35,6 +35,7 @@ const eventSchema = z.discriminatedUnion('kind', [
   z.object({ kind: z.literal('ends_changed') }),
   z.object({ kind: z.literal('timeout_start'), payload: z.object({ player }) }),
   z.object({ kind: z.literal('timeout_end') }),
+  z.object({ kind: z.literal('retire'), payload: z.object({ player }) }),
   z.object({ kind: z.literal('end_confirmed') }),
   z.object({ kind: z.literal('reopened'), payload: z.object({ reason: z.string().trim().min(1).max(500) }) }),
 ]);
@@ -48,7 +49,7 @@ const inputSchema = z.object({
   clientAt: z.iso.datetime({ offset: true }).optional(),
 });
 
-/** A new event without its `seq`. Retirement (`retire`) comes with the retirement flow (§6). */
+/** A new event without its `seq`. */
 export type NewLiveEvent = z.infer<typeof eventSchema>;
 export type LiveEventInput = z.infer<typeof inputSchema>;
 
@@ -194,7 +195,10 @@ export function checkLiveEvent(
   return { ok: false, code: result.code };
 }
 
-/** Events that change what the public pages show outside the live panel: results and match status. */
+/**
+ * Events that change what the public pages show outside the live panel: results and match status. A
+ * retirement writes the slot score, the forfeits it causes and, in a relay, the match result (§6).
+ */
 export function changesPublicResults(kind: LiveEventKind, firstEventOfMatch: boolean): boolean {
-  return firstEventOfMatch || kind === 'end_confirmed' || kind === 'reopened';
+  return firstEventOfMatch || kind === 'end_confirmed' || kind === 'reopened' || kind === 'retire';
 }
