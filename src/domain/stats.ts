@@ -4,8 +4,14 @@ import { effectivePair, type LineupSlot, type Side } from './lineup';
 import type { SlotScore } from './score';
 import type { StandingsMatch } from './standings';
 
-/** A `match_slot` with its registered players, substitutions and recorded score. */
-export type StatsSlot = SlotScore & Pick<LineupSlot, 'home_p1' | 'home_p2' | 'away_p1' | 'away_p2' | 'substitutions'>;
+/**
+ * A `match_slot` with its registered players, substitutions and recorded score. `forfeit_side` is
+ * set on a set forfeited after a retirement (spec-phase-2 §6, L8).
+ */
+export type StatsSlot = SlotScore &
+  Pick<LineupSlot, 'home_p1' | 'home_p2' | 'away_p1' | 'away_p2' | 'substitutions'> & {
+    forfeit_side?: Side | null;
+  };
 
 /** The `match` columns the standings read, with the slot players. */
 export interface StatsMatch extends StandingsMatch {
@@ -38,7 +44,9 @@ const other = (side: Side): Side => (side === 'home' ? 'away' : 'home');
  * partner. Only `completed` group matches count: annulled matches never do (A4), and a forfeit has
  * no sets played (lineups are ignored). A set counts for its **effective** players, with
  * substitutions applied, so a replaced player gets no credit for it. Scores are read as stored,
- * the higher one winning the set, so imported 2026 matches count as recorded. A partner tie goes
+ * the higher one winning the set, so imported 2026 matches count as recorded. A set forfeited after
+ * a retirement is not played, as in a match forfeit, while the retired set itself counts (spec-phase-2
+ * §6). A partner tie goes
  * to the pair with more set wins, then to the one played with first.
  */
 export function playerStats(matches: readonly StatsMatch[]): Map<string, PlayerStats> {
@@ -56,7 +64,7 @@ export function playerStats(matches: readonly StatsMatch[]): Map<string, PlayerS
     if (match.stage !== 'group' || match.status !== 'completed') continue;
     for (const slot of [...match.slots].sort((a, b) => a.slot_no - b.slot_no)) {
       const { score_home: home, score_away: away } = slot;
-      if (home === null || away === null || home === away) continue;
+      if (home === null || away === null || home === away || slot.forfeit_side) continue;
       const score: Record<Side, number> = { home, away };
       const winner: Side = home > away ? 'home' : 'away';
 

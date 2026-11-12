@@ -93,7 +93,7 @@ const players = (slot: ProfileSlot, side: Side) => [
 /**
  * The player profile (spec §5 P7): season stats from `playerStats`, and every set the player
  * played. The list counts the same sets as the stats: completed group matches, effective players
- * (substitutions applied), scored and not level. Ordered by match code, then set.
+ * (substitutions applied), scored and not level, and not forfeited after a retirement. Ordered by match code, then set.
  */
 export function buildPlayerProfile(
   playerId: string,
@@ -105,7 +105,7 @@ export function buildPlayerProfile(
     if (match.stage !== 'group' || match.status !== 'completed') continue;
     for (const slot of [...match.slots].sort((a, b) => a.slot_no - b.slot_no)) {
       const { score_home: home, score_away: away } = slot;
-      if (home === null || away === null || home === away) continue;
+      if (home === null || away === null || home === away || slot.forfeit_side) continue;
       const side: Side | null = players(slot, 'home').includes(playerId)
         ? 'home'
         : players(slot, 'away').includes(playerId)

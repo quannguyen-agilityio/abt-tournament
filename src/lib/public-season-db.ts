@@ -123,7 +123,7 @@ async function readProfileMatches(supabase: Supabase, seasonId: string): Promise
     .from('match')
     .select(
       `id, code, stage, status, home_team_id, away_team_id, forfeit_team_id,
-      match_slot(slot_no, slot_type, home_p1, home_p2, away_p1, away_p2, score_home, score_away,
+      match_slot(slot_no, slot_type, home_p1, home_p2, away_p1, away_p2, score_home, score_away, forfeit_side,
         slot_substitution(side, replaced_id, substitute_id, created_at))`,
     )
     .eq('season_id', seasonId)

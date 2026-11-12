@@ -197,6 +197,27 @@ describe('playerStats', () => {
     ]);
     expect(stats.get('a1')).toMatchObject({ setsWon: 0, setsLost: 1, pointsFor: 29, pointsAgainst: 30 });
   });
+
+  it('counts a retired set as played but not a set forfeited after the retirement (spec-phase-2 §6)', () => {
+    // a1 retires injured in set 1 at 18–22 (stored 18–31); set 2, with a1 lined up, is forfeited 0–31.
+    const retired = match('V01', 'A', 'B', [
+      [
+        ['a1', 'a2'],
+        ['b1', 'b2'],
+        [18, 31],
+      ],
+      [
+        ['a1', 'a3'],
+        ['b1', 'b2'],
+        [0, 31],
+      ],
+    ]);
+    retired.slots[1].forfeit_side = 'home';
+    const stats = playerStats([retired]);
+    expect(stats.get('a1')).toMatchObject({ setsPlayed: 1, setsLost: 1, pointsFor: 18, pointsAgainst: 31 });
+    expect(stats.get('a3')).toBeUndefined();
+    expect(stats.get('b1')).toMatchObject({ setsPlayed: 1, setsWon: 1, pointsFor: 31, pointsAgainst: 18 });
+  });
 });
 
 describe('teamStats', () => {
