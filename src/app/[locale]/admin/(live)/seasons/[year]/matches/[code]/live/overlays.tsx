@@ -6,6 +6,7 @@ import { useEffect, useId, useRef, useState } from 'react';
 import { Button, buttonVariants } from '@/components/ui/button';
 import type { Side } from '@/domain/lineup';
 import type { Pair } from '@/domain/live';
+import type { DropReason, QueuedEvent } from '@/lib/live-outbox';
 import type { Score } from '@/domain/score';
 import { Link } from '@/i18n/navigation';
 import type { RetirementLine, RetirementPreview } from '@/lib/live-scorer';
@@ -514,6 +515,73 @@ export function RetiredOverlay({
         <Link href={listHref} className={cn(buttonVariants({ variant: 'outline' }), styles.btnLg, 'h-12')}>
           {t('backToList')}
         </Link>
+      </div>
+    </Overlay>
+  );
+}
+
+/**
+ * The queue was refused (spec-phase-2 §8.1 Connection state): why, and every action that was not
+ * sent. The screen is read-only behind it. When the lock moved it stays read-only (Nhận quyền chấm
+ * is on the viewer screen); when the log changed, the scorer can go on from the server's score.
+ */
+export function UnsentOverlay({
+  reason,
+  items,
+  relay,
+  teams,
+  nameOf,
+  onClose,
+}: {
+  reason: DropReason;
+  items: readonly QueuedEvent[];
+  relay: boolean;
+  teams: Teams;
+  nameOf: (player: string) => string;
+  onClose: () => void;
+}) {
+  const t = useTranslations('Admin.live');
+  const titleId = useId();
+  const label = ({ event }: QueuedEvent) => {
+    switch (event.kind) {
+      case 'point':
+        return t('unsentEvent.point', { team: teams[event.payload.side].name });
+      case 'timeout_start':
+      case 'retire':
+        return t(`unsentEvent.${event.kind}`, { name: nameOf(event.payload.player) });
+      default:
+        return t(`unsentEvent.${event.kind}`);
+    }
+  };
+  return (
+    <Overlay labelledBy={titleId}>
+      <div className={styles.eyebrow}>{t('readOnly')}</div>
+      <h2 id={titleId} className={styles.ovTitle}>
+        {t(reason === 'notScorer' ? 'unsentTitleNotScorer' : 'unsentTitleConflict')}
+      </h2>
+      <p className={styles.ovSub}>{t(reason === 'notScorer' ? 'unsentNotScorer' : 'unsentConflict')}</p>
+      {items.length > 0 && (
+        <>
+          <p className={styles.ovSub}>{t('unsentList', { n: items.length })}</p>
+          <ul className={styles.conseq}>
+            {items.map((item) => (
+              <li key={item.id} className={styles.bad}>
+                <span className={styles.ic} aria-hidden>
+                  ✕
+                </span>
+                <span>
+                  {t(relay ? 'unsentSlotLeg' : 'unsentSlotSet', { n: item.slotNo })} · #{item.expectedSeq} ·{' '}
+                  {label(item)}
+                </span>
+              </li>
+            ))}
+          </ul>
+        </>
+      )}
+      <div className={styles.ovActions}>
+        <Button type="button" className={XL} data-autofocus onClick={onClose}>
+          {t(reason === 'notScorer' ? 'unsentClose' : 'unsentResume')}
+        </Button>
       </div>
     </Overlay>
   );
