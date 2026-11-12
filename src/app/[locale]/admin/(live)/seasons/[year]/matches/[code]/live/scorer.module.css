@@ -1381,3 +1381,132 @@ button.ptag:disabled {
   opacity: 0.45;
   cursor: not-allowed;
 }
+
+/* L-F medical timeout and L-G retirement (spec-phase-2 §6) */
+.chips4 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-top: 14px;
+  text-align: left;
+}
+.pchip {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 2px;
+  min-height: 56px;
+  padding: 8px 10px;
+  border-radius: 12px;
+  border: 2px solid var(--border);
+  border-left: 6px solid var(--tc);
+  background: var(--surface);
+  color: var(--foreground);
+  font: inherit;
+  font-size: 13.5px;
+  font-weight: 700;
+  cursor: pointer;
+}
+.pchip small {
+  font-size: 11.5px;
+  font-weight: 500;
+  color: var(--muted-foreground);
+}
+.pchip[aria-pressed='true'] {
+  border-color: var(--loss);
+  border-left-color: var(--tc);
+  background: color-mix(in srgb, var(--loss) 8%, transparent);
+}
+.pchip:disabled {
+  cursor: default;
+}
+.pchip:disabled:not([aria-pressed='true']) {
+  opacity: 0.55;
+}
+.clock {
+  font-family: var(--font-barlow);
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+  font-size: clamp(76px, 24vw, 120px);
+  line-height: 1;
+  margin-top: 12px;
+}
+.clock.idle {
+  color: var(--muted-foreground);
+}
+.clock.done {
+  color: var(--loss);
+}
+.tbar {
+  height: 6px;
+  border-radius: 3px;
+  background: var(--surface-2);
+  overflow: hidden;
+  margin-top: 4px;
+}
+.tbar > i {
+  display: block;
+  height: 100%;
+  background: var(--warn);
+  transition: width 0.25s linear;
+}
+.conseq {
+  list-style: none;
+  margin: 14px 0 0;
+  padding: 0;
+  text-align: left;
+  display: grid;
+  gap: 8px;
+}
+.conseq li {
+  display: grid;
+  grid-template-columns: 26px 1fr;
+  gap: 8px;
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  font-size: 14px;
+  line-height: 1.4;
+  background: var(--surface);
+}
+.conseq .ic {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  font-size: 12px;
+  font-weight: 800;
+}
+.conseq .bad {
+  border-color: color-mix(in srgb, var(--loss) 40%, transparent);
+  background: color-mix(in srgb, var(--loss) 6%, transparent);
+}
+.conseq .bad .ic {
+  background: var(--loss);
+  color: var(--surface);
+}
+.conseq .ok .ic {
+  background: var(--win);
+  color: var(--surface);
+}
+.conseq .neu .ic {
+  background: var(--surface-2);
+  color: var(--muted-foreground);
+  border: 1px solid var(--border);
+}
+.conseq b {
+  font-weight: 700;
+}
+.btnLoss {
+  background: var(--loss);
+  color: var(--surface);
+}
+.btnLoss:hover {
+  background: color-mix(in srgb, var(--loss) 90%, transparent);
+}
+@media (prefers-reduced-motion: reduce) {
+  .tbar > i {
+    transition: none;
+  }
+}

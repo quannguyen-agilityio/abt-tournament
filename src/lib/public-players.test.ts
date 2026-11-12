@@ -147,6 +147,18 @@ describe('buildPlayerProfile', () => {
     expect(buildPlayerProfile('s', matches).sets[0]).toMatchObject({ partnerIds: ['q'], won: true });
   });
 
+  it('leaves out a set forfeited after a retirement, as the stats do', () => {
+    const matches = [
+      match('V01', [
+        slot(1, ['p', 'q'], ['x', 'y'], [18, 31]),
+        slot(2, ['p', 'r'], ['x', 'y'], [0, 31], { forfeit_side: 'home' }),
+      ]),
+    ];
+    const { stats, sets } = buildPlayerProfile('p', matches);
+    expect(sets.map((s) => s.slotNo)).toEqual([1]);
+    expect(stats).toMatchObject({ setsPlayed: 1, setsLost: 1 });
+  });
+
   it('skips unfinished, unscored and level sets, and returns zero stats for a player without a set', () => {
     const matches = [
       match('V01', [slot(1, ['p', 'q'], ['x', 'y'], [31, 20])], 'in_progress'),

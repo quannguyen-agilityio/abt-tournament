@@ -51,6 +51,8 @@ export type ScoringScreenProps = {
   onPlus: (side: Side) => void;
   onUndo: () => void;
   onEditSetup: () => void;
+  /** Chấn thương (§6): `null` when a medical timeout cannot start now. */
+  onInjury: (() => void) | null;
   /** Viewer: take the scorer lock. */
   takeover?: { onConfirm: () => void; pending: boolean };
 };
@@ -131,7 +133,12 @@ export function ScoringScreen(props: ScoringScreenProps) {
             <span className={cn(styles.chip, chip[0])}>{chip[1]}</span>
           </div>
           {!ro && (
-            <ScorerMenu matchHref={matchHref} canEdit={state.setUp && !state.confirmed} onEdit={props.onEditSetup} />
+            <ScorerMenu
+              matchHref={matchHref}
+              canEdit={state.setUp && !state.confirmed}
+              onEdit={props.onEditSetup}
+              onInjury={props.onInjury}
+            />
           )}
         </header>
         <div className={cn(styles.scStatus, styles.scPad)}>
@@ -338,8 +345,18 @@ function Strip({
   );
 }
 
-/** The ⋮ menu of the scorer: Sửa thiết lập, Về trận (Chấn thương comes with the injury flow). */
-function ScorerMenu({ matchHref, canEdit, onEdit }: { matchHref: string; canEdit: boolean; onEdit: () => void }) {
+/** The ⋮ menu of the scorer: Sửa thiết lập, Chấn thương, Về trận. */
+function ScorerMenu({
+  matchHref,
+  canEdit,
+  onEdit,
+  onInjury,
+}: {
+  matchHref: string;
+  canEdit: boolean;
+  onEdit: () => void;
+  onInjury: (() => void) | null;
+}) {
   const t = useTranslations('Admin.live');
   const [open, setOpen] = useState(false);
   const rootRef = useRef<HTMLDivElement>(null);
@@ -385,6 +402,18 @@ function ScorerMenu({ matchHref, canEdit, onEdit }: { matchHref: string; canEdit
           }}
         >
           {t('editSetup')}
+        </button>
+        <button
+          type="button"
+          role="menuitem"
+          className={styles.warnrow}
+          disabled={!onInjury}
+          onClick={() => {
+            setOpen(false);
+            onInjury?.();
+          }}
+        >
+          {t('injury')}
         </button>
         <Link href={matchHref} role="menuitem">
           {t('backToMatch')}

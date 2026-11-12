@@ -6,6 +6,10 @@ import {
   courtSpot,
   currentSlotNo,
   draftPayload,
+  finishedScore,
+  matchRetirement,
+  retirementPreview,
+  slotPhases,
   initialDraft,
   latestSetup,
   scorerSlotSetup,
@@ -329,5 +333,116 @@ describe('latestSetup and serverCoversLocal', () => {
     expect(serverCoversLocal({ 1: [setupEvent(1)] }, local)).toBe(false);
     expect(serverCoversLocal({ 1: [setupEvent(1), point(2, 'home')] }, local)).toBe(true);
     expect(serverCoversLocal({}, {})).toBe(true);
+  });
+});
+
+describe('retirement (spec-phase-2 §6)', () => {
+  // h1-1 plays sets 1, 2 and 4; sets 3 and 5 are without them. In set 1, home leads... 3–5 when
+  // h1-1 is injured.
+  const injured = 'h1-1';
+  const slots = [slot(1), slot(2, { home_p1: injured }), slot(3), slot(4, { home_p2: injured }), slot(5)];
+  const beforeRetire: LiveEvent[] = [
+    setupEvent(1),
+    point(2, 'home'),
+    point(3, 'home'),
+    point(4, 'home'),
+    point(5, 'away'),
+    point(6, 'away'),
+    point(7, 'away'),
+    point(8, 'away'),
+    point(9, 'away'),
+    { seq: 10, kind: 'timeout_start', payload: { player: injured } },
+  ];
+  const retired: LiveEvent[] = [...beforeRetire, { seq: 11, kind: 'retire', payload: { player: injured } }];
+  const retirement = { side: 'home' as const, player: injured, slot_no: 1, score: { home: 3, away: 5 } };
+
+  it('finds the retirement in the logs', () => {
+    expect(matchRetirement(group, slots, { 1: retired }, settings)).toEqual(retirement);
+    expect(matchRetirement(group, slots, { 1: beforeRetire }, settings)).toBeNull();
+  });
+
+  it('group: skips the forfeited sets at once and moves to the next set without the player (L8)', () => {
+    const logs = { 1: retired };
+    expect(slotPhases(group, slots, logs, settings)).toEqual({
+      1: 'finished',
+      2: 'final',
+      3: 'pending',
+      4: 'final',
+      5: 'pending',
+    });
+    expect(currentSlotNo(group, slots, logs, settings)).toBe(3);
+  });
+
+  it('group: credits the opponent the target in the retired set and forfeits the later sets', () => {
+    const logs = { 1: retired };
+    expect(finishedScore(group, slots, logs, 1, settings)).toEqual({ home: 3, away: 31 });
+    expect(finishedScore(group, slots, logs, 2, settings)).toEqual({ home: 0, away: 31 });
+    expect(finishedScore(group, slots, logs, 3, settings)).toBeNull();
+    expect(setsWon(group, slots, logs, settings)).toEqual({ home: 0, away: 3 });
+  });
+
+  it('group: reads a forfeit the server wrote from its row', () => {
+    const stored = slots.map((s) =>
+      s.slot_no === 2 ? { ...s, score_home: 0, score_away: 31, forfeit_side: 'home' as const } : s,
+    );
+    expect(finishedScore(group, stored, { 1: retired }, 2, settings)).toEqual({ home: 0, away: 31 });
+  });
+
+  it('group: lists every consequence before the confirmation (L-G)', () => {
+    const preview = retirementPreview(group, slots, { 1: beforeRetire }, settings, retirement);
+    expect(preview).toEqual({
+      relay: false,
+      side: 'home',
+      player: injured,
+      current: { slotNo: 1, live: { home: 3, away: 5 }, stored: { home: 3, away: 31 } },
+      others: [
+        { slotNo: 2, outcome: 'forfeit', score: { home: 0, away: 31 } },
+        { slotNo: 3, outcome: 'played' },
+        { slotNo: 4, outcome: 'forfeit', score: { home: 0, away: 31 } },
+        { slotNo: 5, outcome: 'played' },
+      ],
+      milestone: null,
+    });
+  });
+
+  it('group: keeps earlier sets and later sets already started', () => {
+    const atThree = { ...retirement, slot_no: 3 };
+    const logs: ScorerLogs = {
+      3: [setupEvent(1, { server: 'h1-3', receiver: 'a1-3' })],
+      4: [setupEvent(1, { server: 'h1-4', receiver: 'a1-4' })],
+    };
+    const { others } = retirementPreview(group, slots, logs, settings, { ...atThree, player: injured });
+    expect(others).toEqual([
+      { slotNo: 1, outcome: 'kept' },
+      { slotNo: 2, outcome: 'kept' },
+      { slotNo: 4, outcome: 'kept' },
+      { slotNo: 5, outcome: 'played' },
+    ]);
+  });
+
+  it('relay: ends the match and credits the opponent the final milestone (L9)', () => {
+    const legs = [slot(1), slot(2), slot(3), slot(4), slot(5)];
+    const log: LiveEvent[] = [
+      setupEvent(1),
+      point(2, 'home'),
+      point(3, 'away'),
+      point(4, 'home'),
+      { seq: 5, kind: 'timeout_start', payload: { player: 'a1-1' } },
+      { seq: 6, kind: 'retire', payload: { player: 'a1-1' } },
+    ];
+    const logs = { 1: log };
+    expect(currentSlotNo(relay, legs, logs, settings)).toBeNull();
+    expect(finishedScore(relay, legs, logs, 1, settings)).toEqual({ home: 125, away: 1 });
+    expect(setsWon(relay, legs, logs, settings)).toEqual({ home: 125, away: 1 });
+
+    const preview = retirementPreview(relay, legs, { 1: log.slice(0, 5) }, settings, {
+      side: 'away',
+      player: 'a1-1',
+      slot_no: 1,
+      score: { home: 2, away: 1 },
+    });
+    expect(preview.current).toEqual({ slotNo: 1, live: { home: 2, away: 1 }, stored: { home: 125, away: 1 } });
+    expect(preview.others.every((line) => line.outcome === 'empty')).toBe(true);
+    expect(preview.milestone).toBe(125);
   });
 });

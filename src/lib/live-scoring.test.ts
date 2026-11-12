@@ -75,6 +75,13 @@ describe('parseLiveEventInput', () => {
     });
   });
 
+  it('reads a retirement with the injured player (§6)', () => {
+    expect(
+      parseLiveEventInput({ slotId: SLOT_ID, expectedSeq: 7, event: { kind: 'retire', payload: { player: 'h1' } } })
+        ?.event,
+    ).toEqual({ kind: 'retire', payload: { player: 'h1' } });
+  });
+
   it('reads events without a payload', () => {
     expect(parseLiveEventInput({ slotId: SLOT_ID, expectedSeq: 9, event: { kind: 'end_confirmed' } })?.event).toEqual({
       kind: 'end_confirmed',
@@ -86,10 +93,7 @@ describe('parseLiveEventInput', () => {
     ['seq 0', { slotId: SLOT_ID, expectedSeq: 0, event: { kind: 'ends_changed' } }],
     ['a point without a side', { slotId: SLOT_ID, expectedSeq: 1, event: { kind: 'point', payload: {} } }],
     ['an unknown kind', { slotId: SLOT_ID, expectedSeq: 1, event: { kind: 'reset' } }],
-    [
-      'a retirement (not yet supported)',
-      { slotId: SLOT_ID, expectedSeq: 1, event: { kind: 'retire', payload: { player: 'h1' } } },
-    ],
+    ['a retirement without a player', { slotId: SLOT_ID, expectedSeq: 1, event: { kind: 'retire', payload: {} } }],
     [
       'a reopen without a reason',
       { slotId: SLOT_ID, expectedSeq: 1, event: { kind: 'reopened', payload: { reason: '  ' } } },
@@ -257,6 +261,7 @@ describe('changesPublicResults', () => {
     expect(changesPublicResults('point', true)).toBe(true);
     expect(changesPublicResults('end_confirmed', false)).toBe(true);
     expect(changesPublicResults('reopened', false)).toBe(true);
+    expect(changesPublicResults('retire', false)).toBe(true);
     expect(changesPublicResults('point', false)).toBe(false);
     expect(changesPublicResults('undo', false)).toBe(false);
   });

@@ -1,8 +1,8 @@
 -- BTC reopen of a slot that ended by retirement (spec-phase-2 §4.5, §6): the retirement and the
 -- forfeits it caused are cleared. Run with `pnpm db:test` against the local stack.
 --
--- live_apply refuses `retire` until the retirement flow lands, so the retirements below are written
--- directly, as that flow will leave them.
+-- The retirements below are written directly, as live_apply leaves them after a `retire` (see
+-- live_retire.test.sql).
 begin;
 create extension if not exists pgtap with schema extensions;
 

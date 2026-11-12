@@ -12,16 +12,27 @@ import {
   currentSlotNo,
   finishedScore,
   latestSetup,
+  retirementPreview,
   scorerSlotSetup,
   serverCoversLocal,
   setsWon,
   slotPhases,
   wasReopened,
+  type RetirementPreview,
   type ScorerLogs,
   type ScorerMatch,
   type ScorerSlot,
 } from '@/lib/live-scorer';
-import { ChangeEndsOverlay, DoneOverlay, EndOverlay, SavedOverlay, type Teams } from './overlays';
+import {
+  ChangeEndsOverlay,
+  DoneOverlay,
+  EndOverlay,
+  RetiredOverlay,
+  RetireOverlay,
+  SavedOverlay,
+  TimeoutOverlay,
+  type Teams,
+} from './overlays';
 import { ScoringScreen, type StripCell } from './scoring-screen';
 import { SetupScreen } from './setup-screen';
 import { useLiveRealtime, useOutbox, useThrottledRefresh, type DropReason } from './use-live-sync';
@@ -42,19 +53,24 @@ export type ScorerProps = {
   courtName: string | null;
   match: ScorerMatch;
   settings: LiveSettings;
+  /** Length of one medical timeout (§3, `medical_timeout_minutes`). */
+  medicalTimeoutMinutes: number;
   teams: Teams;
   /** Player id to full name. */
   names: Record<string, string>;
   slots: ScorerSlot[];
   /** The stored log of each slot, by `slot_no`. */
   logs: Record<number, LiveEvent[]>;
+  /** When the scorer tapped each stored event (`client_at`), by `slot_no` then `seq`: the timeout countdown. */
+  eventTimes: Record<number, Record<number, string>>;
   viewerId: string;
   scorer: { id: string; name: string } | null;
 };
 
 /**
  * The live scorer screens (spec-phase-2 §8.1): set or leg setup (L-B), scoring (L-C), change of ends
- * (L-D), end of set or leg (L-E) and the read-only viewer (L-H).
+ * (L-D), end of set or leg (L-E), medical timeout (L-F), retirement (L-G) and the read-only viewer
+ * (L-H).
  *
  * The screen replays its own log, so a tap shows at once; the events go to the server in order, one
  * at a time. Whenever new server data arrives with nothing left to send, the local log is replaced
@@ -62,6 +78,7 @@ export type ScorerProps = {
  */
 export function Scorer(props: ScorerProps) {
   const { matchId, code, courtName, match, settings, teams, names, slots, viewerId, scorer } = props;
+  const { medicalTimeoutMinutes, eventTimes } = props;
   const t = useTranslations('Admin.live');
   const router = useRouter();
   const relay = match.stage !== 'group';
@@ -74,6 +91,12 @@ export function Scorer(props: ScorerProps) {
   const [savedNo, setSavedNo] = useState<number | null>(null);
   const [editing, setEditing] = useState(false);
   const [toast, setToast] = useState<string | null>(null);
+  // The injury flow (§6): picking the injured player, then the retirement confirmation.
+  const [injury, setInjury] = useState<'pick' | 'confirm' | null>(null);
+  // What the confirmed retirement wrote, shown until the scorer moves on.
+  const [retired, setRetired] = useState<RetirementPreview | null>(null);
+  // When this screen sent each event, by `slot_no:seq`, until the server's `client_at` arrives.
+  const [localTimes, setLocalTimes] = useState<Readonly<Record<string, string>>>({});
   const [claiming, startClaim] = useTransition();
   const logsRef = useRef<ScorerLogs>(props.logs);
   const syncTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
@@ -93,6 +116,7 @@ export function Scorer(props: ScorerProps) {
     },
     onDropped: (reason: DropReason) => {
       setLocal(null);
+      setRetired(null);
       if (reason === 'notScorer') setDemoted(true);
       showToast(t(reason === 'notScorer' ? 'toastNotScorer' : 'toastConflict'));
       router.refresh();
@@ -143,7 +167,7 @@ export function Scorer(props: ScorerProps) {
   const current = useMemo(() => currentSlotNo(match, slots, logs, settings), [match, slots, logs, settings]);
   const lastNo = Math.max(...slots.map((s) => s.slot_no));
   const showSaved = savedNo !== null && current !== savedNo && phases[savedNo] === 'finished';
-  const viewNo = showSaved ? savedNo : (current ?? lastNo);
+  const viewNo = retired ? retired.current.slotNo : showSaved ? savedNo : (current ?? lastNo);
   const slot = slots.find((s) => s.slot_no === viewNo)!;
   const log = logs[viewNo] ?? NO_EVENTS;
   const setup = useMemo(
@@ -160,16 +184,20 @@ export function Scorer(props: ScorerProps) {
   const nameOf = useCallback((player: string) => names[player] ?? '—', [names]);
   const typeLabel = (s: ScorerSlot) => (relay ? null : t(`slotType.${s.slot_type as 'open' | 'low' | 'high'}`));
 
-  const dispatch = (event: NewLiveEvent) => {
-    if (mode !== 'scorer' || !setup) return;
+  /** Appends an event to the local log and queues it; `false` when `replay()` refuses it. */
+  const dispatch = (event: NewLiveEvent): boolean => {
+    if (mode !== 'scorer' || !setup) return false;
     const events = logsRef.current[viewNo] ?? NO_EVENTS;
     const next = withSeq(event, (events.at(-1)?.seq ?? 0) + 1);
-    if (!tryReplay(setup, [...events, next], settings).ok) return;
+    if (!tryReplay(setup, [...events, next], settings).ok) return false;
     const updated = { ...logsRef.current, [viewNo]: [...events, next] };
     logsRef.current = updated;
     setLocal(updated);
-    outbox.enqueue({ slotId: slot.id, expectedSeq: next.seq, event, clientAt: new Date().toISOString() });
+    const clientAt = new Date().toISOString();
+    if (event.kind === 'timeout_start') setLocalTimes((times) => ({ ...times, [`${viewNo}:${next.seq}`]: clientAt }));
+    outbox.enqueue({ slotId: slot.id, expectedSeq: next.seq, event, clientAt });
     if (event.kind === 'end_confirmed') setSavedNo(viewNo);
+    return true;
   };
 
   const claim = () => {
@@ -197,7 +225,7 @@ export function Scorer(props: ScorerProps) {
   const teamColors = teams;
   const scorerName = scorer?.name ?? null;
 
-  if (mode === 'scorer' && !showSaved && current !== null && (!state.setUp || editing)) {
+  if (mode === 'scorer' && !retired && !showSaved && current !== null && (!state.setUp || editing)) {
     return (
       <SetupScreen
         // A new key per set or leg and per edit, so a fresh draft is made.
@@ -233,7 +261,25 @@ export function Scorer(props: ScorerProps) {
 
   let overlay: React.ReactNode = null;
   const lastRally = state.rallies.at(-1);
-  if (current === null) {
+  const timeoutAt = state.timeout
+    ? (eventTimes[viewNo]?.[state.timeout.seq] ?? localTimes[`${viewNo}:${state.timeout.seq}`] ?? null)
+    : null;
+  const canInjure =
+    mode === 'scorer' && state.setUp && !state.ended && !state.timeout && !state.changeEndsDue && !state.confirmed;
+
+  if (retired && mode === 'scorer') {
+    const nextNo = current !== null && current !== retired.current.slotNo ? current : null;
+    overlay = (
+      <RetiredOverlay
+        preview={retired}
+        teams={teams}
+        nameOf={nameOf}
+        next={nextNo !== null ? { slotNo: nextNo, onNext: () => setRetired(null) } : null}
+        matchHref={matchHref}
+        listHref="/admin/matches"
+      />
+    );
+  } else if (current === null) {
     const result: Score = setsWon(match, slots, logs, settings);
     overlay = <DoneOverlay teams={teams} score={result} matchHref={matchHref} listHref="/admin/matches" />;
   } else if (showSaved) {
@@ -248,6 +294,43 @@ export function Scorer(props: ScorerProps) {
           onNext={() => setSavedNo(null)}
         />
       ) : null;
+  } else if (mode === 'scorer' && state.timeout && injury === 'confirm') {
+    const { player, side } = state.timeout;
+    const preview = retirementPreview(match, slots, logs, settings, {
+      side,
+      player,
+      slot_no: viewNo,
+      score: state.score,
+    });
+    overlay = (
+      <RetireOverlay
+        preview={preview}
+        teams={teams}
+        nameOf={nameOf}
+        onBack={() => setInjury(null)}
+        onConfirm={() => {
+          setInjury(null);
+          if (dispatch({ kind: 'retire', payload: { player } })) setRetired(preview);
+        }}
+      />
+    );
+  } else if (mode === 'scorer' && (state.timeout || (injury === 'pick' && canInjure))) {
+    overlay = (
+      <TimeoutOverlay
+        teams={teams}
+        pairs={setup.pairs}
+        nameOf={nameOf}
+        minutes={medicalTimeoutMinutes}
+        timeout={state.timeout ? { player: state.timeout.player, startedAt: timeoutAt } : null}
+        onPick={(player) => dispatch({ kind: 'timeout_start', payload: { player } })}
+        onCancel={() => setInjury(null)}
+        onResume={() => {
+          setInjury(null);
+          dispatch({ kind: 'timeout_end' });
+        }}
+        onRetire={() => setInjury('confirm')}
+      />
+    );
   } else if (mode === 'scorer' && state.changeEndsDue && lastRally) {
     overlay = (
       <ChangeEndsOverlay
@@ -302,6 +385,7 @@ export function Scorer(props: ScorerProps) {
       onPlus={(side: Side) => dispatch({ kind: 'point', payload: { side } })}
       onUndo={() => undoLast(state, dispatch)}
       onEditSetup={() => setEditing(true)}
+      onInjury={canInjure ? () => setInjury('pick') : null}
       takeover={mode === 'viewer' && scorer ? { onConfirm: claim, pending: claiming } : undefined}
     />
   );

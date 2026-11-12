@@ -2,11 +2,14 @@
 
 import { ArrowLeftRight, Undo2 } from 'lucide-react';
 import { useTranslations } from 'next-intl';
-import { useEffect, useId, useRef } from 'react';
+import { useEffect, useId, useRef, useState } from 'react';
 import { Button, buttonVariants } from '@/components/ui/button';
 import type { Side } from '@/domain/lineup';
+import type { Pair } from '@/domain/live';
 import type { Score } from '@/domain/score';
 import { Link } from '@/i18n/navigation';
+import type { RetirementLine, RetirementPreview } from '@/lib/live-scorer';
+import { timeoutLeft } from '@/lib/public-live-panel';
 import { cn } from '@/lib/utils';
 import styles from './scorer.module.css';
 
@@ -215,6 +218,299 @@ export function DoneOverlay({
         <Link href={matchHref} data-autofocus className={cn(buttonVariants(), XL)}>
           {t('backToMatch')}
         </Link>
+        <Link href={listHref} className={cn(buttonVariants({ variant: 'outline' }), styles.btnLg, 'h-12')}>
+          {t('backToList')}
+        </Link>
+      </div>
+    </Overlay>
+  );
+}
+
+const SIDES: readonly Side[] = ['home', 'away'];
+
+/** m:ss of a duration in milliseconds, rounded up so the clock shows 0:00 only at the end. */
+function mmss(ms: number): string {
+  const total = Math.ceil(ms / 1000);
+  return `${Math.floor(total / 60)}:${String(total % 60).padStart(2, '0')}`;
+}
+
+/** The current time, ticking every second while `on`. */
+function useNow(on: boolean): number | null {
+  const [now, setNow] = useState<number | null>(null);
+  useEffect(() => {
+    if (!on) return;
+    const tick = () => setNow(Date.now());
+    tick();
+    const id = setInterval(tick, 1000);
+    return () => clearInterval(id);
+  }, [on]);
+  return on ? now : null;
+}
+
+/**
+ * L-F (spec-phase-2 §6): pick the injured player, which starts the timeout, then resume or retire.
+ * When the countdown reaches 0 the screen says so and still waits: the referee on court decides.
+ */
+export function TimeoutOverlay({
+  teams,
+  pairs,
+  nameOf,
+  minutes,
+  timeout,
+  onPick,
+  onCancel,
+  onResume,
+  onRetire,
+}: {
+  teams: Teams;
+  pairs: Record<Side, Pair>;
+  nameOf: (player: string) => string;
+  minutes: number;
+  /** The open timeout, or `null` while the scorer picks the player. `startedAt` is when the scorer tapped. */
+  timeout: { player: string; startedAt: string | null } | null;
+  onPick: (player: string) => void;
+  onCancel: () => void;
+  onResume: () => void;
+  onRetire: () => void;
+}) {
+  const t = useTranslations('Admin.live');
+  const titleId = useId();
+  const total = minutes * 60_000;
+  const now = useNow(Boolean(timeout?.startedAt));
+  const left = timeout?.startedAt && now !== null ? timeoutLeft(timeout.startedAt, minutes, now) : total;
+  const up = Boolean(timeout) && left === 0;
+  return (
+    <Overlay labelledBy={titleId}>
+      <div className={styles.eyebrow}>{t('injured')}</div>
+      <h2 id={titleId} className={styles.ovTitle}>
+        {up ? t('timeUp') : t('medTitle')}
+      </h2>
+      <div className={styles.chips4} role="group" aria-label={t('injured')}>
+        {SIDES.flatMap((side) =>
+          pairs[side].map((player) => (
+            <button
+              key={`${side}-${player}`}
+              type="button"
+              className={styles.pchip}
+              style={{ '--tc': teams[side].color } as React.CSSProperties}
+              aria-pressed={timeout?.player === player}
+              disabled={Boolean(timeout)}
+              data-autofocus={!timeout && side === 'home' && player === pairs.home[0] ? true : undefined}
+              onClick={() => onPick(player)}
+            >
+              {nameOf(player)}
+              <small>{teams[side].name}</small>
+            </button>
+          )),
+        )}
+      </div>
+      <div
+        className={cn(styles.clock, !timeout && styles.idle, up && styles.done)}
+        role="timer"
+        aria-label={t('medClock')}
+      >
+        {mmss(left)}
+      </div>
+      <div className={styles.tbar} aria-hidden>
+        <i style={{ width: `${(left / total) * 100}%` }} />
+      </div>
+      <p className={styles.ovSub} aria-live="polite">
+        {!timeout ? t('medPick') : up ? t('timeUpSub') : t('medLocked')}
+      </p>
+      <div className={styles.ovActions}>
+        <Button
+          type="button"
+          className={XL}
+          disabled={!timeout}
+          data-autofocus={timeout ? true : undefined}
+          onClick={onResume}
+        >
+          {t('resume')}
+        </Button>
+        <Button
+          type="button"
+          className={cn(styles.btnLg, styles.btnLoss, 'h-12')}
+          disabled={!timeout}
+          onClick={onRetire}
+        >
+          {t('retire')}
+        </Button>
+        {!timeout && (
+          <button type="button" className={styles.linkbtn} onClick={onCancel}>
+            {t('cancel')}
+          </button>
+        )}
+      </div>
+    </Overlay>
+  );
+}
+
+/** The consequence rows of a retirement (§6), shared by the confirmation and the recorded card. */
+function RetirementRows({
+  preview,
+  teams,
+  nameOf,
+}: {
+  preview: RetirementPreview;
+  teams: Teams;
+  nameOf: (player: string) => string;
+}) {
+  const t = useTranslations('Admin.live');
+  const b = (chunks: React.ReactNode) => <b>{chunks}</b>;
+  const team = teams[preview.side].name;
+  const team2 = teams[other(preview.side)].name;
+  const p = nameOf(preview.player);
+  const { current } = preview;
+  type Row = { key: string; tone: 'bad' | 'ok' | 'neu'; icon: string; text: React.ReactNode };
+  const rows: Row[] = [];
+
+  const line = (l: RetirementLine): Row => {
+    const key = `s${l.slotNo}`;
+    switch (l.outcome) {
+      case 'kept':
+        return { key, tone: 'neu', icon: '=', text: t('rKept', { n: l.slotNo }) };
+      case 'forfeit':
+        return {
+          key,
+          tone: 'bad',
+          icon: '✕',
+          text: t.rich('rForfeit', { n: l.slotNo, p, team, sa: l.score.home, sb: l.score.away, b }),
+        };
+      case 'played':
+        return { key, tone: 'ok', icon: '✓', text: t.rich('rPlayed', { n: l.slotNo, p, b }) };
+      case 'empty':
+        return { key, tone: 'neu', icon: '–', text: t('rLater', { n: l.slotNo }) };
+    }
+  };
+
+  const before = preview.others.filter((l) => l.slotNo < current.slotNo).map(line);
+  const after = preview.others.filter((l) => l.slotNo > current.slotNo).map(line);
+  rows.push(...before);
+  if (preview.relay) {
+    rows.push({
+      key: 'cur',
+      tone: 'bad',
+      icon: '✕',
+      text: t.rich('rLeg', {
+        n: current.slotNo,
+        lh: current.live.home,
+        la: current.live.away,
+        team,
+        team2,
+        m: preview.milestone ?? 0,
+        k: current.live[preview.side],
+        b,
+      }),
+    });
+  } else {
+    rows.push({
+      key: 'cur',
+      tone: 'bad',
+      icon: '✕',
+      text: t.rich('rCur', {
+        n: current.slotNo,
+        lh: current.live.home,
+        la: current.live.away,
+        team,
+        sa: current.stored.home,
+        sb: current.stored.away,
+        b,
+      }),
+    });
+  }
+  rows.push(...after);
+  if (preview.relay) {
+    rows.push({ key: 'match', tone: 'bad', icon: '✕', text: t.rich('rMatch', { team, team2, b }) });
+  }
+  rows.push({ key: 'badge', tone: 'neu', icon: 'i', text: t.rich('rBadge', { p, b }) });
+
+  return (
+    <ul className={styles.conseq}>
+      {rows.map((row) => (
+        <li key={row.key} className={styles[row.tone]}>
+          <span className={styles.ic} aria-hidden>
+            {row.icon}
+          </span>
+          <span>{row.text}</span>
+        </li>
+      ))}
+    </ul>
+  );
+}
+
+/** L-G: every consequence of the retirement, listed before the scorer confirms it (§6). */
+export function RetireOverlay({
+  preview,
+  teams,
+  nameOf,
+  onConfirm,
+  onBack,
+}: {
+  preview: RetirementPreview;
+  teams: Teams;
+  nameOf: (player: string) => string;
+  onConfirm: () => void;
+  onBack: () => void;
+}) {
+  const t = useTranslations('Admin.live');
+  const titleId = useId();
+  return (
+    <Overlay labelledBy={titleId}>
+      <div className={styles.eyebrow}>{t('injury')}</div>
+      <h2 id={titleId} className={styles.ovTitle}>
+        {t('retTitle')}
+      </h2>
+      <p className={styles.ovSub}>{t('retSub', { p: nameOf(preview.player), team: teams[preview.side].name })}</p>
+      <RetirementRows preview={preview} teams={teams} nameOf={nameOf} />
+      <div className={styles.ovActions}>
+        <Button type="button" className={cn(XL, styles.btnLoss)} data-autofocus onClick={onConfirm}>
+          {t('retConfirm')}
+        </Button>
+        <Button type="button" variant="outline" className={cn(styles.btnLg, 'h-12')} onClick={onBack}>
+          {t('back')}
+        </Button>
+      </div>
+    </Overlay>
+  );
+}
+
+/** After the retirement: what was written, then the next set (group) or the way back (relay, match over). */
+export function RetiredOverlay({
+  preview,
+  teams,
+  nameOf,
+  next,
+  matchHref,
+  listHref,
+}: {
+  preview: RetirementPreview;
+  teams: Teams;
+  nameOf: (player: string) => string;
+  /** Group: the next set still to play, with its type label. */
+  next: { slotNo: number; onNext: () => void } | null;
+  matchHref: string;
+  listHref: string;
+}) {
+  const t = useTranslations('Admin.live');
+  const titleId = useId();
+  return (
+    <Overlay labelledBy={titleId}>
+      <div className={styles.eyebrow}>{t('stateRetired')}</div>
+      <h2 id={titleId} className={styles.ovTitle}>
+        {t('retDone')}
+      </h2>
+      <p className={styles.ovSub}>{t('retDoneSub', { p: nameOf(preview.player), team: teams[preview.side].name })}</p>
+      <RetirementRows preview={preview} teams={teams} nameOf={nameOf} />
+      <div className={styles.ovActions}>
+        {next ? (
+          <Button type="button" className={XL} data-autofocus onClick={next.onNext}>
+            {t('toSetup', { n: next.slotNo })}
+          </Button>
+        ) : (
+          <Link href={matchHref} data-autofocus className={cn(buttonVariants(), XL)}>
+            {t('backToMatch')}
+          </Link>
+        )}
         <Link href={listHref} className={cn(buttonVariants({ variant: 'outline' }), styles.btnLg, 'h-12')}>
           {t('backToList')}
         </Link>
