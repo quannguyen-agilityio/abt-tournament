@@ -42,6 +42,8 @@ export type ScoringScreenProps = {
   /** Relay: every milestone, the last one is the end of the match. */
   milestones: readonly number[];
   pending: number;
+  /** No network, or the last send could not reach the server (§8.1 Connection state). */
+  offline: boolean;
   wake: 'on' | 'off' | null;
   scorerName: string | null;
   /** The BTC reopened this set or leg and it is being fixed. */
@@ -142,8 +144,20 @@ export function ScoringScreen(props: ScoringScreenProps) {
           )}
         </header>
         <div className={cn(styles.scStatus, styles.scPad)}>
-          <span className={cn(styles.conn, props.pending > 0 ? styles.connPend : styles.connOk)} role="status">
-            {props.pending > 0 ? t('pending', { n: props.pending }) : t('synced')}
+          <span
+            className={cn(
+              styles.conn,
+              props.offline ? styles.connOff : props.pending > 0 ? styles.connPend : styles.connOk,
+            )}
+            role="status"
+          >
+            {props.offline
+              ? props.pending > 0
+                ? t('offlineQueued', { n: props.pending })
+                : t('offline')
+              : props.pending > 0
+                ? t('pending', { n: props.pending })
+                : t('synced')}
           </span>
           {props.wake && (
             <span className={cn(styles.scWl, props.wake === 'on' ? styles.on : styles.off)} role="status">

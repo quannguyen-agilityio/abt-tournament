@@ -31,11 +31,12 @@ import {
   RetireOverlay,
   SavedOverlay,
   TimeoutOverlay,
+  UnsentOverlay,
   type Teams,
 } from './overlays';
 import { ScoringScreen, type StripCell } from './scoring-screen';
 import { SetupScreen } from './setup-screen';
-import { useLiveRealtime, useOutbox, useThrottledRefresh, type DropReason } from './use-live-sync';
+import { useLiveRealtime, useOutbox, useThrottledRefresh, type DropReason, type QueuedEvent } from './use-live-sync';
 import { useWakeLock } from './use-wake-lock';
 import styles from './scorer.module.css';
 
@@ -73,8 +74,10 @@ export type ScorerProps = {
  * (L-H).
  *
  * The screen replays its own log, so a tap shows at once; the events go to the server in order, one
- * at a time. Whenever new server data arrives with nothing left to send, the local log is replaced
- * by the server's, so the screen is `replay()` of the stored log.
+ * at a time, through a queue kept in IndexedDB (§8.1 Connection state), so taps made offline survive
+ * a reload. Whenever new server data arrives with nothing left to send, the local log is replaced by
+ * the server's, so the screen is `replay()` of the stored log. If the server refuses the queue, the
+ * screen turns read-only and lists what was not sent.
  */
 export function Scorer(props: ScorerProps) {
   const { matchId, code, courtName, match, settings, teams, names, slots, viewerId, scorer } = props;
@@ -97,8 +100,14 @@ export function Scorer(props: ScorerProps) {
   const [retired, setRetired] = useState<RetirementPreview | null>(null);
   // When this screen sent each event, by `slot_no:seq`, until the server's `client_at` arrives.
   const [localTimes, setLocalTimes] = useState<Readonly<Record<string, string>>>({});
+  // The queue the server refused, shown until the scorer closes it (§8.1 Connection state).
+  const [unsent, setUnsent] = useState<{ reason: DropReason; items: QueuedEvent[] } | null>(null);
   const [claiming, startClaim] = useTransition();
   const logsRef = useRef<ScorerLogs>(props.logs);
+  const propsRef = useRef(props);
+  useEffect(() => {
+    propsRef.current = props;
+  });
   const syncTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
   const toastTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
 
@@ -108,18 +117,51 @@ export function Scorer(props: ScorerProps) {
     toastTimer.current = setTimeout(() => setToast(null), TOAST_MS);
   }, []);
 
-  const outbox = useOutbox({
+  const slotNoOf = (slotId: string) => propsRef.current.slots.find((s) => s.id === slotId)?.slot_no;
+  const outbox = useOutbox(matchId, {
     // After the last event is stored, load the server's log (debounced: a burst of taps refreshes once).
     onDrained: () => {
       clearTimeout(syncTimer.current);
       syncTimer.current = setTimeout(() => router.refresh(), REFRESH_AFTER_SYNC_MS);
     },
-    onDropped: (reason: DropReason) => {
+    // The server refused the queue: read-only, the server's log, and the list of what was not sent.
+    onDropped: (reason, items) => {
       setLocal(null);
       setRetired(null);
-      if (reason === 'notScorer') setDemoted(true);
-      showToast(t(reason === 'notScorer' ? 'toastNotScorer' : 'toastConflict'));
+      setInjury(null);
+      setEditing(false);
+      setDemoted(true);
+      setUnsent({ reason, items });
       router.refresh();
+    },
+    // The server log already holds the event when it has the same `seq` and tap time.
+    isSent: (item) => {
+      const slotNo = slotNoOf(item.slotId);
+      const at = slotNo === undefined ? undefined : propsRef.current.eventTimes[slotNo]?.[item.expectedSeq];
+      return at !== undefined && Date.parse(at) === Date.parse(item.clientAt);
+    },
+    // Taps left by an earlier page: shown on top of the server's log, then sent. Someone else holds
+    // the lock now, so they are dropped and listed.
+    onRestored: (items) => {
+      if (propsRef.current.mode !== 'scorer') return false;
+      const merged: Record<number, readonly LiveEvent[]> = { ...logsRef.current };
+      const times: Record<string, string> = {};
+      let changed = false;
+      for (const item of items) {
+        const slotNo = slotNoOf(item.slotId);
+        if (slotNo === undefined) continue;
+        const events = merged[slotNo] ?? NO_EVENTS;
+        if (item.expectedSeq !== (events.at(-1)?.seq ?? 0) + 1) continue;
+        merged[slotNo] = [...events, withSeq(item.event, item.expectedSeq)];
+        if (item.event.kind === 'timeout_start') times[`${slotNo}:${item.expectedSeq}`] = item.clientAt;
+        changed = true;
+      }
+      if (changed) {
+        logsRef.current = merged;
+        setLocal(merged);
+        setLocalTimes((current) => ({ ...current, ...times }));
+      }
+      return true;
     },
   });
   useEffect(
@@ -186,7 +228,8 @@ export function Scorer(props: ScorerProps) {
 
   /** Appends an event to the local log and queues it; `false` when `replay()` refuses it. */
   const dispatch = (event: NewLiveEvent): boolean => {
-    if (mode !== 'scorer' || !setup) return false;
+    // Until the stored queue is restored, the next `seq` is not known.
+    if (mode !== 'scorer' || !setup || !outbox.ready) return false;
     const events = logsRef.current[viewNo] ?? NO_EVENTS;
     const next = withSeq(event, (events.at(-1)?.seq ?? 0) + 1);
     if (!tryReplay(setup, [...events, next], settings).ok) return false;
@@ -195,7 +238,7 @@ export function Scorer(props: ScorerProps) {
     setLocal(updated);
     const clientAt = new Date().toISOString();
     if (event.kind === 'timeout_start') setLocalTimes((times) => ({ ...times, [`${viewNo}:${next.seq}`]: clientAt }));
-    outbox.enqueue({ slotId: slot.id, expectedSeq: next.seq, event, clientAt });
+    outbox.enqueue({ slotId: slot.id, slotNo: viewNo, expectedSeq: next.seq, event, clientAt });
     if (event.kind === 'end_confirmed') setSavedNo(viewNo);
     return true;
   };
@@ -267,7 +310,23 @@ export function Scorer(props: ScorerProps) {
   const canInjure =
     mode === 'scorer' && state.setUp && !state.ended && !state.timeout && !state.changeEndsDue && !state.confirmed;
 
-  if (retired && mode === 'scorer') {
+  if (unsent) {
+    overlay = (
+      <UnsentOverlay
+        reason={unsent.reason}
+        items={unsent.items}
+        relay={relay}
+        teams={teams}
+        nameOf={nameOf}
+        onClose={() => {
+          // The log changed under the queue: the scorer goes on from the server's log. The lock
+          // moved: the screen stays read-only.
+          if (unsent.reason === 'conflict') setDemoted(false);
+          setUnsent(null);
+        }}
+      />
+    );
+  } else if (retired && mode === 'scorer') {
     const nextNo = current !== null && current !== retired.current.slotNo ? current : null;
     overlay = (
       <RetiredOverlay
@@ -377,6 +436,7 @@ export function Scorer(props: ScorerProps) {
       cells={cells}
       milestones={settings.relay_milestones}
       pending={outbox.pending}
+      offline={outbox.offline}
       wake={wake}
       scorerName={scorerName}
       fixing={mode === 'scorer' && wasReopened(log) && !state.confirmed}
