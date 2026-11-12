@@ -173,9 +173,9 @@ select public.live_apply('00000000-0000-0000-0000-000000000041', 6, 'point', '{"
 
 select throws_ok(
   $$ select public.live_apply('00000000-0000-0000-0000-000000000041', 7, 'retire', '{"player": "h1"}') $$,
-  '0A000',
-  null,
-  'a retirement is refused until the retirement flow lands'
+  '22023',
+  'retire needs an open timeout of that player',
+  'a retirement without a medical timeout is refused (see live_retire.test.sql)'
 );
 
 select public.live_apply('00000000-0000-0000-0000-000000000041', 7, 'end_confirmed', '{}');
